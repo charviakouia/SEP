@@ -1,0 +1,16 @@
+# compiled class files
+*.class
+
+# package files, archives
+*.jar
+*.war
+*.zip
+*.tar.gz
+*.rar
+
+# log files
+*.log
+
+# macOS specific meta data file
+.DS_STORE
+
