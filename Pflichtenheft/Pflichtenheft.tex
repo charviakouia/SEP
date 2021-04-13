@@ -32,17 +32,54 @@
 \end{figure}
 \newpage
 
+\section{Einleitung}
+\sectionauthor{Jonas Picker}
+Aufbauend auf dem Lastenheft von Christian Bachmaier und Armin Größlinger für ein Bibliothekssystem steckt unser Team, bestehend aus Sergei Pravdin, Ivan Charviakou, León Liehr, Mohamad Najjar und Jonas Picker, mit diesem Pflichtenheft den Rahmen der zu erbringenden Leistungen und verwendeten Technologien bei der Bearbeitung des Auftrags ab. Bei dem zu erstellenden System handelt es sich um eine vereinfachte Form eines Bibliotheksverwaltungssystems mit dem der Anwender das mediale Bibliotheksinventar zentral durchsuchen, kategorisieren und die Nutzung verwalten kann. Das fertige Produkt wird über einen Webbrowser bedient und bietet zahlreiche Anpassungsmöglichkeiten. Das restliche Dokument beinhaltet die genauen Spezifikationen der zu implementierenden Funktionalitäten.
+
 \section{Zielbestimmung}
-\sectionauthor{Mario}
+\sectionauthor{Jonas Picker}
+
+\subsection{Musskriterien}
+Bei der Produktinstallation setzt der Betreiber den gewünschten Webspace sowie die vom System verwendete Datenbank und den E-Mail-Server, im laufenden System zählt der Betreiber zu den Administratoren. Technische Maßnahmen sorgen dafür, dass jegliche sensible Information sicher übertragen sowie gespeichert wird und kein unbefugter Zugriff auf zugangsbeschränkte Bereiche der Anwendung durch Dritte erfolgt. Eine unterstützende Bedienanleitung steht für jeden nicht offensichtlichen Aspekt der Anwendung online zur Verfügung.
+
+\begin{flushleft}
+\textbf{Administratoren:} In diesen Status werden authentifizierte Benutzer initial vom Betreiber und danach von anderen Administratoren erhoben, dies kann auch rückgängig gemacht werden. Administratoren sind für die Anwendungskonfiguration zuständig, welche das Setzen der institutionsspeezifischen Eigenschaften (Logos, Namen, Impressum, Datenschutzerklärung etc.) sowie Variationen des Look \& Feels beinhalten, außerdem bestimmen sie Registrierungsbedingungen und Zugangsberechtigungen für anonyme Nutzer.  Die Definition von Eigenschaften der vom System verwalteten Medien sowie Festlegen ihrer benutzerdefinierten Kategorien, die hierarchisch (bis Tiefe 2) in Verbindung stehen könnnen, wird den Administratoren ermöglicht. Verwaltungs- und Übersichtsfunktionen zur Ausleihe und Rückgabe von Medien und den damit verbundenen Fristen werden außerdem bereitgestellt. Administratoren können andere Nutzerkonten editieren und löschen, hierfür steht ihnen eine Suchfunktion zur Verfügung. 
+\end{flushleft}
+
+\begin{flushleft}
+\textbf{Authentifizierte Nutzer:} Nach einer Validierung der E-Mail-Adresse ist ein Nutzer im System registriert und kann sich jederzeit mit seinen Accountdaten anmelden, danach kann er sich verfügbare Exemplare von Medien zur Abholung markieren, hierzu steht ihm die im nächsten Paragraph beschriebene Suchfunktion zur Verfügung. Wird das Exemplar innerhalb einer gesetzten Frist abgeholt, gilt es als ausgeliehen und der authentifizierte Nutzer wird per E-Mail automatisch über den Ablauf der Rückgabefrist informiert. Ein angemeldeter Benutzer kann seinen Account selbstständig löschen und sich jederzeit abmelden.
+\end{flushleft}
+
+\begin{flushleft}
+\textbf{Anonyme Nutzer:} In der Standartkonfiguration erlaubt das System Besuchern des Webspaces, neben der Registrierungsmöglichkeit, den Zugriff auf eine Suchfunktion sowie das Herunterladen/Lesen kostenfreier und öffentlich zugänglicher Medien. Diese Berechtigungen können von Administratoren auf die Registrierungsmöglichkeit reduziert werden. Die Suchfunktion beinhaltet eine graphische Darstellung der gesamten Kategoriehierarchie und die Möglichkeit sowohl nach Medien als auch nach deren Attributen zu suchen und diese Suche nach Kategorien zu filtern. Eine Detailansicht zu gefundenen Medien steht ebenfalls zur Verfügung.
+\end{flushleft}
+
+\subsection{Wunschkriterien}
+
+\begin{flushleft}
+\textbf{Administratoren:} Beim der Zuweisung der Kategorien für Medien ist die Hierarchietiefe unbeschränkt. Zusätzlich besitzen Administratoren die Möglichkeit, das System in einen manuellen Modus umzuschalten, in dem die Berechtigung zur Ausleihe eines Mediums von einem Administrator für einen authentifizierten Nutzer erst manuell freigeschaltet werden muss. Hierzu gibt es eine gesammelte Ansicht der noch nicht freigeschalteten Accounts.
+\end{flushleft}
+
+\begin{flushleft}
+\textbf{Authentifizierte Nutzer:} Die Accountdaten des Nutzers können verändert und mit einem Avatarbild versehen werden, außerdem besteht die Möglichkeit die mit diesem Account ausgeliehenen/reservierten Medienexemplare einzusehen. Angemeldete Benutzer können alternativ zur Abholungsmarkierung eine Reservierung beantragen, sollten alle Exemplare eines Mediums ausgeliehen sein. Der Nutzer wird dann über den vorraussichtlichen Rückgabetermin des reservierten Exemplars informiert, und bei Abholungsmöglichkeit per E-Mail benachrichtigt. Er kann außerdem seine Reservierung zurückziehen.
+\end{flushleft}
+
+\begin{flushleft}
+\textbf{Servicemitarbeiter:} Mit dieser Nutzerrolle haben Mitarbeiter der Bibliothek die Möglichkeit, zur Abholung markierte Exemplare gesammelt einzusehen und abzuarbeiten, indem sie den Abholstatus verändern. Außerdem können sie zurückgegebene Ausleihen wieder als verfügbar markieren.
+\end{flushleft}
+
+\subsection{Abgrenzungskriterien}
+
+Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien und Nutzern der Bibliothek, Funktionalitäten zum Erwerben und Verwalten von Lizenzen und/oder neuen Medien stehen nicht zur Verfügung. Die Abwicklung oder Verfolgung der Kundenzahlungen für Mitgliedsbeiträge, Medienerwerb o.ä. ist ebenfalls nicht im System integriert. Es besteht keine Möglichkeit, andere Bibliotheksmanagementsysteme oder Literaturenzyklopädien mit dieser Software zu verknüpfen.
 
 \newpage
 
 \section{Produkteinsatz}
-\sectionauthor{Luigi}
 
 \newpage
 
 \section{Produktumgebung}
+\sectionauthor{Jonas Picker}
 
 \newpage
 
@@ -67,9 +104,11 @@
 \newpage
 
 \section{Entwicklungsumgebung}
+\sectionauthor{Jonas Picker}
 
 \newpage
 
 \section{Glossar}
+\sectionauthor{Jonas Picker}
 
 \end{document}
