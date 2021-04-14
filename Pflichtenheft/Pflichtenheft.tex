@@ -143,6 +143,66 @@ Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Personalarbe
 \newpage
 
 \section{Testing}
+\sectionauthor{Sergei Pravdin}
+Das Bibliothekssystem ist erfolgreich installiert, somit sind ein Administrator, ein registrierten Benutzer und ein Medium eingesetzt. Das System befindet sich im offenen Modus, deshalb ist die Registrierung für die allen E-Mail-Domänen möglich.
+\subsection{Nutzerverwaltung}
+		\subsubsection{Administrator}
+			\specification{T}{010}{Das System wurde vom Administrator ins geschlossene Modus umgeschaltet. Ein anonymer Benutzer ruft die Katalog-Seite auf, aber eine Anmeldungsseite wird geladen.­­­­­ (/F10/)}
+			\specification{T}{020}{Der Administrator erlaubte die Registrierung nur für die Domäne "@fim.uni-passau.de". Ein anonymer Benutzer befindet sich auf der Seite Registrierung und gibt Angaben, inkl. eine E-Mail mit der Domäne "@gmail.com", in den Formular an und klickt ein Button "Registrieren". Eine entsprechende Fehlermeldung wird angezeigt. (/F20/)}
+			\specification{T}{030}{Ein anonymer Benutzer befindet sich auf der Seite Registrierung und gibt valide Angaben in den Formular an und klickt aufs Button "Registrieren". Eine entsprechende Meldung wird gezeigt, dass der Benutzer seine E-Mail-Adresse bestätigen muss. Die Registrierung wird abgeschlossen, falls die E-Mail-Adresse verifiziert wird. (/F30/)}
+			\specification{T}{40}{Der Administrator befindet sich auf einer Konto-Seite eines Benutzers und ändert ein Vorname des Benutzers. Somit wird ein neuer Vorname des Benutzers auf seiner Konto-Seite sichtbar. (/F40/)}
+			\specification{T}{50}{Der Administrator löscht einen Benutzer. Der Benutzer befindet sich auf der Anmeldungsseite und versucht sich mit seinem Login und seinem Kennwort anzumelden. Eine entsprechende Fehlermeldung wird gezeigt. (/F50/)} 
+			\specification{T}{60}{Der Administrator gibt einen Name eines existierenden Benutzers ins Suchfeld an. Der entsprechende Benutzer wird gezeigt. (/F60/)}
+			\specification{TW}{70}{Der Administrator verbietet die Ausleihe-Funktion eines Benutzers. Der Benutzer befindet sich auf einer Seite eines Mediums und klickt aufs Button "Buchen". Eine entsprechende Fehlermeldung wird gezeigt. (/W70/, /F100/)}
+			\specification{TW}{80}{Ein Benutzer wurde von einem Administrator gesperrt, somit darf er keine Medien ausleihen. Der Administrator ruft eine Seite von gesperrten Konten auf. Der gesperrte Benutzer ist in der gezeigten Liste sichtbar. (/W80/)}
+			\subsubsection{Anonyme Nutzer}
+			\specification{T}{90}{Ein anonymer Benutzer befindet sich auf der Seite Registrierung und gibt valide Angaben in den Formular an und klickt aufs Button "Registrieren". Eine entsprechende Meldung wird gezeigt, dass der Benutzer seine E-Mail-Adresse bestätigen muss. Die Registrierung wird abgeschlossen, falls die E-Mail-Adresse verifiziert wird. (/F90/)}
+		\subsubsection{Registrierte Nutzer}
+			\specification{T}{100}{Ein Benutzer befindet sich auf der Anmeldungsseite und gibt sein Login und sein Kennwort ins Formular an. Eine Seite mit de angemeldeten Benutzer wird geladen. (/F100/)}
+			\specification{T}{110}{Ein angemeldeter Benutzer befindet sich auf einer irgendwelchen Seite des Systems und klickt auf den Button "Abmelden". Die Seite wird wiedergeladen und der Benutzer ist nicht mehr angemeldet, somit ist der Button "Anmelden" sichtbar. (/F110/)}
+		\subsubsection{Angemeldete Nutzer}
+			\specification{T}{120}{Ein Benutzer befindet sich auf seiner Konto-Seite. Er klickt auf den Button "Editieren" und verändert sein Geburtsdatum, dann klickt er auf den Button "Speichern". Somit ist sein neues Geburtsdatum auf der Konto-Seite sichtbar. (/F120/)}
+			\specification{T}{130}{Ein Benutzer befindet sich auf seiner Konto-Seite. Er klickt auf den Button "Konto löschen". Eine Meldung wird gezeigt und der Benutzer bestätigt das Löschen. Das Konto wird gelöscht und die Startseite des Systems wird geladen. (/F130/)}
+			\specification{TW}{140}{Ein Benutzer befindet sich auf seiner Konto-Seite. Er klickt auf den Button "Bild hochladen" und wählt aus seinem Rechner ein Bild aus. Er klickt den Button "einsetzen" und ein Bild wird eingesetzt und ist auf der Konto-Seite sichtbar. (/W140/)}
+		\subsubsection{Alle Nutzer}
+			\specification{T}{150}{Ein Benutzer befindet sich auf der Registrierung-Seite und gibt einen invaliden Name und eine invalide E-Mail-Adresse. Eine entsprechende Fehlermeldung über die beiden Fehler wird gezeigt. (/F150/)}
+\subsection{Navigation \& Suche}
+		\subsubsection{Alle Nutzer}
+			\specification{T}{160}{Der Benutzer gibt eine Texteingabe ins Suchfeld und sucht Medien nach einer Kategorie. Entsprechende der gewünschten Kategorie Medien werden gezeigt. (/F160/, /F180/) }
+			\specification{T}{170}{Der Benutzer befindet sich auf der Baum-Darstellung-Seite von allen Kategorien und klickt auf eine Kategorie. Entsprechende der gewünschten Kategorie Medien werden gezeigt. (/F170/) }
+			\specification{T}{180}{Der Benutzer befindet sich auf der Katalog-Seite und klickt auf ein Medium. Eine Seite des Mediums mit einer Liste von allen Exemplaren wird geladen. (/F190/) }
+			\specification{T}{190}{Der Benutzer befindet sich auf der Katalog-Seite und klickt auf eine Spalte. Medien werden nach dieser Spalte sortiert. (/F200/) }
+			\specification{T}{200}{Der Benutzer befindet sich auf irgendwelcher Seite des Systems. Er klickt auf den Button "Impressum" und eine Impressum-Seite wird geladen. Die Kontaktdaten sind sichtbar. (/F210/) }
+			\specification{TW}{210}{Der Benutzer befindet sich auf der Katalog-Seite und setzt ein, dass max. 10 Medien auf einer Seite sichtbar sein dürfen. Die Katalog-Seite wird wieder geladen und max. 10 Medien sind sichtbar. (/W220/)}
+			\subsection{Ausleihe \& Rückgabe}
+		\subsubsection{Administrator}
+			\specification{T}{220}{Der Administrator setzt den Zeitabstand als 2 Minute zwischen dem automatischen Versenden einer E-Mail-Mahnung und der Rückgabefrist für ein Medium an. Außerdem setzt er einen Rückgabefrist des Mediums als 1 Minute. Der Personalarbeiter bucht für einen Benutzer das Medium im System, gibt es ab und in 2 Minuten bekommt der Benutzer eine E-Mail-Mahnung. In seinem Konto ist eine Meldung über eine Mahnung bei diesem Medium sichtbar. (/F230/, /F250/, /F260/)}
+			\specification{T}{230}{Der Administrator setzt den Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator und die maximale Reservierungsdauer an. Ein Benutzer bucht ein Medium im System. Ein Button "Buchen" ist nicht mehr für andere Benutzer sichtbar. Ein Button "Reservieren" ist für andere Benutzer sichtbar. (/F240/, /W280/, /F300/)}
+			\specification{T}{240}{Der Administrator ruft eine Liste von Benutzern, die einen Rückgabefrist überschritten haben, an. Entsprechende Liste von Benutzern ist sichtbar. (/F270/)}
+		\subsubsection{Personalarbeiter}
+			\specification{T}{250}{Der Personalarbeiter ruft eine Liste von zur Abholung markierten Exemplaren an. Entsprechende Exemplaren sind sichtbar. (/F290/)}
+			\specification{T}{260}{Der Personalarbeiter befindet sich auf einer Medium-Seite und klickt auf den Button "Freigeben" bei einem Exemplar. Ein angemeldeter Benutzer befindet sich auf der Seite dieselben Medium und der Button "Buchen" ist für ihn sichtbar. (/F310/)}
+		\subsubsection{Registrierte Nutzer}
+			\specification{T}{270}{Ein angemeldeter Benutzer befindet sich auf einer Medium-Seite und klickt auf den Button "Buchen". Eine entsprechende Meldung über eine erfolgreiche Buchung wird gezeigt. (/F320/) }
+			\specification{TW}{280}{Ein angemeldeter Benutzer befindet sich auf einer Seite eines Mediums, das ausgeliehen ist, und klickt auf den Button "Reservieren". Eine entsprechende Meldung über eine erfolgreiche Reservierung wird gezeigt. (/W330/) }
+			\specification{TW}{290}{Ein angemeldeter Benutzer befindet sich auf einer Seite eines Mediums, das von ihm reserviert wurde, und klickt auf den Button "Reservierung widerrufen". Eine entsprechende Meldung über eine erfolgreiche Widerrufung der Reservierung wird gezeigt. (/W340/) }
+				\subsection{Katalogführung}
+		\subsubsection{Administrator}
+			\specification{T}{300}{Der Administrator befindet sich auf der Seite aller Kategorien. Er klickt auf den Button "Erstellen" und gibt einen Name einer neuen Kategorie an und speichert. Die Seite wird wiedergeladen und die neue Kategorie sichtbar. (/F350/) }
+			\specification{T}{310}{Der Administrator befindet sich auf der Seite aller Kategorien. Er klickt auf den Button "Löschen" bei einer Oberkategorie. Eine entsprechende Meldung wird gezeigt und das Löschen vom Administrator bestätigt. Die Seite wird wiedergeladen und die gelöschte Kategorie ist nicht mehr auf der Seite sichtbar. (/F360/) }
+			\specification{T}{320}{Der Administrator befindet sich auf der Katalog-Seite und klickt auf den Button "Medium erstellen". Ein entsprechendes Formular wird gezeigt, der Administrator gibt die Angaben eines Mediums an und speichert. Die Seite wird wiedergeladen und ein erstelltes Medium ist sichtbar. (/F370/)}
+			\specification{T}{330}{Der Administrator befindet sich auf der Katalog-Seite und klickt auf den Button "Löschen" bei einem Medium. Eine entsprechende Meldung wird gezeigt und das Löschen vom Administrator bestätigt. Die Seite wird wiedergeladen und das gelöschte Medium ist nicht mehr auf der Seite sichtbar. (/F380/) }
+			\specification{T}{340}{Der Administrator befindet sich auf der Medium-Seite und klickt auf den Button "Exemplar erstellen". Ein entsprechendes Formular wird gezeigt, der Administrator gibt die Angaben eines Exemplares an und speichert. Die Seite wird wiedergeladen und ein erstelltes Exemplar ist sichtbar. (/F390/)}
+			\specification{T}{350}{Der Administrator befindet sich auf der Medium-Seite und klickt auf den Button "Exemplar löschen". Das Exemplar ist nicht ausgeliehen, deshalb wird die Seite ohne Meldung wiedergeladen und ein erstelltes Exemplar ist nicht mehr sichtbar. (/F400/)}
+	\subsection{Weitere Personalisierungen}
+		\subsubsection{Administrator}
+			\specification{T}{360}{Der Administrator befindet sich auf der Einstellungen-Seite und klickt auf den Button "Name der Organisation ändern". Dann gibt er einen neuen Name an und speichert. Die Seite wird wiedergeladen und der neue Name ist auf der Seite sichtbar. (/F410/) }
+			\specification{T}{370}{Der Administrator befindet sich auf der Einstellungen-Seite und klickt auf den Button "Logo hochladen". Dann wählt er ein Bild aus seinem Rechner aus und speichert. Die Seite wird wiedergeladen und das Logo ist auf der Seite sichtbar. (/F420/)}
+			\specification{T}{380}{Der Administrator befindet sich auf der Einstellungen-Seite und klickt auf den Button "Farbe ansetzen". Dann wird eine Liste der Farben gezeigt und der Administrator wählt eine Farbe aus. Die Seite wird wiedergeladen und die ausgewählte Farbe ist auf der Seite sichtbar. (/F430/)}
+			\specification{T}{390}{Der Administrator befindet sich auf der Impressum-Seite und klickt auf den Button "Ändern". Dann gibt er eine neue Kontaktnummer an und speichert. Die Impressum-Seite wird wiedergeladen und die neue Kontaktnummer ist auf der Seite sichtbar. (/F440/)}
+		\subsubsection{Alle Nutzer}
+			\specification{TW}{400}{Der Benutzer befindet sich auf irgendwelcher Seite des Systems und klickt auf Button "Sprache wechseln". Dann wird er eine englische Sprache ausgewählt und die Seite wird auf der englischen Sprache wiedergeladen. (/W450/) }
+
 
 \newpage
 
