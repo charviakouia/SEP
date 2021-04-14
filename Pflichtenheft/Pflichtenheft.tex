@@ -43,7 +43,7 @@ Aufbauend auf dem Lastenheft von Christian Bachmaier und Armin Größlinger für
 Bei der Produktinstallation setzt der Betreiber den gewünschten Webspace sowie die vom System verwendete Datenbank und den E-Mail-Server, im laufenden System zählt der Betreiber zu den Administratoren. Technische Maßnahmen sorgen dafür, dass jegliche sensible Information sicher übertragen sowie gespeichert wird und kein unbefugter Zugriff auf zugangsbeschränkte Bereiche der Anwendung durch Dritte erfolgt. Eine unterstützende Bedienanleitung steht für jeden nicht offensichtlichen Aspekt der Anwendung online zur Verfügung.
 
 \begin{flushleft}
-\textbf{Administratoren:} In diesen Status werden authentifizierte Benutzer initial vom Betreiber und danach von anderen Administratoren erhoben, dies kann auch rückgängig gemacht werden. Administratoren sind für die Anwendungskonfiguration zuständig, welche das Setzen der institutionsspeezifischen Eigenschaften (Logos, Namen, Impressum, Datenschutzerklärung etc.) sowie Variationen des Look \& Feels beinhalten, außerdem bestimmen sie Registrierungsbedingungen und Zugangsberechtigungen für anonyme Nutzer.  Die Definition von Eigenschaften der vom System verwalteten Medien sowie Festlegen ihrer benutzerdefinierten Kategorien, die hierarchisch (bis Tiefe 2) in Verbindung stehen könnnen, wird den Administratoren ermöglicht. Verwaltungs- und Übersichtsfunktionen zur Ausleihe und Rückgabe von Medien und den damit verbundenen Fristen werden außerdem bereitgestellt. Administratoren können andere Nutzerkonten editieren und löschen, hierfür steht ihnen eine Suchfunktion zur Verfügung. 
+\textbf{Administratoren:} In diesen Status werden authentifizierte Benutzer initial vom Betreiber und danach von anderen Administratoren erhoben, dies kann auch rückgängig gemacht werden. Administratoren sind für die Anwendungskonfiguration zuständig, welche das Setzen der institutionsspeezifischen Eigenschaften (Logos, Namen, Impressum, Datenschutzerklärung etc.) sowie Variationen des Look \& Feels beinhalten, außerdem bestimmen sie Registrierungsbedingungen und Zugangsberechtigungen für anonyme Nutzer.  Die Definition von Eigenschaften der vom System verwalteten Medien sowie Festlegen ihrer benutzerdefinierten Kategorien, die hierarchisch (bis Tiefe 2) in Verbindung stehen könnnen, wird den Administratoren zusätzlich zur Bearbeitung der Attributwerte einzelner Medieninstanzen ermöglicht. Verwaltungs- und Übersichtsfunktionen zur Ausleihe und Rückgabe von Medien und den damit verbundenen Fristen werden außerdem bereitgestellt. Administratoren können andere Nutzerkonten editieren und löschen, hierfür steht ihnen eine Suchfunktion zur Verfügung. 
 \end{flushleft}
 
 \begin{flushleft}
@@ -65,12 +65,12 @@ Bei der Produktinstallation setzt der Betreiber den gewünschten Webspace sowie 
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Servicemitarbeiter:} Mit dieser Nutzerrolle haben Mitarbeiter der Bibliothek die Möglichkeit, zur Abholung markierte Exemplare gesammelt einzusehen und abzuarbeiten, indem sie den Abholstatus verändern. Außerdem können sie zurückgegebene Ausleihen wieder als verfügbar markieren.
+\textbf{Servicemitarbeiter:} Mit dieser Nutzerrolle haben Mitarbeiter der Bibliothek die Möglichkeit, zur Abholung markierte Exemplare gesammelt einzusehen und abzuarbeiten, indem sie den Abholstatus verändern. Außerdem können sie zurückgegebene Ausleihen wieder als verfügbar markieren. Zusätzlich ist es ihnen möglich Attributwerte für Medien und Exemplare zu editieren.
 \end{flushleft}
 
 \subsection{Abgrenzungskriterien}
 
-Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien und Nutzern der Bibliothek, Funktionalitäten zum Erwerben und Verwalten von Lizenzen und/oder neuen Medien stehen nicht zur Verfügung. Die Abwicklung oder Verfolgung der Kundenzahlungen für Mitgliedsbeiträge, Medienerwerb o.ä. ist ebenfalls nicht im System integriert. Es besteht keine Möglichkeit, andere Bibliotheksmanagementsysteme oder Literaturenzyklopädien mit dieser Software zu verknüpfen.
+Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien und Nutzern der Bibliothek, Funktionalitäten zum Erwerben und Verwalten von Lizenzen und/oder neuen Medien stehen nicht zur Verfügung. Die Abwicklung oder Verfolgung der Kundenzahlungen für Mitgliedsbeiträge, Medienerwerb o.ä. ist ebenfalls nicht im System integriert. Es besteht keine Möglichkeit, andere Bibliotheksmanagementsysteme oder Literaturenzyklopädien mit dieser Software zu verknüpfen. Das System ist für die klassische Benutzung über einen mit Tastatur, Maus und Bildschirm ausgestatteten PC/Laptop gedacht, mobile Geräte oder barrierefreie Benutzung werden begrenzt bis gar nicht unterstützt.
 
 \newpage
 
@@ -80,6 +80,38 @@ Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien
 
 \section{Produktumgebung}
 \sectionauthor{Jonas Picker}
+
+\subsection{Software}
+
+Im folgenden Abschnitt werden Softwareabhängigkeiten und Kompatibilitäten der Software beschrieben.
+
+\begin{itemize}
+\item \underline{\textbf{Clientsoftware}}: \linebreak
+Die Applikation wird über einen Webbrowser benutzt, dieser sollte die Darstellung in den Auszeichnungssprachen HTML, Version 5 und CSS, Level 3 unterstützen, sowie die Kommunikation mit dem HTTP/2-Protokoll. Explizit getestet werden die aktuellen Versionen der weit verbreiteten Browser: Google Chrome, Version: 88.0; Mozilla Firefox, Version: 85.0 und Apple Safari, Version: 14.0.3. Da HTML 5 (und CSS) jedoch seit einem guten Jahrzehnt als Web-Standart gilt, ist weitreichende Abwärts-kompatibilität bei den meisten Browsern zu erwarten.  
+
+\item \underline{\textbf{Serversoftware}}: \linebreak
+Auf dem Server muss die Laufzeitumgebung 'Java Virtual Maschine' verfügbar sein, zudem benötigt die Anwendung den Java Enterprise Applikationsserver Apache Tomcat, Version 10.0.x, dieser bringt zwar bei der Installation eine Java Laufzeitumgebung mit sich, es wird jedoch empfohlen, das komplette 'Development Kit' OpenJDK 16 herunterzuladen und bei Tomcat zu registrieren um Kompatibilitätsprobleme zu vermeiden. Außerdem muss ein E-Mail-Server bereit stehen, der das SMTP-Protokoll unterstützt. Die verwendete Datenbank muss das objektrelationale Datenbankmanagementsystem PostgreSQL, Version 13 benutzen, zusätzlich muss die Datenbank über ein gültiges SSL-Zertifikat verfügen um Datenübertragungen mit dem TLS-Protokoll zu ermöglichen. Die Installation der JVM/Tomcat, das Aufspielen der Anwendung sowie die Registrierung der Datenbank und des E-Mail-Servers werden in einem Installationsdokument beschrieben.
+\end{itemize}
+
+\subsection{Hardware}
+
+Hier werden die geschätzen Rahmenbedingungen der Hardware für einen reibungslosen Betrieb aufgelistet, obwohl konkretere Messungen erst mit der Fertigstellung des Produkts möglich sind, skalieren die verwendeten Technologien, und damit die Kapazitäten der Anwendung, prinzipiell mit dem Aufstocken der Rechenleistung (am Server) mit. Sollten die Rahmenbedingungen unterschritten werden, ist ein Betrieb meistens immer noch möglich, jedoch nicht garantiert.
+
+\begin{itemize}
+\item \underline{\textbf{Clienthardware}}: \linebreak
+Die Bedienung der Anwendung über die oben beschriebenen Browsertypen setzt voraus, dass Clientrechner die jeweiligen Hardwareanforderungen für deren Betrieb erfüllen.
+\item \underline{\textbf{Serverhardware}}: \linebreak
+Die Mindestanforderungen zum Betreiben einer Datenbank unter PostgreSQL bzw. eines Applikationsservers unter Tomcat reichen für einen sinnvollen Betrieb der Anwendung unter Last nicht aus, wie oben erwähnt sollten die der Anwendung zur Verfügung stehenden Ressourcen mit der Nutzerzahl in Relation stehen. Als Referenzplattform zum Betreiben der Anwendung dient der im Abschnitt 'Entwicklungsumgebung' beschriebene Rechner 'schratz' für Datenbank und Server gleichermaßen.
+\end{itemize}
+
+\subsection{Schnittstellen}
+
+\begin{itemize}
+\item \underline{\textbf{Clientenschnittstellen}}: \linebreak
+Die notwendigen Mensch-Maschine Schnittstellen zum Benutzen der Anwendung über einen Browser sind: Bildschirm, Tastatur. Die Benutzung einer Maus oder vergleichbare Cursorsteuerung wird dringend empfohlen. Die Verifizierung eines neuen Benutzers bei der Registrierung im System wird über eine gültige E-Mail-Adresse abgewickelt, folglich muss der Nutzer Zugriff auf ein E-Mail-Konto besitzen. Der Browser des Klienten muss beim Benutzen über eine konstante Anbindung an das Internet verfügen, eine außergewöhnlich hohe Bandbreite ist nicht erforderlich.
+\item \underline{\textbf{Serverschnittstellen}}: \linebreak
+Der Server muss über notwendige Mensch-Maschine Schnittstellen zur initialen Installation der Anwendung und ihrer Softwareabhängigkeiten verfügen. Auch benötigt er eine konstante Anbindung an das (Intra- und) Internet, um Klientenanfragen beantworten, den E-Mail-Server kontaktieren und Datenbankanfragen absetzen zu können. Die Datenbank kann sich auf dem gleichen Gerät wie der Server, seperat davon im Netzwerk oder geographisch getrennt 'im Internet' befinden. Sie muss jedoch vom Server aus über einen Hostnamen ansteuerbar sein, je nach Realisierung ist dazu ein VPN-Tunnel notwendig. 
+\end{itemize}
 
 \newpage
 
@@ -105,6 +137,99 @@ Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien
 
 \section{Entwicklungsumgebung}
 \sectionauthor{Jonas Picker}
+
+Die Entwicklung finden auf verschiedenen Privatrechnern der Teammitglieder statt, deren Bauteile und Betriebssysteme in den folgenden Listen kurz umrissen werden, keiner der Rechner weißt sonstige Besonderheiten auf. 
+
+\subsection{Software}
+
+\begin{itemize}
+\item \underline{\textbf{Dokumentenbearbeitung}}: 
+\begin{flushleft}
+LaTeX Distribution MiKTeX, Version: 21.2
+\end{flushleft}
+\item \underline{\textbf{Webbrowser}}:
+\begin{flushleft}
+Google Chrome, Version: 88.0 \linebreak
+Mozilla Firefox, Version: 85.0 \linebreak
+Apple Safari, Version: 14.0.3 \linebreak
+\end{flushleft}
+\item \underline{\textbf{Integrierte Entwicklungsumgebungen}}: 
+\begin{flushleft}
+Eclipse IDE for Enterprise Java Developers, Version: 2020-12 (4.18.0) \linebreak
+IntelliJ IDEA 2021.1 Ultimate Edition \linebreak
+\end{flushleft}
+\item \underline{\textbf{Objektorientierte Modellierung}}: 
+\begin{flushleft}
+IBM Rational Software Architect Designer 9.7 \linebreak
+\end{flushleft}
+\item \underline{\textbf{Programmiersprachen, Entwicklungs- \& Testframeworks}}: 
+\begin{flushleft}
+Java OpenJDK JDK 16 GA-Release\linebreak
+Jakarta EE 9 \linebreak
+Jakarta Server Faces 3.0 Mojarra Implementation \linebreak
+CDI 3.0 with Red Hat Weld, Version: 4.0.1.Final \linebreak
+Cascading Style Sheets Level 3 \linebreak
+JUnit Platform, Version: 1.7.1 \linebreak
+Selenium Server (Grid), Version: 3.141.59 \linebreak
+\end{flushleft}
+\item \underline{\textbf{Versionsmanagement}}:
+\begin{flushleft}
+git, Version 2.31.1 \linebreak
+\end{flushleft}
+\item \underline{\textbf{Betriebssysteme der Entwicklungsrechner}}:
+\begin{flushleft}
+MacOS Big Sur, Versionen: 11.2.3 und 11.2.1 \linebreak
+Windows 10 Home 20H2 \linebreak
+GNU/Linux Arch, Version: 5.11.11 \linebreak
+GNU/Linux Debian, Version: 4.19.132-1 \linebreak
+\end{flushleft}
+\item \underline{\textbf{Graphische Prototypenbearbeitung}}:
+\begin{flushleft}
+Balsamiq Wireframes, Version: 4.2.4 \linebreak 
+\end{flushleft}
+\item \underline{\textbf{Applikationsserver}}: 
+\begin{flushleft}
+Apache Tomcat, Version: 10.0.2 \linebreak
+\end{flushleft}
+\item \underline{\textbf{Datenbanktreiber und Visualisierung}}: 
+\begin{flushleft}
+PostgreSQL JDBC 4.2 Driver, Version: 42.2.19 \linebreak
+DBeaver, Version: 21.0.2
+\end{flushleft}
+\item \underline{\textbf{Teamkommunikation}}: 
+\begin{flushleft}
+Slack \linebreak
+Discord \linebreak
+Skype \linebreak
+Stud.IP \linebreak
+\end{flushleft}
+\end{itemize}
+
+\subsection{Hardware}
+
+\begin{itemize}
+\item \underline{\textbf{Entwicklungsrechner}}: 
+\begin{flushleft}
+MacBook Pro, 8GB RAM, Intel Core i5 2GHz  \linebreak
+HP Laptop 15-db1xxx, 16GB RAM, AMD Ryzen 5 3500U 2.1GHz \linebreak
+2x MacBook Pro, 8GB RAM, Intel Core i5 2.3GHz \linebreak
+Tower-PC, 16GB RAM, AMD Ryzen 5 3600XT 3.8GHz \linebreak
+\end{flushleft}
+\item \underline{\textbf{Referenzrechner}}:
+\begin{flushleft}
+CIP-Pool Computer 'schratz', Uni Passau, 15.6GB RAM, Intel Core i7-4790 3.60GHz CPU, Intel I217-LM Ethernet Controller \linebreak
+Spezifikation der virtualisierten Datenbank (siehe Entwicklungsschnittstellen) bezieht sich auf die Referenzhardware von 'schratz' und besitzt eine geschätze Übertragungsrate von ~1GB/s ins Internet. Die Datenbank unterstützt das Verschlüsselungsprotokoll TLS mit einem Zertifikat. \linebreak
+\end{flushleft}
+\end{itemize}
+
+\subsection{Entwicklungsschnittstellen}
+
+\begin{itemize}
+\item \begin{flushleft} Netzwerk- und Internetverbindung \end{flushleft} 
+\item \begin{flushleft} Virtuelle private Netwerkanbindung mit OpenVPN, Version 2.5.1 \end{flushleft} 
+\item \begin{flushleft} Git-verwaltetes Repository der Uni Passau, Website: https://git.fim.uni-passau.de/ \end{flushleft} 
+\item \begin{flushleft} Virtualisierte Datenbank der Uni Passau, Hostname: bueno.fim.uni-passau.de \end{flushleft}
+\end{itemize}
 
 \newpage
 
