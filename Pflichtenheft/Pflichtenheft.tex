@@ -50,16 +50,16 @@
 
 \section{Produktfunktionen}
 \sectionauthor{Ivan Charviakou}
-In der folgenden Aufführung unterscheidet man zwischen Administratoren, Personalarbeitern, registrierten Nutzern, angemeldeten Nutzern, und anonymen Nutzern.
+In der folgenden Aufführung unterscheidet man zwischen Administratoren, Schaltermitarbeiter, registrierten Nutzern, angemeldeten Nutzern, und anonymen Nutzern.
 Hierbei sind alle angemeldeten Nutzer zwangsweise auch registrierte Nutzer. Trotzdem kann ein registrierter Nutzer vor einer Authentifikation anonymer Nutzer sein.
-Ferner ist die Unterscheidung zwischen einem Administrator und Personalarbeiter nur dann zu treffen, wenn die Rolle des Personalarbeiters optional umgesetzt wird.
-Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Personalarbeiter zugeordnet sind, dem Administrator zuzuordnen.
+Ferner ist die Unterscheidung zwischen einem Administrator und Schaltermitarbeiter nur dann zu treffen, wenn die Rolle des Schaltermitarbeiters optional umgesetzt wird.
+Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermitarbeiter zugeordnet sind, dem Administrator zuzuordnen.
 	\subsection{Nutzerverwaltung}
 		\subsubsection{Administrator}
 			\specification{F}{10}{Es ist einstellbar, ob anonyme Nutzer Lesezugriff auf den OPAC haben.}
 			\specification{F}{20}{Es können eine oder mehrere Email-Domäne angegeben werden, mit denen neue Registrierungen durchgeführt werden dürfen.}
 			\specification{F}{30}{Die Registrierung eines neuen Nutzers ist möglich.}
-			\specification{F}{40}{Die Nutzerdaten und Rolle eines registrierten Nutzers sind änderbar. Die eigene Rolle ist aber unänderbar. }
+			\specification{F}{40}{Die Nutzerdaten und Rolle aller Nutzern, insbesondere auch die eines Administrators, sind änderbar. Die eigene Rolle ist aber unänderbar. }
 			\specification{F}{50}{Ein registrierter Nutzer kann gelöscht werden.}
 			\specification{F}{60}{Es kann ggf. mit Angabe von Nutzerattributen nach Nutzern gesucht werden.}
 			\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden.}
@@ -71,8 +71,8 @@ Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Personalarbe
 			\specification{F}{100}{Es ist möglich, sich mit dem Benutzernamen und Kennwort ins System einzuloggen. Beim Erfolg handelt es sich dann um einen angemeldeten Nutzer. }
 			\specification{F}{110}{Bei erfolgreicher Anmeldung, ist es möglich, sich auszuloggen. Beim Erfolg handelt es sich dann um einen anonymen Nutzer. }
 		\subsubsection{Angemeldete Nutzer}
-			\specification{F}{120}{Es ist möglich, die eigenen Nutzerdaten zu ändern.}
-			\specification{F}{130}{Das Löschen eines Nutzerkontos ist möglich.}
+			\specification{F}{120}{Bis auf die Email-Adresse ist es möglich, die eigenen Nutzerdaten zu ändern. }
+			\specification{F}{130}{Das Löschen des eigenen Nutzerkontos ist möglich.}
 			\specification{W}{140}{Es kann ein Profilbild hochgeladen werden.}
 		\subsubsection{Alle Nutzer}
 			\specification{F}{150}{Bei Fehlerhafter Texteingabe zu einem Formular werden alle Felder auf Korrektheit geprüft. Alle Fehler werden dem Nutzer angezeigt. }
@@ -84,50 +84,57 @@ Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Personalarbe
 			\specification{F}{190}{Zu einem Medium ist die Liste aller Exemplaren aufrufbar. }
 			\specification{F}{200}{Für alle Tabellen ist der Datensatz nach individuellen Spalten auf Anclick ab- und aufsteigend sortierbar. }
 			\specification{F}{210}{Die Seite mit Kontaktinformation bzw. Impressum ist aufrufbar. }
-			\specification{W}{220}{Es kann für eine Tabelle eingestellt werden, wie viele Datensätze pro Pagination-Seite angezeigt werden. }
+			\specification{F}{220}{Alle Tabellen verwenden ggf. Pagination. Insbesondere werden per Default bis zu 20 Datensätzen pro Seite angezeigt. 
+				Mit entsprechenden Knöpfen kann man ggf. nach vorwärts und rückwärts blättern. }
+			\specification{W}{230}{Es kann für eine Tabelle eingestellt werden, wie viele Datensätze pro Pagination-Seite angezeigt werden. }
 	\subsection{Ausleihe \& Rückgabe}
 		\subsubsection{Administrator}
-			\specification{F}{230}{Der Zeitabstand zwischen dem automatischen Versenden einer Email-Mahnung und der Rückgabefrist für einen beliebigen Exemplar ist setzbar.
+			\specification{F}{240}{Der Zeitabstand zwischen dem automatischen Versenden einer Email-Mahnung und der Rückgabefrist für einen beliebigen Exemplar ist setzbar.
 				Dieser Wert gilt dann global für alle neue Ausleihvorgänge. Zu beachten ist, dass für einen Vorgang mit einem Ausleihdauer, der kürzer als dieser Wert ist, keine Email-Mahnung versendet wird. }
-			\specification{F}{240}{Der Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator ist setzbar.
+			\specification{F}{250}{Der Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator ist setzbar.
 				In dieser Zeit ist das Exemplar zur Abholung markiert. Zu beachten ist, dass das ausgewählte Exemplar nach Überschreiten dieser Zeit wieder allen Nutzer zu Verfügung steht. }
-			\specification{F}{250}{Die Rückgabefrist für ist für alle Ausleihvorgänge setzbar. Dabei darf die Frist nicht in der Vergangenheit liegen. }
-			\specification{F}{260}{Die maximale Ausleihdauer ist global, für einen bestimmten Medium, oder für einen bestimmten Nutzer setzbar.
+			\specification{F}{260}{Die Rückgabefrist für ist für alle Ausleihvorgänge setzbar. Dabei darf die Frist nicht in der Vergangenheit liegen. }
+			\specification{F}{270}{Die maximale Ausleihdauer ist global, für einen bestimmten Medium, oder für einen bestimmten Nutzer setzbar.
 				Wenn bei einem Ausleihvorgang mehrere Werte vorhanden sind, wird zuerst der Nutzerwert, danach der Mediumwert, und als letztes der globale Wert beachtet. }
-			\specification{F}{270}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer den Rückgabefrist das gegebene Medium um das gegebene Zeitdauer überschritten hat, ist abrufbar. }
-			\specification{W}{280}{Die maximal Reservierungsdauer ist setzbar.
+			\specification{F}{280}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer den Rückgabefrist das gegebene Medium um das gegebene Zeitdauer überschritten hat, ist abrufbar. }
+			\specification{W}{290}{Die maximal Reservierungsdauer ist setzbar.
 				Dies bezeichnet die Zeitdauer, in der ein zuvor unverfügbares Exemplar bei der Wiederverfügbarkeit für solche Nutzer zur Abholung markiert ist, die vor der Wiederverfügbarkeit das Exemplar reserviert haben.  }
-		\subsubsection{Personalarbeiter}
-			\specification{F}{290}{Eine Liste von zur Abholung markierten Exemplaren ist abrufbar. }
-			\specification{F}{300}{Ein Exemplar, das zur Abholung markiert ist, kann zu einem Zeitpunkt ausgeliehen werden, von dem die Ausleihdauer berechnet wird.
+		\subsubsection{Schaltermitarbeiter}
+			\specification{F}{300}{Eine Liste von zur Abholung markierten Exemplaren ist abrufbar. }
+			\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann zu einem Zeitpunkt ausgeliehen werden, von dem die Ausleihdauer berechnet wird.
 				Dadurch ist das Exemplar nicht mehr zur Abholung markiert und steht während der Ausleihdauer anderen Nutzern nicht mehr zu Verfügung. }
-			\specification{F}{310}{Ein Exemplar kann zurückgegeben werden, wodurch das Exemplar anderen Nutzern wieder zu Verfügung steht. }
+			\specification{F}{320}{Ein Exemplar kann zurückgegeben werden, wodurch das Exemplar anderen Nutzern wieder zu Verfügung steht. }
 		\subsubsection{Registrierte Nutzer}
-			\specification{F}{320}{Ein Exemplar kann zu einem Zeitpunkt zur Abholung markiert werden.
+			\specification{F}{330}{Ein Exemplar kann zu einem Zeitpunkt zur Abholung markiert werden.
 				Wenn das Exemplar innerhalb der maximalen Dauer der Abholung nicht im System als ausgeliehen markiert ist, steht das Exemplar sofort wieder anderen Nutzern zu Verfügung. }
-			\specification{W}{330}{Wenn ein Exemplar nicht vorhanden ist, kann es reserviert werden.
+			\specification{W}{340}{Wenn ein Exemplar nicht vorhanden ist, kann es reserviert werden.
 				Dadurch wird der Nutzer zu einer Warteliste von Nutzern hinzugefügt, die jeweils per Email benachrichtigt werden, sobald das Exemplar wieder verfügbar ist.
 				Ab dieser Zeit, steht das Exemplar für eine gesetzte Reservierungsdauer nicht anderen Nutzern zu Verfügung, sondern den reservierenden Nutzern zur Abholung.
 				Wenn diese Frist abläuft, ohne dass es im System in dieser Zeit als ausgeliehen markiert wurde, steht das Exemplar sofort wieder anderen Nutzern zu Verfügung. }
-			\specification{W}{340}{Eine Reservierung für ein Exemplar kann aufgehoben werden. Dadurch wird der Nutzer aus der Warteliste zu diesem Exemplar entfernt. }
+			\specification{W}{350}{Eine Reservierung für ein Exemplar kann aufgehoben werden. Dadurch wird der Nutzer aus der Warteliste zu diesem Exemplar entfernt. }
 	\subsection{Katalogführung}
 		\subsubsection{Administrator}
-			\specification{F}{350}{Es kann eine Kategorie erstellt werden. }
-			\specification{F}{360}{Es kann eine Kategorie gelöscht werden. Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert. }
-			\specification{F}{370}{Es kann ein Medium erstellt werden, für die eigene Attribute und Attributtypen definierbar sind. }
-			\specification{F}{380}{Es kann ein Medium gelöscht werden. Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft.
+			\specification{F}{360}{Es kann eine Kategorie erstellt werden. Dabei kann sie einer anderen Kategorie als Subkategorie gehören.
+				Eine solche verkettete Konstruktion ist mit bis zu zwei Kategorien möglich. }
+			\specification{F}{370}{Es kann eine Kategorie gelöscht werden. Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert. }
+			\specification{F}{380}{Es kann ein Mediumsschema erstellt werden, das für ein Medium eigene Attribute definiert. }
+			\specification{F}{390}{Es kann ein Mediumsschema gelöscht werden. Vor dem Löschen eines Schemas wird geprüft, ob Medien, die dem Schema folgen, existieren.
+				Falls es solche Medien gibt, wird eine Bestätigung gefordert. }
+			\specification{F}{400}{Es kann ein Medium nach einem Schema erstellt werden. }
+			\specification{F}{410}{Es kann ein Medium gelöscht werden. Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft.
 				Falls ein Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. }
-			\specification{F}{390}{Es kann ein Exemplar erstellt werden. }
-			\specification{F}{400}{Es kann ein Exemplar gelöscht werden. Vor dem Löschen eines Exemplar wird auf aktuelle Ausleihvorgänge geprüft.
+			\specification{F}{420}{Es kann ein Exemplar erstellt werden. }
+			\specification{F}{430}{Es kann ein Exemplar gelöscht werden. Vor dem Löschen eines Exemplar wird auf aktuelle Ausleihvorgänge geprüft.
 				Falls das Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert.  }
+			\specification{W}{440}{Eine Kategorieverkettung von unbegrenzter Länge ist möglich. }
 	\subsection{Weitere Personalisierungen}
 		\subsubsection{Administrator}
-			\specification{F}{410}{Die Name der Einrichtung kann gesetzt werden. }
-			\specification{F}{420}{Das Logo der Einrichtung kann hochgeladen werden. }
-			\specification{F}{430}{Das Farbenschema, bestehend aus zwei Farben, kann eingestellt werden. }
-			\specification{F}{440}{Die Kontaktinformationen und das Impressum können angegeben werden. }
+			\specification{F}{450}{Die Name der Einrichtung kann gesetzt werden. }
+			\specification{F}{460}{Das Logo der Einrichtung kann hochgeladen werden. }
+			\specification{F}{470}{Das Farbenschema, bestehend aus zwei Farben, kann eingestellt werden. }
+			\specification{F}{480}{Die Kontaktinformationen und das Impressum können angegeben werden. }
 		\subsubsection{Alle Nutzer}
-			\specification{W}{450}{Es kann zwischen Deutsch und Englisch als Anzeigesprache ausgewählt werden. }
+			\specification{W}{490}{Es kann zwischen Deutsch und Englisch als Anzeigesprache ausgewählt werden. }
 \newpage
 
 \section{Produktleistung}
