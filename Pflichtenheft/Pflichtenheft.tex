@@ -3,6 +3,7 @@
 
 \usepackage{graphicx}
 \usepackage{indentfirst}
+\usepackage{hyperref}
 
 \graphicspath{ {./images/} }
 
@@ -10,6 +11,9 @@
 \newcommand{\sectionauthor}[1]{
 	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{2em}}
 	\@afterheading
+}
+\newcommand{\specification}[3]{
+	{\parindent 0.5em \hangindent 3em \hypertarget{spec:#1:#2}{\textbf{/#1#2/}} #3 \par \nobreak \vspace*{0.5em}}
 }
 \makeatother
 
@@ -32,22 +36,22 @@
 \end{figure}
 \newpage
 
-\section{Einleitung}
+\section{Einleitung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 Aufbauend auf dem Lastenheft von Christian Bachmaier und Armin Größlinger für ein Bibliothekssystem steckt unser Team, bestehend aus Sergei Pravdin, Ivan Charviakou, León Liehr, Mohamad Najjar und Jonas Picker, mit diesem Pflichtenheft den Rahmen der zu erbringenden Leistungen und verwendeten Technologien bei der Bearbeitung des Auftrags ab. Bei dem zu erstellenden System handelt es sich um eine vereinfachte Form eines Bibliotheksverwaltungssystems mit dem der Anwender das mediale Bibliotheksinventar zentral durchsuchen, kategorisieren und die Nutzung verwalten kann. Das fertige Produkt wird über einen Webbrowser bedient und bietet zahlreiche Anpassungsmöglichkeiten. Das restliche Dokument beinhaltet die genauen Spezifikationen der zu implementierenden Funktionalitäten.
 
-\section{Zielbestimmung}
+\section{Zielbestimmung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 
 \subsection{Musskriterien}
 Bei der Produktinstallation setzt der Betreiber den gewünschten Webspace sowie die vom System verwendete Datenbank und den E-Mail-Server. Im laufenden System zählt der Betreiber zu den Administratoren. Technische Maßnahmen sorgen dafür, dass jegliche sensible Information sicher übertragen sowie gespeichert wird und kein unbefugter Zugriff auf zugangsbeschränkte Bereiche der Anwendung durch Dritte erfolgt. Eine unterstützende Bedienanleitung steht für jeden nicht offensichtlichen Aspekt der Anwendung online zur Verfügung.
 
 \begin{flushleft}
-\textbf{Administratoren:} In diesen Status werden authentifizierte Benutzer initial vom Betreiber und danach von anderen Administratoren erhoben, dies kann auch rückgängig gemacht werden. Administratoren sind für die Anwendungskonfiguration zuständig, welche das Setzen der institutionsspezifischen Eigenschaften (Logos, Namen, Impressum, Datenschutzerklärung etc.) sowie Variationen des Look \& Feels beinhalten, außerdem bestimmen sie Registrierungsbedingungen und Zugangsberechtigungen für anonyme Nutzer.  Die Definition von Eigenschaften der vom System verwalteten Medien sowie Festlegen ihrer benutzerdefinierten Kategorien, die hierarchisch (bis Tiefe 2) in Verbindung stehen könnnen, wird den Administratoren zusätzlich zur Bearbeitung der Attributwerte einzelner Medieninstanzen ermöglicht. Verwaltungs- und Übersichtsfunktionen zur Ausleihe und Rückgabe von Medien und den damit verbundenen Fristen werden außerdem bereitgestellt. Administratoren können andere Nutzerkonten editieren und löschen, hierfür steht ihnen eine Suchfunktion zur Verfügung. 
+\textbf{Administratoren:} In diesen Status werden authentifizierte Benutzer initial vom Betreiber und danach von anderen Administratoren erhoben, dies kann auch rückgängig gemacht werden. Administratoren sind für die Anwendungskonfiguration zuständig, welche das Setzen der institutionsspezifischen Eigenschaften (Logos, Namen, Impressum, Datenschutzerklärung etc.) sowie Variationen des Look \& Feels beinhalten, außerdem bestimmen sie Registrierungsbedingungen und Zugangsberechtigungen für anonyme Nutzer.  Die Definition von Eigenschaften der vom System verwalteten Medien sowie Festlegen ihrer benutzerdefinierten Kategorien, die hierarchisch (bis Tiefe 2) in Verbindung stehen können, wird den Administratoren zusätzlich zur Bearbeitung der Attributwerte einzelner Medieninstanzen ermöglicht. Verwaltungs- und Übersichtsfunktionen zur Ausleihe und Rückgabe von Medien und den damit verbundenen Fristen werden außerdem bereitgestellt. Administratoren können andere Nutzerkonten editieren und löschen, hierfür steht ihnen eine Suchfunktion zur Verfügung. 
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Authentifizierte Nutzer:} Nach einer Validierung der E-Mail-Adresse ist ein Nutzer im System registriert und kann sich jederzeit mit seinen Accountdaten anmelden, danach kann diesee verändern und er kann sich verfügbare Exemplare von Medien zur Abholung markieren, hierzu steht ihm die im nächsten Paragraph beschriebene Suchfunktion zur Verfügung. Wird das Exemplar innerhalb einer gesetzten Frist abgeholt, gilt es als ausgeliehen und der authentifizierte Nutzer wird per E-Mail automatisch über den Ablauf der Rückgabefrist informiert. Ein angemeldeter Benutzer kann seinen Account selbstständig löschen und sich jederzeit abmelden.
+\textbf{Authentifizierte Nutzer:} Nach einer Validierung der E-Mail-Adresse ist ein Nutzer im System registriert und kann sich jederzeit mit seinen Accountdaten anmelden, danach kann diese verändern und er kann sich verfügbare Exemplare von Medien zur Abholung markieren, hierzu steht ihm die im nächsten Paragraph beschriebene Suchfunktion zur Verfügung. Wird das Exemplar innerhalb einer gesetzten Frist abgeholt, gilt es als ausgeliehen und der authentifizierte Nutzer wird per E-Mail automatisch über den Ablauf der Rückgabefrist informiert. Ein angemeldeter Benutzer kann seinen Account selbstständig löschen und sich jederzeit abmelden.
 \end{flushleft}
 
 \begin{flushleft}
@@ -74,11 +78,11 @@ Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien
 
 \newpage
 
-\section{Produkteinsatz}
+\section{Produkteinsatz} %-------------------------------------------------------------------------------------------------
 
 \newpage
 
-\section{Produktumgebung}
+\section{Produktumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 
 \subsection{Software}
@@ -115,27 +119,27 @@ Der Server muss über notwendige Mensch-Maschine Schnittstellen zur initialen In
 
 \newpage
 
-\section{Produktfunktionen}
+\section{Produktfunktionen} %-------------------------------------------------------------------------------------------------
 
 \newpage
 
-\section{Produktleistung}
+\section{Produktleistung} %-------------------------------------------------------------------------------------------------
 
 \newpage
 
-\section{Benutzeroberfläche}
+\section{Benutzeroberfläche} %-------------------------------------------------------------------------------------------------
 
 \newpage
 
-\section{Qualitätsanforderungen}
+\section{Qualitätsanforderungen} %-------------------------------------------------------------------------------------------------
 
 \newpage
 
-\section{Testing}
+\section{Testing} %-------------------------------------------------------------------------------------------------
 
 \newpage
 
-\section{Entwicklungsumgebung}
+\section{Entwicklungsumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 
 Die Entwicklung finden auf verschiedenen Privatrechnern der Teammitglieder statt, deren Bauteile und Betriebssysteme in den folgenden Listen kurz umrissen werden, keiner der Rechner weißt sonstige Besonderheiten auf. 
@@ -236,7 +240,7 @@ Spezifikation der virtualisierten Datenbank (siehe Entwicklungsschnittstellen) b
 
 \newpage
 
-\section{Glossar}
+\section{Glossar} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 
 \end{document}
