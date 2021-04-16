@@ -2,10 +2,11 @@
 
 \documentclass{article}
 
+\usepackage[ngerman]{babel}
 \usepackage{graphicx}
 \usepackage{indentfirst}
 \usepackage{hyperref}
-\usepackage[ngerman]{babel}
+\usepackage{geometry}
 
 \graphicspath{ {./images/} }
 
@@ -258,6 +259,17 @@ In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angem
     \label{mediumsseite_admin}
 \end{figure}
 
+\newpage
+\newgeometry{left=0.1cm,right=0.1cm,top=0.1cm,bottom=0.1cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[angle = 270, width = 40em]{site_map}
+    \caption{Die Inhaltsübersicht der Webseite (engl. \textit{site map})}
+    \label{site_map}
+\end{figure}
+
+\restoregeometry
 \newpage
 
 \section{Qualitätsanforderungen} %-------------------------------------------------------------------------------------------------
