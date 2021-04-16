@@ -51,7 +51,7 @@ Aufbauend auf dem Lastenheft von Christian Bachmaier und Armin Größlinger für
 \sectionauthor{Jonas Picker}
 
 \subsection{Musskriterien}
-Bei der Produktinstallation setzt der Betreiber den gewünschten Webspace sowie die vom System verwendete Datenbank und den E-Mail-Server. Im laufenden System zählt der Betreiber zu den Administratoren. Technische Maßnahmen sorgen dafür, dass jegliche sensible Information sicher übertragen sowie gespeichert wird und kein unbefugter Zugriff auf zugangsbeschränkte Bereiche der Anwendung durch Dritte erfolgt. Eine unterstützende Bedienanleitung steht für jeden nicht offensichtlichen Aspekt der Anwendung online zur Verfügung.
+Bei der Produktinstallation setzt der Betreiber den gewünschten Adressraum sowie die vom System verwendete Datenbank und den E-Mail-Server. Im laufenden System zählt der Betreiber zu den Administratoren. Technische Maßnahmen sorgen dafür, dass jegliche sensible Information sicher übertragen sowie gespeichert wird und kein unbefugter Zugriff auf zugangsbeschränkte Bereiche der Anwendung durch Dritte erfolgt. Eine unterstützende Bedienanleitung steht für jeden nicht offensichtlichen Aspekt der Anwendung online zur Verfügung.
 
 \begin{flushleft}
 \textbf{Administratoren:} In diesen Status werden authentifizierte Benutzer initial vom Betreiber und danach von anderen Administratoren erhoben, dies kann auch rückgängig gemacht werden. Administratoren sind für die Anwendungskonfiguration zuständig, welche das Setzen der institutionsspezifischen Eigenschaften (Logos, Namen, Impressum, Datenschutzerklärung etc.) sowie Variationen des Look \& Feels beinhalten, außerdem bestimmen sie Registrierungsbedingungen und Zugangsberechtigungen für anonyme Nutzer.  Die Definition von Eigenschaften der vom System verwalteten Medien sowie Festlegen ihrer benutzerdefinierten Kategorien, die hierarchisch (bis Tiefe 2) in Verbindung stehen können, wird den Administratoren zusätzlich zur Bearbeitung der Attributwerte einzelner Medieninstanzen ermöglicht. Verwaltungs- und Übersichtsfunktionen zur Ausleihe und Rückgabe von Medien und den damit verbundenen Fristen werden außerdem bereitgestellt. Administratoren können andere Nutzerkonten editieren und löschen, hierfür steht ihnen eine Suchfunktion zur Verfügung. 
@@ -675,8 +675,63 @@ Spezifikation der virtualisierten Datenbank (siehe Entwicklungsschnittstellen) b
 
 \section{Glossar} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
-	\begin{itemize}
-		\item OPAC - Online public access catalog
-	\end{itemize}
+
+\begin{itemize}\item OPAC (5.1)
+\begin{flushleft}
+Online public access catalog, darunter versteht man den über das Internet zugänglichen Bibliothekskatalog, mit dem der Bestand an Publikationen recherchiert werden kann.
+\end{flushleft}
+\item Webbrowser (Einleitung)
+\begin{flushleft}
+Spezielle Computerprogramme zum Anzeigen von Webseiten im World Wide Web. Bekannte Beispiele sind: Google Chrome, Apple Safare, Mozilla Firefox.
+\end{flushleft}
+\item Adressraum (2.1)
+\begin{flushleft}
+Die in der Kopfzeile des Browsers angezeigte Adresse unter der die Anwendung erreichbar seien soll, Unterabschnitte des Systems bauen auf diesem getzten Wert auf.
+\end{flushleft}
+\item Look \& Feel (2.1)
+\begin{flushleft}
+Die Umschreibung der Kombination aus Farbauswahl und Form sowie Größe und Position der Elemente einer Webseite.
+\end{flushleft}
+\item HTML (4.1)
+\begin{flushleft}
+Die Hypertext Markup Language ist eine textbasierte Auszeichnungssprache, die als Dokumentenstandart eine Grundlage des World Wide Webs bildet.
+\end{flushleft}
+\item CSS (4.1)
+\begin{flushleft}
+Cascading Style Sheets ist eine weitere Auszeichnungssprache mit der unter anderem die Darstellung, Form, Farben und Positionen der Elemente einer Webseite verändert werden kann.
+\end{flushleft}
+\item JavaScript (4.1)
+\begin{flushleft}
+Ist eine Skriptsprache, die hauptsächlich dazu verwendet wird, die Logik hinter interaktiven Elementen einer Webseite zu formulieren.
+\end{flushleft}
+\item Laufzeitumgebung (4.1)
+\begin{flushleft}
+Hierunter versteht man die für eine Programmiersprache zur Ausführungszeit verfügbaren und festgelegten Voraussetzungen.
+\end{flushleft}
+\item SSL/TLS (4.1)
+\begin{flushleft}
+Das Secure Socket Layer- bzw. Transport Layer Security-Protokoll bietet die Möglichkeit zur sicheren Datenübertragung über das Internet, hierzu ist ein kryptographisches Schlüsselzertifikat nötig.
+\end{flushleft}
+\item SMTP (4.1)
+\begin{flushleft}
+Das Simple Mail Transfer Protocol wird zum Weiterleiten und Verschicken von E-Mails verwendet.
+\end{flushleft}
+\item VPN (4.2)
+\begin{flushleft}
+Virtual Private Network meint hier den verschlüsselten Fernzugriff auf Ressourcen in einem fremden lokalen Netzwerk über einen 'Tunnel' durch das Internet.
+\end{flushleft}
+\item ID (6.)
+\begin{flushleft}
+Dies ist die Abkürzung für einen Identifikator, normalerweiße eine für den zu identifizierenden einzigartige Nummer ohne weiteren Informationsgehalt.
+\end{flushleft}
+\item UTF-8 (7.1)
+\begin{flushleft}
+Das 8-bit Unicode Transformation Format wird zur Kodierung von nahezu allen weltweit verwendeten Zahlen, Schriftzeichen und sonstigen schriftlichen Elementen verwendet.
+\end{flushleft}
+\item Paginierung (7.1)
+\begin{flushleft}
+Hierunter verstehen wir die Aufteilung von abgefrageten Listen in kleinere Abschnitte, um die Darstellung zu erleichtern und lange Ladezeiten bei großen Ergebnissen zu vermeiden.
+\end{flushleft}
+\end{itemize}
 
 \end{document}
