@@ -9,52 +9,78 @@
 
     <style>
         body {
-            margin: 2em 5em;
+            width: 60%;
+            margin: 2em auto;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+        }
+
+        .toc-container {
+            display: flex;
+            justify-content: center;
         }
 
         .toc {
-            display: inline-block;
             border: 2px solid #ddd;
             padding: 2em 3em;
         }
 
         h1,
         h2,
-        h3,
-        h4,
-        h5,
-        h6 {
+        h3 {
             border-bottom: 2px solid #ddd;
             padding-bottom: 0.5ex;
+        }
+
+        ul {
+            padding-left: 0;
+            list-style-type: '➤ ';
+        }
+
+        a,
+        a:visited {
+            color: inherit
+        }
+
+        footer {
+            margin-top: 5ex;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Handbuch</h1>
+    <h1><a name="top">Handbuch</a></h1>
 
-    <section class="toc">
-        <h2>Inhaltsverzeichnis</h2>
+    <div class="toc-container">
+        <div class="toc">
+            <h2>Inhaltsverzeichnis</h2>
 
-        <ul>
-            <li><a href="#hilfe001">Kontext-sensitive Hilfe 001</a></li>
-            <li><a href="#hilfe002">Kontext-sensitive Hilfe 002</a></li>
-        </ul>
-    </section>
+            <ul>
+                <li><a href="#hilfe001">Kontext-sensitive Hilfe 001</a></li>
+                <li><a href="#hilfe002">Kontext-sensitive Hilfe 002</a></li>
+            </ul>
+        </div>
+    </div>
 
     <section>
         <h3><a name="hilfe001">Kontext-sensitive Hilfe 001</a></h3>
 
-        Dies ist ein Beispieltext für Kontext-sensitive Hilfe 001.
+        Dies ist ein Beispieltext für die kontext-sensitive Hilfe 001.
+        Und noch mehr Fülltext, weil wir es so sehr lieben!
     </section>
 
     <section>
         <h3><a name="hilfe002">Kontext-sensitive Hilfe 002</a></h3>
 
-        Dies ist ein Beispieltext für Kontext-sensitive Hilfe 002.
+        Dies ist ein Beispieltext für die kontext-sensitive Hilfe 002.
+        Und noch mehr Fülltext, weil wir es so sehr lieben!
     </section>
+
+    <footer>
+        <a href="#top">nach oben</a>
+    </footer>
 </body>
 
 </html>
