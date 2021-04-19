@@ -6,20 +6,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Handbuch</title>
+
+    <style>
+        body {
+            margin: 2em 5em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .toc {
+            display: inline-block;
+            border: 2px solid #ddd;
+            padding: 2em 3em;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 0.5ex;
+        }
+    </style>
 </head>
 
 <body>
 
     <h1>Handbuch</h1>
 
-    <section>
+    <section class="toc">
         <h2>Inhaltsverzeichnis</h2>
 
         <ul>
             <li><a href="#hilfe001">Kontext-sensitive Hilfe 001</a></li>
             <li><a href="#hilfe002">Kontext-sensitive Hilfe 002</a></li>
         </ul>
-
     </section>
 
     <section>
@@ -31,7 +53,7 @@
     <section>
         <h3><a name="hilfe002">Kontext-sensitive Hilfe 002</a></h3>
 
-        Dies ist ein Beispieltext-sensitive Hilfe für Kontext 002.
+        Dies ist ein Beispieltext für Kontext-sensitive Hilfe 002.
     </section>
 </body>
 
