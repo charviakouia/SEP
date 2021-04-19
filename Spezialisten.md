@@ -1,6 +1,10 @@
 # Spezialisten
 
-* _LaTeX_:
-* _RSA_:
-* _git_: León
-
+| Themengebiet | Spezialist u. Ansprechpartner |
+|--------------|-------------------------------|
+| **git**      | León                          |
+| **LaTeX**    | Ivan                          |
+| **RSA**      | Mohamad                       |
+| **SQL**      | Jonas                         |
+| **Selenium** | Sergej                        |
+ 
