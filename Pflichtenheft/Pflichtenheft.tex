@@ -44,7 +44,6 @@
 \section{Einleitung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 Aufbauend auf dem Lastenheft von Christian Bachmaier und Armin Größlinger für ein Bibliothekssystem steckt unser Team, bestehend aus Sergei Pravdin, Ivan Charviakou, León Liehr, Mohamad Najjar und Jonas Picker, mit diesem Pflichtenheft den Rahmen der zu erbringenden Leistungen und verwendeten Technologien bei der Bearbeitung des Auftrags ab. Bei dem zu erstellenden System handelt es sich um eine vereinfachte Form eines Bibliotheksverwaltungssystems mit dem der Anwender das mediale Bibliotheksinventar zentral durchsuchen, kategorisieren und die Nutzung verwalten kann. Das fertige Produkt wird über einen Webbrowser bedient und bietet zahlreiche Anpassungsmöglichkeiten. Das restliche Dokument beinhaltet die genauen Spezifikationen der zu implementierenden Funktionalitäten.
-\newpage
 
 \section{Zielbestimmung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
@@ -82,8 +81,6 @@ Bei der Produktinstallation setzt der Betreiber den gewünschten Adressraum sowi
 
 Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien und Nutzern der Bibliothek, Funktionalitäten zum Erwerben und Verwalten von Lizenzen und/oder neuen Medien stehen nicht zur Verfügung. Die Abwicklung oder Verfolgung der Kundenzahlungen für Mitgliedsbeiträge, Medienerwerb o.ä. ist ebenfalls nicht im System integriert. Es besteht keine Möglichkeit, andere Bibliotheksmanagementsysteme oder Literaturenzyklopädien mit dieser Software zu verknüpfen. Das System ist für die klassische Benutzung über einen mit Tastatur, Maus und Bildschirm ausgestatteten PC/Laptop gedacht, mobile Geräte oder barrierefreie Benutzung werden begrenzt bis gar nicht unterstützt.
 
-\newpage
-
 \section{Produkteinsatz} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Sergei Pravdin}
 \subsection{Anwendungsbereich}
@@ -100,7 +97,6 @@ Angemeldete Benutzer haben nicht nur einen Zugriff zu der Kataloge und zum Suche
 Falls sich das System in keinem geschlossenen Modus befindet, haben anonyme Benutzer einen Zugriff zur Medien-Kataloge, somit können sie die Medien nach Attributen mit dem Suchfeld suchen. Anonyme Benutzer können sich registrieren oder anmelden, falls sie ein Konto haben. Eine gültige E-Mail-Adresse wird für eine Registrierung eines Benutzers vorausgesetzt. 
 \subsection{Betriebsbedingungen}
 Das System ist eingesetzt und von einem Administrator eingestellt. Das System ist kontinuierlich erreichbar. Die Erreichbarkeit wird von einem Webserver, einer Verbindung mit einer Netz und einer Datenbank sichergestellt, die von einem Betreiber bereitgestellt werden. Die Aufsicht und regelmäßige Backups des Systems von den Administratoren ist empfehlenswert. Bei Wartungen und Updaten ist das System nicht erreichbar, deshalb ist es empfohlen entsprechende Meldungen über eine eingeplante Wartung von einem Administrator den Benutzern im Voraus zu schicken. Bei technischen Fehlern und Bugs sollen Benutzer einen Administrator kontaktieren.
-\newpage
 
 \section{Produktumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
@@ -137,98 +133,91 @@ Die notwendigen Mensch-Maschine Schnittstellen zum Benutzen der Anwendung über 
 Der Server muss über notwendige Mensch-Maschine Schnittstellen zur initialen Installation der Anwendung und ihrer Softwareabhängigkeiten verfügen. Auch benötigt er eine konstante Anbindung an das (Intra- und) Internet, um Klientenanfragen beantworten, den E-Mail-Server kontaktieren und Datenbankanfragen absetzen zu können. Die Datenbank kann sich auf dem gleichen Gerät wie der Server, seperat davon im Netzwerk oder geographisch getrennt 'im Internet' befinden. Sie muss jedoch vom Server aus über einen Hostnamen ansteuerbar sein, je nach Realisierung ist dazu ein VPN-Tunnel notwendig. 
 \end{itemize}
 
-\newpage
-
 \section{Produktfunktionen} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Ivan Charviakou}
 
 In der folgenden Aufführung unterscheidet man zwischen Administratoren, Bibliothekmitarbeitern, registrierten Nutzern, angemeldeten Nutzern, und anonymen Nutzern.
 Hierbei sind alle angemeldeten Nutzer zwangsweise auch registrierte Nutzer. Trotzdem kann ein registrierter Nutzer vor einer Authentifikation anonymer Nutzer sein.
 Ferner ist die Unterscheidung zwischen einem Administrator und Schaltermitarbeiter nur dann zu treffen, wenn die Rolle des Schaltermitarbeiters optional umgesetzt wird.
-Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermitarbeiter zugeordnet sind, dem Administrator zuzuordnen.
+Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermitarbeiter zugeordnet sind, dem Administrator zuzuordnen. \vspace{0.5em}
 
 Die oben genannten Rollen stehen außerdem in einer hierarchischen Beziehung zueinander.
 Beispielsweise besitzt ein angemeldeter Nutzer neben den für ihn aufgelisteten Funktionalitäten auch noch alle Funktionalitäten, die einem anonymen Nutzer zustehen.
-Durch eine paarweise aufsteigende Verkettung, erhält man somit die folgende Liste: Anonymen Nutzer, angemeldete Nutzer, Bibliothekmitarbeiter, und Administratoren.
+Durch eine paarweise aufsteigende Verkettung, erhält man somit die folgende Liste: Anonyme Nutzer, angemeldete Nutzer, Bibliothekmitarbeiter, und Administratoren. \vspace{0.5em}
 
-Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemeint, wenn nicht anders spezifiziert.
+Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemeint, wenn nicht anders spezifiziert. \vspace{0.5em}
 
-	\subsection{Nutzerverwaltung}
-		\subsubsection{Administrator}
-			\specification{F}{10}{Es ist einstellbar, ob anonyme Nutzer Lesezugriff auf den OPAC haben. }
-			\specification{F}{20}{Es kann ein Regex-Ausdruck angegeben werden, der bei der Registrierung die eingegebenen E-Mail Adressen überprüft. }
-			\specification{F}{30}{Ein Nutzerprofil kann editiert werden. Es lassen sich dadurch alle Nutzerdaten und die Rolle aller Nutzer verändern. 
-				Ausgenommen davon ist die eigene Rolle und jegliche Änderung, die dazu führt, dass es keine Administratoren mehr im System vorhanden sind. 
-				Beim Löschen eines Nutzers wird zuerst überprüft, ob von ihm die Rückgabe eines Exemplars erwartet wird. 
-				In diesem Fall wird eine Bestätigung gefordert und sämtliche Exemplare und leer-gewordene Medien mit gelöscht. }
-			\specification{F}{60}{Es kann mit Angabe von Nutzerattributen nach Nutzern gesucht werden. Es können auch alle Nutzer im System gezeigt werden. }
-			\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden.}
-			\specification{W}{80}{Die Liste von gesperrten Nutzerkonten ist aufrufbar.}
-		\subsubsection{Anonyme Nutzer}
-			\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit Namen, Adresse, und Email-Adresse möglich. 
-				Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse geschickt wurde. }
-			\specification{F}{100}{Es ist möglich, sich mit einer registrierten E-Mail Adresse und Kennwort ins System einzuloggen. Beim Erfolg handelt es sich dann um einen angemeldeten Nutzer. }
-		\subsubsection{Angemeldete Nutzer}
-			\specification{F}{110}{Nach einer erfolgreicher Anmeldung, ist es möglich, sich auszuloggen. Es handelt sich dann um einen anonymen Nutzer. }
-			\specification{F}{120}{Das eigene Profil kann editiert werden. Dabei ist es nicht möglich, das Konto zu löschen, wenn die Rückgabe eines Exemplars erwartet wird.
-				Um das Passwort zurückzusetzen muss der Nutzer dazu einen per E-Mail zugeschickten Link verwenden.
-				Die Verifikation einer neuen E-Mail Adresse erfolgt analog zu der Registrierung. }
-	\subsection{Navigation \& Suche}
-		\subsubsection{Alle Nutzer}
-			\specification{F}{160}{Es ist möglich, mit Texteingabe nach einer Medien-Kategorie zu suchen. }
-			\specification{F}{170}{Es ist möglich, durch eine Baum-Darstellung aller Kategorien im System zu navigieren. Durch Auswahl einer Kategorie, ist eine Liste von allen darin enthaltenen Medien aufrufbar. }
-			\specification{F}{180}{Mit Eingabe von Kategorie und jeweiligen Attributen kann eine Suche durchgeführt werden. }
-			\specification{F}{190}{Zu einem Medium ist die Liste aller Exemplaren aufrufbar. }
-			\specification{F}{210}{Die Seite mit Kontaktinformation bzw. Impressum ist aufrufbar. }
-			\specification{W}{230}{Es kann für eine Tabelle eingestellt werden, wie viele Datensätze pro Pagination-Seite angezeigt werden. }
-	\subsection{Ausleihe \& Rückgabe}
-		\subsubsection{Administrator}
-			\specification{F}{240}{Der Zeitabstand zwischen dem automatischen Versenden einer Email-Mahnung und der Rückgabefrist für einen beliebigen Exemplar ist setzbar.
-				Dieser Wert gilt dann global für alle neue Ausleihvorgänge. Falls für einen Vorgang die Zeit bis zur Rückgabefrist kürzer ist als der gegebene Wert, wird keine Email-Mahnung versendet. }
-			\specification{F}{250}{Der Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator bei der Abholung ist setzbar.
-				In dieser Zeit ist das Exemplar zur Abholung markiert. Zu beachten ist, dass das ausgewählte Exemplar nach Überschreiten dieser Zeit wieder allen Nutzer zu Verfügung steht. }
-			\specification{F}{260}{Die Rückgabefrist für ist für alle Ausleihvorgänge einzeln setzbar. Dabei darf die Frist nicht in der Vergangenheit liegen. }
-			\specification{F}{270}{Die maximale Ausleihdauer ist global, für einen bestimmten Medium, oder für einen bestimmten Nutzer setzbar.
-				Wenn bei einem Ausleihvorgang mehrere Werte vorhanden sind, wird zuerst der Nutzerwert, danach der Mediumwert, und als letztes der globale Wert beachtet. }
-			\specification{F}{280}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer die Rückgabefrist das gegebene Medium um die gegebene Zeitdauer überschritten hat, ist abrufbar. }
-			\specification{W}{290}{Die maximal Reservierungsdauer ist setzbar. Dies bezeichnet die Zeitdauer, in der ein zuvor nicht-verfügbares Exemplar bei der Wiederverfügbarkeit zur Abholung markiert ist. 
-				Insbesondere ist diese Statusmarkierung nur den Nutzern sichtbar, die vor der Wiederverfügbarkeit das Exemplar reserviert haben. 
-				Wenn diese Zeit abläuft, ohne dass das gegebene Exemplar im System als ausgeliehen markiert wurde, steht es sofort wieder anderen Nutzern zu Verfügung. }
-		\subsubsection{Bibliothekmitarbeiter}
-			\specification{F}{300}{Eine Liste von Exemplaren und Nutzer-E-Mails, für die der angegebene Nutzer das gegebene Exemplar zur Abholung markiert hat, ist abrufbar. 
-				Dabei wird ein reserviertes Exemplar mehrfach für jeden Reservierenden angezeigt. }
-			\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann zu einem Zeitpunkt ausgeliehen werden, von dem die Ausleihdauer berechnet wird.
-				Dadurch ist das Exemplar nicht mehr zur Abholung markiert und steht während der Ausleihdauer anderen Nutzern nicht mehr zu Verfügung. }
-			\specification{F}{320}{Ein Exemplar kann zurückgegeben werden, wodurch das Exemplar anderen Nutzern wieder zu Verfügung steht. }
-			\specification{F}{321}{Ein Exemplar kann direkt ausgeliehen werden, ohne vorher vom Ausleihenden zur Abholung markiert gewesen sein. }
-			\specification{F}{322}{Sämtliche Abholungsmarkierungen und Reservierungen können storniert werden. Darüber werden die betroffenen Nutzer per E-Mail benachrichtigt. }
-		\subsubsection{Angemeldete Nutzer}
-			\specification{F}{330}{Ein Exemplar kann zu einem Zeitpunkt zur Abholung markiert werden. (\hyperlink{spec:F:250}{Siehe /F250/}) }
-			\specification{W}{340}{Wenn ein Exemplar nicht vorhanden ist, kann es reserviert werden.
-				Dadurch wird der Nutzer zu einer Warteliste von Nutzern hinzugefügt, die jeweils per E-Mail benachrichtigt werden, sobald das Exemplar wieder verfügbar ist. (\hyperlink{spec:F:290}{Siehe /F290/}) }
-			\specification{W}{350}{Eine Reservierung für ein Exemplar kann aufgehoben werden. Dadurch wird der Nutzer aus der Warteliste zu diesem Exemplar entfernt. }
-	\subsection{Katalogführung}
-		\subsubsection{Administrator}
-			\specification{F}{380}{Es kann ein Mediumsschema definiert und geloscht werden. Dabei wird der Attributsatz eines Mediums, der nach diesem Mediumsschema erzeugt wird, festgelegt. 
-				Vor dem Löschen eines Schemas wird geprüft, ob Medien, die dem Mediumsschema folgen, existieren. 
-				Falls es solche Medien gibt, wird eine Bestätigung gefordert. Anschließend werden alle nach dem gegebenen Mediumsschema erzeugte Medien und entsprechende Exemplare gelöscht. }
-		\subsubsection{Bibliothekmitarbeiter}
-			\specification{F}{360}{Es kann eine Kategorie editiert werden. Dabei kann sie einer anderen Kategorie als Subkategorie gehören. Dies ist mit einer Tiefe von bis zu zwei Kategorien möglich. 
-				Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert. 
-				Es werden durch Löschen nur abhängige Kategorien entfernt und insbesondere keine darin enthaltene Medien. }
-			\specification{F}{400}{Es kann ein Medium editiert werden. Bei der Erstellung muss ein Mediumsschema gewählt werden und es müssen die entsprechenden Attribute gesetzt werden. 
-				Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft. Falls ein Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. 
-				Anschließend werden alle enthaltene Exemplare mit gelöscht. }
-			\specification{F}{420}{Es kann zu einem Medium ein Exemplar editiert werden. Vor dem Löschen eines Exemplar wird auf aktuelle Ausleihvorgänge geprüft.
-				Falls das Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. Anschließend wird das Exemplar gelöscht. }
-			\specification{W}{440}{Eine Kategorieverkettung von unbegrenzter Länge ist möglich. }
-	\subsection{Weitere Personalisierungen}
-		\subsubsection{Administrator}
-			\specification{F}{450}{Die Name der Einrichtung ist setzbar. }
-			\specification{F}{460}{Das Logo der Einrichtung kann hochgeladen werden. }
-			\specification{F}{470}{Das Farbenschema, bestehend aus zwei Farben, kann eingestellt werden. }
-			\specification{F}{480}{Kontaktinformationen, das Impressum, und die Datenschutzerklärung sind editierbar. }
-\newpage
+\subsection{Anonymer Nutzer}
+	\subsubsection{Nutzerverwaltung}
+		\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit Namen, Adresse, und Email-Adresse möglich. 
+			Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse versendet wurde. }
+		\specification{F}{100}{Es ist möglich, sich mit einer registrierten E-Mail Adresse und Kennwort ins System einzuloggen. Beim Erfolg handelt es sich dann um einen angemeldeten Nutzer. }
+		\specification{F}{101}{Es kann mit einer gültigen E-Mail Adresse eine Passwortzurücksetzung angefordert werden. 
+			Dazu wird ein Link an die angegebene E-Mail Adresse versendet, wenn sie im System registriert ist. Ansonsten verhält sich die Nutzeroberfläche in beiden Fällen, um die Gültigkeit der Adresse nicht preiszugeben.
+			Durch Zugriff auf diesen Link kann der Nutzer die Passwortzurücksetzung für das angegebene Nutzerkonto abschließen. }
+	\subsubsection{Navigation \& Suche}
+		\specification{F}{160}{Es ist möglich, mit Texteingabe nach einer Medien-Kategorie zu suchen. }
+		\specification{F}{170}{Es ist möglich, durch eine Baum-Darstellung aller Kategorien im System zu navigieren. Durch Auswahl einer Kategorie, ist eine Liste von allen darin enthaltenen Medien aufrufbar. }
+		\specification{F}{180}{Mit Eingabe von einer Kategorie und Werten für die jeweiligen Medienattribute kann eine Suche durchgeführt werden. }
+		\specification{F}{190}{Zu einem Medium ist die Liste aller Exemplaren aufrufbar. }
+		\specification{F}{210}{Die Seite mit Kontaktinformation, Impressum, und Datenschutzerklärung ist aufrufbar. }
+\subsection{Angemeldeter Nutzer}
+	\subsubsection{Nutzerverwaltung}
+		\specification{F}{110}{Nach einer erfolgreicher Anmeldung, ist es möglich, sich auszuloggen. Es handelt sich dann um einen anonymen Nutzer. }
+		\specification{F}{120}{Das eigene Profil kann editiert werden. Dabei ist es nicht möglich, das Konto zu löschen, wenn die Rückgabe eines Exemplars erwartet wird.
+			Die Verifikation einer neuen E-Mail Adresse erfolgt analog zu der Registrierung. (\hyperlink{spec:F:90}{Siehe /F90/}) }
+	\subsubsection{Ausleihe \& Rückgabe}
+		\specification{F}{330}{Ein Exemplar kann zu einem Zeitpunkt zur Abholung markiert werden. (\hyperlink{spec:F:250}{Siehe /F250/}) }
+\subsection{Bibliothekmitarbeiter}
+	\subsubsection{Ausleihe \& Rückgabe}
+		\specification{F}{300}{Eine Liste von Exemplaren und Nutzer-E-Mails, für die der angegebene Nutzer das gegebene Exemplar zur Abholung markiert hat, ist abrufbar. }
+		\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann zu einem Zeitpunkt ausgeliehen werden, von dem die Ausleihdauer berechnet wird.
+			Dadurch ist das Exemplar nicht mehr zur Abholung markiert und steht während der Ausleihdauer anderen Nutzern nicht mehr zu Verfügung. }
+		\specification{F}{320}{Ein Exemplar kann zurückgegeben werden, wodurch das Exemplar anderen Nutzern wieder zu Verfügung steht. }
+		\specification{F}{321}{Ein Exemplar kann direkt ausgeliehen werden, ohne vorher vom Ausleihenden zur Abholung markiert gewesen sein. }
+		\specification{F}{322}{Eine Abholungsmarkierung kann storniert werden. Darüber werden die betroffenen Nutzer per E-Mail benachrichtigt. }
+	\subsubsection{Katalogführung}
+		\specification{F}{360}{Es kann eine Kategorie editiert werden. Dabei kann sie einer anderen Kategorie als Subkategorie gehören. Dies ist mit einer Tiefe von bis zu zwei Kategorien möglich. 
+			Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert. 
+			Es werden durch Löschen nur abhängige Kategorien entfernt und insbesondere keine darin enthaltene Medien. }
+		\specification{F}{400}{Es kann ein Medium editiert werden. Bei der Erstellung müssen die entsprechenden Attribute gesetzt werden. 
+			Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft. Falls ein zugehöriges Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. 
+			Anschließend werden alle enthaltene Exemplare mit gelöscht. }
+		\specification{F}{420}{Es kann zu einem Medium ein Exemplar editiert werden. Vor dem Löschen eines Exemplar wird auf aktuelle Ausleihvorgänge geprüft.
+			Falls das Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. Anschließend wird das Exemplar gelöscht. }
+		\specification{W}{440}{Eine Kategorieverkettung von unbegrenzter Länge ist möglich. }
+\subsection{Administrator}
+	\subsubsection{Nutzerverwaltung}
+		\specification{F}{10}{Es ist einstellbar, ob anonyme Nutzer Lesezugriff auf den OPAC haben. }
+		\specification{F}{20}{Es kann ein Regex-Ausdruck angegeben werden, der bei der Registrierung die eingegebenen E-Mail Adressen überprüft. }
+		\specification{F}{30}{Ein Nutzerprofil kann editiert werden. Es lassen sich dadurch alle Nutzerdaten und die Rolle aller Nutzer verändern. 
+			Ausgenommen davon ist die eigene Rolle und jegliche Änderung, die dazu führt, dass es keine Administratoren mehr im System vorhanden sind. 
+			Beim Löschen eines Nutzers wird zuerst überprüft, ob von ihm die Rückgabe eines Exemplars erwartet wird. 
+			In diesem Fall wird zuerst eine Bestätigung gefordert. Anschließend werde sämtliche ausgeliehene Exemplare und leer-gewordene Medien mit gelöscht. }
+		\specification{F}{60}{Es kann mit Angabe von Nutzerattributen nach Nutzern gesucht werden. Es können auch alle Nutzer im System angezeigt werden. }
+		\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden. }
+		\specification{W}{80}{Die Liste von gesperrten Nutzerkonten ist aufrufbar. }
+	\subsubsection{Ausleihe \& Rückgabe}
+		\specification{F}{240}{Der Zeitabstand zwischen dem automatischen Versenden einer Email-Mahnung und der Rückgabefrist für einen beliebigen Exemplar ist setzbar.
+			Dieser Wert gilt dann global für alle neue Ausleihvorgänge. Falls für einen Vorgang die Zeit bis zur Rückgabefrist kürzer ist als der gegebene Wert, wird keine Email-Mahnung versendet. }
+		\specification{F}{250}{Der Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator bei der Abholung ist setzbar.
+			In dieser Zeit ist das Exemplar zur Abholung markiert. Zu beachten ist, dass das ausgewählte Exemplar nach Überschreiten dieser Zeit wieder allen Nutzer zu Verfügung steht. }
+		\specification{F}{260}{Die Rückgabefrist für ist für alle Ausleihvorgänge einzeln setzbar. Dabei darf die Frist nicht in der Vergangenheit liegen. }
+		\specification{F}{270}{Die maximale Ausleihdauer ist global, für einen bestimmten Medium, oder für einen bestimmten Nutzer setzbar.
+			Wenn bei einem Ausleihvorgang mehrere Werte vorhanden sind, wird zuerst der Nutzerwert, danach der Mediumwert, und als letztes der globale Wert beachtet. }
+		\specification{F}{280}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer die Rückgabefrist das gegebene Medium um die gegebene Zeitdauer überschritten hat, ist abrufbar. }
+	\subsubsection{Katalogführung}
+		\specification{F}{380}{Der Attributsatz von allen Medien kann editiert werden. Wird ein neuer Attribut definiert, so ist der entsprechende Attributwert für alle Medien zuerst leer. Ein Attribut kann außerdem als mehrwertig markiert werden.
+			Wird ein Attribut gelöscht, so werden alle Medien nach den restlichen Attributen zusammengefasst. Es werden nämlich alle Duplikatinstanzen gelöscht und alle zugehörige Exemplare dem verbleibenden Mediuminstanz zugeordnet. 
+			Falls es in Folge einer Attributlöschung eine solche Zusammenfassung stattfinden muss, wird zuerst eine Bestätigung für diese Löschoperation gefordert. 
+			Es wird somit garantiert, dass die Gesamtheit der Attributsatzwerten unter allen Medien immer eindeutig ist. 
+			Per Default besteht der Attributsatz aus folgenden Attributen: Index, Typ, Titel, Version, Autoren (mehrwertig), Erscheinungsdatum, und Herausgeber. 
+			Die Attribute selber haben keinen Typ und es muss immer mindestens einen Attribut in dem Attributsatz vorhanden sein. }
+	\subsubsection{Weitere Personalisierungen}
+		\specification{F}{450}{Die Name der Einrichtung ist setzbar. }
+		\specification{F}{460}{Das Logo der Einrichtung kann hochgeladen werden. }
+		\specification{F}{470}{Das Farbenschema, bestehend aus zwei Farben, kann eingestellt werden. }
+		\specification{F}{480}{Kontaktinformationen, das Impressum, und die Datenschutzerklärung sind editierbar. }
 
 \section{Produktdaten} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
@@ -331,8 +320,7 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 	\item Tiefe(bis auf 2 kann aber ändbar sein)
 	\item Beschreibung
 
-	\end{itemize}	
-\newpage
+	\end{itemize}
 
 \section{Produktleistung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
@@ -395,7 +383,6 @@ Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
 	    
 \paragraph{/LW170/ \label{LW170} Farbschema}	    	       
 	       Mit der Farbwahl ist es möglich, die Darstellung der betreibenden Einrichtung durch das Erscheinungsbild der Webanwendung anzupassen.
-\newpage
 
 \section{Benutzeroberfläche} %-------------------------------------------------------------------------------------------------
 \sectionauthor{León Liehr}
@@ -437,7 +424,6 @@ In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angem
 \end{figure}
 
 \restoregeometry
-\newpage
 
 \section{Qualitätsanforderungen} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
@@ -476,8 +462,6 @@ Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugew
 sollte das System in gewissen Grenzen flexibel genug sein.
 \item Um Manipulationen mit bekannten Angriffsmethoden zu verhindern, werden bestimmte Maßnahmen getroffen.
 \end{itemize}
-
-\newpage
 
 \section{Testing} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Sergei Pravdin}
@@ -570,8 +554,6 @@ Das Bibliothekssystem ist erfolgreich installiert, somit sind ein Administrator,
 		\subsubsection{Alle Nutzer}
 			\specification{TW}{400}{Der Benutzer befindet sich auf irgendwelcher Seite des Systems und klickt auf Button "Sprache wechseln". 
 				Dann wird er eine englische Sprache ausgewählt und die Seite wird auf der englischen Sprache wiedergeladen. (/W450/) }
-
-\newpage
 
 \section{Entwicklungsumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
@@ -672,8 +654,6 @@ Spezifikation der virtualisierten Datenbank (siehe Entwicklungsschnittstellen) b
 \item \begin{flushleft} Virtualisierte Datenbank der Uni Passau, Hostname: bueno.fim.uni-passau.de \end{flushleft}
 \end{itemize}
 
-\newpage
-
 \section{Glossar} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 
@@ -733,7 +713,7 @@ Das 8-bit Unicode Transformation Format wird zur Kodierung von nahezu allen welt
 \begin{flushleft}
 Hierunter verstehen wir die Aufteilung von abgefrageten Listen in kleinere Abschnitte, um die Darstellung zu erleichtern und lange Ladezeiten bei großen Ergebnissen zu vermeiden.
 \end{flushleft}
-\item Regex-Ausdruck
+\item Regex-Ausdruck (5.4.1)
 \begin{flushleft}
 Dies bezeichnet einen regulären Ausdruck, der eine Sprache von Wörtern definiert. Eine solche reguläre Sprache hat u.a. die Eigenschaft, dass es sich berechnen lässt, ob ein gegebenes Wort in dieser Sprache liegt.
 In den meisten objekt-orientierten Sprachen sind solche Ausdrücke und Überprüfungen unterstützt.
