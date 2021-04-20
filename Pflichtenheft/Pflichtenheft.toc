@@ -1,0 +1,99 @@
+\babel@toc {ngerman}{}
+\contentsline {section}{\numberline {1}Einleitung}{4}{section.1}%
+\contentsline {section}{\numberline {2}Zielbestimmung}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Musskriterien}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Wunschkriterien}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Abgrenzungskriterien}{6}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Produkteinsatz}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Anwendungsbereich}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Zielgruppen}{7}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Administrator}{7}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Personalarbeiter}{7}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}Angemeldete Benutzer}{7}{subsubsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.4}Anonyme Benutzer}{7}{subsubsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.3}Betriebsbedingungen}{8}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Produktumgebung}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Software}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Hardware}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Orgware und Schnittstellen}{10}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Produktfunktionen}{11}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Nutzerverwaltung}{11}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Administrator}{11}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Anonyme Nutzer}{11}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}Registrierte Nutzer}{11}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}Angemeldete Nutzer}{12}{subsubsection.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.5}Alle Nutzer}{12}{subsubsection.5.1.5}%
+\contentsline {subsection}{\numberline {5.2}Navigation \& Suche}{12}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Alle Nutzer}{12}{subsubsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.3}Ausleihe \& Rückgabe}{12}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Administrator}{12}{subsubsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.2}Schaltermitarbeiter}{13}{subsubsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.3}Registrierte Nutzer}{13}{subsubsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.4}Katalogführung}{14}{subsection.5.4}%
+\contentsline {subsubsection}{\numberline {5.4.1}Administrator}{14}{subsubsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.5}Weitere Personalisierungen}{14}{subsection.5.5}%
+\contentsline {subsubsection}{\numberline {5.5.1}Administrator}{14}{subsubsection.5.5.1}%
+\contentsline {subsubsection}{\numberline {5.5.2}Alle Nutzer}{14}{subsubsection.5.5.2}%
+\contentsline {section}{\numberline {6}Produktdaten}{15}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Benutzerdaten}{15}{subsection.6.1}%
+\contentsline {paragraph}{/D010/ Benutzerdaten}{15}{section*.2}%
+\contentsline {subsection}{\numberline {6.2}Mediumsdaten}{15}{subsection.6.2}%
+\contentsline {paragraph}{/D020/ Mediumsdaten}{15}{section*.3}%
+\contentsline {subsection}{\numberline {6.3}Exemplar}{15}{subsection.6.3}%
+\contentsline {paragraph}{/D030/ Exemplar}{15}{section*.4}%
+\contentsline {subsection}{\numberline {6.4}Ausleihe}{16}{subsection.6.4}%
+\contentsline {paragraph}{/D040/ Ausleihe}{16}{section*.5}%
+\contentsline {subsection}{\numberline {6.5}Warteliste}{16}{subsection.6.5}%
+\contentsline {paragraph}{/D050/ Warteliste}{16}{section*.6}%
+\contentsline {subsection}{\numberline {6.6}Anwendungs- und Einrichtungsdaten}{16}{subsection.6.6}%
+\contentsline {paragraph}{/D060/ Anwendungs- und Einrichtungsdaten}{16}{section*.7}%
+\contentsline {subsection}{\numberline {6.7}Kategorie}{17}{subsection.6.7}%
+\contentsline {paragraph}{/D070/ Kstegorie}{17}{section*.8}%
+\contentsline {section}{\numberline {7}Produktleistung}{18}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Benutzerfreundlichkeit}{18}{subsection.7.1}%
+\contentsline {paragraph}{/L010/ Bedienbarkeit}{18}{section*.9}%
+\contentsline {paragraph}{/L020/ Zeichenkodierung}{18}{section*.10}%
+\contentsline {paragraph}{/L030/ Online-Hilfe}{18}{section*.11}%
+\contentsline {paragraph}{/L040/ Installation}{18}{section*.12}%
+\contentsline {paragraph}{/L050/ Eingabe}{18}{section*.13}%
+\contentsline {paragraph}{/L060/ Tabellen}{18}{section*.14}%
+\contentsline {subsection}{\numberline {7.2}Sicherheit}{18}{subsection.7.2}%
+\contentsline {paragraph}{/L070/ Datenspeicherung}{18}{section*.15}%
+\contentsline {paragraph}{/L080/ Datenlöschen}{18}{section*.16}%
+\contentsline {subsubsection}{\numberline {7.2.1}Datenschutz}{18}{subsubsection.7.2.1}%
+\contentsline {paragraph}{/L090/ Personenbezogenen Daten}{18}{section*.17}%
+\contentsline {paragraph}{/L100/ Transparenz}{18}{section*.18}%
+\contentsline {paragraph}{/L110/ Passwörter}{19}{section*.19}%
+\contentsline {paragraph}{/L120/ Schutz gegen Manipulationen}{19}{section*.20}%
+\contentsline {paragraph}{/L130/ Benutzerdaten}{19}{section*.21}%
+\contentsline {paragraph}{/L140/ Schutz gegen Angriffen}{19}{section*.22}%
+\contentsline {subsection}{\numberline {7.3}Skalierbarkeit und Performance}{19}{subsection.7.3}%
+\contentsline {paragraph}{ /L150/ Last}{19}{section*.23}%
+\contentsline {subsection}{\numberline {7.4}Wunschkriterien}{19}{subsection.7.4}%
+\contentsline {paragraph}{/LW160/ Sprache}{19}{section*.24}%
+\contentsline {paragraph}{/LW170/ Farbschema}{19}{section*.25}%
+\contentsline {section}{\numberline {8}Benutzeroberfläche}{20}{section.8}%
+\contentsline {section}{\numberline {9}Qualitätsanforderungen}{25}{section.9}%
+\contentsline {section}{\numberline {10}Testing}{26}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Nutzerverwaltung}{26}{subsection.10.1}%
+\contentsline {subsubsection}{\numberline {10.1.1}Administrator}{26}{subsubsection.10.1.1}%
+\contentsline {subsubsection}{\numberline {10.1.2}Anonyme Nutzer}{26}{subsubsection.10.1.2}%
+\contentsline {subsubsection}{\numberline {10.1.3}Registrierte Nutzer}{27}{subsubsection.10.1.3}%
+\contentsline {subsubsection}{\numberline {10.1.4}Angemeldete Nutzer}{27}{subsubsection.10.1.4}%
+\contentsline {subsubsection}{\numberline {10.1.5}Alle Nutzer}{27}{subsubsection.10.1.5}%
+\contentsline {subsection}{\numberline {10.2}Navigation \& Suche}{27}{subsection.10.2}%
+\contentsline {subsubsection}{\numberline {10.2.1}Alle Nutzer}{27}{subsubsection.10.2.1}%
+\contentsline {subsection}{\numberline {10.3}Ausleihe \& Rückgabe}{28}{subsection.10.3}%
+\contentsline {subsubsection}{\numberline {10.3.1}Administrator}{28}{subsubsection.10.3.1}%
+\contentsline {subsubsection}{\numberline {10.3.2}Personalarbeiter}{28}{subsubsection.10.3.2}%
+\contentsline {subsubsection}{\numberline {10.3.3}Registrierte Nutzer}{28}{subsubsection.10.3.3}%
+\contentsline {subsection}{\numberline {10.4}Katalogführung}{29}{subsection.10.4}%
+\contentsline {subsubsection}{\numberline {10.4.1}Administrator}{29}{subsubsection.10.4.1}%
+\contentsline {subsection}{\numberline {10.5}Weitere Personalisierungen}{29}{subsection.10.5}%
+\contentsline {subsubsection}{\numberline {10.5.1}Administrator}{29}{subsubsection.10.5.1}%
+\contentsline {subsubsection}{\numberline {10.5.2}Alle Nutzer}{30}{subsubsection.10.5.2}%
+\contentsline {section}{\numberline {11}Entwicklungsumgebung}{31}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Software}{31}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Hardware}{33}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Entwicklungsschnittstellen}{33}{subsection.11.3}%
+\contentsline {section}{\numberline {12}Glossar}{34}{section.12}%
