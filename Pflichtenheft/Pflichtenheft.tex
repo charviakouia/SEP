@@ -138,19 +138,19 @@ Der Server muss über notwendige Mensch-Maschine Schnittstellen zur initialen In
 
 In der folgenden Aufführung unterscheidet man zwischen Administratoren, Bibliothekmitarbeitern, registrierten Nutzern, angemeldeten Nutzern, und anonymen Nutzern.
 Hierbei sind alle angemeldeten Nutzer zwangsweise auch registrierte Nutzer. Trotzdem kann ein registrierter Nutzer vor einer Authentifikation anonymer Nutzer sein.
-Ferner ist die Unterscheidung zwischen einem Administrator und Schaltermitarbeiter nur dann zu treffen, wenn die Rolle des Schaltermitarbeiters optional umgesetzt wird.
-Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermitarbeiter zugeordnet sind, dem Administrator zuzuordnen. \vspace{0.5em}
+Ferner ist die Unterscheidung zwischen einem Administrator und Bibliotheksmitarbeiter nur dann zu treffen, wenn die Rolle des Schaltermitarbeiters optional umgesetzt wird.
+Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Bibliotheksmitarbeiter zugeordnet sind, dem Administrator zuzuordnen. \vspace{0.5em}
 
 Die oben genannten Rollen stehen außerdem in einer hierarchischen Beziehung zueinander.
 Beispielsweise besitzt ein angemeldeter Nutzer neben den für ihn aufgelisteten Funktionalitäten auch noch alle Funktionalitäten, die einem anonymen Nutzer zustehen.
-Durch eine paarweise aufsteigende Verkettung, erhält man somit die folgende Liste: Anonyme Nutzer, angemeldete Nutzer, Bibliothekmitarbeiter, und Administratoren. \vspace{0.5em}
+Durch eine paarweise aufsteigende Verkettung, erhält man somit die folgende Liste: Anonyme Nutzer, angemeldete Nutzer, Bibliotheksmitarbeiter, und Administratoren. \vspace{0.5em}
 
 Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemeint, wenn nicht anders spezifiziert. \vspace{0.5em}
 
 \subsection{Anonymer Nutzer}
 	\subsubsection{Nutzerverwaltung}
-		\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit Namen, Adresse, und Email-Adresse möglich. 
-			Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse versendet wurde. }
+		\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit einem Namen, einer Adresse, und einer gültigen E-Mail Adresse möglich. 
+			Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse versendet wurde. Ohne diesen Schritt ist das Konto vorerst zum Ausleihen gesperrt. }
 		\specification{F}{100}{Es ist möglich, sich mit einer registrierten E-Mail Adresse und Kennwort ins System einzuloggen. Beim Erfolg handelt es sich dann um einen angemeldeten Nutzer. }
 		\specification{F}{101}{Es kann mit einer gültigen E-Mail Adresse eine Passwortzurücksetzung angefordert werden. 
 			Dazu wird ein Link an die angegebene E-Mail Adresse versendet, wenn sie im System registriert ist. Ansonsten verhält sich die Nutzeroberfläche in beiden Fällen, um die Gültigkeit der Adresse nicht preiszugeben.
@@ -161,14 +161,17 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 		\specification{F}{180}{Mit Eingabe von einer Kategorie und Werten für die jeweiligen Medienattribute kann eine Suche durchgeführt werden. }
 		\specification{F}{190}{Zu einem Medium ist die Liste aller Exemplaren aufrufbar. }
 		\specification{F}{210}{Die Seite mit Kontaktinformation, Impressum, und Datenschutzerklärung ist aufrufbar. }
+		\specification{W}{230}{Es kann für eine Tabelle eingestellt werden, wie viele Datensätze pro Pagination-Seite angezeigt werden. }
 \subsection{Angemeldeter Nutzer}
 	\subsubsection{Nutzerverwaltung}
 		\specification{F}{110}{Nach einer erfolgreicher Anmeldung, ist es möglich, sich auszuloggen. Es handelt sich dann um einen anonymen Nutzer. }
 		\specification{F}{120}{Das eigene Profil kann editiert werden. Dabei ist es nicht möglich, das Konto zu löschen, wenn die Rückgabe eines Exemplars erwartet wird.
 			Die Verifikation einer neuen E-Mail Adresse erfolgt analog zu der Registrierung. (\hyperlink{spec:F:90}{Siehe /F90/}) }
+	\subsubsection{Navigation \& Suche}
+		\specification{F}{500}{Es kann eine Liste von ausgeliehenen und zur Abholung markierten Exemplaren aufgerufen werden. Die Rückgabefrist bzw. die Abholungsfrist wird jeweils mit angegeben. }
 	\subsubsection{Ausleihe \& Rückgabe}
-		\specification{F}{330}{Ein Exemplar kann zu einem Zeitpunkt zur Abholung markiert werden. (\hyperlink{spec:F:250}{Siehe /F250/}) }
-\subsection{Bibliothekmitarbeiter}
+		\specification{F}{330}{Ein Exemplar kann zur Abholung markiert werden. (\hyperlink{spec:F:250}{Siehe /F250/}) }
+\subsection{Bibliotheksmitarbeiter}
 	\subsubsection{Ausleihe \& Rückgabe}
 		\specification{F}{300}{Eine Liste von Exemplaren und Nutzer-E-Mails, für die der angegebene Nutzer das gegebene Exemplar zur Abholung markiert hat, ist abrufbar. }
 		\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann zu einem Zeitpunkt ausgeliehen werden, von dem die Ausleihdauer berechnet wird.
@@ -189,7 +192,8 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 \subsection{Administrator}
 	\subsubsection{Nutzerverwaltung}
 		\specification{F}{10}{Es ist einstellbar, ob anonyme Nutzer Lesezugriff auf den OPAC haben. }
-		\specification{F}{20}{Es kann ein Regex-Ausdruck angegeben werden, der bei der Registrierung die eingegebenen E-Mail Adressen überprüft. }
+		\specification{F}{20}{Es ist einstellbar, ob neue Registrierungen im System erlaubt sind. Falls sie erlaubt sind, kann ein Regex-Ausdruck angegeben werden, der bei der Registrierung die eingegebenen E-Mail Adressen überprüft. }
+		\specification{F}{21}{Es kann eingestellt werden, ob die Konten von neu registrierten Nutzern zum Ausleihen freigeschaltet sind. Bereits bestehende Nutzerkonten sind dabei nicht betroffen. }
 		\specification{F}{30}{Ein Nutzerprofil kann editiert werden. Es lassen sich dadurch alle Nutzerdaten und die Rolle aller Nutzer verändern. 
 			Ausgenommen davon ist die eigene Rolle und jegliche Änderung, die dazu führt, dass es keine Administratoren mehr im System vorhanden sind. 
 			Beim Löschen eines Nutzers wird zuerst überprüft, ob von ihm die Rückgabe eines Exemplars erwartet wird. 
@@ -207,12 +211,13 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 			Wenn bei einem Ausleihvorgang mehrere Werte vorhanden sind, wird zuerst der Nutzerwert, danach der Mediumwert, und als letztes der globale Wert beachtet. }
 		\specification{F}{280}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer die Rückgabefrist das gegebene Medium um die gegebene Zeitdauer überschritten hat, ist abrufbar. }
 	\subsubsection{Katalogführung}
-		\specification{F}{380}{Der Attributsatz von allen Medien kann editiert werden. Wird ein neuer Attribut definiert, so ist der entsprechende Attributwert für alle Medien zuerst leer. Ein Attribut kann außerdem als mehrwertig markiert werden.
+		\specification{F}{380}{Der Attributsatz von allen Medien kann editiert werden. Wird ein neuer Attribut definiert, so ist der entsprechende Attributwert für alle Medien zuerst leer. 
+			Ein Attribut kann zusätzlich als mehrwertig oder als Verweis auf ein anderes Medium markiert werden. 
 			Wird ein Attribut gelöscht, so werden alle Medien nach den restlichen Attributen zusammengefasst. Es werden nämlich alle Duplikatinstanzen gelöscht und alle zugehörige Exemplare dem verbleibenden Mediuminstanz zugeordnet. 
-			Falls es in Folge einer Attributlöschung eine solche Zusammenfassung stattfinden muss, wird zuerst eine Bestätigung für diese Löschoperation gefordert. 
+			Falls es in Folge einer Attributlöschung eine solche Zusammenfassung stattfindet, wird zuerst eine Bestätigung für diese Löschoperation gefordert. 
 			Es wird somit garantiert, dass die Gesamtheit der Attributsatzwerten unter allen Medien immer eindeutig ist. 
-			Per Default besteht der Attributsatz aus folgenden Attributen: Index, Typ, Titel, Version, Autoren (mehrwertig), Erscheinungsdatum, und Herausgeber. 
-			Die Attribute selber haben keinen Typ und es muss immer mindestens einen Attribut in dem Attributsatz vorhanden sein. }
+			Per Default besteht der Attributsatz aus folgenden Attributen: Index, Typ, Titel, Version, Autoren (mehrwertig), Erscheinungsdatum, elektronische Version (Verweis), und Herausgeber. 
+			Die Attribute selber verlangen keinen Typ und es muss immer mindestens einen Attribut in dem Attributsatz vorhanden sein. }
 	\subsubsection{Weitere Personalisierungen}
 		\specification{F}{450}{Die Name der Einrichtung ist setzbar. }
 		\specification{F}{460}{Das Logo der Einrichtung kann hochgeladen werden. }
