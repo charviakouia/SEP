@@ -6,6 +6,7 @@
 \usepackage{indentfirst}
 \usepackage{hyperref}
 \usepackage{geometry}
+\usepackage{changepage}
 
 \graphicspath{ {./images/} }
 
@@ -47,39 +48,26 @@ Aufbauend auf dem Lastenheft von Christian Bachmaier und Armin Größlinger für
 
 \section{Zielbestimmung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
-
 \subsection{Musskriterien}
-Bei der Produktinstallation setzt der Betreiber den gewünschten Adressraum sowie die vom System verwendete Datenbank und den E-Mail-Server. Im laufenden System zählt der Betreiber zu den Administratoren. Technische Maßnahmen sorgen dafür, dass jegliche sensible Information sicher übertragen sowie gespeichert wird und kein unbefugter Zugriff auf zugangsbeschränkte Bereiche der Anwendung durch Dritte erfolgt. Eine unterstützende Bedienanleitung steht für jeden nicht offensichtlichen Aspekt der Anwendung online zur Verfügung.
-
+Bei der Produktinstallation auf dem Server konfiguriert der Betreiber den Webspace, spezifiziert den anzusteuernden E-Mail-Server und die zur Speicherung verwendete Datenbank. Im laufenden System zählt der Betreiber zu den Administratoren. Technische Maßnahmen sorgen dafür, dass jegliche sensible Information sicher übertragen sowie gespeichert wird und kein unbefugter Zugriff auf zugangsbeschränkte Bereiche der Anwendung durch Dritte erfolgt. Eine unterstützende Bedienungsanleitung steht für jeden nicht offensichtlichen Aspekt der Anwendung online zur Verfügung.
 \begin{flushleft}
-\textbf{Administratoren:} In diesen Status werden authentifizierte Benutzer initial vom Betreiber und danach von anderen Administratoren erhoben, dies kann auch rückgängig gemacht werden. Administratoren sind für die Anwendungskonfiguration zuständig, welche das Setzen der institutionsspezifischen Eigenschaften (Logos, Namen, Impressum, Datenschutzerklärung etc.) sowie Variationen des Look \& Feels beinhalten, außerdem bestimmen sie Registrierungsbedingungen und Zugangsberechtigungen für anonyme Nutzer.  Die Definition von Eigenschaften der vom System verwalteten Medien sowie Festlegen ihrer benutzerdefinierten Kategorien, die hierarchisch (bis Tiefe 2) in Verbindung stehen können, wird den Administratoren zusätzlich zur Bearbeitung der Attributwerte einzelner Medieninstanzen ermöglicht. Verwaltungs- und Übersichtsfunktionen zur Ausleihe und Rückgabe von Medien und den damit verbundenen Fristen werden außerdem bereitgestellt. Administratoren können andere Nutzerkonten editieren und löschen, hierfür steht ihnen eine Suchfunktion zur Verfügung. 
+\textbf{Administratoren:} Der Betreiber ist zunächst der einzige Administrator. Administratoren können authentifizierte Nutzer in den Administratorstatus erheben sowie andere Administratoren degradieren. Administratoren sind für die Anwendungskonfiguration zuständig, welche das Setzen der institutionsspezifischen Eigenschaften (Logos, Namen, Impressum, Datenschutzerklärung etc.) sowie Variationen des Look \& Feels beinhalten. Außerdem bestimmen sie Registrierungsbedingungen und Zugangsberechtigungen für anonyme Nutzer. Ein Administrator kann die Menge der Attribute, welche alle Medien aufweisen, global bestimmen. Auch kann er die Attributwerte der einzelnen Medieninstanzen editieren, sowie Medieninstanzen erstellen, löschen und sie in hierarchische Kategorien (bis Tiefe 2) einteilen. Verwaltungs- und Übersichtsfunktionen zur Ausleihe und Rückgabe von Medien und den damit verbundenen Fristen werden außerdem bereitgestellt. Administratoren können andere Nutzerkonten editieren und löschen, hierfür steht eine Suchfunktion bereit. Die Funktionen der authentifizierten Benutzer (und Bibliotheksmitarbeiter) stehen auch den Administratoren zur Verfügung.
 \end{flushleft}
-
 \begin{flushleft}
-\textbf{Authentifizierte Nutzer:} Nach einer Validierung der E-Mail-Adresse ist ein Nutzer im System registriert und kann sich jederzeit mit seinen Accountdaten anmelden, danach kann diese verändern und er kann sich verfügbare Exemplare von Medien zur Abholung markieren, hierzu steht ihm die im nächsten Paragraph beschriebene Suchfunktion zur Verfügung. Wird das Exemplar innerhalb einer gesetzten Frist abgeholt, gilt es als ausgeliehen und der authentifizierte Nutzer wird per E-Mail automatisch über den Ablauf der Rückgabefrist informiert. Ein angemeldeter Benutzer kann seinen Account selbstständig löschen und sich jederzeit abmelden.
+\textbf{Authentifizierte Nutzer:} Nach einer Validierung der E-Mail-Adresse ist ein Nutzer im System registriert und kann sich jederzeit mit seinen Accountdaten anmelden, danach kann er diese verändern und er kann sich verfügbare Exemplare von Medien zur Abholung markieren, hierzu stehen ihm die im nächsten Paragraph beschriebenen Such- und Browsingfunktionen zur Verfügung. Wird das Exemplar innerhalb einer gesetzten Frist abgeholt, gilt es als ausgeliehen und der authentifizierte Nutzer wird per E-Mail automatisch über den Ablauf der Rückgabefrist informiert. Ein angemeldeter Benutzer kann seinen Account selbstständig löschen (außer er ist der letzte Administrator oder hat noch Ausleihen zurückzugeben) und sich jederzeit abmelden.
 \end{flushleft}
-
 \begin{flushleft}
-\textbf{Anonyme Nutzer:} In der Standartkonfiguration erlaubt das System Besuchern des Webspaces, neben der Registrierungsmöglichkeit, den Zugriff auf eine Suchfunktion sowie das Herunterladen/Lesen öffentlich zugänglicher Medien. Diese Berechtigungen können von Administratoren auf die Registrierungsmöglichkeit reduziert werden. Die Suchfunktion beinhaltet eine graphische Darstellung der gesamten Kategoriehierarchie und die Möglichkeit sowohl nach Medien als auch nach deren Attributen zu suchen und diese Suche nach Kategorien zu filtern. Eine Detailansicht zu gefundenen Medien steht ebenfalls zur Verfügung.
+\textbf{Anonyme Nutzer:} In der Standartkonfiguration erlaubt das System Besuchern des Webspaces, neben der Registrierungsmöglichkeit, den Zugriff auf eine Such- und Browsingfunktion sowie das Herunterladen/Lesen öffentlich zugänglicher Medien. Diese Berechtigungen können von Administratoren auf die Registrierungsmöglichkeit reduziert werden. Die Suchfunktion beinhaltet die Möglichkeit sowohl nach Medien als auch nach deren Attributwerten zu suchen, sowie nach Kategorien zu filtern. Eine Detailansicht zu gefundenen Medien steht ebenfalls zur Verfügung. Um sich einen Überblick über die angebotenen Medien zu verschaffen, lässt sich die Kategoriehierarchie in Baumform anzeigen.
 \end{flushleft}
-
 \subsection{Wunschkriterien}
-
 \begin{flushleft}
-\textbf{Administratoren:} Beim der Zuweisung der Kategorien für Medien ist die Hierarchietiefe unbeschränkt. Zusätzlich besitzen Administratoren die Möglichkeit, einzelnen registrierten Nutzer ohne Administratorberechtigungen die Ausleihberechtigung zu entziehen bzw. zu verleihen. Hierzu gibt es eine gesammelte Ansicht der noch nicht freigeschalteten Accounts.
+\textbf{Administratoren:} Bei der Zuweisung der Kategorien für Medien ist die Hierarchietiefe unbeschränkt. Zusätzlich besitzen Administratoren die Möglichkeit, einzelnen registrierten Nutzer ohne Administratorberechtigungen die Ausleihberechtigung zu entziehen bzw. zu verleihen. Hierzu gibt es eine gesammelte Ansicht der noch nicht zur Ausleihe freigeschalteten  Accounts.
 \end{flushleft}
-
 \begin{flushleft}
-\textbf{Authentifizierte Nutzer:} Die Accountdaten des Nutzers können mit einem Avatarbild versehen werden, außerdem besteht die Möglichkeit die mit diesem Account ausgeliehenen/reservierten Medienexemplare einzusehen. Angemeldete Benutzer können alternativ zur Abholungsmarkierung eine Reservierung beantragen, sollten alle Exemplare eines Mediums ausgeliehen sein. Der Nutzer wird dann über den vorraussichtlichen Rückgabetermin des reservierten Exemplars informiert, und bei Abholungsmöglichkeit per E-Mail benachrichtigt. Er kann außerdem seine Reservierung zurückziehen.
+\textbf{Bibliotheksmitarbeiter:} Diese Nutzerrolle kann Ausleihen (direkt am Schalter und online angekündigte) abarbeiten. Um eine Abarbeitung der zur Abholung markierten Medien zu Erleichtern steht eine Listenansicht zur Verfügung. Außerdem können Mitarbeiter zurückgegebene Ausleihen wieder als verfügbar markieren. Zusätzlich ist es ihnen möglich, Attributwerte für Medien und Exemplare zu bearbeiten und neue Medien/Exemplare sowie neue Kategorien erstellen.
 \end{flushleft}
-
-\begin{flushleft}
-\textbf{Schaltermitarbeiter:} Mit dieser Nutzerrolle haben Mitarbeiter der Bibliothek die Möglichkeit, zur Abholung markierte Exemplare gesammelt einzusehen und abzuarbeiten, indem sie den Abholstatus verändern. Außerdem können sie zurückgegebene Ausleihen wieder als verfügbar markieren. Zusätzlich ist es ihnen möglich Attributwerte für Medien und Exemplare zu editieren.
-\end{flushleft}
-
 \subsection{Abgrenzungskriterien}
-
-Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien und Nutzern der Bibliothek, Funktionalitäten zum Erwerben und Verwalten von Lizenzen und/oder neuen Medien stehen nicht zur Verfügung. Die Abwicklung oder Verfolgung der Kundenzahlungen für Mitgliedsbeiträge, Medienerwerb o.ä. ist ebenfalls nicht im System integriert. Es besteht keine Möglichkeit, andere Bibliotheksmanagementsysteme oder Literaturenzyklopädien mit dieser Software zu verknüpfen. Das System ist für die klassische Benutzung über einen mit Tastatur, Maus und Bildschirm ausgestatteten PC/Laptop gedacht, mobile Geräte oder barrierefreie Benutzung werden begrenzt bis gar nicht unterstützt.
+Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien und Nutzern der Bibliothek, Funktionalitäten zum Erwerben und Verwalten von Lizenzen und/oder neuen Medien stehen nicht zur Verfügung. Die Abwicklung oder Verfolgung der Kundenzahlungen für Mitgliedsbeiträge, Medienerwerb o.ä. ist ebenfalls nicht im System integriert. Es besteht keine Möglichkeit, andere Bibliotheksmanagementsysteme oder Literaturenzyklopädien mit dieser Software zu verknüpfen. Das System ist für die klassische Benutzung über einen mit Tastatur, Mauszeiger und Bildschirm ausgestatteten PC/Laptop gedacht, mobile Geräte oder barrierefreie Benutzung werden begrenzt bis gar nicht unterstützt. Die Anwendung richtet sich an eine deutsche Zielgruppe und wird in der deutschen Sprache ausgeliefert. Obwohl all diese Kriterien initial nicht enthalten sind, erlaubt das modulare Entwicklungsprinzip eine Erweiterbarkeit der Anwendung um Zusatzfunktionen.
 
 \section{Produkteinsatz} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Sergei Pravdin}
@@ -102,37 +90,34 @@ Das System wird von einem Administrator eingesetzt und eingestellt. Das System i
 
 \section{Produktumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
-
 \subsection{Software}
-
 Im folgenden Abschnitt werden Softwareabhängigkeiten und Kompatibilitäten des Produkts beschrieben.
-
 \begin{itemize}
 \item \underline{\textbf{Clientsoftware}}: \linebreak
-Die Applikation wird über einen Webbrowser benutzt, dieser sollte die Darstellung in den Auszeichnungssprachen HTML, Version 5 und CSS, Level 3 unterstützen, sowie die Kommunikation mit dem HTTP/2-Protokoll. Die Unterstützung von JavaScript (ECMAScript 2020) im Browser wird empfohlen. Explizit getestet werden die aktuellen Versionen der weit verbreiteten Browser: Google Chrome, Version: 88.0; Mozilla Firefox, Version: 85.0 und Apple Safari, Version: 14.0.3. Da HTML 5 (und CSS) jedoch seit einem guten Jahrzehnt als Web-Standart gilt, ist weitreichende Abwärts-Kompatibilität bei den meisten Browsern zu erwarten.  
-
+Die Applikation wird über einen Webbrowser benutzt, dieser sollte die Darstellung in den Auszeichnungssprachen HTML, Version 5 und CSS, Level 3 unterstützen, sowie die Kommunikation mit dem HTTP/1.1-Protokoll. Die Unterstützung von JavaScript (ECMAScript 2020) im Browser ist ebenfalls vorausgesetzt. Explizit getestet werden die aktuellen Versionen der weit verbreiteten Browser: Google Chrome, Version: 88.0; Mozilla Firefox, Version: 85.0 und Apple Safari, Version: 14.0.3. Da HTML 5 (und CSS) zusammen mit JavaScript jedoch seit langem als Web-Standart gilt, ist Abwärtskompatibilität bei den meisten Browsern sehr wahrscheinlich.  
 \item \underline{\textbf{Serversoftware}}: \linebreak
-Auf dem Server muss die Laufzeitumgebung 'Java Virtual Maschine' verfügbar sein, zudem benötigt die Anwendung den Java Enterprise Applikationsserver Apache Tomcat, Version 10.0.x, dieser bringt zwar bei der Installation eine Java Laufzeitumgebung mit sich, es wird jedoch empfohlen, das komplette 'Development Kit' OpenJDK 16 herunterzuladen und bei Tomcat zu registrieren um Kompatibilitätsprobleme zu vermeiden. Außerdem muss ein E-Mail-Server bereit stehen, der das SMTP-Protokoll unterstützt. Die verwendete Datenbank muss das objektrelationale Datenbankmanagementsystem PostgreSQL, Version 13 benutzen, zusätzlich muss die Datenbank über ein gültiges SSL-Zertifikat verfügen um Datenübertragungen mit dem TLS-Protokoll zu ermöglichen. Die Installation der JVM/Tomcat, das Aufspielen der Anwendung sowie die Registrierung der Datenbank und des E-Mail-Servers werden in einem Installationsdokument beschrieben.
+Auf dem Server muss die Laufzeitumgebung 'Java Virtual Maschine' verfügbar sein, hierzu muss das 'Development Kit' OpenJDK 15.0.2 installiert und beim ebenfalls benötigten Java Enterprise Applikationsserver Apache Tomcat, Version 10.0.x registriert werden. Außerdem muss ein E-Mail-Server bereit stehen, der das SMTP-Protokoll unterstützt. Die verwendete Datenbank muss das objektrelationale Datenbankmanagementsystem PostgreSQL, Version 12 benutzen. Die Installation der JVM/Tomcat, das Aufspielen der Anwendung und des Zertifikats (siehe Orgware) sowie die Registrierung der Datenbank und des E-Mail-Servers werden in einem Installationsdokument beschrieben.
 \end{itemize}
-
 \subsection{Hardware}
-
-Hier werden die geschätzen Rahmenbedingungen der Hardware für einen reibungslosen Betrieb aufgelistet, obwohl konkretere Messungen erst mit der Fertigstellung des Produkts möglich sind, skalieren die verwendeten Technologien, und damit die Kapazitäten der Anwendung, prinzipiell mit dem Aufstocken der Rechenleistung (am Server) mit. Sollten die Rahmenbedingungen unterschritten werden, ist ein Betrieb meistens immer noch möglich, jedoch nicht garantiert.
-
+Hier werden die geschätzen Rahmenbedingungen der Hardware für einen reibungslosen Betrieb in 'normaler' Belastung aufgelistet. Sollten die Rahmenbedingungen unterschritten werden, ist ein Betrieb meistens immer noch möglich, jedoch nicht garantiert.
 \begin{itemize}
 \item \underline{\textbf{Clienthardware}}: \linebreak
 Die Bedienung der Anwendung über die oben beschriebenen Browsertypen setzt voraus, dass Clientrechner die jeweiligen Hardwareanforderungen für deren Betrieb erfüllen.
 \item \underline{\textbf{Serverhardware}}: \linebreak
-Die Mindestanforderungen zum Betreiben einer Datenbank unter PostgreSQL bzw. eines Applikationsservers unter Tomcat reichen für einen sinnvollen Betrieb der Anwendung unter Last nicht aus, wie oben erwähnt sollten die der Anwendung zur Verfügung stehenden Ressourcen mit der Nutzerzahl in Relation stehen. Als Referenzplattform zum Betreiben der Anwendung dient der im Abschnitt 'Entwicklungsumgebung' beschriebene Rechner 'schratz' für Datenbank und Server gleichermaßen.
+Die Mindestanforderungen zum Betreiben einer Datenbank unter PostgreSQL bzw. eines Applikationsservers unter Tomcat reichen für einen sinnvollen Betrieb der Anwendung unter Last nicht aus, die der Anwendung zur Verfügung stehenden Ressourcen sollten mit der Nutzerzahl in Relation stehen. Zur Speicherung der Nutzerprofile/Medien muss je nach Umfang ausreichend Datenbankspeicherplatz zur Verfügung stehen, für den anfänglichen Betrieb mindestens 1TB. Mehr Arbeitsspeicher, sowie höhere Bandbreite der Datenbank- und Internetanbindung ermöglicht dem Server ein effizienteres Bedienen vieler gleichzeitiger Anfragen. Die Architektur des Systems erlaubt es der Anwendung mit den zur Verfügung stehenden Ressourcen zu skalieren. Als Referenzplattform zum Betreiben der Anwendung dient der unten beschriebene Rechner 'schratz' für Datenbank und Server gleichermaßen.
+\item \underline{\textbf{Referenzrechner}}:
+\begin{flushleft}
+CIP-Pool Computer 'schratz', Uni Passau, Betriebssystem: GNU/Linux Debian, Version: 4.19.132-1, 15.6GB RAM, Intel Core i7-4790 3.60GHz CPU, Intel I217-LM Ethernet Controller. \linebreak
+Spezifikation der Datenbank bezieht sich auf die Referenzhardware von 'schratz'. Die Übertragungsrate zwischen Server und Datenbank beträgt ca. 1 GBit/s. Die Datenbank unterstützt das Verschlüsselungsprotokoll TLS mit einem Zertifikat. \linebreak
+\end{flushleft}
 \end{itemize}
 
-\subsection{Schnittstellen}
-
+\subsection{Orgware und Schnittstellen}
 \begin{itemize}
-\item \underline{\textbf{Clientenschnittstellen}}: \linebreak
-Die notwendigen Mensch-Maschine Schnittstellen zum Benutzen der Anwendung über einen Browser sind: Bildschirm, Tastatur. Die Benutzung einer Maus oder vergleichbare Cursorsteuerung wird dringend empfohlen. Die Verifizierung eines neuen Benutzers bei der Registrierung im System wird über eine gültige E-Mail-Adresse abgewickelt, folglich muss der Nutzer Zugriff auf ein E-Mail-Konto besitzen. Der Browser des Klienten muss beim Benutzen über eine konstante Anbindung an das Internet verfügen, eine außergewöhnlich hohe Bandbreite ist nicht erforderlich.
-\item \underline{\textbf{Serverschnittstellen}}: \linebreak
-Der Server muss über notwendige Mensch-Maschine Schnittstellen zur initialen Installation der Anwendung und ihrer Softwareabhängigkeiten verfügen. Auch benötigt er eine konstante Anbindung an das (Intra- und) Internet, um Klientenanfragen beantworten, den E-Mail-Server kontaktieren und Datenbankanfragen absetzen zu können. Die Datenbank kann sich auf dem gleichen Gerät wie der Server, seperat davon im Netzwerk oder geographisch getrennt 'im Internet' befinden. Sie muss jedoch vom Server aus über einen Hostnamen ansteuerbar sein, je nach Realisierung ist dazu ein VPN-Tunnel notwendig. 
+\item \underline{\textbf{Client}}: \linebreak
+Die notwendigen Mensch-Maschine Schnittstellen zum Benutzen der Anwendung über einen Browser sind: Bildschirm, Tastatur. Die Benutzung einer Maus oder vergleichbare Cursorsteuerung wird dringend empfohlen. Die Verifizierung eines neuen Benutzers bei der Registrierung im System wird über eine gültige E-Mail-Adresse abgewickelt, folglich muss der Nutzer Zugriff auf ein E-Mail-Konto besitzen. Der Browser des Klienten muss beim Benutzen über eine konstante Anbindung an das Internet (mind. 5 MBit/s) verfügen, eine außergewöhnlich hohe Bandbreite ist nicht erforderlich.
+\item \underline{\textbf{Server}}: \linebreak
+Zur initialen Installation der Anwendung und ihrer Softwareabhängigkeiten sind die selben Mensch-Maschine Schnittstellen wie beim Client notwendig. Da Administratorkonten eine E-Mail-Adresse benötigen, ist bei der Installation der Zugang zu einem E-Mail-Konto erforderlich. Auch benötigt der Server eine konstante Anbindung an das (Intra- und) Internet, um Klientenanfragen beantworten, den E-Mail-Server kontaktieren und Datenbankanfragen absetzen zu können. Die benötigte Bandbreite ist stark abhängig von der zu erwartenden Zahl der gleichzeitigen Zugriffe, für einen Minimalbetrieb mind. 25MBit/s. Um den Webspace über das Internet aufrufen zu können, muss die Domain einen Eintrag im DNS mit der festen IP des Servers besitzen. Die Datenbank kann sich auf dem gleichen Gerät wie der Server, seperat davon im Netzwerk oder geographisch getrennt 'im Internet'  befinden. Sie muss jedoch vom Server aus über einen Hostnamen ansteuerbar sein, je nach Realisierung ist dazu ein VPN-Tunnel notwendig. Um sichere Datenübertragungen mit dem TLS-Protokoll zu ermöglichen, benötigt der Tomcat-Server ein SSL-Zertifikat. Wenn sich der Server mit der Datenbank über das Internet (via SSL-VPN) verbinden soll, muss auch die Datenbank mit einem SSL-Zertifikat ausgestattet sein und die Verbindung zwischen ihr und dem Server sollte eine Bandbreite von ca. 1GBit/s aufweisen. 
 \end{itemize}
 
 \section{Produktfunktionen} %-------------------------------------------------------------------------------------------------
@@ -224,6 +209,7 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 \section{Produktdaten} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
 
+section{Produktdaten}
 \subsection{Benutzerdaten}
 	\label{D010} \paragraph{/D010/ Benutzerdaten}
 \begin{itemize}
@@ -231,44 +217,50 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 		\begin{itemize}
 			\item Vorname
 			\item Nachname
-			\item E-Mail-Adresse
-			\item Passwort(verschlüsselt)
-			\item Avatarbild(vlt. optional)
-		\end{itemize}	
+			\item E-Mail-Adresse (als Username)
+			\item Passwort (gehasht)
+			\item Adresse
+			%\begin{description}
+            \item [/Dw11/] Avatarbild (optional)
+           % \end{description}
+
+		\end{itemize}
+		
+		
 		\item sonstige Daten
 		\begin{itemize}
-		    \item Rolle(Servicemitarbeite, Administrator) 
+		    \item Rolle ( Schaltermitarbeiter, Administrator, Authentifizierte Nutzer und Anonyme Nutzer) 
 		\end{itemize}
-	
+	\end{itemize}
 	\subsection{Mediumsdaten}
 	\label{D020} \paragraph{/D020/ Mediumsdaten}
+	Folgende Attribute sind fest:
+	
 	\begin{itemize}
 	    \item ID
-	    \item Anzahl der Exemplare
-	    \item Type(Buch, CD Zeitschrift etc.)
-	    \item Verfügberkeitsstatus
+	    \item Link auf elektronische Version
+	   	\end{itemize}
+	   
+	   Die folgende Attribute sind änderbar:
+	   	\begin{itemize}
+	   \item Typ (Auswahl aus benutzerdefinierter Liste von Typen, z.B. "Buch, CD, etc.")
+	   \item Titel
+	   \item Autor (kann mehrwertig  sein)
+	   \item Version
+	   \item Erscheinungsjahr
+	   \item ISBN/ISSN (Index) 
+	   \item Herausgeber
 	    
 	\end{itemize}
 		
 	\subsection{Exemplar}
 	\label{D030} \paragraph{/D030/ Exemplar}
 	\begin{itemize}
-	    \item ID
-	    \item Titel
-	    \item Autor
-	    \item Auflage
-	    \item Verlag
-	    \item Erscheinungsjahr
-	    \item ISBN(Index)
-	    \item Link auf elektronische Version
+        \item Verfügbarkeitsstatus
 	    \item Bibliothekssignatur
 	    \item Standort
 	    \item Freitext
-	    \item Typ
-	    \item Speichermedium (optional)
-	    \item Onlinepublikation(optional)
-	    \item Status
-	    \item Dublikate
+	    \item Duplikate
 	   	\end{itemize}
 	   	
 \subsection{Ausleihe}
@@ -277,63 +269,44 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 	\item ID
 	\item Exemplar-ID
 	\item Status (offen, abgeschlossen)
-	\item Tag der Abholung
+	\item Abholungszeit
+	\item Ausleihdatum
+	\item Ablauffrist
 %	\item Tag der Reservierung
 	\end{itemize}
 	
-	
-\subsection{Warteliste}
-	\label{D050} \paragraph{/D050/ Warteliste}
-	\begin{itemize}
-	\item Exemplar-ID
-	\item User-ID(Kunde)
-	\item Status (offen, abgeschlossen)
-
-%	\item Tag der Reservierung
-	\end{itemize}	
-	\end{itemize}	
+%muss die Warteliste weg
 
 	\subsection{Anwendungs- und Einrichtungsdaten}
-	\label{D060} \paragraph{/D060/ Anwendungs- und Einrichtungsdaten}
+	\label{D050} \paragraph{/D050/ Anwendungs- und Einrichtungsdaten}
 	\begin{itemize}
 		\item Name des Betreibers
-		 
-			\item E-Mail-Adressen-Suffixe der Einrichtung
-		\item Kontaktdaten	
-		\begin{itemize}
-			\item Anschrift
-			\item Telefonnummer
-			\item E-Mail-Adresse
-		\end{itemize}
+		\item Akzeptierte E-Mail Domäne ( RegEx)
+		\item Impressum mit Kontaktdaten
 		\item Logo
 		\item Farbschema
-		\item Anonymes Lesen
-		\item Administratoren
-		\item Registrierte Nutzer
-		\item Medien
-		\item Datenbankzugang
+		\item Ausleihfristen
+        \item Verfallsfristen
 	\end{itemize}
+	
 \subsection{Kategorie}
-	\label{D070} \paragraph{/D070/ Kstegorie}
+	\label{D060} \paragraph{/D060/ Kategorie}
 	\begin{itemize}
 	
 	\item ID
-	\item Exemplar-ID
-	\item Tiefe(bis auf 2 kann aber ändbar sein)
-	\item Beschreibung
+	\item Titel
+	\item Elternkategorie
 
-	\end{itemize}
-
-\section{Produktleistung} %-------------------------------------------------------------------------------------------------
+	\end{itemize}	
+	\section{Produktleistung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
 \subsection{Benutzerfreundlichkeit}
-
-     \paragraph{/L010/ \label{L010} Bedienbarkeit}
-    Ein klares Design der Webanwendung ermöglicht eine einfache und intuitive Bedienung. Die häufig verwendeten Funktionen sind leicht zugänglich. Zusätzlich zu einer Sortierfunktion nach allen Parametern ist auch eine Suchfunktion verfügbar. Damit lassen sich Dateien und Einträge leicht finden.
+ \paragraph{/L010/ \label{L010} Bedienbarkeit}
+    Ein klares Design der Webanwendung ermöglicht eine einfache und intuitive Bedienung. Die häufig verwendeten Funktionen sind leicht zugänglich. Eine Suchfunktion ist auch  verfügbar. Damit lassen sich Dateien und Einträge leicht finden.
     
      \paragraph{/L020/ \label{L020} Zeichenkodierung} Die Texte  der Website sind UTF-8 kodiert.
      
-      \paragraph{/L030/  \label{L030} Online-Hilfe} Dem Benutzer wird zu jeder Seite Online-Hilfe angeboten.
+      \paragraph{/L030/  \label{L030} Online-Hilfe} Dem Benutzer wird zu jeder Seite eine konextsensitive Online-Hilfe angeboten
       
       \paragraph{/L040/ \label{040} Installation}
       Eine schnelle und komfortable Installation für Systembetreiber ist vorgesehen, die auch eine automatische Konfiguration der Datenbank beinhaltet.
@@ -347,12 +320,13 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
     die eine bestimmte Anzahl von Einträgen überschreiten, werden durch Paginierung auf mehrere Seiten aufgeteilt. Der Benutzer kann zu den vorherigen oder nächsten 20 Einträge wechseln.
       
       
-\subsection{Sicherheit}
+\subsection{Zuverlässigkeit und Sicherheit}
    \paragraph{/L070/ \label{070} Datenspeicherung}
-   Alle Daten werden persistent in einer PostgreSQL-Datenbank gespeichert. Die Konsistenz der Daten ist auch im Mehrbenutzerbetrieb gewährleistet. Im Fall wenn  Änderungen mehrere Datenbanktabellen betreffen, werden Transaktionen verwendet.
+   Alle dynamisch veränderbaren Daten werden persisten in einer PostgreSQL-Datenbank gespeichert. Die Konsistenz der Daten ist auch im Mehrbenutzerbetrieb gewährleistet. Im Fall wenn  Änderungen mehrere Datenbanktabellen betreffen, werden Transaktionen verwendet.
   
    \paragraph{/L080/ \label{080} Datenlöschen}
-   Die Abhängigkeiten der Daten werden berücksichtigt. Wenn das Löschen eines Datensatzes das Löschen weiterer Daten zur Folge hat, wird der Benutzer vorher darüber informiert. Dadurch wird ein unbeabsichtigtes Löschen verhindert.
+   
+  Bestehen Abhängigkeiten ( z.B der Administrator möchte ein Medium löschen und dieses Medium hängt mit anderem Datensatz ab dann wird er  darauf hingewiesen bevor  er  löschen möchte)  zwischen den zu löschenden Daten und anderen Datensätzen, werden diese erst nach einer Warnung an den Benutzer gelöscht.
   
 \subsubsection{Datenschutz}
 	\paragraph{/L090/ \label{L090} 
@@ -360,19 +334,22 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 	Alle Benutzerdaten, wie z. B. Login-Daten, werden ausschließlich über eine SSL-Verbindung übertragen. Der Zugriff auf sensible Daten durch unbefugte Dritte wird so weit wie möglich verhindert.
 		    
 	\paragraph{/L100/ \label{L100} Transparenz}
-    Technische Informationen über das System können nur bei Bedarf von außen eingesehen werden.
+    Technische Informationen über das System können nicht von außen eingesehen werden.
 		   
-   \paragraph{/L110/ \label{L110} Passwörter} Passwörter werden ausschließlich verschlüsselt gespeichert.
+   \paragraph{/L110/ \label{L110} Passwörter} Passwörter werden gehashed gespeichert.
    
-    \paragraph{/L120/ \label{L120} Schutz gegen Manipulationen} Das System kann nur im Rahmen der vorgesehenen Funktionalitäten verändert werden.
+    \paragraph{/L120/ \label{L120} Schutz gegen Manipulationen} Eine Manipulation mit den üblichen Angriffsmethoden wie SQL-Injection oder Cross-Site-Scripting ist ausgeschlossen. Darüber hinaus sind die Benutzer vor Session Hijacking geschützt.
    
     \paragraph{/L130/ \label{L130} Benutzerdaten}
    Alle Benutzerdaten sind nur für autorisierte Benutzer zugänglich.
-Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
+   Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
 
-    \paragraph{/L140/ \label{L140} Schutz gegen Angriffen} 
-   Eine Manipulation mit den üblichen Angriffsmethoden wie SQL-Injection oder Cross-Site-Scripting ist ausgeschlossen. Darüber hinaus sind die Benutzer vor Session Hijacking geschützt.
+   \paragraph{/L140/ \label{L140} Cookies}
+   Cookies werden nciht erzwungen.
    
+   \paragraph{/L150/ \label{L150} Logging}
+    Das System besitzt einen Logger, welcher das Auftreten von untyptischen Verhalten in einer Logdatei festhält.
+
  \subsection{Skalierbarkeit und Performance}
 	        \paragraph{
 	        /L150/ \label{L150} Last}
@@ -385,8 +362,8 @@ Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
 	    
 \paragraph{/LW170/ \label{LW170} Farbschema}	    	       
 	       Mit der Farbwahl ist es möglich, die Darstellung der betreibenden Einrichtung durch das Erscheinungsbild der Webanwendung anzupassen.
-
-\section{Benutzeroberfläche} %-------------------------------------------------------------------------------------------------
+	       
+	   \section{Benutzeroberfläche} %-------------------------------------------------------------------------------------------------
 \sectionauthor{León Liehr}
 
 In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angemeldet} und \ref{mediumsseite_admin} werden die einzelnen Unterseiten der Webapplikation skizzenhaft dargestellt.
@@ -430,7 +407,7 @@ In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angem
 \section{Qualitätsanforderungen} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
 
-Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugewiesen wird.
+	Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugewiesen wird.
 	
 \begin{center}
 \begin{tabular}{ |l||c|c|c|c| } 
@@ -451,7 +428,7 @@ Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugew
  \hline
  Änderbarkeit & & X & & \\
  \hline
- Portierbarkeit & & &  & X \\
+ Portierbarkeit & &   & X & \\
 
  \hline
 \end{tabular}
@@ -464,7 +441,6 @@ Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugew
 sollte das System in gewissen Grenzen flexibel genug sein.
 \item Um Manipulationen mit bekannten Angriffsmethoden zu verhindern, werden bestimmte Maßnahmen getroffen.
 \end{itemize}
-
 \section{Blackbox-Tests} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Sergei Pravdin}
 Das Bibliothekssystem ist erfolgreich eingesetzt und so eingestellt, dass eine Registrierung für alle E-Mail-Domänen möglich ist. Das System hat einen Administrator namens Max Mustermann mit der E-Mail-Adresse 'admin.sep2021.test@gmail.com', der Anschrift 'Innstraße 33, 94032 Passau, Deutschland' und dem Kennwort 'xlA24!bGhm'. Außerdem verfügt das Impressum in der Anschrift die Innstraße. \vspace{0.5em}
@@ -494,167 +470,84 @@ Die im Folgenden beschriebenen Testfälle bauen aufeinander auf. Das bedeutet, d
 
 \section{Entwicklungsumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
-
-Die Entwicklung finden auf verschiedenen Privatrechnern der Teammitglieder statt, deren Bauteile und Betriebssysteme in den folgenden Listen kurz umrissen werden, keiner der Rechner weißt sonstige Besonderheiten auf. 
-
+Die Entwicklung finden auf verschiedenen Privatrechnern der Teammitglieder statt, deren Bauteile und Betriebssysteme und verwendete Software im Folgenden kurz umrissen werden. Keiner der Rechner weißt sonstige Besonderheiten auf. 
 \subsection{Software}
-
-\begin{itemize}
-\item \underline{\textbf{Dokumentenbearbeitung}}: 
-\begin{flushleft}
-LaTeX Distribution MiKTeX, Version: 21.2 \linebreak
-Overleaf Online Latex Editor \linebreak
-LaTeX Distribution MacTeX-2021 \linebreak
-\end{flushleft}
-\item \underline{\textbf{Webbrowser}}:
-\begin{flushleft}
-Google Chrome, Version: 88.0 \linebreak
-Mozilla Firefox, Version: 85.0 \linebreak
-Apple Safari, Version: 14.0.3 \linebreak
-\end{flushleft}
-\item \underline{\textbf{Integrierte Entwicklungsumgebungen}}: 
-\begin{flushleft}
-Eclipse IDE for Enterprise Java Developers, Version: 2020-12 (4.18.0) \linebreak
-IntelliJ IDEA 2021.1 Ultimate Edition \linebreak
-\end{flushleft}
-\item \underline{\textbf{Objektorientierte Modellierung}}: 
-\begin{flushleft}
-IBM Rational Software Architect Designer 9.7 \linebreak
-\end{flushleft}
-\item \underline{\textbf{Programmiersprachen, Entwicklungs- \& Testframeworks}}: 
-\begin{flushleft}
-Java OpenJDK JDK 16 GA-Release\linebreak
-Jakarta EE 9 \linebreak
-Jakarta Server Faces 3.0 Mojarra Implementation \linebreak
-CDI 3.0 with Red Hat Weld, Version: 4.0.1.Final \linebreak
-Cascading Style Sheets Level 3 \linebreak
-JUnit Platform, Version: 1.7.1 \linebreak
-Selenium Server (Grid), Version: 3.141.59 \linebreak
-\end{flushleft}
-\item \underline{\textbf{Versionsmanagement}}:
-\begin{flushleft}
-git, Version 2.31.1 \linebreak
-\end{flushleft}
-\item \underline{\textbf{Betriebssysteme der Entwicklungsrechner}}:
-\begin{flushleft}
-MacOS Big Sur, Versionen: 11.2.3 und 11.2.1 \linebreak
-Windows 10 Home 20H2 \linebreak
-GNU/Linux Arch, Version: 5.11.11 \linebreak
-GNU/Linux Debian, Version: 4.19.132-1 \linebreak
-\end{flushleft}
-\item \underline{\textbf{Graphische Prototypenbearbeitung}}:
-\begin{flushleft}
-Balsamiq Wireframes, Version: 4.2.4 \linebreak 
-yEd Graph Editor, Version: 3.21.1 \linebreak 
-\end{flushleft}
-\item \underline{\textbf{Applikationsserver}}: 
-\begin{flushleft}
-Apache Tomcat, Version: 10.0.2 \linebreak
-\end{flushleft}
-\item \underline{\textbf{Datenbanktreiber und Visualisierung}}: 
-\begin{flushleft}
-PostgreSQL JDBC 4.2 Driver, Version: 42.2.19 \linebreak
-DBeaver, Version: 21.0.2
-\end{flushleft}
-\item \underline{\textbf{Teamkommunikation}}: 
-\begin{flushleft}
-Slack \linebreak
-Discord \linebreak
-Skype \linebreak
-Stud.IP \linebreak
-\end{flushleft}
-\end{itemize}
-
+Siehe Tabelle 1.
+\begin{center}
+\begin{table}
+\caption{\textsc{Softwareauflistung}}
+\begin{adjustwidth}{-1.5cm}{-1cm}
+\begin{tabular} { c c }
+\underline{\textbf{Dokumentenbearbeitung}} & \underline{\textbf{Webbrowser}} \\
+-LaTeX-Editor TeXworks, Version: 0.6.6 &-Google Chrome, Version: 88.0 \\
+-Overleaf Online Latex Editor &-Mozilla Firefox, Version: 85.0 \\
+-LaTeX Distribution MacTeX-2021 &-Apple Safari, Version: 14.0.3 \\
+-LaTeX-Editor TeXShop, Version: 4.62 (siehe IDEs) & \underline{\textbf{Integrierte Entwicklungsumgebungen}} \\
+-LaTeX Distribution TeX Live, Version: 2021 &-Visual Studio Code, Version: 1.55.2 \\
+-Dokumentenbetrachter Evince, Version: 3.38.1 &-Eclipse IDE for JavaEE, Version: 2020-12(4.18.0) \\
+-LaTeX-Bearbeitung mit IntelliJ (siehe IDEs) &-IntelliJ IDEA 2021.1 Ultimate Edition \\
+-LaTeX-Editor TeXstudio, Version: 3.1.1 & \underline{\textbf{Objektorientierte Modellierung}}\\
+-Vim, Version: 8.2 &-IBM Rational Software Architect Designer 9.7 \\
+-LaTeX Distribution MiKTeX, Version: 21.2 & \underline{\textbf{Programmiersprachen, Entwicklungs- \& Testframeworks}}\\
+\underline{\textbf{Versionsmanagement}} &-Java OpenJDK 15.0.2 GA-Release von https://jdk.java.net/15/ \\
+-git, Version 2.31.1 &-Jakarta EE 9\\
+\underline{\textbf{Projektmanagement}} &-Jakarta Server Faces 3.0 Mojarra Implementation\\
+-Microsoft Project, Version: 2019 &-CDI 3.0 with Red Hat Weld, Version: 4.0.1.Final\\
+\underline{\textbf{Betriebssysteme}} &-Cascading Style Sheets Level 3\\
+-MacOS Big Sur, Versionen: 11.2.3 und 11.2.1 &-JUnit, Version: 5.7.1 \\
+-Windows 10 Home 20H2 &-Selenium Server (Grid), Version: 3.141.59\\
+-GNU/Linux Arch, Version: 5.11.11 &-EclEmma, Version: 3.1.4\\
+-GNU/Linux Debian, Version: 4.19.132-1 &-Mockito, Version: 3.9.3\\ 
+\underline{\textbf{Prototypen/Graphen/Zeichnungen}} & \underline{\textbf{Applikationsserver}}\\
+-Balsamiq Wireframes, Version: 4.2.4 &-Apache Tomcat, Version: 10.0.2\\
+-yEd Graph Editor, Version: 3.21.1 & \underline{\textbf{Remote Access}}\\
+-InkScape, Version: 1.0.2 &-X2Go, Version: 4.1.0.3\\
+-Dia, Version: 0.97.2  &-OpenVPN, Version: 2.5.1\\
+-GIMP, Version: 2.10.24 &-OpenSSH, Versionen: OpenSSH\_for\_Windows\_7.7p1 und 8.5p1-1\\
+\underline{\textbf{Datenbanktreiber und Visualisierung}}& \underline{\textbf{Teamkommunikation}}\\
+-PostgreSQL JDBC 4.2 Driver, Version: 42.2.19 &-Slack\\
+-DBeaver, Version: 21.0.2 &-Discord\\
+&-Skype\\
+&-Stud.IP\\
+\end{tabular}
+\end{adjustwidth}
+\end{table}
+\end{center}
 \subsection{Hardware}
-
 \begin{itemize}
-\item \underline{\textbf{Entwicklungsrechner}}: 
-\begin{flushleft}
-MacBook Pro, 8GB RAM, Intel Core i5 2GHz  \linebreak
-HP Laptop 15-db1xxx, 16GB RAM, AMD Ryzen 5 3500U 2.1GHz \linebreak
-2x MacBook Pro, 8GB RAM, Intel Core i5 2.3GHz \linebreak
-Tower-PC, 16GB RAM, AMD Ryzen 5 3600XT 3.8GHz \linebreak
-\end{flushleft}
-\item \underline{\textbf{Referenzrechner}}:
-\begin{flushleft}
-CIP-Pool Computer 'schratz', Uni Passau, 15.6GB RAM, Intel Core i7-4790 3.60GHz CPU, Intel I217-LM Ethernet Controller \linebreak
-Spezifikation der virtualisierten Datenbank (siehe Entwicklungsschnittstellen) bezieht sich auf die Referenzhardware von 'schratz' und besitzt eine geschätze Übertragungsrate von ca. 1GB/s ins Internet. Die Datenbank unterstützt das Verschlüsselungsprotokoll TLS mit einem Zertifikat. \linebreak
-\end{flushleft}
+\item \underline{\textbf{Entwicklungsrechner}}:\\
+MacBook Pro, 8GB RAM, Intel Core i5 2GHz.\\  
+HP Laptop 15-db1xxx, 16GB RAM, AMD Ryzen 5 3500U 2.1GHz.\\
+2x MacBook Pro, 8GB RAM, Intel Core i5 2.3GHz.\\
+Tower-PC, 16GB RAM, AMD Ryzen 5 3600XT 3.8GHz.
+\item \underline{\textbf{Referenzrechner}}:\\
+Der im Abschnitt 'Produktumgebung' beschriebene CIP-Pool Rechner 'schratz'.
 \end{itemize}
-
 \subsection{Entwicklungsschnittstellen}
-
 \begin{itemize}
-\item \begin{flushleft} Netzwerk- und Internetverbindung \end{flushleft} 
-\item \begin{flushleft} Virtuelle private Netwerkanbindung mit OpenVPN, Version 2.5.1 \end{flushleft} 
-\item \begin{flushleft} Git-verwaltetes Repository der Uni Passau, Website: https://git.fim.uni-passau.de/ \end{flushleft} 
-\item \begin{flushleft} Virtualisierte Datenbank der Uni Passau, Hostname: bueno.fim.uni-passau.de \end{flushleft}
+\item Netzwerk- und Internetverbindung 
+\item Git-verwaltetes Repository der Uni Passau, Website: https://git.fim.uni-passau.de/ 
+\item Virtualisierte Datenbank der Uni Passau, Hostname: bueno.fim.uni-passau.de 
 \end{itemize}
 
 \section{Glossar} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
-
-\begin{itemize}\item OPAC (5.1)
-\begin{flushleft}
-Online public access catalog, darunter versteht man den über das Internet zugänglichen Bibliothekskatalog, mit dem der Bestand an Publikationen recherchiert werden kann.
-\end{flushleft}
-\item Webbrowser (Einleitung)
-\begin{flushleft}
-Spezielle Computerprogramme zum Anzeigen von Webseiten im World Wide Web. Bekannte Beispiele sind: Google Chrome, Apple Safare, Mozilla Firefox.
-\end{flushleft}
-\item Adressraum (2.1)
-\begin{flushleft}
-Die in der Kopfzeile des Browsers angezeigte Adresse unter der die Anwendung erreichbar seien soll, Unterabschnitte des Systems bauen auf diesem getzten Wert auf.
-\end{flushleft}
-\item Look \& Feel (2.1)
-\begin{flushleft}
-Die Umschreibung der Kombination aus Farbauswahl und Form sowie Größe und Position der Elemente einer Webseite.
-\end{flushleft}
-\item HTML (4.1)
-\begin{flushleft}
-Die Hypertext Markup Language ist eine textbasierte Auszeichnungssprache, die als Dokumentenstandart eine Grundlage des World Wide Webs bildet.
-\end{flushleft}
-\item CSS (4.1)
-\begin{flushleft}
-Cascading Style Sheets ist eine weitere Auszeichnungssprache mit der unter anderem die Darstellung, Form, Farben und Positionen der Elemente einer Webseite verändert werden kann.
-\end{flushleft}
-\item JavaScript (4.1)
-\begin{flushleft}
-Ist eine Skriptsprache, die hauptsächlich dazu verwendet wird, die Logik hinter interaktiven Elementen einer Webseite zu formulieren.
-\end{flushleft}
-\item Laufzeitumgebung (4.1)
-\begin{flushleft}
-Hierunter versteht man die für eine Programmiersprache zur Ausführungszeit verfügbaren und festgelegten Voraussetzungen.
-\end{flushleft}
-\item SSL/TLS (4.1)
-\begin{flushleft}
-Das Secure Socket Layer- bzw. Transport Layer Security-Protokoll bietet die Möglichkeit zur sicheren Datenübertragung über das Internet, hierzu ist ein kryptographisches Schlüsselzertifikat nötig.
-\end{flushleft}
-\item SMTP (4.1)
-\begin{flushleft}
-Das Simple Mail Transfer Protocol wird zum Weiterleiten und Verschicken von E-Mails verwendet.
-\end{flushleft}
-\item VPN (4.2)
-\begin{flushleft}
-Virtual Private Network meint hier den verschlüsselten Fernzugriff auf Ressourcen in einem fremden lokalen Netzwerk über einen 'Tunnel' durch das Internet.
-\end{flushleft}
-\item ID (6.)
-\begin{flushleft}
-Dies ist die Abkürzung für einen Identifikator, normalerweiße eine für den zu identifizierenden einzigartige Nummer ohne weiteren Informationsgehalt.
-\end{flushleft}
-\item UTF-8 (7.1)
-\begin{flushleft}
-Das 8-bit Unicode Transformation Format wird zur Kodierung von nahezu allen weltweit verwendeten Zahlen, Schriftzeichen und sonstigen schriftlichen Elementen verwendet.
-\end{flushleft}
-\item Paginierung (7.1)
-\begin{flushleft}
-Hierunter verstehen wir die Aufteilung von abgefrageten Listen in kleinere Abschnitte, um die Darstellung zu erleichtern und lange Ladezeiten bei großen Ergebnissen zu vermeiden.
-\end{flushleft}
-\item Regex-Ausdruck (5.4.1)
-\begin{flushleft}
-Dies bezeichnet einen regulären Ausdruck, der eine Sprache von Wörtern definiert. Eine solche reguläre Sprache hat u.a. die Eigenschaft, dass es sich berechnen lässt, ob ein gegebenes Wort in dieser Sprache liegt.
-In den meisten objekt-orientierten Sprachen sind solche Ausdrücke und Überprüfungen unterstützt.
-\end{flushleft}
+\begin{itemize}
+\item \underline{OPAC (5.1):} 'Online Public Access Catalog', darunter versteht man den über das Internet zugänglichen Bibliothekskatalog, mit dem der Bestand an Publikationen recherchiert werden kann.
+\item \underline{Webbrowser (Einleitung):} Spezielle Computerprogramme zum Anzeigen von Webseiten im World Wide Web. Bekannte Beispiele sind: Google Chrome, Apple Safare, Mozilla Firefox.
+\item \underline{Webspace (2.1):} Unter einem Webspace versteht man einen Speicherplatz für Dateien auf einem Server, der über das Internet erreichbar ist.
+\item \underline{Look \& Feel (2.1):} Die Umschreibung der Kombination aus Farbauswahl und Form sowie Größe und Position der Elemente einer Webseite.
+\item \underline{HTML (4.1):} Die 'Hypertext Markup Language' ist eine textbasierte Auszeichnungssprache, die als Dokumentenstandart eine Grundlage des World Wide Webs bildet.
+\item \underline{CSS (4.1):} 'Cascading Style Sheets' ist eine weitere Auszeichnungssprache mit der unter anderem die Darstellung, Form, Farben und Positionen der Elemente einer Webseite verändert werden kann.
+\item \underline{JavaScript (4.1):} Ist eine Skriptsprache, die hauptsächlich dazu verwendet wird, die Logik hinter interaktiven Elementen einer Webseite zu formulieren.
+\item \underline{Laufzeitumgebung (4.1):} Hierunter versteht man die für eine Programmiersprache zur Ausführungszeit verfügbaren und festgelegten Voraussetzungen.
+\item \underline{SSL/TLS (4.1):} Das 'Secure Socket Layer'- bzw. 'Transport Layer Security'-Protokoll bietet die Möglichkeit zur sicheren Datenübertragung über das Internet, hierzu ist ein kryptographisches Schlüsselzertifikat nötig.
+\item \underline{SMTP (4.1):} Das 'Simple Mail Transfer Protocol' wird zum Weiterleiten und Verschicken von E-Mails verwendet.
+\item \underline{(SSL-)VPN (4.2):} 'Virtual Private Network', der Begriff meint hier den verschlüsselten Fernzugriff auf Ressourcen in einem fremden lokalen Netzwerk über einen 'Tunnel' durch das Internet mit dem TLS-Protokoll.
+\item \underline{DNS (4.2):} Das 'Domain Name System' ist für die Namensauflösung der Domainnamen in IP-Adressen im Internet zuständig. Um bspsw. über die Adresszeile im Browser gefunden zu werden, muss ihr Webspace über einen Zwischenhändler (z.B. GoDaddy) im System registriert werden.
+\item \underline{ID (6.):} Dies ist die Abkürzung für einen Identifikator, normalerweiße eine für den zu identifizierenden einzigartige Nummer ohne weiteren Informationsgehalt.
+\item \underline{UTF-8 (7.1):} Das 8-bit 'Unicode Transformation Format' wird zur Kodierung von nahezu allen weltweit verwendeten Zahlen, Schriftzeichen und sonstigen schriftlichen Elementen verwendet.
+\item \underline{Paginierung (7.1):} Hierunter versteht man die Aufteilung von abgefrageten Listen in kleinere Abschnitte, um die Darstellung zu erleichtern und lange Ladezeiten bei großen Ergebnissen zu vermeiden.
 \end{itemize}
 
 \end{document}
