@@ -136,9 +136,9 @@ Der Server muss über notwendige Mensch-Maschine Schnittstellen zur initialen In
 \section{Produktfunktionen} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Ivan Charviakou}
 
-In der folgenden Aufführung unterscheidet man zwischen Administratoren, Bibliothekmitarbeitern, registrierten Nutzern, angemeldeten Nutzern, und anonymen Nutzern.
+In der folgenden Aufführung unterscheidet man zwischen Administratoren, Bibliotheksmitarbeitern, registrierten Nutzern, angemeldeten Nutzern, und anonymen Nutzern.
 Hierbei sind alle angemeldeten Nutzer zwangsweise auch registrierte Nutzer. Trotzdem kann ein registrierter Nutzer vor einer Authentifikation anonymer Nutzer sein.
-Ferner ist die Unterscheidung zwischen einem Administrator und Bibliotheksmitarbeiter nur dann zu treffen, wenn die Rolle des Schaltermitarbeiters optional umgesetzt wird.
+Ferner ist die Unterscheidung zwischen einem Administrator und Bibliotheksmitarbeiter nur dann zu treffen, wenn die Rolle des Bibliotheksmitarbeiter optional umgesetzt wird.
 Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Bibliotheksmitarbeiter zugeordnet sind, dem Administrator zuzuordnen. \vspace{0.5em}
 
 Die oben genannten Rollen stehen außerdem in einer hierarchischen Beziehung zueinander.
@@ -150,18 +150,24 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 \subsection{Anonymer Nutzer}
 	\subsubsection{Nutzerverwaltung}
 		\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit einem Namen, einer Adresse, und einer gültigen E-Mail Adresse möglich. 
-			Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse versendet wurde. Ohne diesen Schritt ist das Konto vorerst zum Ausleihen gesperrt. }
+			Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse versendet wurde. 
+			Ohne diesen Schritt ist das Konto vorerst zum Ausleihen gesperrt. (\hyperlink{spec:W:70}{Siehe /W70/}) }
 		\specification{F}{100}{Es ist möglich, sich mit einer registrierten E-Mail Adresse und Kennwort ins System einzuloggen. Beim Erfolg handelt es sich dann um einen angemeldeten Nutzer. }
 		\specification{F}{101}{Es kann mit einer gültigen E-Mail Adresse eine Passwortzurücksetzung angefordert werden. 
-			Dazu wird ein Link an die angegebene E-Mail Adresse versendet, wenn sie im System registriert ist. Ansonsten verhält sich die Nutzeroberfläche in beiden Fällen, um die Gültigkeit der Adresse nicht preiszugeben.
+			Dazu wird ein Link an die angegebene E-Mail Adresse versendet, wenn sie im System registriert ist. Ansonsten verhält sich die Nutzeroberfläche in beiden Fällen gleich, um die Gültigkeit der Adresse nicht preiszugeben.
 			Durch Zugriff auf diesen Link kann der Nutzer die Passwortzurücksetzung für das angegebene Nutzerkonto abschließen. }
 	\subsubsection{Navigation \& Suche}
+		Es ist zu beachten - Funktionalitäten, die die Anzeige von Kategorien-, Medien-, oder Exemplarenbezogene Details oder Suchergebnissen beinhalten, sind bei anonymen Nutzern nur dann vorhanden, 
+		wenn ihnen ein Administrator Lesezugriff auf den OPAC gewährt hat. (\hyperlink{spec:F:10}{Siehe /F10/}) \par \vspace{0.5em}
 		\specification{F}{160}{Es ist möglich, mit Texteingabe nach einer Medien-Kategorie zu suchen. }
 		\specification{F}{170}{Es ist möglich, durch eine Baum-Darstellung aller Kategorien im System zu navigieren. Durch Auswahl einer Kategorie, ist eine Liste von allen darin enthaltenen Medien aufrufbar. }
 		\specification{F}{180}{Mit Eingabe von einer Kategorie und Werten für die jeweiligen Medienattribute kann eine Suche durchgeführt werden. }
 		\specification{F}{190}{Zu einem Medium ist die Liste aller Exemplaren aufrufbar. }
-		\specification{F}{210}{Die Seite mit Kontaktinformation, Impressum, und Datenschutzerklärung ist aufrufbar. }
+		\specification{F}{191}{Der ID-Hash zu einem Medium ist kopierbar. Dabei dient der ID-Hash als Identifikator für ein Medium. (\hyperlink{spec:F:380}{Siehe /F380/}) }
+		\specification{F}{210}{Die Kontaktinformationen, das Impressum, und die Datenschutzerklärung sind aufrufbar. }
 		\specification{W}{230}{Es kann für eine Tabelle eingestellt werden, wie viele Datensätze pro Pagination-Seite angezeigt werden. }
+	\subsubsection{Ausleihe \& Rückgabe}
+		\specification{F}{191}{Falls ein Exemplar im Digitalformat frei verfügbar ist, kann es heruntergeladen werden. }
 \subsection{Angemeldeter Nutzer}
 	\subsubsection{Nutzerverwaltung}
 		\specification{F}{110}{Nach einer erfolgreicher Anmeldung, ist es möglich, sich auszuloggen. Es handelt sich dann um einen anonymen Nutzer. }
@@ -174,16 +180,17 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 \subsection{Bibliotheksmitarbeiter}
 	\subsubsection{Ausleihe \& Rückgabe}
 		\specification{F}{300}{Eine Liste von Exemplaren und Nutzer-E-Mails, für die der angegebene Nutzer das gegebene Exemplar zur Abholung markiert hat, ist abrufbar. }
-		\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann zu einem Zeitpunkt ausgeliehen werden, von dem die Ausleihdauer berechnet wird.
-			Dadurch ist das Exemplar nicht mehr zur Abholung markiert und steht während der Ausleihdauer anderen Nutzern nicht mehr zu Verfügung. }
+		\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann ausgeliehen werden. Ab diesem Zeitpunkt verläuft die Ausleihdauer. 
+			Innerhalb dieser Ausleihperiode ist das Exemplar nicht mehr zur Abholung markiert und steht anderen Nutzern nicht mehr zu Verfügung. }
 		\specification{F}{320}{Ein Exemplar kann zurückgegeben werden, wodurch das Exemplar anderen Nutzern wieder zu Verfügung steht. }
-		\specification{F}{321}{Ein Exemplar kann direkt ausgeliehen werden, ohne vorher vom Ausleihenden zur Abholung markiert gewesen sein. }
+		\specification{F}{321}{Ein Exemplar kann direkt ausgeliehen werden, ohne vorher vom Ausleihenden zur Abholung markiert gewesen zu sein. }
 		\specification{F}{322}{Eine Abholungsmarkierung kann storniert werden. Darüber werden die betroffenen Nutzer per E-Mail benachrichtigt. }
 	\subsubsection{Katalogführung}
 		\specification{F}{360}{Es kann eine Kategorie editiert werden. Dabei kann sie einer anderen Kategorie als Subkategorie gehören. Dies ist mit einer Tiefe von bis zu zwei Kategorien möglich. 
 			Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert. 
 			Es werden durch Löschen nur abhängige Kategorien entfernt und insbesondere keine darin enthaltene Medien. }
 		\specification{F}{400}{Es kann ein Medium editiert werden. Bei der Erstellung müssen die entsprechenden Attribute gesetzt werden. 
+			Ein Medienverweis (\hyperlink{spec:F:380}{Siehe /F380/}) ist als ID-Hash (\hyperlink{spec:F:191}{Siehe /F191/}) einzugeben.
 			Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft. Falls ein zugehöriges Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. 
 			Anschließend werden alle enthaltene Exemplare mit gelöscht. }
 		\specification{F}{420}{Es kann zu einem Medium ein Exemplar editiert werden. Vor dem Löschen eines Exemplar wird auf aktuelle Ausleihvorgänge geprüft.
@@ -193,31 +200,36 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 	\subsubsection{Nutzerverwaltung}
 		\specification{F}{10}{Es ist einstellbar, ob anonyme Nutzer Lesezugriff auf den OPAC haben. }
 		\specification{F}{20}{Es ist einstellbar, ob neue Registrierungen im System erlaubt sind. Falls sie erlaubt sind, kann ein Regex-Ausdruck angegeben werden, der bei der Registrierung die eingegebenen E-Mail Adressen überprüft. }
-		\specification{F}{21}{Es kann eingestellt werden, ob die Konten von neu registrierten Nutzern zum Ausleihen freigeschaltet sind. Bereits bestehende Nutzerkonten sind dabei nicht betroffen. }
 		\specification{F}{30}{Ein Nutzerprofil kann editiert werden. Es lassen sich dadurch alle Nutzerdaten und die Rolle aller Nutzer verändern. 
 			Ausgenommen davon ist die eigene Rolle und jegliche Änderung, die dazu führt, dass es keine Administratoren mehr im System vorhanden sind. 
 			Beim Löschen eines Nutzers wird zuerst überprüft, ob von ihm die Rückgabe eines Exemplars erwartet wird. 
 			In diesem Fall wird zuerst eine Bestätigung gefordert. Anschließend werde sämtliche ausgeliehene Exemplare und leer-gewordene Medien mit gelöscht. }
 		\specification{F}{60}{Es kann mit Angabe von Nutzerattributen nach Nutzern gesucht werden. Es können auch alle Nutzer im System angezeigt werden. }
-		\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden. }
+		\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden. Dabei existieren zwei arten von Sperren, die für eine Ausleihe durch den Nutzer beide nicht gelten müssen. 
+			Eine Sperre ist frei setzbar, aber nur durch einen Administrator. Die andere Sperre kann durch einen Administrator zwar gesetzt, aber nicht aufgehoben werden. 
+			Dies passiert nur nämlich dann, wenn der Nutzer seine E-Mail Adresse neu verifiziert. (\hyperlink{spec:F:120}{Siehe /F120/}) }
 		\specification{W}{80}{Die Liste von gesperrten Nutzerkonten ist aufrufbar. }
 	\subsubsection{Ausleihe \& Rückgabe}
 		\specification{F}{240}{Der Zeitabstand zwischen dem automatischen Versenden einer Email-Mahnung und der Rückgabefrist für einen beliebigen Exemplar ist setzbar.
 			Dieser Wert gilt dann global für alle neue Ausleihvorgänge. Falls für einen Vorgang die Zeit bis zur Rückgabefrist kürzer ist als der gegebene Wert, wird keine Email-Mahnung versendet. }
-		\specification{F}{250}{Der Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator bei der Abholung ist setzbar.
+		\specification{F}{250}{Der Zeitabstand zwischen der Abholmeldung durch einen Nutzer zu einem Exemplar und der Ausleihe dieses Exemplars ist setzbar.
 			In dieser Zeit ist das Exemplar zur Abholung markiert. Zu beachten ist, dass das ausgewählte Exemplar nach Überschreiten dieser Zeit wieder allen Nutzer zu Verfügung steht. }
 		\specification{F}{260}{Die Rückgabefrist für ist für alle Ausleihvorgänge einzeln setzbar. Dabei darf die Frist nicht in der Vergangenheit liegen. }
 		\specification{F}{270}{Die maximale Ausleihdauer ist global, für einen bestimmten Medium, oder für einen bestimmten Nutzer setzbar.
 			Wenn bei einem Ausleihvorgang mehrere Werte vorhanden sind, wird zuerst der Nutzerwert, danach der Mediumwert, und als letztes der globale Wert beachtet. }
 		\specification{F}{280}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer die Rückgabefrist das gegebene Medium um die gegebene Zeitdauer überschritten hat, ist abrufbar. }
 	\subsubsection{Katalogführung}
-		\specification{F}{380}{Der Attributsatz von allen Medien kann editiert werden. Wird ein neuer Attribut definiert, so ist der entsprechende Attributwert für alle Medien zuerst leer. 
-			Ein Attribut kann zusätzlich als mehrwertig oder als Verweis auf ein anderes Medium markiert werden. 
-			Wird ein Attribut gelöscht, so werden alle Medien nach den restlichen Attributen zusammengefasst. Es werden nämlich alle Duplikatinstanzen gelöscht und alle zugehörige Exemplare dem verbleibenden Mediuminstanz zugeordnet. 
-			Falls es in Folge einer Attributlöschung eine solche Zusammenfassung stattfindet, wird zuerst eine Bestätigung für diese Löschoperation gefordert. 
-			Es wird somit garantiert, dass die Gesamtheit der Attributsatzwerten unter allen Medien immer eindeutig ist. 
-			Per Default besteht der Attributsatz aus folgenden Attributen: Index, Typ, Titel, Version, Autoren (mehrwertig), Erscheinungsdatum, elektronische Version (Verweis), und Herausgeber. 
-			Die Attribute selber verlangen keinen Typ und es muss immer mindestens einen Attribut in dem Attributsatz vorhanden sein. }
+		Zu allen Medien ist eine Menge an frei definierbaren Attributen vorgesehen, mit denen Nutzer von verschiedenen Rollen bei einer Suche oder Werteingabe direkt interagieren können. 
+		Per Default besteht der Attributsatz aus folgenden Attributen: Index (Schlüsselkomponent), Typ, Titel, Version, Autoren (mehrwertig), Erscheinungsdatum, elektronische Version (Verweis), und Herausgeber. 
+		Die Attribute selber verlangen keinen Typ und es muss immer mindestens einen Attribut in dem Attributsatz vorhanden sein, der als Schlüsselkomponent markiert ist. 
+		Es wird garantiert, dass unter allen Medien die Gesamtheit der Attributsatzwerten, bei denen der Attribut als Schlüsselkomponent markiert ist, immer eindeutig ist. Aus diesen Werten leitet sich ein ID-Hash ab. \par \vspace{0.5em}
+		\specification{F}{380}{Es kann ein neuer Attribut im Attributsatz von allen Medien definiert werden. Dieser kann als mehrwertig, als Verweis auf ein anderes Medium, oder als Schlüsselkomponent markiert werden. 
+			Der entsprechende Attributwert für alle Medien ist zuerst leer. 
+			Ist dieser Attribut als Schlüsselkomponent markiert, so wird es bei der Berechnung eines ID-Hashes verwendet und es werden dementsprechend alle Verweise im gesamten Medienbestand auf einen leeren Wert gesetzt. }
+		\specification{F}{381}{Es kann ein Attribut aus dem Attributsatz von allen Medien gelöscht werden. 
+			Ist dieser Attribut als Schlüsselkomponent markiert, so werden zum einen alle Verweise im gesamten Medienbestand auf einen leeren Wert gesetzt. 
+			Zum anderen werden alle Medien nach den restlichen Schlüsselattributen zusammengefasst. Es werden nämlich alle Duplikatinstanzen gelöscht und alle zugehörige Exemplare dem verbleibenden Mediuminstanz zugeordnet. 
+			Falls es in Folge einer Attributlöschung eine solche Zusammenfassung stattfindet, wird zuerst eine Bestätigung für diese Löschoperation gefordert. }
 	\subsubsection{Weitere Personalisierungen}
 		\specification{F}{450}{Die Name der Einrichtung ist setzbar. }
 		\specification{F}{460}{Das Logo der Einrichtung kann hochgeladen werden. }
