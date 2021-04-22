@@ -1,7 +1,8 @@
 # generated during LaTeX compilation
 *.aux
 *.out
+*.toc
 #*.log # already ignored in /.gitignore
-
+*.txt
 # one can always build the pdf from source
 *.pdf
