@@ -45,7 +45,6 @@
 \section{Einleitung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 Aufbauend auf dem Lastenheft von Christian Bachmaier und Armin Größlinger für ein Bibliothekssystem steckt unser Team, bestehend aus Sergei Pravdin, Ivan Charviakou, León Liehr, Mohamad Najjar und Jonas Picker, mit diesem Pflichtenheft den Rahmen der zu erbringenden Leistungen und verwendeten Technologien bei der Bearbeitung des Auftrags ab. Bei dem zu erstellenden System handelt es sich um eine vereinfachte Form eines Bibliotheksverwaltungssystems mit dem der Anwender das mediale Bibliotheksinventar zentral durchsuchen, kategorisieren und die Nutzung verwalten kann. Das fertige Produkt wird über einen Webbrowser bedient und bietet zahlreiche Anpassungsmöglichkeiten. Das restliche Dokument beinhaltet die genauen Spezifikationen der zu implementierenden Funktionalitäten.
-\newpage
 
 \section{Zielbestimmung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
@@ -73,19 +72,21 @@ Der Hauptfokus des Produkts liegt auf der Organisation und Verwaltung von Medien
 \section{Produkteinsatz} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Sergei Pravdin}
 \subsection{Anwendungsbereich}
-Das Bibliothekssystem wird hauptsächlich für die allen Typen der Bibliotheken (Universitätsbibliotheken, staatliche Bibliotheken usw.) entwickelt. Aber das System kann unter anderem in einem beliebigen Unternehmen, das eine Menge der Medien verwalten möchte, eingesetzt werden. Das System lässt eine Menge der Medien nicht nur im geöffneten Modus, sondern auch im geschlossenen Modus verwalten.
+Das Bibliothekssystem kann in allen Bibliotheken, unabhängig von Größe, Sammelschwerpunkt, Trägerschaft und Funktion, eingesetzt werden, um Medien zu verwalten und ihren Nutzern entsprechend Zugang zu vermitteln.
 \subsection{Zielgruppen}
-Das System ist auf Personen ohne fachspezifische Kenntnisse ausgerichtet, die sich für Medien interessieren. Die Benutzeroberfläche sind in Deutsch erstellt, deshalb sind die Deutschkenntnisse für die Anwendung des Systems vorausgesetzt. Optional kann das System in Zukunft mit mehreren Sprachen erweitert werden.
+Das System setzt keine fachspezifischen Kenntnisse voraus und richtet sich an Personen, die sich für Medien im Allgemeinen interessieren. Die Benutzeroberfläche wird auf Deutsch erstellt, entsprechend werden Deutschkenntnisse für die Anwendung des Systems vorausgesetzt. Optional soll das System in Zukunft um mehrere Sprachversionen erweitert werden. \vspace{0.5em}
+
+Die im Folgenden aufgeführten Voraussetzungen stehen in einer hierarchischen Beziehung zueinander. Voraussetzungen, die für eine Zielgruppe definiert werden, gelten ebenfalls für alle weiteren Zielgruppen.
+\subsubsection{Anonymer Nutzer}
+Ein Nutzer muss über Grundkenntnisse desjenigen Internet-Browsers verfügen, den er zur Navigation durch das System zu nutzen gedenkt. Für eine Registrierung wird eine gültige E-Mail-Adresse und Zugang zu dieser vorausgesetzt.
+\subsubsection{Angemeldeter Nutzer}
+Für eine Anmeldung muss ein Nutzer Kenntnisse über seine Login-Daten und sein Kennwort haben. Für die Zurücksetzung eines Kennworts wird der Zugang zur E-Mail-Adresse vorausgesetzt. Für das Ausleihen und Zurückgeben der Medien werden keine Fachkenntnisse vorausgesetzt.
+\subsubsection{Bibliotheksmitarbeiter}
+Das System verfügt über mindestens einen Mitarbeiter, der Medien verleiht und \linebreak diese wieder zurücknimmt. Für Mitarbeiter werden keine Fachkenntnisse vorausgesetzt. Gute Kommunikationsfähigkeiten sind zu empfehlen.
 \subsubsection{Administrator}
-Das System hat mindestens einen Administrator, der das System konfiguriert kann. Für die Konfigurierung sind keine fachspezifische Kenntnisse nötig, weil das System die Anwendungsschnittstelle für Administratoren hat. Die Registrierung, die Verwaltung der Medien und die graphische Darstellung des Systems werden von einem Administrator eingestellt.
-\subsubsection{Personalarbeiter}
-Das System hat Personalarbeiter, die die Medien den Benutzern abgeben und zurücknehmen können.
-\subsubsection{Angemeldete Benutzer}
-Angemeldete Benutzer haben nicht nur einen Zugriff zu der Kataloge und zum Suchen der Medien, sondern auch einen Zugriff zur Reservierung und zur Buchung der Medien. Angemeldete Benutzer können ihre eigene Konten einstellen, ändern und löschen. Angemeldete Benutzer können sich abmelden.
-\subsubsection{Anonyme Benutzer}
-Falls sich das System in keinem geschlossenen Modus befindet, haben anonyme Benutzer einen Zugriff zur Medien-Kataloge, somit können sie die Medien nach Attributen mit dem Suchfeld suchen. Anonyme Benutzer können sich registrieren oder anmelden, falls sie ein Konto haben. Eine gültige E-Mail-Adresse wird für eine Registrierung eines Benutzers vorausgesetzt. 
+Das System hat mindestens einen Administrator, der das System einsetzt und betreibt. Dafür werden Fachkenntnisse über Datenbanken (PostgreSQL), Webservers (Tomcat) und \linebreak IT-Sicherheitsmaßnahmen vorausgesetzt.
 \subsection{Betriebsbedingungen}
-Das System ist eingesetzt und von einem Administrator eingestellt. Das System ist kontinuierlich erreichbar. Die Erreichbarkeit wird von einem Webserver, einer Verbindung mit einer Netz und einer Datenbank sichergestellt, die von einem Betreiber bereitgestellt werden. Die Aufsicht und regelmäßige Backups des Systems von den Administratoren ist empfehlenswert. Bei Wartungen und Updaten ist das System nicht erreichbar, deshalb ist es empfohlen entsprechende Meldungen über eine eingeplante Wartung von einem Administrator den Benutzern im Voraus zu schicken. Bei technischen Fehlern und Bugs sollen Benutzer einen Administrator kontaktieren.
+Das System wird von einem Administrator eingesetzt und eingestellt. Das System ist - mit Ausnahme von Updates des Betriebssystems - ständig verfügbar. Die Verfügbarkeit wird durch einen Webserver sowie einer Netz- und Datenbankverbindung sichergestellt. Diese sind durch einen Administrator bereitzustellen. Darüber hinaus muss der physische Zugriffsschutz für Server und kontinuierliche Aufsicht über das System durch einen Administrator sichergestellt werden. Tägliche Backups der Datenbank und des Dateisystems durch einen Administrator sind empfehlenswert. Optional kann das System in Zukunft so erweitert werden, dass Meldungen über geplante Wartungen und Updates im System angezeigt werden. Bei technischen Fehlern und Bugs sollen sich Nutzer an einen Administrator wenden.
 
 \section{Produktumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
@@ -121,96 +122,94 @@ Zur initialen Installation der Anwendung und ihrer Softwareabhängigkeiten sind 
 
 \section{Produktfunktionen} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Ivan Charviakou}
-In der folgenden Aufführung unterscheidet man zwischen Administratoren, Schaltermitarbeiter, registrierten Nutzern, angemeldeten Nutzern, und anonymen Nutzern.
+
+In der folgenden Aufführung unterscheidet man zwischen Administratoren, Bibliothekmitarbeitern, registrierten Nutzern, angemeldeten Nutzern, und anonymen Nutzern.
 Hierbei sind alle angemeldeten Nutzer zwangsweise auch registrierte Nutzer. Trotzdem kann ein registrierter Nutzer vor einer Authentifikation anonymer Nutzer sein.
 Ferner ist die Unterscheidung zwischen einem Administrator und Schaltermitarbeiter nur dann zu treffen, wenn die Rolle des Schaltermitarbeiters optional umgesetzt wird.
-Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermitarbeiter zugeordnet sind, dem Administrator zuzuordnen.
-	\subsection{Nutzerverwaltung}
-		\subsubsection{Administrator}
-			\specification{F}{10}{Es ist einstellbar, ob anonyme Nutzer Lesezugriff auf den OPAC haben.}
-			\specification{F}{20}{Es können eine oder mehrere Email-Domäne angegeben werden, mit denen neue Registrierungen durchgeführt werden dürfen.}
-			\specification{F}{30}{Die Registrierung eines neuen Nutzers ist möglich.}
-			\specification{F}{40}{Die Nutzerdaten und Rolle aller Nutzern, insbesondere auch die eines Administrators, sind änderbar. Die eigene Rolle ist aber unänderbar. }
-			\specification{F}{50}{Ein registrierter Nutzer kann gelöscht werden.}
-			\specification{F}{60}{Es kann ggf. mit Angabe von Nutzerattributen nach Nutzern gesucht werden.}
-			\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden.}
-			\specification{W}{80}{Die Liste von gesperrten Nutzerkonten ist aufrufbar.}
-		\subsubsection{Anonyme Nutzer}
-			\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit Namen, Adresse, und Email-Adresse möglich. 
-				Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse geschickt wurde. }
-		\subsubsection{Registrierte Nutzer}
-			\specification{F}{100}{Es ist möglich, sich mit dem Benutzernamen und Kennwort ins System einzuloggen. Beim Erfolg handelt es sich dann um einen angemeldeten Nutzer. }
-			\specification{F}{110}{Bei erfolgreicher Anmeldung, ist es möglich, sich auszuloggen. Beim Erfolg handelt es sich dann um einen anonymen Nutzer. }
-		\subsubsection{Angemeldete Nutzer}
-			\specification{F}{120}{Bis auf die Email-Adresse ist es möglich, die eigenen Nutzerdaten zu ändern. }
-			\specification{F}{130}{Das Löschen des eigenen Nutzerkontos ist möglich.}
-			\specification{W}{140}{Es kann ein Profilbild hochgeladen werden.}
-		\subsubsection{Alle Nutzer}
-			\specification{F}{150}{Bei Fehlerhafter Texteingabe zu einem Formular werden alle Felder auf Korrektheit geprüft. Alle Fehler werden dem Nutzer angezeigt. }
-	\subsection{Navigation \& Suche}
-		\subsubsection{Alle Nutzer}
-			\specification{F}{160}{Es ist möglich, mit Texteingabe nach einer Medien-Kategorie zu suchen. }
-			\specification{F}{170}{Nach Auswahl einer Kategorie aus einer Baum-Darstellung von allen Kategorien, ist eine Liste von allen darin enthaltenen Medien sichtbar. }
-			\specification{F}{180}{Mit Eingabe von Kategorie, Medien-Typ, und jeweiligen Attributen kann eine Suche durchgeführt werden. }
-			\specification{F}{190}{Zu einem Medium ist die Liste aller Exemplaren aufrufbar. }
-			\specification{F}{200}{Für alle Tabellen ist der Datensatz nach individuellen Spalten auf Anclick ab- und aufsteigend sortierbar. }
-			\specification{F}{210}{Die Seite mit Kontaktinformation bzw. Impressum ist aufrufbar. }
-			\specification{F}{220}{Alle Tabellen verwenden ggf. Pagination. Insbesondere werden per Default bis zu 20 Datensätzen pro Seite angezeigt. 
-				Mit entsprechenden Knöpfen kann man ggf. nach vorwärts und rückwärts blättern. }
-			\specification{W}{230}{Es kann für eine Tabelle eingestellt werden, wie viele Datensätze pro Pagination-Seite angezeigt werden. }
-	\subsection{Ausleihe \& Rückgabe}
-		\subsubsection{Administrator}
-			\specification{F}{240}{Der Zeitabstand zwischen dem automatischen Versenden einer Email-Mahnung und der Rückgabefrist für einen beliebigen Exemplar ist setzbar.
-				Dieser Wert gilt dann global für alle neue Ausleihvorgänge. Zu beachten ist, dass für einen Vorgang mit einem Ausleihdauer, der kürzer als dieser Wert ist, keine Email-Mahnung versendet wird. }
-			\specification{F}{250}{Der Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator ist setzbar.
-				In dieser Zeit ist das Exemplar zur Abholung markiert. Zu beachten ist, dass das ausgewählte Exemplar nach Überschreiten dieser Zeit wieder allen Nutzer zu Verfügung steht. }
-			\specification{F}{260}{Die Rückgabefrist für ist für alle Ausleihvorgänge setzbar. Dabei darf die Frist nicht in der Vergangenheit liegen. }
-			\specification{F}{270}{Die maximale Ausleihdauer ist global, für einen bestimmten Medium, oder für einen bestimmten Nutzer setzbar.
-				Wenn bei einem Ausleihvorgang mehrere Werte vorhanden sind, wird zuerst der Nutzerwert, danach der Mediumwert, und als letztes der globale Wert beachtet. }
-			\specification{F}{280}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer den Rückgabefrist das gegebene Medium um das gegebene Zeitdauer überschritten hat, ist abrufbar. }
-			\specification{W}{290}{Die maximal Reservierungsdauer ist setzbar.
-				Dies bezeichnet die Zeitdauer, in der ein zuvor unverfügbares Exemplar bei der Wiederverfügbarkeit für solche Nutzer zur Abholung markiert ist, die vor der Wiederverfügbarkeit das Exemplar reserviert haben.  }
-		\subsubsection{Schaltermitarbeiter}
-			\specification{F}{300}{Eine Liste von zur Abholung markierten Exemplaren ist abrufbar. }
-			\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann zu einem Zeitpunkt ausgeliehen werden, von dem die Ausleihdauer berechnet wird.
-				Dadurch ist das Exemplar nicht mehr zur Abholung markiert und steht während der Ausleihdauer anderen Nutzern nicht mehr zu Verfügung. }
-			\specification{F}{320}{Ein Exemplar kann zurückgegeben werden, wodurch das Exemplar anderen Nutzern wieder zu Verfügung steht. }
-		\subsubsection{Registrierte Nutzer}
-			\specification{F}{330}{Ein Exemplar kann zu einem Zeitpunkt zur Abholung markiert werden.
-				Wenn das Exemplar innerhalb der maximalen Dauer der Abholung nicht im System als ausgeliehen markiert ist, steht das Exemplar sofort wieder anderen Nutzern zu Verfügung. }
-			\specification{W}{340}{Wenn ein Exemplar nicht vorhanden ist, kann es reserviert werden.
-				Dadurch wird der Nutzer zu einer Warteliste von Nutzern hinzugefügt, die jeweils per Email benachrichtigt werden, sobald das Exemplar wieder verfügbar ist.
-				Ab dieser Zeit, steht das Exemplar für eine gesetzte Reservierungsdauer nicht anderen Nutzern zu Verfügung, sondern den reservierenden Nutzern zur Abholung.
-				Wenn diese Frist abläuft, ohne dass es im System in dieser Zeit als ausgeliehen markiert wurde, steht das Exemplar sofort wieder anderen Nutzern zu Verfügung. }
-			\specification{W}{350}{Eine Reservierung für ein Exemplar kann aufgehoben werden. Dadurch wird der Nutzer aus der Warteliste zu diesem Exemplar entfernt. }
-	\subsection{Katalogführung}
-		\subsubsection{Administrator}
-			\specification{F}{360}{Es kann eine Kategorie erstellt werden. Dabei kann sie einer anderen Kategorie als Subkategorie gehören.
-				Eine solche verkettete Konstruktion ist mit bis zu zwei Kategorien möglich. }
-			\specification{F}{370}{Es kann eine Kategorie gelöscht werden. Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert. }
-			\specification{F}{380}{Es kann ein Mediumsschema erstellt werden, das für ein Medium eigene Attribute definiert. }
-			\specification{F}{390}{Es kann ein Mediumsschema gelöscht werden. Vor dem Löschen eines Schemas wird geprüft, ob Medien, die dem Schema folgen, existieren.
-				Falls es solche Medien gibt, wird eine Bestätigung gefordert. }
-			\specification{F}{400}{Es kann ein Medium nach einem Schema erstellt werden. }
-			\specification{F}{410}{Es kann ein Medium gelöscht werden. Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft.
-				Falls ein Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. }
-			\specification{F}{420}{Es kann ein Exemplar erstellt werden. }
-			\specification{F}{430}{Es kann ein Exemplar gelöscht werden. Vor dem Löschen eines Exemplar wird auf aktuelle Ausleihvorgänge geprüft.
-				Falls das Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert.  }
-			\specification{W}{440}{Eine Kategorieverkettung von unbegrenzter Länge ist möglich. }
-	\subsection{Weitere Personalisierungen}
-		\subsubsection{Administrator}
-			\specification{F}{450}{Die Name der Einrichtung kann gesetzt werden. }
-			\specification{F}{460}{Das Logo der Einrichtung kann hochgeladen werden. }
-			\specification{F}{470}{Das Farbenschema, bestehend aus zwei Farben, kann eingestellt werden. }
-			\specification{F}{480}{Die Kontaktinformationen und das Impressum können angegeben werden. }
-		\subsubsection{Alle Nutzer}
-			\specification{W}{490}{Es kann zwischen Deutsch und Englisch als Anzeigesprache ausgewählt werden. }
-\newpage
+Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermitarbeiter zugeordnet sind, dem Administrator zuzuordnen. \vspace{0.5em}
+
+Die oben genannten Rollen stehen außerdem in einer hierarchischen Beziehung zueinander.
+Beispielsweise besitzt ein angemeldeter Nutzer neben den für ihn aufgelisteten Funktionalitäten auch noch alle Funktionalitäten, die einem anonymen Nutzer zustehen.
+Durch eine paarweise aufsteigende Verkettung, erhält man somit die folgende Liste: Anonyme Nutzer, angemeldete Nutzer, Bibliothekmitarbeiter, und Administratoren. \vspace{0.5em}
+
+Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemeint, wenn nicht anders spezifiziert. \vspace{0.5em}
+
+\subsection{Anonymer Nutzer}
+	\subsubsection{Nutzerverwaltung}
+		\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit Namen, Adresse, und Email-Adresse möglich. 
+			Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse versendet wurde. }
+		\specification{F}{100}{Es ist möglich, sich mit einer registrierten E-Mail Adresse und Kennwort ins System einzuloggen. Beim Erfolg handelt es sich dann um einen angemeldeten Nutzer. }
+		\specification{F}{101}{Es kann mit einer gültigen E-Mail Adresse eine Passwortzurücksetzung angefordert werden. 
+			Dazu wird ein Link an die angegebene E-Mail Adresse versendet, wenn sie im System registriert ist. Ansonsten verhält sich die Nutzeroberfläche in beiden Fällen, um die Gültigkeit der Adresse nicht preiszugeben.
+			Durch Zugriff auf diesen Link kann der Nutzer die Passwortzurücksetzung für das angegebene Nutzerkonto abschließen. }
+	\subsubsection{Navigation \& Suche}
+		\specification{F}{160}{Es ist möglich, mit Texteingabe nach einer Medien-Kategorie zu suchen. }
+		\specification{F}{170}{Es ist möglich, durch eine Baum-Darstellung aller Kategorien im System zu navigieren. Durch Auswahl einer Kategorie, ist eine Liste von allen darin enthaltenen Medien aufrufbar. }
+		\specification{F}{180}{Mit Eingabe von einer Kategorie und Werten für die jeweiligen Medienattribute kann eine Suche durchgeführt werden. }
+		\specification{F}{190}{Zu einem Medium ist die Liste aller Exemplaren aufrufbar. }
+		\specification{F}{210}{Die Seite mit Kontaktinformation, Impressum, und Datenschutzerklärung ist aufrufbar. }
+\subsection{Angemeldeter Nutzer}
+	\subsubsection{Nutzerverwaltung}
+		\specification{F}{110}{Nach einer erfolgreicher Anmeldung, ist es möglich, sich auszuloggen. Es handelt sich dann um einen anonymen Nutzer. }
+		\specification{F}{120}{Das eigene Profil kann editiert werden. Dabei ist es nicht möglich, das Konto zu löschen, wenn die Rückgabe eines Exemplars erwartet wird.
+			Die Verifikation einer neuen E-Mail Adresse erfolgt analog zu der Registrierung. (\hyperlink{spec:F:90}{Siehe /F90/}) }
+	\subsubsection{Ausleihe \& Rückgabe}
+		\specification{F}{330}{Ein Exemplar kann zu einem Zeitpunkt zur Abholung markiert werden. (\hyperlink{spec:F:250}{Siehe /F250/}) }
+\subsection{Bibliothekmitarbeiter}
+	\subsubsection{Ausleihe \& Rückgabe}
+		\specification{F}{300}{Eine Liste von Exemplaren und Nutzer-E-Mails, für die der angegebene Nutzer das gegebene Exemplar zur Abholung markiert hat, ist abrufbar. }
+		\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann zu einem Zeitpunkt ausgeliehen werden, von dem die Ausleihdauer berechnet wird.
+			Dadurch ist das Exemplar nicht mehr zur Abholung markiert und steht während der Ausleihdauer anderen Nutzern nicht mehr zu Verfügung. }
+		\specification{F}{320}{Ein Exemplar kann zurückgegeben werden, wodurch das Exemplar anderen Nutzern wieder zu Verfügung steht. }
+		\specification{F}{321}{Ein Exemplar kann direkt ausgeliehen werden, ohne vorher vom Ausleihenden zur Abholung markiert gewesen sein. }
+		\specification{F}{322}{Eine Abholungsmarkierung kann storniert werden. Darüber werden die betroffenen Nutzer per E-Mail benachrichtigt. }
+	\subsubsection{Katalogführung}
+		\specification{F}{360}{Es kann eine Kategorie editiert werden. Dabei kann sie einer anderen Kategorie als Subkategorie gehören. Dies ist mit einer Tiefe von bis zu zwei Kategorien möglich. 
+			Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert. 
+			Es werden durch Löschen nur abhängige Kategorien entfernt und insbesondere keine darin enthaltene Medien. }
+		\specification{F}{400}{Es kann ein Medium editiert werden. Bei der Erstellung müssen die entsprechenden Attribute gesetzt werden. 
+			Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft. Falls ein zugehöriges Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. 
+			Anschließend werden alle enthaltene Exemplare mit gelöscht. }
+		\specification{F}{420}{Es kann zu einem Medium ein Exemplar editiert werden. Vor dem Löschen eines Exemplar wird auf aktuelle Ausleihvorgänge geprüft.
+			Falls das Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. Anschließend wird das Exemplar gelöscht. }
+		\specification{W}{440}{Eine Kategorieverkettung von unbegrenzter Länge ist möglich. }
+\subsection{Administrator}
+	\subsubsection{Nutzerverwaltung}
+		\specification{F}{10}{Es ist einstellbar, ob anonyme Nutzer Lesezugriff auf den OPAC haben. }
+		\specification{F}{20}{Es kann ein Regex-Ausdruck angegeben werden, der bei der Registrierung die eingegebenen E-Mail Adressen überprüft. }
+		\specification{F}{30}{Ein Nutzerprofil kann editiert werden. Es lassen sich dadurch alle Nutzerdaten und die Rolle aller Nutzer verändern. 
+			Ausgenommen davon ist die eigene Rolle und jegliche Änderung, die dazu führt, dass es keine Administratoren mehr im System vorhanden sind. 
+			Beim Löschen eines Nutzers wird zuerst überprüft, ob von ihm die Rückgabe eines Exemplars erwartet wird. 
+			In diesem Fall wird zuerst eine Bestätigung gefordert. Anschließend werde sämtliche ausgeliehene Exemplare und leer-gewordene Medien mit gelöscht. }
+		\specification{F}{60}{Es kann mit Angabe von Nutzerattributen nach Nutzern gesucht werden. Es können auch alle Nutzer im System angezeigt werden. }
+		\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden. }
+		\specification{W}{80}{Die Liste von gesperrten Nutzerkonten ist aufrufbar. }
+	\subsubsection{Ausleihe \& Rückgabe}
+		\specification{F}{240}{Der Zeitabstand zwischen dem automatischen Versenden einer Email-Mahnung und der Rückgabefrist für einen beliebigen Exemplar ist setzbar.
+			Dieser Wert gilt dann global für alle neue Ausleihvorgänge. Falls für einen Vorgang die Zeit bis zur Rückgabefrist kürzer ist als der gegebene Wert, wird keine Email-Mahnung versendet. }
+		\specification{F}{250}{Der Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator bei der Abholung ist setzbar.
+			In dieser Zeit ist das Exemplar zur Abholung markiert. Zu beachten ist, dass das ausgewählte Exemplar nach Überschreiten dieser Zeit wieder allen Nutzer zu Verfügung steht. }
+		\specification{F}{260}{Die Rückgabefrist für ist für alle Ausleihvorgänge einzeln setzbar. Dabei darf die Frist nicht in der Vergangenheit liegen. }
+		\specification{F}{270}{Die maximale Ausleihdauer ist global, für einen bestimmten Medium, oder für einen bestimmten Nutzer setzbar.
+			Wenn bei einem Ausleihvorgang mehrere Werte vorhanden sind, wird zuerst der Nutzerwert, danach der Mediumwert, und als letztes der globale Wert beachtet. }
+		\specification{F}{280}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer die Rückgabefrist das gegebene Medium um die gegebene Zeitdauer überschritten hat, ist abrufbar. }
+	\subsubsection{Katalogführung}
+		\specification{F}{380}{Der Attributsatz von allen Medien kann editiert werden. Wird ein neuer Attribut definiert, so ist der entsprechende Attributwert für alle Medien zuerst leer. Ein Attribut kann außerdem als mehrwertig markiert werden.
+			Wird ein Attribut gelöscht, so werden alle Medien nach den restlichen Attributen zusammengefasst. Es werden nämlich alle Duplikatinstanzen gelöscht und alle zugehörige Exemplare dem verbleibenden Mediuminstanz zugeordnet. 
+			Falls es in Folge einer Attributlöschung eine solche Zusammenfassung stattfinden muss, wird zuerst eine Bestätigung für diese Löschoperation gefordert. 
+			Es wird somit garantiert, dass die Gesamtheit der Attributsatzwerten unter allen Medien immer eindeutig ist. 
+			Per Default besteht der Attributsatz aus folgenden Attributen: Index, Typ, Titel, Version, Autoren (mehrwertig), Erscheinungsdatum, und Herausgeber. 
+			Die Attribute selber haben keinen Typ und es muss immer mindestens einen Attribut in dem Attributsatz vorhanden sein. }
+	\subsubsection{Weitere Personalisierungen}
+		\specification{F}{450}{Die Name der Einrichtung ist setzbar. }
+		\specification{F}{460}{Das Logo der Einrichtung kann hochgeladen werden. }
+		\specification{F}{470}{Das Farbenschema, bestehend aus zwei Farben, kann eingestellt werden. }
+		\specification{F}{480}{Kontaktinformationen, das Impressum, und die Datenschutzerklärung sind editierbar. }
 
 \section{Produktdaten} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
 
+section{Produktdaten}
 \subsection{Benutzerdaten}
 	\label{D010} \paragraph{/D010/ Benutzerdaten}
 \begin{itemize}
@@ -218,44 +217,50 @@ Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermita
 		\begin{itemize}
 			\item Vorname
 			\item Nachname
-			\item E-Mail-Adresse
-			\item Passwort(verschlüsselt)
-			\item Avatarbild(vlt. optional)
-		\end{itemize}	
+			\item E-Mail-Adresse (als Username)
+			\item Passwort (gehasht)
+			\item Adresse
+			%\begin{description}
+            \item [/Dw11/] Avatarbild (optional)
+           % \end{description}
+
+		\end{itemize}
+		
+		
 		\item sonstige Daten
 		\begin{itemize}
-		    \item Rolle(Servicemitarbeite, Administrator) 
+		    \item Rolle ( Schaltermitarbeiter, Administrator, Authentifizierte Nutzer und Anonyme Nutzer) 
 		\end{itemize}
-	
+	\end{itemize}
 	\subsection{Mediumsdaten}
 	\label{D020} \paragraph{/D020/ Mediumsdaten}
+	Folgende Attribute sind fest:
+	
 	\begin{itemize}
 	    \item ID
-	    \item Anzahl der Exemplare
-	    \item Type(Buch, CD Zeitschrift etc.)
-	    \item Verfügberkeitsstatus
+	    \item Link auf elektronische Version
+	   	\end{itemize}
+	   
+	   Die folgende Attribute sind änderbar:
+	   	\begin{itemize}
+	   \item Typ (Auswahl aus benutzerdefinierter Liste von Typen, z.B. "Buch, CD, etc.")
+	   \item Titel
+	   \item Autor (kann mehrwertig  sein)
+	   \item Version
+	   \item Erscheinungsjahr
+	   \item ISBN/ISSN (Index) 
+	   \item Herausgeber
 	    
 	\end{itemize}
 		
 	\subsection{Exemplar}
 	\label{D030} \paragraph{/D030/ Exemplar}
 	\begin{itemize}
-	    \item ID
-	    \item Titel
-	    \item Autor
-	    \item Auflage
-	    \item Verlag
-	    \item Erscheinungsjahr
-	    \item ISBN(Index)
-	    \item Link auf elektronische Version
+        \item Verfügbarkeitsstatus
 	    \item Bibliothekssignatur
 	    \item Standort
 	    \item Freitext
-	    \item Typ
-	    \item Speichermedium (optional)
-	    \item Onlinepublikation(optional)
-	    \item Status
-	    \item Dublikate
+	    \item Duplikate
 	   	\end{itemize}
 	   	
 \subsection{Ausleihe}
@@ -264,64 +269,44 @@ Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermita
 	\item ID
 	\item Exemplar-ID
 	\item Status (offen, abgeschlossen)
-	\item Tag der Abholung
+	\item Abholungszeit
+	\item Ausleihdatum
+	\item Ablauffrist
 %	\item Tag der Reservierung
 	\end{itemize}
 	
-	
-\subsection{Warteliste}
-	\label{D050} \paragraph{/D050/ Warteliste}
-	\begin{itemize}
-	\item Exemplar-ID
-	\item User-ID(Kunde)
-	\item Status (offen, abgeschlossen)
-
-%	\item Tag der Reservierung
-	\end{itemize}	
-	\end{itemize}	
+%muss die Warteliste weg
 
 	\subsection{Anwendungs- und Einrichtungsdaten}
-	\label{D060} \paragraph{/D060/ Anwendungs- und Einrichtungsdaten}
+	\label{D050} \paragraph{/D050/ Anwendungs- und Einrichtungsdaten}
 	\begin{itemize}
 		\item Name des Betreibers
-		 
-			\item E-Mail-Adressen-Suffixe der Einrichtung
-		\item Kontaktdaten	
-		\begin{itemize}
-			\item Anschrift
-			\item Telefonnummer
-			\item E-Mail-Adresse
-		\end{itemize}
+		\item Akzeptierte E-Mail Domäne ( RegEx)
+		\item Impressum mit Kontaktdaten
 		\item Logo
 		\item Farbschema
-		\item Anonymes Lesen
-		\item Administratoren
-		\item Registrierte Nutzer
-		\item Medien
-		\item Datenbankzugang
+		\item Ausleihfristen
+        \item Verfallsfristen
 	\end{itemize}
+	
 \subsection{Kategorie}
-	\label{D070} \paragraph{/D070/ Kstegorie}
+	\label{D060} \paragraph{/D060/ Kategorie}
 	\begin{itemize}
 	
 	\item ID
-	\item Exemplar-ID
-	\item Tiefe(bis auf 2 kann aber ändbar sein)
-	\item Beschreibung
+	\item Titel
+	\item Elternkategorie
 
 	\end{itemize}	
-\newpage
-
-\section{Produktleistung} %-------------------------------------------------------------------------------------------------
+	\section{Produktleistung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
 \subsection{Benutzerfreundlichkeit}
-
-     \paragraph{/L010/ \label{L010} Bedienbarkeit}
-    Ein klares Design der Webanwendung ermöglicht eine einfache und intuitive Bedienung. Die häufig verwendeten Funktionen sind leicht zugänglich. Zusätzlich zu einer Sortierfunktion nach allen Parametern ist auch eine Suchfunktion verfügbar. Damit lassen sich Dateien und Einträge leicht finden.
+ \paragraph{/L010/ \label{L010} Bedienbarkeit}
+    Ein klares Design der Webanwendung ermöglicht eine einfache und intuitive Bedienung. Die häufig verwendeten Funktionen sind leicht zugänglich. Eine Suchfunktion ist auch  verfügbar. Damit lassen sich Dateien und Einträge leicht finden.
     
      \paragraph{/L020/ \label{L020} Zeichenkodierung} Die Texte  der Website sind UTF-8 kodiert.
      
-      \paragraph{/L030/  \label{L030} Online-Hilfe} Dem Benutzer wird zu jeder Seite Online-Hilfe angeboten.
+      \paragraph{/L030/  \label{L030} Online-Hilfe} Dem Benutzer wird zu jeder Seite eine konextsensitive Online-Hilfe angeboten
       
       \paragraph{/L040/ \label{040} Installation}
       Eine schnelle und komfortable Installation für Systembetreiber ist vorgesehen, die auch eine automatische Konfiguration der Datenbank beinhaltet.
@@ -335,12 +320,13 @@ Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermita
     die eine bestimmte Anzahl von Einträgen überschreiten, werden durch Paginierung auf mehrere Seiten aufgeteilt. Der Benutzer kann zu den vorherigen oder nächsten 20 Einträge wechseln.
       
       
-\subsection{Sicherheit}
+\subsection{Zuverlässigkeit und Sicherheit}
    \paragraph{/L070/ \label{070} Datenspeicherung}
-   Alle Daten werden persistent in einer PostgreSQL-Datenbank gespeichert. Die Konsistenz der Daten ist auch im Mehrbenutzerbetrieb gewährleistet. Im Fall wenn  Änderungen mehrere Datenbanktabellen betreffen, werden Transaktionen verwendet.
+   Alle dynamisch veränderbaren Daten werden persisten in einer PostgreSQL-Datenbank gespeichert. Die Konsistenz der Daten ist auch im Mehrbenutzerbetrieb gewährleistet. Im Fall wenn  Änderungen mehrere Datenbanktabellen betreffen, werden Transaktionen verwendet.
   
    \paragraph{/L080/ \label{080} Datenlöschen}
-   Die Abhängigkeiten der Daten werden berücksichtigt. Wenn das Löschen eines Datensatzes das Löschen weiterer Daten zur Folge hat, wird der Benutzer vorher darüber informiert. Dadurch wird ein unbeabsichtigtes Löschen verhindert.
+   
+  Bestehen Abhängigkeiten ( z.B der Administrator möchte ein Medium löschen und dieses Medium hängt mit anderem Datensatz ab dann wird er  darauf hingewiesen bevor  er  löschen möchte)  zwischen den zu löschenden Daten und anderen Datensätzen, werden diese erst nach einer Warnung an den Benutzer gelöscht.
   
 \subsubsection{Datenschutz}
 	\paragraph{/L090/ \label{L090} 
@@ -348,19 +334,22 @@ Ansonsten sind alle Funktionen, die in dieser Aufführung nur einem Schaltermita
 	Alle Benutzerdaten, wie z. B. Login-Daten, werden ausschließlich über eine SSL-Verbindung übertragen. Der Zugriff auf sensible Daten durch unbefugte Dritte wird so weit wie möglich verhindert.
 		    
 	\paragraph{/L100/ \label{L100} Transparenz}
-    Technische Informationen über das System können nur bei Bedarf von außen eingesehen werden.
+    Technische Informationen über das System können nicht von außen eingesehen werden.
 		   
-   \paragraph{/L110/ \label{L110} Passwörter} Passwörter werden ausschließlich verschlüsselt gespeichert.
+   \paragraph{/L110/ \label{L110} Passwörter} Passwörter werden gehashed gespeichert.
    
-    \paragraph{/L120/ \label{L120} Schutz gegen Manipulationen} Das System kann nur im Rahmen der vorgesehenen Funktionalitäten verändert werden.
+    \paragraph{/L120/ \label{L120} Schutz gegen Manipulationen} Eine Manipulation mit den üblichen Angriffsmethoden wie SQL-Injection oder Cross-Site-Scripting ist ausgeschlossen. Darüber hinaus sind die Benutzer vor Session Hijacking geschützt.
    
     \paragraph{/L130/ \label{L130} Benutzerdaten}
    Alle Benutzerdaten sind nur für autorisierte Benutzer zugänglich.
-Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
+   Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
 
-    \paragraph{/L140/ \label{L140} Schutz gegen Angriffen} 
-   Eine Manipulation mit den üblichen Angriffsmethoden wie SQL-Injection oder Cross-Site-Scripting ist ausgeschlossen. Darüber hinaus sind die Benutzer vor Session Hijacking geschützt.
+   \paragraph{/L140/ \label{L140} Cookies}
+   Cookies werden nciht erzwungen.
    
+   \paragraph{/L150/ \label{L150} Logging}
+    Das System besitzt einen Logger, welcher das Auftreten von untyptischen Verhalten in einer Logdatei festhält.
+
  \subsection{Skalierbarkeit und Performance}
 	        \paragraph{
 	        /L150/ \label{L150} Last}
@@ -373,9 +362,8 @@ Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
 	    
 \paragraph{/LW170/ \label{LW170} Farbschema}	    	       
 	       Mit der Farbwahl ist es möglich, die Darstellung der betreibenden Einrichtung durch das Erscheinungsbild der Webanwendung anzupassen.
-\newpage
-
-\section{Benutzeroberfläche} %-------------------------------------------------------------------------------------------------
+	       
+	   \section{Benutzeroberfläche} %-------------------------------------------------------------------------------------------------
 \sectionauthor{León Liehr}
 
 In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angemeldet} und \ref{mediumsseite_admin} werden die einzelnen Unterseiten der Webapplikation skizzenhaft dargestellt.
@@ -415,12 +403,11 @@ In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angem
 \end{figure}
 
 \restoregeometry
-\newpage
 
 \section{Qualitätsanforderungen} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
 
-Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugewiesen wird.
+	Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugewiesen wird.
 	
 \begin{center}
 \begin{tabular}{ |l||c|c|c|c| } 
@@ -441,7 +428,7 @@ Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugew
  \hline
  Änderbarkeit & & X & & \\
  \hline
- Portierbarkeit & & &  & X \\
+ Portierbarkeit & &   & X & \\
 
  \hline
 \end{tabular}
@@ -454,100 +441,32 @@ Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugew
 sollte das System in gewissen Grenzen flexibel genug sein.
 \item Um Manipulationen mit bekannten Angriffsmethoden zu verhindern, werden bestimmte Maßnahmen getroffen.
 \end{itemize}
-
-\newpage
-
-\section{Testing} %-------------------------------------------------------------------------------------------------
+\section{Blackbox-Tests} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Sergei Pravdin}
-Das Bibliothekssystem ist erfolgreich installiert, somit sind ein Administrator, ein registrierten Benutzer und ein Medium eingesetzt. Das System befindet sich im offenen Modus, deshalb ist die Registrierung für die allen E-Mail-Domänen möglich.
-\subsection{Nutzerverwaltung}
-		\subsubsection{Administrator}
-			\specification{T}{010}{Das System wurde vom Administrator ins geschlossene Modus umgeschaltet. Ein anonymer Benutzer ruft die Katalog-Seite auf, aber eine Anmeldungsseite wird geladen.­­­­­ (\hyperlink{spec:F:10}{/F10/}) }
-			\specification{T}{020}{Der Administrator erlaubte die Registrierung nur für die Domäne "@fim.uni-passau.de". 
-				Ein anonymer Benutzer befindet sich auf der Seite Registrierung und gibt Angaben, inkl. eine E-Mail mit der Domäne "@gmail.com", in den Formular an und klickt ein Button "Registrieren". 
-				Eine entsprechende Fehlermeldung wird angezeigt. (\hyperlink{spec:F:20}{/F20/}) }
-			\specification{T}{030}{Ein anonymer Benutzer befindet sich auf der Seite Registrierung und gibt valide Angaben in den Formular an und klickt aufs Button "Registrieren". 
-				Eine entsprechende Meldung wird gezeigt, dass der Benutzer seine E-Mail-Adresse bestätigen muss. Die Registrierung wird abgeschlossen, falls die E-Mail-Adresse verifiziert wird. (\hyperlink{spec:F:90}{/F90/}) }
-			\specification{T}{40}{Der Administrator befindet sich auf einer Konto-Seite eines Benutzers und ändert ein Vorname des Benutzers. Somit wird ein neuer Vorname des Benutzers auf seiner Konto-Seite sichtbar. (\hyperlink{spec:F:40}{/F40/}) }
-			\specification{T}{50}{Der Administrator löscht einen Benutzer. Der Benutzer befindet sich auf der Anmeldungsseite und versucht sich mit seinem Login und seinem Kennwort anzumelden. Eine entsprechende Fehlermeldung wird gezeigt.
-				(\hyperlink{spec:F:50}{/F50/}) } 
-			\specification{T}{60}{Der Administrator gibt einen Name eines existierenden Benutzers ins Suchfeld an. Der entsprechende Benutzer wird gezeigt. (\hyperlink{spec:F:60}{/F60/}) }
-			\specification{TW}{70}{Der Administrator verbietet die Ausleihe-Funktion eines Benutzers. Der Benutzer befindet sich auf einer Seite eines Mediums und klickt aufs Button "Buchen". Eine entsprechende Fehlermeldung wird gezeigt. 
-				(\hyperlink{spec:W:70}{/W70/}, \hyperlink{spec:W:100}{/W100/}) }
-			\specification{TW}{80}{Ein Benutzer wurde von einem Administrator gesperrt, somit darf er keine Medien ausleihen. Der Administrator ruft eine Seite von gesperrten Konten auf. Der gesperrte Benutzer ist in der gezeigten Liste sichtbar. 
-				(\hyperlink{spec:W:80}{/W80/}) }
-			\subsubsection{Anonyme Nutzer}
-			\specification{T}{90}{Ein anonymer Benutzer befindet sich auf der Seite Registrierung und gibt valide Angaben in den Formular an und klickt aufs Button "Registrieren".
-				Eine entsprechende Meldung wird gezeigt, dass der Benutzer seine E-Mail-Adresse bestätigen muss. Die Registrierung wird abgeschlossen, falls die E-Mail-Adresse verifiziert wird. (\hyperlink{spec:F:90}{/F90/}) }
-		\subsubsection{Registrierte Nutzer}
-			\specification{T}{100}{Ein Benutzer befindet sich auf der Anmeldungsseite und gibt sein Login und sein Kennwort ins Formular an. Eine Seite mit de angemeldeten Benutzer wird geladen. (\hyperlink{spec:F:100}{/F100/}) }
-			\specification{T}{110}{Ein angemeldeter Benutzer befindet sich auf einer irgendwelchen Seite des Systems und klickt auf den Button "Abmelden".
-				Die Seite wird wiedergeladen und der Benutzer ist nicht mehr angemeldet, somit ist der Button "Anmelden" sichtbar. (\hyperlink{spec:F:110}{/F110/}) }
-		\subsubsection{Angemeldete Nutzer}
-			\specification{T}{120}{Ein Benutzer befindet sich auf seiner Konto-Seite. Er klickt auf den Button "Editieren" und verändert sein Geburtsdatum, dann klickt er auf den Button "Speichern". 
-				Somit ist sein neues Geburtsdatum auf der Konto-Seite sichtbar. (\hyperlink{spec:F:120}{/F120/}) }
-			\specification{T}{130}{Ein Benutzer befindet sich auf seiner Konto-Seite. Er klickt auf den Button "Konto löschen". Eine Meldung wird gezeigt und der Benutzer bestätigt das Löschen.
-				Das Konto wird gelöscht und die Startseite des Systems wird geladen. (\hyperlink{spec:F:130}{/F130/}) }
-			\specification{TW}{140}{Ein Benutzer befindet sich auf seiner Konto-Seite. Er klickt auf den Button "Bild hochladen" und wählt aus seinem Rechner ein Bild aus. 
-				Er klickt den Button "einsetzen" und ein Bild wird eingesetzt und ist auf der Konto-Seite sichtbar. (\hyperlink{spec:W:140}{/W140/}) }
-		\subsubsection{Alle Nutzer}
-			\specification{T}{150}{Ein Benutzer befindet sich auf der Registrierung-Seite und gibt einen invaliden Name und eine invalide E-Mail-Adresse.
-				Eine entsprechende Fehlermeldung über die beiden Fehler wird gezeigt. (\hyperlink{spec:W:150}{/W150/}) }
-\subsection{Navigation \& Suche}
-		\subsubsection{Alle Nutzer}
-			\specification{T}{160}{Der Benutzer gibt eine Texteingabe ins Suchfeld und sucht Medien nach einer Kategorie. Entsprechende der gewünschten Kategorie Medien werden gezeigt. (\hyperlink{spec:F:160}{/F160/}, \hyperlink{spec:F:180}{/F180/}) }
-			\specification{T}{170}{Der Benutzer befindet sich auf der Baum-Darstellung-Seite von allen Kategorien und klickt auf eine Kategorie. Entsprechende der gewünschten Kategorie Medien werden gezeigt. (\hyperlink{spec:F:170}{/F170/}) }
-			\specification{T}{180}{Der Benutzer befindet sich auf der Katalog-Seite und klickt auf ein Medium. Eine Seite des Mediums mit einer Liste von allen Exemplaren wird geladen. (\hyperlink{spec:F:190}{/F190/}) }
-			\specification{T}{190}{Der Benutzer befindet sich auf der Katalog-Seite und klickt auf eine Spalte. Medien werden nach dieser Spalte sortiert. (\hyperlink{spec:F:200}{/F200/}) }
-			\specification{T}{200}{Der Benutzer befindet sich auf irgendwelcher Seite des Systems. Er klickt auf den Button "Impressum" und eine Impressum-Seite wird geladen. Die Kontaktdaten sind sichtbar. (\hyperlink{spec:F:210}{/F210/}) }
-			\specification{TW}{210}{Der Benutzer befindet sich auf der Katalog-Seite und setzt ein, dass max. 10 Medien auf einer Seite sichtbar sein dürfen. 
-				Die Katalog-Seite wird wieder geladen und max. 10 Medien sind sichtbar. (\hyperlink{spec:W:230}{/W230/})}
-			\subsection{Ausleihe \& Rückgabe}
-		\subsubsection{Administrator}
-			\specification{T}{220}{Der Administrator setzt den Zeitabstand als 2 Minute zwischen dem automatischen Versenden einer E-Mail-Mahnung und der Rückgabefrist für ein Medium an. 
-				Außerdem setzt er einen Rückgabefrist des Mediums als 1 Minute. Der Personalarbeiter bucht für einen Benutzer das Medium im System, gibt es ab und in 2 Minuten bekommt der Benutzer eine E-Mail-Mahnung. 
-				In seinem Konto ist eine Meldung über eine Mahnung bei diesem Medium sichtbar. (/F230/, /F250/, /F260/)}
-			\specification{T}{230}{Der Administrator setzt den Zeitabstand zwischen der Initiierung eines Ausleihvorgangs durch einen Nutzer und dem Abschluss dieser Initiierung durch einen Personalarbeiter oder Administrator 
-				und die maximale Reservierungsdauer an. Ein Benutzer bucht ein Medium im System. Ein Button "Buchen" ist nicht mehr für andere Benutzer sichtbar. 
-				Ein Button "Reservieren" ist für andere Benutzer sichtbar. (/F240/, /W280/, /F300/)}
-			\specification{T}{240}{Der Administrator ruft eine Liste von Benutzern, die einen Rückgabefrist überschritten haben, an. Entsprechende Liste von Benutzern ist sichtbar. (/F270/)}
-		\subsubsection{Personalarbeiter}
-			\specification{T}{250}{Der Personalarbeiter ruft eine Liste von zur Abholung markierten Exemplaren an. Entsprechende Exemplaren sind sichtbar. (/F290/)}
-			\specification{T}{260}{Der Personalarbeiter befindet sich auf einer Medium-Seite und klickt auf den Button "Freigeben" bei einem Exemplar. 
-				Ein angemeldeter Benutzer befindet sich auf der Seite dieselben Medium und der Button "Buchen" ist für ihn sichtbar. (/F310/)}
-		\subsubsection{Registrierte Nutzer}
-			\specification{T}{270}{Ein angemeldeter Benutzer befindet sich auf einer Medium-Seite und klickt auf den Button "Buchen". Eine entsprechende Meldung über eine erfolgreiche Buchung wird gezeigt. (/F320/) }
-			\specification{TW}{280}{Ein angemeldeter Benutzer befindet sich auf einer Seite eines Mediums, das ausgeliehen ist, und klickt auf den Button "Reservieren". 
-				Eine entsprechende Meldung über eine erfolgreiche Reservierung wird gezeigt. (/W330/) }
-			\specification{TW}{290}{Ein angemeldeter Benutzer befindet sich auf einer Seite eines Mediums, das von ihm reserviert wurde, und klickt auf den Button "Reservierung widerrufen". 
-				Eine entsprechende Meldung über eine erfolgreiche Widerrufung der Reservierung wird gezeigt. (/W340/) }
-\subsection{Katalogführung}
-		\subsubsection{Administrator}
-			\specification{T}{300}{Der Administrator befindet sich auf der Seite aller Kategorien. Er klickt auf den Button "Erstellen" und gibt einen Name einer neuen Kategorie an und speichert. 
-				Die Seite wird wiedergeladen und die neue Kategorie sichtbar. (/F350/) }
-			\specification{T}{310}{Der Administrator befindet sich auf der Seite aller Kategorien. Er klickt auf den Button "Löschen" bei einer Oberkategorie. Eine entsprechende Meldung wird gezeigt und das Löschen vom Administrator bestätigt. 
-				Die Seite wird wiedergeladen und die gelöschte Kategorie ist nicht mehr auf der Seite sichtbar. (/F360/) }
-			\specification{T}{320}{Der Administrator befindet sich auf der Katalog-Seite und klickt auf den Button "Medium erstellen". Ein entsprechendes Formular wird gezeigt, der Administrator gibt die Angaben eines Mediums an und speichert. 
-				Die Seite wird wiedergeladen und ein erstelltes Medium ist sichtbar. (/F370/)}
-			\specification{T}{330}{Der Administrator befindet sich auf der Katalog-Seite und klickt auf den Button "Löschen" bei einem Medium. Eine entsprechende Meldung wird gezeigt und das Löschen vom Administrator bestätigt. 
-				Die Seite wird wiedergeladen und das gelöschte Medium ist nicht mehr auf der Seite sichtbar. (/F380/) }
-			\specification{T}{340}{Der Administrator befindet sich auf der Medium-Seite und klickt auf den Button "Exemplar erstellen". Ein entsprechendes Formular wird gezeigt, der Administrator gibt die Angaben eines Exemplars an und speichert. 
-				Die Seite wird wiedergeladen und ein erstelltes Exemplar ist sichtbar. (/F390/)}
-			\specification{T}{350}{Der Administrator befindet sich auf der Medium-Seite und klickt auf den Button "Exemplar löschen". 
-				Das Exemplar ist nicht ausgeliehen, deshalb wird die Seite ohne Meldung wiedergeladen und ein erstelltes Exemplar ist nicht mehr sichtbar. (/F400/)}
-	\subsection{Weitere Personalisierungen}
-		\subsubsection{Administrator}
-			\specification{T}{360}{Der Administrator befindet sich auf der Einstellungen-Seite und klickt auf den Button "Name der Organisation ändern". Dann gibt er einen neuen Name an und speichert. 
-				Die Seite wird wiedergeladen und der neue Name ist auf der Seite sichtbar. (/F410/) }
-			\specification{T}{370}{Der Administrator befindet sich auf der Einstellungen-Seite und klickt auf den Button "Logo hochladen". Dann wählt er ein Bild aus seinem Rechner aus und speichert. 
-				Die Seite wird wiedergeladen und das Logo ist auf der Seite sichtbar. (/F420/)}
-			\specification{T}{380}{Der Administrator befindet sich auf der Einstellungen-Seite und klickt auf den Button "Farbe ansetzen". Dann wird eine Liste der Farben gezeigt und der Administrator wählt eine Farbe aus. 
-				Die Seite wird wiedergeladen und die ausgewählte Farbe ist auf der Seite sichtbar. (/F430/)}
-			\specification{T}{390}{Der Administrator befindet sich auf der Impressum-Seite und klickt auf den Button "Ändern". Dann gibt er eine neue Kontaktnummer an und speichert. 
-				Die Impressum-Seite wird wiedergeladen und die neue Kontaktnummer ist auf der Seite sichtbar. (/F440/)}
-		\subsubsection{Alle Nutzer}
-			\specification{TW}{400}{Der Benutzer befindet sich auf irgendwelcher Seite des Systems und klickt auf Button "Sprache wechseln". 
-				Dann wird er eine englische Sprache ausgewählt und die Seite wird auf der englischen Sprache wiedergeladen. (/W450/) }
+Das Bibliothekssystem ist erfolgreich eingesetzt und so eingestellt, dass eine Registrierung für alle E-Mail-Domänen möglich ist. Das System hat einen Administrator namens Max Mustermann mit der E-Mail-Adresse 'admin.sep2021.test@gmail.com', der Anschrift 'Innstraße 33, 94032 Passau, Deutschland' und dem Kennwort 'xlA24!bGhm'. Außerdem verfügt das Impressum in der Anschrift die Innstraße. \vspace{0.5em}
+
+Die im Folgenden beschriebenen Testfälle bauen aufeinander auf. Das bedeutet, dass der Zustand des Systems für den folgenden Testfall übernommen wird.
+\subsection{Testfälle}
+\specification{T}{010}{Die Webseite des Systems wird aufgerufen. Der Administrator gibt die E-Mail-Adresse 'admin.sep2021.test@gmail.com' und das Kennwort 'xlA24!bGhm' in die Anmeldungsfelder 'E-Mail-Adresse' und 'Passwort' ein und klickt auf 'Anmelden'. Die Anmeldung ist erfolgreich und die Profilseite mit dem Nachnamen 'Mustermann' wird gezeigt. ­­­­­ (\hyperlink{spec:F:100}{/F100/}) }
+\specification{T}{011}{Der Administrator klickt auf 'Allgemeine Verwaltungsseite' und dann auf 'Mediumsschema bearbeiten'. Er gibt '00:00:01' (1 Minute) im Feld Ausleihdauer ein und klickt auf 'Speichern'. Die Seite 'Bearbeitung des Mediumsschemas' wird erneut geladen und die Ausleihdauer '00:00:01' ist sichtbar. (\hyperlink{spec:F:240}{/F240/}) (\hyperlink{spec:F:270}{/F270/})}
+\specification{T}{020}{Der Administrator klickt auf 'Verwaltung' und im Anschluss auf 'Neuen Nutzer registrieren'. Die Registrierungsseite wird geladen und der Administrator gibt im Registrierungsformular als E-Mail-Adresse, Kennwort, Vorname, Name, Straße, Hausnummer, PLZ, Stadt, Land folgende Daten an:  'mitarbeiter.sep2021test@gmail.com', 'sijAs13!!A', 'Tom', 'Mustermann', 'Instraße', '33', '94032', 'Passau', 'Deutschland'. Anschließend klickt er auf 'Bearbeiten', definiert die Rolle des Profiles als 'Mitarbeiter' und klickt auf 'Speichern'. Danach klickt er auf 'Registrieren', 'Abmelden' und gibt die E-Mail-Adresse 'mitarbeiter.sep2021test@gmail.com' sowie das Kennwort 'sijAs13!!A' in die Anmeldungsfelder 'E-Mail-Adresse' und 'Passwort' ein. Er klickt auf 'Anmelden'. Die Anmeldung ist erfolgreich und die Profilseite mit dem Nachnamen 'Mustermann' und mit dem Vornamen 'Tom' wird gezeigt. (\hyperlink{spec:F:110}{/F110/}) (\hyperlink{spec:F:30}{/F30}) }
+\specification{T}{030}{Der Mitarbeiter klickt auf 'Profil bearbeiten', setzt 'Müller' als Nachname und klickt auf 'Speichern'. Die Profilseite wird wiedergeladen und der Nachname 'Müller' ist sichtbar. ­­­­­ (\hyperlink{spec:F:120}{/F120/}) }
+\specification{T}{040}{Der Mitarbeiter klickt auf 'Erweiterte Suche', im nächsten Schritt auf 'Medium erstellen', gibt im Formular '17RE', 'Buch', 'Programmieren lernen', '1.0', 'Mustermann', '2020', 'Springer' als 'Index', 'Typ', 'Titel', 'Version', 'Autoren', 'Erscheinungsdatum' und 'Herausgeber' ein und klickt auf 'Erstellen'. Die Seite des Mediums wird geladen und der Index '17RE' ist sichtbar. ­­­­­ (\hyperlink{spec:F:380}{/F380/}) (\hyperlink{spec:F:400}{/F400/})}
+\specification{T}{050}{Der Mitarbeiter befindet sich auf der Seite des Mediums 'Programmieren lernen' und klickt 'Medium bearbeiten'. In der Tabelle aller Exemplare gibt er die Signatur '17RE (+1)' ein und klickt im Anschluss auf 'Speichern'. Die Seite wird erneut geladen und die Signatur 17RE (+1)' ist sichtbar. ­­­­­ (\hyperlink{spec:F:420}{/F420/}) (\hyperlink{spec:F:190}{/F190/})}
+\specification{T}{060}{Der Mitarbeiter klickt auf 'Stöbern', dann auf 'Kategorie erstellen' und gibt im Formular 'Informatik' und 'Alle Medien zu Informatik' als 'Name', und 'Beschreibung' ein. Anschließend klickt er auf 'Speichern'. Der Kategorienstöberer wird geladen und die Kategorie 'Informatik' ist sichtbar. ­­­­­ (\hyperlink{spec:F:360}{/F360/})}
+\specification{T}{070}{Der Mitarbeiter gibt im Suchfeld 'Programmieren lernen' ein und sendet den Suchauftrag ab. Die Seite 'Mediensuche' wird geladen und das Medium mit Titel 'Programmieren lernen' ist sichtbar. Im nächsten Schritt klickt der Mitarbeiter auf dieses Medium, die Seite des Mediums wird geladen. Danach klickt der Mitarbeiter auf 'Medium bearbeiten', definiert im Attributsformular die Kategorie 'Informatik­­­­­' und klickt dann auf 'Speichern'. Er klickt nun auf 'Stöbern', der Kategorienstöberer wird geladen und das Medium ist mit dem Titel 'Programmieren lernen' unter der Kategorie 'Informatik' im Baum aller Kategorien sichtbar.  (\hyperlink{spec:F:160}{/F160/}) (\hyperlink{spec:F:170}{/F170/})}
+\specification{T}{080}{Der Mitarbeiter klickt auf 'Abmelden' und im nächsten Schritt auf 'Impressum'. Die Seite mit dem Impressum wird geladen und 'Innstraße' wird in der Anschrift auf der Seite sichtbar. ­­­­­ (\hyperlink{spec:F:210}{/F210/})}
+\specification{T}{090}{Der Nutzer gibt im Suchfeld 'Informatik Springer' ein und sendet die Suchanfrage ab. Die Seite zur Mediensuche wird geladen und das Medium mit dem Titel 'Programmieren lernen' ist sichtbar. ­­­­­ (\hyperlink{spec:F:180}{/F180/})}
+\specification{T}{100}{Der Nutzer klickt auf 'Registrierung'. Die Registrierungsseite wird geladen und der Nutzer gibt im Registrierungsformular als E-Mail-Adresse, Kennwort, Vorname, Name, Straße, Hausnummer, PLZ, Stadt, Land folgende Daten ein: 'nutzer.sep2021test@gmail.com', 'sdfHs4!a', 'Bob', 'Mustermann', 'Innstraße', '40', '94032', 'Passau', 'Deutschland'. Danach klickt er auf 'Registrieren'. Anschließend bestätigt er seine E-Mail-Adresse durch den Verifizierungslink. Die Anmeldung ist erfolgreich und als Ergebnis wird die Profilseite mit dem Vornamen 'Bob' und der E-Mail-Adresse 'nutzer.sep2021test@gmail.com' angezeigt.  ­­­­­ (\hyperlink{spec:F:90}{/F90/})}
+\specification{T}{110}{Der Nutzer klickt auf 'Abmeldung', gibt als E-Mail-Adresse \linebreak  'nutzer.sep2021test@gmail.com' ein und klickt auf 'Passwort vergessen'. Anschließend \linebreak  bestätigt er seine E-Mail-Verifizierung durch den Verifizierungslink. Die Wiederherstellungsseite wird geladen und der Nutzer gibt im Wiederherstellungsformular zwei Mal das neue Kennwort 'djnASdd1d!' ein. Anschließend klickt er auf 'Speichern'; es wird eine Profilseite als Ergebnis geladen. Auf der Seite ist der Vorname 'Bob' sichtbar.­(\hyperlink{spec:F:101}{/F101/})}
+\specification{T}{120}{Der Nutzer klickt auf 'Stöbern' und auf das Medium 'Programmieren lernen'. Anschließend klickt er auf 'Buchen'. Die Mediumseite wird wiedergeladen und der Status des Exemplars 'Gebucht' ist sichtbar. ­­ (\hyperlink{spec:F:330}{/F330/})}
+\specification{T}{130}{Der Nutzer klickt auf 'Abmelden' und wird auf die Anmeldungsseite weitergeleitet. Er gibt dort die E-Mail-Adresse 'mitarbeiter.sep2021test@gmail.com' und das Kennwort 'sijAs13!!A' in die Formularfelder 'E-Mail-Adresse' und 'Passwort' ein und klickt auf 'Anmelden'. Nach erfolgreicher Anmeldung navigiert er durch einen Klick auf 'Abholung' zur Listenansicht der abzuholenden Exemplare. Die Seite wird geladen und der Mitarbeiter klickt auf 'abgeholt' bei dem Listeneintrag mit der Signatur '17RE (+1)'. Die Seite wird erneut geladen und der Eintrag mit der Signatur '17RE (+1)' ist verschwunden.(\hyperlink{spec:F:300}{/F300/})\hyperlink{spec:F:310}{/F310/}) }
+\specification{T}{140}{Nach einer Minute klickt der Mitarbeiter auf 'Rückgabe' und die Seite mit dem Rückgabeformular wird geladen. Der Mitarbeiter gibt die Signatur '17RE (+1)' und die E-Mail-Adresse \linebreak 'nutzer.sep2021test@gmail.com' in die entsprechenden Formularfelder ein und klickt anschließend auf \linebreak 'Bestätigen'. Eine entsprechende Meldung über die erfolgreiche Zurücknahme wird sichtbar. (\hyperlink{spec:F:300}{/F300/})\hyperlink{spec:F:320}{/F320/}) }
+\specification{T}{150}{Der Mitarbeiter klickt auf 'Ausleihe' und gibt auf der Seite 'Direktausleihe' im Formular die Signatur '17RE (+1)' und die E-Mail-Adresse 'nutzer.sep2021test@gmail.com' ein und bestätigt seine Eingabe. Somit ist die direkte Ausleihe erfolgreich abgeschlossen und eine entsprechende Meldung auf der Seite sichtbar ist. (\hyperlink{spec:F:321}{/F321/})}
+\specification{T}{160}{Der Mitarbeiter klickt auf 'Abmelden' und die Anmeldungsmaske wird geladen. Der Administrator gibt die E-Mail-Adresse 'admin.sep2021.test@gmail.com' und das Kennwort 'xlA24!bGhm' in die Anmeldungsfelder 'E-Mail-Adresse' und 'Passwort' ein und klickt auf 'Anmelden'. Nach erfolgreicher Anmeldung klickt er auf 'Verwaltung' und navigiert zur Listenansicht 'Leihfristverstöße'. Nach dem Laden der Seite ist das Exemplar mit der Signatur '17RE (+1)', sowie der Nutzeraccount mit der E-Mail 'nutzer.sep2021test@gmail.com' und die Zeitangabe der überzogenen Frist ist sichtbar.(\hyperlink{spec:F:280}{/F280/})}
+\specification{T}{170}{Der Administrator klickt auf 'Verwaltung', navigiert von dort aus zur Nutzersuche und gibt nach laden der Seite 'Bob Mustermann' im Suchfeld ein. Anschließend sendet er die Suchanfrage an und die Seite 'Nutzersuche' wird geladen, auf der der Nutzer 'Mustermann' sichtbar ist.(\hyperlink{spec:F:60}{/F60/})}
+\specification{T}{180}{Der Administrator klickt auf 'Verwaltung' und dann auf 'Bearbeiten'. Im Formular gibt er 'grün', 'gelb' und 'Testsystem' in die Felder 'Farbe 1' , 'Farbe 2' und 'Name der Einrichtung' ein. Schließlich klickt er auf 'Speichern'. Die 'Allgemeine Verwaltungsseite' wird erneuet geladen und die Farben 'grün' und 'gelb', sowie der Name 'Testsystem' sind auf der Seite sichtbar. (\hyperlink{spec:F:450}{/F450/}) (\hyperlink{spec:F:470}{/F470/})}
+\specification{T}{190}{Der Administrator klickt auf 'Impressum' und dann auf 'Bearbeiten'. Im Formular gibt er 'Germany' im Feld 'Land' ein. Schließlich klickt er auf 'Speichern'. Die Seite 'Impressum' wird erneuet geladen und das Land 'Germany' auf der Seite sichtbar.(\hyperlink{spec:F:480}{/F480/})}
 
 \section{Entwicklungsumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
