@@ -2,9 +2,9 @@
 
 | Themengebiet | Spezialist \& Ansprechpartner |
 |--------------|-------------------------------|
-| **git**      | León                          |
+| **Git**      | León                          |
 | **LaTeX**    | Ivan                          |
 | **RSA**      | Mohamad                       |
 | **SQL**      | Jonas                         |
 | **Selenium** | Sergei                        |
- 
+| **Regex**    | Ivan                          |
