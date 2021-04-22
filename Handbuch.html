@@ -69,6 +69,8 @@
                 <li><a href="Rückgabeformular">Rückgabe</a></li>
                 <li><a href="Direktausleihe">Direktausleihe</a></li>
                 <li><a href="Abholung">Abholung</a></li>
+				<li><a href="Allgemeine Verwaltungsseite">Verwaltung</a></li>
+				<li><a href="Kategorienstöberer">Kategorienstöberer</a></li>
             </ul>
         </div>
     </div>
@@ -253,7 +255,41 @@ Beachten Sie in beiden Fällen eventuell auftretende Meldungen neben den Feldern
 Die Erstellung eines neuen Mediums schließen Sie durch einen Klick auf "erstellen" ab, Sie werden dann zur Nutzeransicht dieses Mediums weitergeleitet.			
 			<h4><a id="admin">Administrator</a></h4>
     </section>
-    
+
+	<section>
+		<h3><a id="Allgemeine Verwaltungsseite">Verwaltung</a></h3>
+		Diese Seite ist nur für die Administratoren verfügbar und dient zur die Verwaltung des Systems.
+		<h4><a id="anonym">Anonymer Nutzer</a></h4>
+		<h5><a id="geschlossen">geschlossener Modus</a></h5>
+		<h5><a id="offen">offener Modus</a></h5>
+		<h4><a id="registriert">Registrierter Nutzer</a></h4>
+		<h4><a id="mitarbeiter">Bibliotheksmitarbeiter</a></h4>
+		<h4><a id="admin">Administrator</a></h4>
+		Geben Sie bitte einen regulären Ausdruck für die E-Mail-Domäne an. Neue Accounts können dann nur noch mit einer dem Ausdruck genügender E-Mail-Adresse registriert werden .
+		Nutzeraccounts lassen sich durch einen Klick auf 'Nutzersuche' oder direkt durch das Nutzersuchfeld suchen, Sie werden dann auf eine spezielle Seite weitergeleitet.
+		Sie können hier das System zwischen offenem und geschlossenen Modus umschalten, letzterer verbietet anonymen Besuchern der Seite, den Kategorienstöberer sowie die Suchfunktion zu nutzen und beschränkt diese Nutzergruppe auf die Registrierungsmöglichkeit.
+		Durch einen Klick auf "Medium erstellen" navigieren Sie zum entsprechenden Erstellungsformular.
+		Wenn Sie einen neuen Nutzer registrieren möchten, klicken Sie auf "Nutzer registrieren".
+		Das Setzen des globalen Attributsatzes für Medien ist auf einer weiteren Seite unter "Mediumsschema bearbeiten" möglich.
+		Eine Listenansicht der Nutzeraccounts mit überzogenen Rückgabefristen und zugehörigen Exemplaren finden Sie unter "Leihfristverstöße".
+		Hier können Sie auch das Farbschema der Webseite modifizieren, sowie das Logo und den Systemnamen festlegen.
+	</section>
+
+	<section>
+		<h3><a id="Kategoriestöberer">Kategoriestöberer</a></h3>
+		Auf dieser Seite erhalten Sie einen Überblick über die Medienkategorien dieser Bibliothek.
+		<h4><a id="anonym">Anonymer Nutzer</a></h4>
+		<h5><a id="geschlossen">geschlossener Modus</a></h5>
+		<h5><a id="offen">offener Modus</a></h5>
+		Wenn Sie in der Baumansicht auf ein Medium klicken, öffnet sich eine Liste mit allen darunter fallenden Medien. Durch Auswählen eines Mediums gelangen Sie zu dessen Detailseite.
+		<h4><a id="registriert">Registrierter Nutzer</a></h4>
+		<h4><a id="mitarbeiter">Bibliotheksmitarbeiter</a></h4>
+		Sie haben die Möglichkeit eine Kategorie zu bearbeiten, Sie werden dann auf ein Bearbeitungsformular weitergeleitet.
+		Außerdem können Sie eine Kategorie löschen, der Baum wird Ihnen danach aktualisiert angezeigt.
+		Beachten Sie bitte das alle Unterkategorien der Gelöschten ebenfalls entfernt werden und alle unter dieser Kategorie eingeordneten Medien diese Einordnung verlieren.
+		Sie werden durch eine Meldung über den Umfang Ihrer Eingriffe informiert.
+		<h4><a id="admin">Administrator</a></h4>
+	</section>
 
     <footer>
         <a href="#top">nach oben</a>
