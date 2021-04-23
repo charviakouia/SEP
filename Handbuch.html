@@ -56,205 +56,506 @@
     <div class="toc-container">
         <div class="toc">
             <h2>Inhaltsverzeichnis</h2>
-
             <ul>
-                <li><a href="Anmeldemaske">Anmeldung</a></li>
-                <li><a href="Registrierungsseite">Registrierung</a></li>
-                <li><a href="Seitenvorlage">Navigation</a></li>
-                <li><a href="Datenschutzerklärung">Datenschutzerklärung</a></li>
-                <li><a href="Kontakt">Kontakt</a></li>
-                <li><a href="Schemabearbeitung">Medienattributsatz</a></li>
-                <li><a href="Leihfristverstöße">Leihfristverstöße</a></li>
-                <li><a href="Medienerstellung">Medienerstellung</a></li>
-                <li><a href="Rückgabeformular">Rückgabe</a></li>
-                <li><a href="Direktausleihe">Direktausleihe</a></li>
-                <li><a href="Abholung">Abholung</a></li>
+                <li><a href="#profilseite">Profilseite</a></li>
+                <li><a href="#recoveryseite">Recoveryseite</a></li>
+                <li><a href="#kategoriebearbeitung">Kategoriebearbeitung</a></li>
+                <li><a href="#Anmeldemaske">Anmeldung</a></li>
+                <li><a href="#Seitenvorlage">Navigation</a></li>
+                <li><a href="#Registrierungsseite">Registrierung</a></li>
+                <li><a href="#Datenschutzerklärung">Datenschutzerklärung</a></li>
+                <li><a href="#Impressum">Impressum</a></li>
+                <li><a href="#Kontakt">Kontakt</a></li>
+                <li><a href="#Schemabearbeitung">Medienattributsatz</a></li>
+                <li><a href="#Leihfristverstöße">Leihfristverstöße</a></li>
+                <li><a href="#Rückgabeformular">Rückgabe</a></li>
+                <li><a href="#Direktausleihe">Direktausleihe</a></li>
+                <li><a href="#Abholung">Abholung</a></li>
+                <li><a href="#Medienerstellung">Medienerstellung</a></li>
+                <li><a href="#Allgemeine Verwaltungsseite">Verwaltung</a></li>
+                <li><a href="#Kategorienstöberer">Kategorienstöberer</a></li>
+                <li><a href="#Mediensuche">Mediensuche</a></li>
+                <li><a href="#Nutzersuche">Nutzersuche</a></li>
+                <li><a href="#Mediumsansicht">Mediumsansicht</a></li>
+                <li><a href="#AbzuholendeAusgelieheneExemplare">Abzuholende &amp; ausgeliehene Exemplare</a></li>
             </ul>
         </div>
     </div>
 
     <section>
-        <h3><a id="Anm">Anmeldung</a></h3>
-Dies ist die Startseite des Bibliothekssystems. Sie sehen diese Seite nur, wenn Sie aktuell nicht in unserem System angemeldet ist.
-        	<h4><a id="anonymAnm">Anonymer Nutzer:</a></h4> 
-        		<h5><a id="geschlossenAnm">geschlossener Modus</a></h5>
-Wenn Sie keinen registrierten Account besitzen und einen benötigen, navigieren Sie auf der Randleiste zum Knopf "Registrieren".
-Wenn Sie bereits einen registrierten Account besitzen, tragen Sie bitte Ihre Accountdaten in die dafür vorgesehenen Felder ein, um sich anzumelden.
-Beachten Sie die eventuell auftretenden Meldungen neben den Formularfeldern, diese informieren Sie über fehlerhafte Eingaben.
-Nach erfolgreicher Anmeldung gelangen Sie zu Ihrer Profilseite.
-Sollten Sie Ihre E-Mail korrekt eingetragen, aber Ihr Passwort vergessen haben, klicken Sie auf "Passwort vergessen" um es zurückzusetzen. 
-Eine E-Mail mit Zurücksetzungslink wird dann an die E-Mail-Adresse versand, unter der Ihr Account registriert ist.
-				<h5><a id="offenAnm">offener Modus</a></h5>
-			<h4><a id="registriertAnm">Registrierter Nutzer</a></h4>
-			<h4><a id="mitarbeiterAnm">Bibliotheksmitarbeiter</a></h4>
-			<h4><a id="adminAnm">Administrator</a></h4>     	
+        <h3><a name="profilseite">Profilseite</a></h3>
+        <div>Ivan Charviakou</div>
+        <section>
+            <h4>Angemeldeter Nutzer</h4>
+            <p><b>Ausloggen:</b> Beim Ausloggen werden Sie zu der Mediensuche als anonymer Nutzer weitergeleitet. </p>
+            <p><b>Einfache Nutzerdatenänderung:</b> Nachdem Sie Änderungen zu Ihren persönlichen Angaben eingetragen
+                haben,
+                müssen Sie diese Änderungen speichern, um diese zu persistieren. Es wird anschließend die gleiche
+                Profilseite geladen. </p>
+            <p><b>Datenfelder:</b> Zu Ihrem Konto müssen Ihr Name, Ihre Adresse, und Ihre E-Mail Adresse im System
+                definiert sein. </p>
+            <p><b>Passwortänderung:</b> Um Ihr Passwort zu ändern, müssen Sie Ihr altes Passwort eingeben und Ihr neues
+                Passwort zweimal eingeben.
+                Falls Sie Ihr altes Passwort vergessen haben, müssen Sie eine E-Mail zu einer Passwortrücksetzung
+                anfordern.
+                Diese E-Mail wird einen Link enthalten, mit dem Sie Ihre Änderungen eintragen können.
+                Sie werden anschließend zu dieser Profilseite weitergeleitet. </p>
+            <p><b>Emailänderung:</b> Um Ihre E-Mail Adresse zu ändern, müssen Sie eine E-Mail Bestätigung anfordern.
+                Diese E-Mail wird einen Link enthalten, mit dem die eingegebene E-Mail Adresse verifiziert wird.
+                Sie werden anschließend zu dieser Profilseite weitergeleitet. </p>
+            <p><b>Kontolöschung:</b> Nachdem Sie Ihr Konto löschen, müssen sie sich neu registrieren, um alle
+                Bibliotheksangebote zu nutzen.
+                Dabei dürfen Sie Ihr Konto nicht löschen, wenn von Ihnen eine Rückgabe noch aussteht.
+                Anschließend werden Sie zu der Mediensuche als anonymer Nutzer weitergeleitet. </p>
+            <p><b>Zurück:</b> Sie werden zu Ihrer vorherigen Suchanfrage zurückgeleitet. </p>
+        </section>
+        <section>
+            <h4>Administrator</h4>
+            <p><b>Nutzerdatenänderung:</b> Nachdem Sie die Kontodaten zu diesem Nutzer geändert haben,
+                müssen Sie diese speichern, um diese Änderungen zu persistieren. Es wird anschließend die gleiche
+                Profilseite geladen.
+                Bitte beachten Sie: Sie können Ihre eigene Rolle nicht verändern. </p>
+            <p><b>Kontolöschung:</b> Bitte beachten Sie - Sämtliche ausgeliehene Medienexeplare von diesem Nutzer werden
+                durchs Löschen ebenfalls gelöscht. </p>
+            <p><b>Allgemeine Sperre:</b>
+                Diese Sperre gilt so lange, bis Sie es wieder aufheben.
+                Bitte beachten Sie - Wenn ein Nutzer gesperrt ist, darf er keine Medienexeplare mehr ausleihen. </p>
+            <p><b>Sperre zur E-Mail Verifikation:</b>
+                Diese Sperre gilt so lange, bis der Nutzer seine E-Mail Adresse verifiziert.
+                Bitte beachten Sie - Sie können diese Sperre nicht rückgängig machen. In dieser Zeit, darf er keine
+                Medienexeplare mehr ausleihen. </p>
+        </section>
+    </section>
+    <section>
+        <h3><a name="recoveryseite">Recoveryseite</a></h3>
+        <div>Ivan Charviakou</div>
+        <section>
+            <h4>Angemeldeter Nutzer</h4>
+            <p><b>Passwortänderung:</b> Hier können Sie das Passwort zu Ihrem Konto neu setzen. Sie werden danach zu
+                Ihrer Profilseite weitergeleitet.
+                Falls Ihnen das Passwort zu diesem Konto wieder einfällt, können Sie sich immer noch auf der
+                Anmeldungsseite einloggen.
+                Bitte beachten Sie - Der Link, mit dem Sie diese Seite erreicht haben, ist in X Stunden nicht mehr
+                gültig. </p>
+        </section>
+    </section>
+    <section>
+        <h3><a name="kategoriebearbeitung">Kategoriebearbeitung</a></h3>
+        <div>Ivan Charviakou</div>
+        <section>
+            <h4>Bibliotheksmitarbeiter</h4>
+            <p><b>Kategoriename:</b> Unter den Kategorien, die ggf. der gleichen Oberkategorie gehören, sollte der Namen
+                Ihrer Kategorie eindeutig sein. </p>
+            <p><b>Elternkategorie:</b> Wenn Ihre Kategorie zu einer anderen Kategorie gehört, können Sie diese
+                auswählen.
+                Bitte beachten Sie - Medien dürfen der ausgewählten Oberkategorie trotzdem zugeordnet werden. </p>
+        </section>
+    </section>
+    <h3><a id="Anmeldemaske">Anmeldung</a></h3>
+    Dies ist die Startseite des Bibliothekssystems. Sie sehen diese Seite nur, wenn Sie aktuell nicht in unserem System
+    angemeldet ist.
+    <h4>Anonymer Nutzer:</h4>
+    <h5>geschlossener Modus</h5>
+    Wenn Sie keinen registrierten Account besitzen und einen benötigen, navigieren Sie auf der Randleiste zum Knopf
+    "Registrieren".
+    Wenn Sie bereits einen registrierten Account besitzen, tragen Sie bitte Ihre Accountdaten in die dafür vorgesehenen
+    Felder ein, um sich anzumelden.
+    Beachten Sie die eventuell auftretenden Meldungen neben den Formularfeldern, diese informieren Sie über fehlerhafte
+    Eingaben.
+    Nach erfolgreicher Anmeldung gelangen Sie zu Ihrer Profilseite.
+    Sollten Sie Ihre E-Mail korrekt eingetragen, aber Ihr Passwort vergessen haben, klicken Sie auf "Passwort vergessen"
+    um es zurückzusetzen.
+    Eine E-Mail mit Zurücksetzungslink wird dann an die E-Mail-Adresse versand, unter der Ihr Account registriert ist.
+    <h5>offener Modus</h5>
+    <h4>Registrierter Nutzer</h4>
+    <h4>Bibliotheksmitarbeiter</h4>
+    <h4>Administrator</h4>
     </section>
 
     <section>
-        <h3><a id="Templ">Navigation</a></h3>
-Diese Elemente dienen zur Navigation und sind auf allen Seiten des Bibliothekssystems sichtbar. 
-			<h4><a id="anonymTempl">Anonymer Nutzer</a></h4>
-				<h5><a id="geschlossenTempl">geschlossener Modus</a></h5>
-Durch einen Klick auf "Registrieren" werden Sie zu einer Seite weitergeleitet, auf der ein neuer Account im System angelegt werden kann.
-Wenn Sie sich mit Ihren Accountdaten im System anmelden wollen, leitet Sie der "Anmelden"-Knopf zur entsprechenden Seite weiter.
-Unter "Impressum" finden Sie rechtliche Rahmenbedingungen zur Institution und Benutzung der Bibliothek.
-Um genaueres über die von der Webseite gesammelten Daten und deren Verarbeitung zu erfahren, klicken Sie auf "Datenschutzerklärung".
-Weitere Möglichkeiten zur Kontaktaufnahme mit der Bibliotheksverwaltung finden Sie unter "Kontakt".
-				<h5><a id="offenTempl">offener Modus</a></h5>
-Sollten Sie sich einen Überblick über die angebotenen Medien verschaffen wollen, navigieren Sie durch einen Klick auf "Stöbern" zur Übersicht über die Medienkategorien.
-Wenn Sie eine Schnellsuche durch das Bibliotheksinventar starten wollen, tippen Sie ihr Stichwort in das Suchfeld und klicken Sie auf "Suche".
-Eine feinere Suchfunktion mit mehr Optionen steht Ihnen auf der erweiterten Suchseite zur Verfügung, welche mit einem Klick auf "erweiterte Suche" erreicht werden kann. 			
-			<h4><a id="registriertTempl">Registrierter Nutzer</a></h4>
-Um Ihre Anmeldeinformationen zu verändern, gelangen Sie via "Profil" auf eine Seite mit Ihren Accountdetails.			 
-			<h4><a id="mitarbeiterTempl">Bibliotheksmitarbeiter</a></h4>
-Eine Übersicht über alle aktuell zur Abholung markierten Medienexemplare finden Sie durch einen Klick auf "Abholung". 	
-Wenn Sie ein am Schalter ausgeliehenes Medienexemplar im System als ausgeliehen markieren wollen, gehen Sie über "Direktausleihe" zur entsprechenden Seite.
-Um eine zurückgegebene Ausleihe ins System einzutragen, wählen Sie bitte "Rückgabe".	
-			<h4><a id="adminTempl">Administrator</a></h4>  
-Durch einen Klick auf "Verwaltung" gelangen Sie zu den Anwendungseinstellungen und der Nutzerverwaltung.
-Wenn Sie Impressum, Kontaktinformationen oder Datenschutzerklärung editieren wollen, klicken Sie auf den entsprechenden Reiter.       
+        <h3><a id="Seitenvorlage">Navigation</a></h3>
+        Diese Elemente dienen zur Navigation und sind auf allen Seiten des Bibliothekssystems sichtbar.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        Durch einen Klick auf "Registrieren" werden Sie zu einer Seite weitergeleitet, auf der ein neuer Account im
+        System angelegt werden kann.
+        Wenn Sie sich mit Ihren Accountdaten im System anmelden wollen, leitet Sie der "Anmelden"-Knopf zur
+        entsprechenden Seite weiter.
+        Unter "Impressum" finden Sie rechtliche Rahmenbedingungen zur Institution und Benutzung der Bibliothek.
+        Um genaueres über die von der Webseite gesammelten Daten und deren Verarbeitung zu erfahren, klicken Sie auf
+        "Datenschutzerklärung".
+        Weitere Möglichkeiten zur Kontaktaufnahme mit der Bibliotheksverwaltung finden Sie unter "Kontakt".
+        <h5>offener Modus</h5>
+        Sollten Sie sich einen Überblick über die angebotenen Medien verschaffen wollen, navigieren Sie durch einen
+        Klick auf "Stöbern" zur Übersicht über die Medienkategorien.
+        Wenn Sie eine Schnellsuche durch das Bibliotheksinventar starten wollen, tippen Sie ihr Stichwort in das
+        Suchfeld und klicken Sie auf "Suche".
+        Eine feinere Suchfunktion mit mehr Optionen steht Ihnen auf der erweiterten Suchseite zur Verfügung, welche mit
+        einem Klick auf "erweiterte Suche" erreicht werden kann.
+        <h4>Registrierter Nutzer</h4>
+        Um Ihre Anmeldeinformationen zu verändern, gelangen Sie via "Profil" auf eine Seite mit Ihren Accountdetails.
+        <h4>Bibliotheksmitarbeiter</h4>
+        Eine Übersicht über alle aktuell zur Abholung markierten Medienexemplare finden Sie durch einen Klick auf
+        "Abholung".
+        Wenn Sie ein am Schalter ausgeliehenes Medienexemplar im System als ausgeliehen markieren wollen, gehen Sie über
+        "Direktausleihe" zur entsprechenden Seite.
+        Um eine zurückgegebene Ausleihe ins System einzutragen, wählen Sie bitte "Rückgabe".
+        <h4>Administrator</h4>
+        Durch einen Klick auf "Verwaltung" gelangen Sie zu den Anwendungseinstellungen und der Nutzerverwaltung.
+        Wenn Sie Impressum, Kontaktinformationen oder Datenschutzerklärung editieren wollen, klicken Sie auf den
+        entsprechenden Reiter.
     </section>
-    
+
     <section>
-        <h3><a id="Registrierungsseite">Reg</a></h3>
-Hier können Sie einen neuen Account im System registrieren, um den vollen Funktionsumfang der Bibliothek nutzen zu können.
-			<h4><a id="anonymReg">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenReg">geschlossener Modus</a></h5>
-Tragen Sie bitte eine gültige E-Mail-Adresse und Ihr gewünschtes Passwort in die dafür vorgesehen Formularfelder ein (das Passwort muss bestätigt werden um Rechtschreibfehlern vorzubeugen).
-Zur Registrierung wird außerdem Ihre Adresse im dafür vorgesehenen Formularfeld benötigt. 
-Beachten Sie die auftauchenden Meldungen zu fehlerhaften oder abgelehnten Eingaben neben den Formularfeldern.
-Die Verwaltung der Bibliothek bestimmt die Menge der zugelassenen E-Mail-Domänen. Sollte Ihre private E-Mail-Adresse abgelehnt werden, versuchen Sie es bitte mit der Adresse Ihrer Institution (Universität, Unternehmen, etc.).				
-Die Registrierung erfolgt über die angegebene E-Mail-Adresse, zu der ein nur für Sie temporär gültiger Registrierungslink geschickt wird. 
-Sie müssen also zeitnah auf das angegebene Konto zugreifen können. Klicken Sie dann auf den Link in der E-Mail, um die Registrierung abzuschließen.
-Wenn Sie von Ihrer Institution auf diese Bibliothek verwiesen wurden und Probleme beim Registrieren haben, wenden Sie sich bitte an die Bibliotheksverwaltung, um genauere Informationen über die zugelassenen E-Mail-Adressen zu erhalten.					
-				<h5><a id="offenReg">offener Modus</a></h5>
-			<h4><a id="registriertReg">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterReg">Bibliotheksmitarbeiter</a></h4>
-			<h4><a id="adminReg">Administrator</a></h4>  
+        <h3><a id="Registrierungsseite">Registrierung</a></h3>
+        Hier können Sie einen neuen Account im System registrieren, um den vollen Funktionsumfang der Bibliothek nutzen
+        zu können.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        Tragen Sie bitte eine gültige E-Mail-Adresse und Ihr gewünschtes Passwort in die dafür vorgesehen Formularfelder
+        ein (das Passwort muss bestätigt werden um Rechtschreibfehlern vorzubeugen).
+        Beachten Sie die auftauchenden Meldungen zu fehlerhaften oder abgelehnten Eingaben neben den Formularfeldern.
+        Die Verwaltung der Bibliothek bestimmt die Menge der zugelassenen E-Mail-Domänen. Sollte Ihre private
+        E-Mail-Adresse abgelehnt werden, versuchen Sie es bitte mit der Adresse Ihrer Institution (Universität,
+        Unternehmen, etc.).
+        Die Registrierung erfolgt über die angegebene E-Mail-Adresse, zu der ein nur für Sie temporär gültiger
+        Registrierungslink geschickt wird.
+        Sie müssen also zeitnah auf das angegebene Konto zugreifen können. Klicken Sie dann auf den Link in der E-Mail,
+        um die Registrierung abzuschließen.
+        Wenn Sie von Ihrer Institution auf diese Bibliothek verwiesen wurden und Probleme beim Registrieren haben,
+        wenden Sie sich bitte an die Bibliotheksverwaltung, um genauere Informationen über die zugelassenen
+        E-Mail-Adressen zu erhalten.
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
     </section>
-    
+
     <section>
-        <h3><a id="Datens">Datenschutzerkärung</a></h3>
-Hier finden Sie Informationen zu den von uns erfassten Daten und den rechtlichen Rahmenbedingungen für deren Nutzung.      	
-			<h4><a id="anonymDatens">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenDatens">geschlossener Modus</a></h5>
-				<h5><a id="offenDatens">offener Modus</a></h5>
-			<h4><a id="registriertDatens">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterDatens">Bibliotheksmitarbeiter</a></h4>
-			<h4><a id="adminDatens">Administrator</a></h4>
-Sie haben als Administrator hier die Möglichkeit, die Datenschutzerklärung Ihrer Webseite zu verändern.			        	
+        <h3><a id="Datenschutzerklärung">Datenschutzerkärung</a></h3>
+        Hier finden Sie Informationen zu den von uns erfassten Daten und den rechtlichen Rahmenbedingungen für deren
+        Nutzung.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+        Sie haben als Administrator hier die Möglichkeit, die Datenschutzerklärung Ihrer Webseite zu verändern.
     </section>
-    
+
     <section>
-        <h3><a id="Impr">Impressum</a></h3>
-Rechtliche Hinweise zur Nutzung der Services der Bibliothek befinden sich hier.        
-			<h4><a id="anonymImpr">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenImpr">geschlossener Modus</a></h5>
-				<h5><a id="offenImpr">offener Modus</a></h5>
-			<h4><a id="registriertImpr">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterImpr">Bibliotheksmitarbeiter</a></h4>
-			<h4><a id="adminImpr">Administrator</a></h4>
-Sie haben als Administrator hier die Möglichkeit, das für andere Nutzer sichtbare Impressum zu verändern.    
+        <h3><a id="Impressum">Impressum</a></h3>
+        Rechtliche Hinweise zur Nutzung der Services der Bibliothek befinden sich hier.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+        Sie haben als Administrator hier die Möglichkeit, das für andere Nutzer sichtbare Impressum zu verändern.
     </section>
-    
+
     <section>
-        <h3><a id="Kont">Kontakt</a></h3>
-Informationen zur Kontaktaufnahme mit der Verwaltung der Bibliothek finden sie auf dieser Seite.        
-			<h4><a id="anonymKont">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenKont">geschlossener Modus</a></h5>
-				<h5><a id="offenKont">offener Modus</a></h5>
-			<h4><a id="registriertKont">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterKont">Bibliotheksmitarbeiter</a></h4>
-			<h4><a id="adminKont">Administrator</a></h4>
-Sie haben als Administrator hier die Möglichkeit, für alle Nutzer sichtbare Kontaktinformationen hinzuzufügen und zu verändern.         
+        <h3><a id="Kontakt">Kontakt</a></h3>
+        Informationen zur Kontaktaufnahme mit der Verwaltung der Bibliothek finden sie auf dieser Seite.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+        Sie haben als Administrator hier die Möglichkeit, für alle Nutzer sichtbare Kontaktinformationen hinzuzufügen
+        und zu verändern.
     </section>
-    
+
     <section>
-        <h3><a id="Schem">Medienattributsatz</a></h3>
-Auf dieser Seite lässt sich die Gesamtheit der setzbaren Attribute für im System gespeicherte Medien festlegen.         
-			<h4><a id="anonymSchem">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenSchem">geschlossener Modus</a></h5>
-				<h5><a id="offenSchem">offener Modus</a></h5>
-			<h4><a id="registriertSchem">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterSchem">Bibliotheksmitarbeiter</a></h4>
-			<h4><a id="adminSchem">Administrator</a></h4>
-Sollten Sie ein Attribut hinzufügen, wird es zu allen bestehenden Medieninstanzen mit einem leeren Wert (Platzhalter) hinzugefügt.
-Sie können ein neues Attribut mit dem Typ "mehrwertig" markieren, es lassen sich dann mehrere Schlagworte darunter abspeichern, dies ist z.B. für Autoren, gedacht.
-Sie können ein neues Attribut mit dem Typ "Referenz" markieren, hierunter kann man dann andere im System gespeicherte Medieninstanzen verlinken. 
-Beachten Sie bitte, dass das Löschen eines Attrbuts aus dem Attributsatz alle für dieses Attribut eingetragenen Werte in den Medieninstanzen entfernt.
-Sie werden über den Umfang eines solchen Eingriffes vor der Durchführung gewarnt. 
-Medieninstanzen, die sich nur in diesem Attribut unterschieden haben und nach der Löschung Duplikate darstellen, werden automatisch fusioniert. 
+        <h3><a id="Schemabearbeitung">Medienattributsatz</a></h3>
+        Auf dieser Seite lässt sich die Gesamtheit der setzbaren Attribute für im System gespeicherte Medien festlegen.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+        Sollten Sie ein Attribut hinzufügen, wird es zu allen bestehenden Medieninstanzen mit einem leeren Wert
+        (Platzhalter) hinzugefügt.
+        Sie können ein neues Attribut mit dem Typ "mehrwertig" markieren, es lassen sich dann mehrere Schlagworte
+        darunter abspeichern, dies ist z.B. für Autoren, gedacht.
+        Sie können ein neues Attribut mit dem Typ "Referenz" markieren, hierunter kann man dann andere im System
+        gespeicherte Medieninstanzen verlinken.
+        Beachten Sie bitte, dass das Löschen eines Attrbuts aus dem Attributsatz alle für dieses Attribut eingetragenen
+        Werte in den Medieninstanzen entfernt.
+        Sie werden über den Umfang eines solchen Eingriffes vor der Durchführung gewarnt.
+        Medieninstanzen, die sich nur in diesem Attribut unterschieden haben und nach der Löschung Duplikate darstellen,
+        werden automatisch fusioniert.
     </section>
-    
+
     <section>
-        <h3><a id="Leihf">Leihfristverstöße</a></h3>
-Hier können die Nutzerprofile mit überzogenen Ausleihfristen und betreffenden Exemplaren gesammelt eingesehen werden.        
-			<h4><a id="anonymLeihf">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenLeihf">geschlossener Modus</a></h5>
-				<h5><a id="offenLeihf">offener Modus</a></h5>
-			<h4><a id="registriertLeihf">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterLeihf">Bibliotheksmitarbeiter</a></h4>
-			<h4><a id="adminLeihf">Administrator</a></h4>
-Durch einen Klick auf den jeweiligen Nutzer gelangen Sie zur Ansicht seines Profils um weitere Maßnahmen einzuleiten. 
-Die angezeigten Medienexemplare sind ebenfalls klickbar und mit ihren Mediumsseiten verlinkt.         
+        <h3><a id="Leihfristverstöße">Leihfristverstöße</a></h3>
+        Hier können die Nutzerprofile mit überzogenen Ausleihfristen und betreffenden Exemplaren gesammelt eingesehen
+        werden.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+        Durch einen Klick auf den jeweiligen Nutzer gelangen Sie zur Ansicht seines Profils um weitere Maßnahmen
+        einzuleiten.
+        Die angezeigten Medienexemplare sind ebenfalls klickbar und mit ihren Mediumsseiten verlinkt.
     </section>
-    
+
     <section>
-        <h3><a id="Rückg">Rückgabe</a></h3>
-Diese Seite dient der Rückgabe ausgeliehener Medienexemplare.      
-			<h4><a id="anonymRückg">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenRückg">geschlossener Modus</a></h5>
-				<h5><a id="offenRückg">offener Modus</a></h5>
-			<h4><a id="registriertRückg">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterRückg">Bibliotheksmitarbeiter</a></h4>
-Tragen Sie bitte die E-Mail-Adresse des Accounts und die Signatur des ausgeliehenen Exemplars in die Formularfelder ein, um die Rückgabe im System zu vermerken.
-Sie werden über den Erfolg durch eine Nachricht informiert.			
-			<h4><a id="adminRückg">Administrator</a></h4>
+        <h3><a id="Rückgabeformular">Rückgabe</a></h3>
+        Diese Seite dient der Rückgabe ausgeliehener Medienexemplare.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        Tragen Sie bitte die E-Mail-Adresse des Accounts und die Signatur des ausgeliehenen Exemplars in die
+        Formularfelder ein, um die Rückgabe im System zu vermerken.
+        Sie werden über den Erfolg durch eine Nachricht informiert.
+        <h4>Administrator</h4>
     </section>
-    
+
     <section>
-        <h3><a id="Ausl">Direktausleihe</a></h3>
-Hier wird die Abwicklung von Ausleihen ohne vorherige Abholungsmarkierung ermöglicht.        
-			<h4><a id="anonymAusl">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenAusl">geschlossener Modus</a></h5>
-				<h5><a id="offenAusl">offener Modus</a></h5>
-			<h4><a id="registriertAusl">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterAusl">Bibliotheksmitarbeiter</a></h4>
-Tragen Sie bitte die Signatur des Medienexemplars und die E-Mail-Adresse des Ausleihenden in die Formularfelder ein, um die Ausleihe im System zu vermerken.
-Sie werden über den Erfolg durch eine Nachricht informiert.			
-			<h4><a id="adminAusl">Administrator</a></h4>
+        <h3><a id="Direktausleihe">Direktausleihe</a></h3>
+        Hier wird die Abwicklung von Ausleihen ohne vorherige Abholungsmarkierung ermöglicht.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        Tragen Sie bitte die Signatur des Medienexemplars und die E-Mail-Adresse des Ausleihenden in die Formularfelder
+        ein, um die Ausleihe im System zu vermerken.
+        Sie werden über den Erfolg durch eine Nachricht informiert.
+        <h4>Administrator</h4>
     </section>
-    
+
     <section>
-        <h3><a id="Abholung">Abh</a></h3>
-Hier lassen sich die zur Abholung markierten Exemplare gesammelt einsehen.        
-			<h4><a id="anonymAbh">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenAbh">geschlossener Modus</a></h5>
-				<h5><a id="offenAbh">offener Modus</a></h5>
-			<h4><a id="registriertAbh">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterAbh">Bibliotheksmitarbeiter</a></h4>
-Mit einem Klick auf "abgeholt" beim entsprechenden Exemplar, können Sie es im System als ausgeliehen vermerken.
-Sollte ein Exemplar innerhalb einer vom Administrator gesetzten Frist nicht abgeholt werden, wird die Abholungsmarkierung automatisch entfernt und es verschwindet beim Neuladen der Seite aus dieser Liste.		
-			<h4><a id="adminAbh">Administrator</a></h4>
+        <h3><a id="Abholung">Abholung</a></h3>
+        Hier lassen sich die zur Abholung markierten Exemplare gesammelt einsehen.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        Mit einem Klick auf "abgeholt" beim entsprechenden Exemplar, können Sie es im System als ausgeliehen vermerken.
+        Sollte ein Exemplar innerhalb einer vom Administrator gesetzten Frist nicht abgeholt werden, wird die
+        Abholungsmarkierung automatisch entfernt und es verschwindet beim Neuladen der Seite aus dieser Liste.
+        <h4>Administrator</h4>
     </section>
-    
+
     <section>
-        <h3><a id="MedErs">Medienerstellung</a></h3>
-Auf dieser Seite lässt sich eine neue Medieninstanz erstellen.        
-			<h4><a id="anonymMedErs">Anonymer Nutzer</a></h4> 
-				<h5><a id="geschlossenMedErs">geschlossener Modus</a></h5>
-				<h5><a id="offenMedErs">offener Modus</a></h5>
-			<h4><a id="registriertMedErs">Registrierter Nutzer</a></h4> 
-			<h4><a id="mitarbeiterMedErs">Bibliotheksmitarbeiter</a></h4>
-Setzen Sie eine Kategorie für das neue Medium und befüllen Sie den Attributsatz mit Werten. 
-Sollte das Medium sich nicht klar in eines oder mehrere der Attribute einordnen lassen, können Sie das entsprechende Feld leer lassen.
-Wenn Sie ein als mehrwertig markiertes Attribut befüllen, fassen Sie bitte die einzelnen Schlagworte in Anführungszeichen (").
-Wenn ein Attribut als Referenz markiert wurde, ist es mit einem Link auf eine andere, im System gespeicherte, Medieninstanz zu befüllen.
-Beachten Sie in beiden Fällen eventuell auftretende Meldungen neben den Feldern.
-Die Erstellung eines neuen Mediums schließen Sie durch einen Klick auf "erstellen" ab, Sie werden dann zur Nutzeransicht dieses Mediums weitergeleitet.			
-			<h4><a id="adminMedErs">Administrator</a></h4>
+        <h3><a id="Medienerstellung">Medienerstellung</a></h3>
+        Auf dieser Seite lässt sich eine neue Medieninstanz erstellen.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        Setzen Sie eine Kategorie für das neue Medium und befüllen Sie den Attributsatz mit Werten.
+        Sollte das Medium sich nicht klar in eines oder mehrere der Attribute einordnen lassen, können Sie das
+        entsprechende Feld leer lassen.
+        Wenn Sie ein als mehrwertig markiertes Attribut befüllen, fassen Sie bitte die einzelnen Schlagworte in
+        Anführungszeichen (").
+        Wenn ein Attribut als Referenz markiert wurde, ist es mit einem Link auf eine andere, im System gespeicherte,
+        Medieninstanz zu befüllen.
+        Beachten Sie in beiden Fällen eventuell auftretende Meldungen neben den Feldern.
+        Die Erstellung eines neuen Mediums schließen Sie durch einen Klick auf "erstellen" ab, Sie werden dann zur
+        Nutzeransicht dieses Mediums weitergeleitet.
+        <h4>Administrator</h4>
     </section>
-    
+
+    <section>
+        <h3><a id="Allgemeine Verwaltungsseite">Verwaltung</a></h3>
+        Diese Seite ist nur für die Administratoren verfügbar und dient zur die Verwaltung des Systems.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+        Geben Sie bitte einen regulären Ausdruck für die E-Mail-Domäne an. Neue Accounts können dann nur noch mit einer
+        dem Ausdruck genügender E-Mail-Adresse registriert werden .
+        Nutzeraccounts lassen sich durch einen Klick auf 'Nutzersuche' oder direkt durch das Nutzersuchfeld suchen, Sie
+        werden dann auf eine spezielle Seite weitergeleitet.
+        Sie können hier das System zwischen offenem und geschlossenen Modus umschalten, letzterer verbietet anonymen
+        Besuchern der Seite, den Kategorienstöberer sowie die Suchfunktion zu nutzen und beschränkt diese Nutzergruppe
+        auf die Registrierungsmöglichkeit.
+        Durch einen Klick auf "Medium erstellen" navigieren Sie zum entsprechenden Erstellungsformular.
+        Wenn Sie einen neuen Nutzer registrieren möchten, klicken Sie auf "Nutzer registrieren".
+        Das Setzen des globalen Attributsatzes für Medien ist auf einer weiteren Seite unter "Mediumsschema bearbeiten"
+        möglich.
+        Eine Listenansicht der Nutzeraccounts mit überzogenen Rückgabefristen und zugehörigen Exemplaren finden Sie
+        unter "Leihfristverstöße".
+        Hier können Sie auch das Farbschema der Webseite modifizieren, sowie das Logo und den Systemnamen festlegen.
+    </section>
+
+    <section>
+        <h3><a id="Kategorienstöberer">Kategorienstöberer</a></h3>
+        Auf dieser Seite erhalten Sie einen Überblick über die Medienkategorien dieser Bibliothek.
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        Wenn Sie in der Baumansicht auf eine Kategorie klicken, öffnet sich eine Liste mit allen darunter fallenden Medien.
+        Durch Auswählen eines Mediums gelangen Sie zu dessen Detailseite.
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        Sie haben die Möglichkeit eine Kategorie zu bearbeiten, Sie werden dann auf ein Bearbeitungsformular
+        weitergeleitet.
+        Außerdem können Sie eine Kategorie löschen, der Baum wird Ihnen danach aktualisiert angezeigt.
+        Beachten Sie bitte das alle Unterkategorien der Gelöschten ebenfalls entfernt werden und alle unter dieser
+        Kategorie eingeordneten Medien diese Einordnung verlieren.
+        Sie werden durch eine Meldung über den Umfang Ihrer Eingriffe informiert.
+        <h4>Administrator</h4>
+    </section>
+
+    <section>
+        <h3><a id="Mediensuche">Mediensuche</a></h3>
+
+        Auf dieser Seite können Sie unseren Katalog aus Medien durchsuchen.
+
+        Das oberste Suchfeld ist für die freie Suche.
+        Bei der freien Suche werden jegliche Attribute wie Titel, Autor und Erscheinungsdatum der Medien sowie die
+        Kategorien derselben einbezogen.
+
+        Für eine differenziertere Suche füllen Sie bitte mindestens eines der anfänglich drei darunterliegenden
+        Suchfelder aus und wählen Sie jeweils das
+        relevante Attribut bzw. die relevante Kategorie aus der Drop-Down-Liste. Jedes leere der unteren Suchfelder wird
+        bei der Suche ignoriert.
+        In der Grundeinstellung ist der Suchoperator jeder solcher spezialisierten Suchfelder auf „und“ gesetzt. Das
+        heißt, Medien müssen neben den
+        anderen Suchkriterien (inkl. die der freien Suche) zsm. mit deren Operator das aktuelle Kriterium auf jeden Fall
+        erfüllen.
+        Andere Suchoperatoren können über eine Drop-Down-Liste eingestellt werden.
+        Möglich ist des Weiteren „oder“, bei welchem die Suche nicht eingeschränkt wird, sondern erweitert wird: Ein
+        Medium wird
+        gefunden, wenn es das aktuelle Kriterium erfüllt, jedoch auch dann, wenn es andere Suchkriterien zsm. mit deren
+        Operator erfüllt.
+        Der letzte Suchoperator lautet „und nicht“. Hier wird die Suche erneut einschränkt: Ein Medium ist nur dann in
+        der Liste der Suchergebnisse
+        enthalten, wenn das gewählte Attribut bzw. die gewählte Kategorie nicht den eingegebenen Text enthält und es
+        zusätzlich alle anderen Suchkriterien zsm. mit deren Operator erfüllt.
+        Es können weitere Suchfelder durch Druck auf den Knopf „Weiteres Suchfeld hinzufügen“ angefordert werden.
+        Die Suche wird gestartet, wenn Sie auf die Schaltfläche „Suchen“ klicken oder wenn Sie in einem der Suchfelder
+        die Eingabetaste drücken.
+
+        Bleibt das Eingabefeld der freien Suche leer, gelten lediglich die Kriterien der tiefer gelegenen Suchfelder.
+        Sind alle Felder leer,
+        werden alle Medien gefunden (jedoch paginiert angezeigt).
+
+        Ist die Suche erfolgreich, wird eine Liste von Suchergebnissen angezeigt.
+        Deren Einträge können Sie anklicken, um auf die entsprechende Mediumsansicht weitergeleitet zu werden.
+        Die Suchkriterien können Sie zu jedem Zeitpunkt abändern und eine neue Suche starten.
+
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+
+    </section>
+
+    <section>
+        <h3><a id="Nutzersuche">Nutzersuche</a></h3>
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+
+        Auf dieser Seite können Sie nach registrierten Benutzern des Bibliothekssystems suchen.
+
+        Sie können anhand des vollständigen Namens und der E-Mail-Adresse eines Nutzers eine Suche durchführen.
+        Geben Sie dazu Ihre Daten in das Suchfeld ein und drücken Sie abschließend den Knopf „Suchen“.
+
+        Sie können ein Häkchen bei „Nutzer ist gesperrt / nicht freigeschaltet“ setzten, um die Suche weiter
+        auf gesperrte Nutzer einzuschränken.
+
+        Ist die Suche erfolgreich, wird eine Liste von Benutzern angezeigt.
+        Deren Einträge können Sie anklicken, um auf das entsprechende Benutzerprofil weitergeleitet zu werden.
+        Die Suchkriterien können Sie zu jedem Zeitpunkt abändern und eine neue Suche starten.
+
+    </section>
+
+    <section>
+        <h3><a id="Mediumsansicht">Mediumsansicht</a></h3>
+
+        Auf dieser Seite erfahren Sie die Details eines bestimmten Mediums unseres Katalogs.
+
+        Neben den Informationen zu dem Medium gibt es eine Tabelle aller Exemplare dieses Mediums, welche in
+        unserer Bibliothek verfügbar sind.
+
+        Wenn das Medium ein frei verfügbares digitales Dokument ist, können Sie es über den Knopf „sofort lesen“
+        herunterladen bzw. in Ihrem Browser öffnen abhängig von Ihren Broswer-Einstellungen.
+
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+
+        Sie haben hier die Möglichkeit, ein Exemplar aus der Tabelle auszuleihen, falls es im Moment verfügbar ist.
+        Klicken Sie hierfür bitte auf die Schaltfläche „Abholen“ in der Tabellenzeile des gewünschten Exemplars.
+        Danach gilt dieses Exemplar als abzuholen. Bitte holen Sie das Exemplar innerhalb der Abholungsfrist von der
+        Bibliothek ab. In der Bibliothek wird Ihnen schließlich das Exemplar ausgeliehen.
+
+        <h4>Bibliotheksmitarbeiter</h4>
+
+        Die Attribute und die Liste der Kategorien des Mediums sind Eingabefelder, dessen Inhalte Sie ändern können.
+        Um die Änderung zu persistieren, klicken Sie bitte auf die Schaltfläche „Änderungen speichern“.
+
+        Sie können die mediumsspezifische Rückgabefrist bearbeiten, indem Sie einen neuen Wert in das relevante
+        Eingabefeld schreiben und im Anschluss auf „Änderungen speichern“ drücken.
+        Die neue Frist gilt nicht für Nutzer, die aktuell Exemplare dieses Mediums ausgeliehen haben, unabhängig davon,
+        ob
+        es sich um eine Verlängerung oder eine Verkürzung handelt.
+
+        In jeder Zeile der Exemplarstabelle gibt es eine Schaltfläche mit der Aufschrift „Löschen“, welche das jeweilige
+        Exemplar löscht, sobald Sie darauf klicken. Falls dieses Exemplar zu dem aktuellen Zeitpunkt von einem Nutzer
+        ausgeliehen wird, dann müssen Sie in einem Pop-Up-Fenster erneut bestätigen.
+
+        Für jedes Exemplar gibt es in der Tabelle einen Knopf „Ausleihen“, der Sie nach einem Klick zur Seite der
+        Direktausleihe weiterführt und für Sie dort das Eingabefeld der Exemplarssignatur mit dem richtigen Wert
+        ausfüllt.
+
+        Ganz analog gibt für jedes abzuholende Exemplar den Knopf „Abholungen stornieren“, welcher dieses wieder
+        für andere verfügbar macht und eine E-Mail an den betroffenen Nutzer sendet.
+
+        Um das Medium zu löschen, klicken Sie bitte auf den Knopf „Medium löschen“.
+        Vor dem Löschen werden Sie nach einer Bestätigung gefragt und die Anzahl an ausgeliehen und abzuholenden
+        Exemplaren wird Ihnen angezeigt.
+        Sie werden direkt nach dem Löschen
+        zu der Seite geleitet, welcher Sie zuvor besucht haben (falls diese nicht existiert, ist dies Ihr Profil).
+
+        Um ein neues Exemplar zu erstellen, füllen Sie die Felder in der Exemplarstabelle aus und klicken Sie
+        anschließend auf „Erstellen“.
+        <h4>Administrator</h4>
+    </section>
+
+    <section>
+        <h3><a id="AbzuholendeAusgelieheneExemplare">Abzuholende &amp; ausgeliehene Exemplare</a></h3>
+
+        <h4>Anonymer Nutzer</h4>
+        <h5>geschlossener Modus</h5>
+        <h5>offener Modus</h5>
+        <h4>Registrierter Nutzer</h4>
+
+        Auf dieser Seite können Sie sehen, welche Exemplare Sie noch von unser Bibliotkek abzuholen haben bzw. welche
+        Sie von ihr ausgeliehen haben.
+        In der oberen Tabelle befinden sich die noch abzuholenden Exemplare, in der unteren die von Ihnen ausgeliehenen.
+
+        Pro Eintrag finden Sie das Datum der Abhol- bzw. Rückgabefrist. Sie können auf den Titel mit Autor klicken, um
+        zu der zugehörigen
+        Mediumsansicht zu gelangen.
+
+        <h4>Bibliotheksmitarbeiter</h4>
+        <h4>Administrator</h4>
+    </section>
 
     <footer>
         <a href="#top">nach oben</a>
