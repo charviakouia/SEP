@@ -1,0 +1,266 @@
+
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{indentfirst}
+
+\graphicspath{ {./images/} }
+
+\makeatletter
+\newcommand{\sectionauthor}[1]{
+	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{2em}}
+	\@afterheading
+}
+\makeatother
+
+\title{Bibliothekanwendung - Pflichtenheft}
+\date{\today}
+\author{
+	Ivan Charviakou\\
+	León Liehr\\
+	Mohamad Najjar\\
+	Jonas Picker\\
+	Sergei Pravdin
+}
+
+\begin{document}
+
+\maketitle
+\begin{figure}[h]
+	\centering
+	\includegraphics[width = 20em]{Dedede}
+\end{figure}
+\newpage
+
+\section{Zielbestimmung}
+\sectionauthor{Mario}
+
+\newpage
+
+\section{Produkteinsatz}
+\sectionauthor{Luigi}
+
+\newpage
+
+\section{Produktumgebung}
+
+\newpage
+
+\section{Produktfunktionen}
+
+\newpage
+
+\section{Produktdaten}
+\subsection{Benutzerdaten}
+	\label{D010} \paragraph{/D010/ Benutzerdaten}
+\begin{itemize}
+    	\item Persönliche Daten
+		\begin{itemize}
+			\item Vorname
+			\item Nachname
+			\item E-Mail-Adresse (als Username)
+			\item Passwort (gehasht)
+			\item Adresse (Ort, PLZ, Straße, Hausnummer)
+			\item Userstatus (gesperrt, offen)
+		\end{itemize}
+		
+		
+		\item sonstige Daten
+		\begin{itemize}
+		    \item Rolle ( Bibliotheksmitarbeiter, Administrator, Authentifizierte Nutzer und Anonyme Nutzer) 
+		\end{itemize}
+	\end{itemize}
+	\subsection{Mediumsdaten}
+	\label{D020} \paragraph{/D020/ Mediumsdaten}
+	Folgende Attribute sind fest:
+	
+	\begin{itemize}
+	    \item ID 
+	    \item Attributhashwert.
+	    \item Kategorien
+	    \item Maximalausleihdauer
+	    
+	   	\end{itemize}
+	   
+	   Die folgende Attribute sind änderbar:
+	   	\begin{itemize}
+	   \item Typ (Auswahl aus benutzerdefinierter Liste von Typen, z.B. "Buch, CD, etc.")
+	   \item Titel
+	   \item Autor (kann mehrwertig  sein)
+	   \item Version
+	   \item Erscheinungsjahr
+	   \item ISBN/ISSN (Index) 
+	   \item Herausgeber
+	   \item Link auf elektronische Version
+	    
+	\end{itemize}
+		
+	\subsection{Exemplar}
+	\label{D030} \paragraph{/D030/ Exemplar}
+	\begin{itemize}
+        \item Verfügbarkeitsstatus (Ausgeliehen, zur Abholung markiert, verfügbar)
+	    \item Bibliothekssignatur (ID)
+	    \item Operationsfrist (Wann es abzuholen ist bzw. abzugeben ist)
+	    \item Standort
+	    \item Freitext
+	    \item Duplikate
+	   	\end{itemize}
+	   	
+
+
+%muss die Warteliste weg
+
+	\subsection{Anwendungs- und Einrichtungsdaten}
+	\label{D040} \paragraph{/D040/ Anwendungs- und Einrichtungsdaten}
+	\begin{itemize}
+		\item Name des Betreibers
+		\item Akzeptierte E-Mail Domäne ( RegEx)
+		\item Registrierungsstatus ( offen, geschlossen)
+		\item Impressum mit Kontaktdaten
+		\item Logo
+		\item Datenschutzerklärung
+		\item Ausleihfrist (global)
+        \item Abholungsfrist (global)
+        \item Mahnungszeitversatz
+        \item Anonymes Lesen (Ja, Nein)
+        
+	\end{itemize}
+	
+\subsection{Kategorie}
+	\label{D050} \paragraph{/D050/ Kategorie}
+	\begin{itemize}
+	\item ID
+	\item Titel
+	\item Elternkategorie
+	\item Beschreibung
+	\end{itemize}	
+	
+\newpage
+
+
+
+\section{Produktleistung}
+
+\subsection{Benutzerfreundlichkeit}
+
+     \paragraph{/L010/ \label{L010} Bedienbarkeit}
+    Ein klares Design der Webanwendung ermöglicht eine einfache und intuitive Bedienung. Die häufig verwendeten Funktionen sind leicht zugänglich. Eine Suchfunktion ist auch  verfügbar. Damit lassen sich Dateien und Einträge leicht finden.
+    
+     \paragraph{/L020/ \label{L020} Zeichenkodierung} Die Texte  der Website sind UTF-8 kodiert.
+     
+      \paragraph{/L030/  \label{L030} Online-Hilfe} Dem Benutzer wird zu jeder Seite eine konextsensitive Online-Hilfe angeboten
+      
+      \paragraph{/L040/ \label{040} Installation}
+      Eine schnelle und komfortable Installation für Systembetreiber ist vorgesehen, die auch eine automatische Konfiguration der Datenbank beinhaltet.
+      
+      \paragraph{/L050/ \label{L050} Eingabe}
+      Bei einer fehlerhaften Eingabe in ein HTML-Formular wird eine kumulierte Fehlermeldung zurückgegeben. Felder, die bereits ausgefüllt wurden, müssen nicht erneut eingegeben werden.
+      
+      \paragraph{/L060/ \label{L060} Tabellen}
+      
+    Alle Tabellen sind nach ihren jeweiligen Spalten sortierbar. Tabellen,
+    die eine bestimmte Anzahl von Einträgen überschreiten, werden durch Paginierung auf mehrere Seiten aufgeteilt, deren Länge einstellbar ist. Per Default beträgt die Paginierungslänge 
+      
+      
+\subsection{Zuverlässigkeit und Sicherheit}
+   \paragraph{/L070/ \label{070} Datenspeicherung}
+   Alle dynamisch veränderbaren Daten werden persisten in einer PostgreSQL-Datenbank gespeichert. Die Konsistenz der Daten ist auch im Mehrbenutzerbetrieb gewährleistet. Im Fall wenn  Änderungen mehrere Datenbanktabellen betreffen, werden Transaktionen verwendet.
+  
+   \paragraph{/L080/ \label{080} Datenlöschen}
+   
+  Bestehen Abhängigkeiten ( z.B der Administrator möchte ein Medium löschen und dieses Medium hängt mit anderem Datensatz ab dann wird er  darauf hingewiesen bevor  er  löschen möchte)  zwischen den zu löschenden Daten und anderen Datensätzen, werden diese erst nach einer Warnung an den Benutzer gelöscht.
+  
+\subsubsection{Datenschutz}
+	\paragraph{/L090/ \label{L090} 
+	Personenbezogenen Daten} 
+	Alle Benutzerdaten, wie z. B. Login-Daten, werden ausschließlich über eine SSL-Verbindung übertragen. Der Zugriff auf sensible Daten durch unbefugte Dritte wird so weit wie möglich verhindert.
+		    
+	\paragraph{/L100/ \label{L100} Transparenz}
+    Technische Informationen über das System können nicht von außen eingesehen werden.
+		   
+   \paragraph{/L110/ \label{L110} Passwörter} Passwörter werden gehashed gespeichert.
+   
+    \paragraph{/L120/ \label{L120} HTML und CSS}
+    Das System ist durch valides HTML und CSS aufgebaut.
+    
+    \paragraph{/L130/ \label{L130} Schutz gegen Manipulationen} Eine Manipulation mit den üblichen Angriffsmethoden wie SQL-Injection oder Cross-Site-Scripting ist ausgeschlossen. Darüber hinaus sind die Benutzer vor Session Hijacking geschützt.
+   
+    \paragraph{/L140/ \label{L140} Benutzerdaten}
+   Alle Benutzerdaten sind nur für autorisierte Benutzer zugänglich.
+   Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
+
+   \paragraph{/L150/ \label{L150} Cookies}
+   Cookies werden nciht erzwungen.
+   
+   \paragraph{/L160/ \label{L160} Logging}
+    Das System besitzt einen Logger, welcher das Auftreten von untyptischen Verhalten in einer Logdatei festhält.
+
+ \subsection{Skalierbarkeit und Performance}
+	        \paragraph{
+	        /L170/ \label{L170} Last}
+	       Die Anwendung ist in der Lage sein, mindestens 20 Anfragen pro Sekunde unter realistischer Lastverteilung auf einem Referenzplattform (CIP-Pool-Rechner) zu beantworten. Bei einer Last von 20 Anfragen pro Sekunde werden 90\% der Anfragen nicht mehr als 3 Sekunden beantwortet.
+	       \paragraph{
+	        /L180/ \label{L180} Erweiterbarkeit} Das System ist so aufgebaut, dass eine weitere Entwicklung zu  realisieren  ist.
+	
+\subsection{Wunschkriterien}
+	    \paragraph{/LW190/ \label{LW190} Sprache}
+	    Das System ist auch in anderen Sprachen verfügbar, z. B. in Englisch.
+	    
+\paragraph{/LW200/ \label{LW210} Farbschema}	    	       
+	       Mit der Farbwahl ist es möglich, die Darstellung der betreibenden Einrichtung durch das Erscheinungsbild der Webanwendung anzupassen.
+
+
+\newpage
+
+\section{Benutzeroberfläche}
+
+\newpage
+
+\section{Qualitätsanforderungen}
+
+Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugewiesen wird.
+	
+\begin{center}
+\begin{tabular}{ |l||c|c|c|c| } 
+ \hline
+  & sehr wichtig & wichtig & weniger wichtig &\\
+ \hline\hline
+ Benutzerfreundlichkeit & X & & & \\
+ \hline
+ Funktionalität & X & & & \\ 
+ \hline
+ Korrektheit & X & & & \\
+ \hline
+ Robustheit & & X & & \\
+ \hline
+ Vertrauenswürdigkeit & & X & & \\
+ \hline
+ Effizienz & & X & & \\
+ \hline
+ Änderbarkeit & & X & & \\
+ \hline
+ Portierbarkeit & &   & X & \\
+
+ \hline
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item Da  unser System einfach und intuitiv zu bedienen sein soll und die häufigsten Funktionen sollten
+ zugänglich sein, wird sehr wichtig  auf die Benutzerfreundlichkeit und Funktionalität gesetzt.
+\item Aus dem Grund, dass sensible Daten zu jedem Zeitpunkt nur für Berechtigte zugänglich sind, wird auf  wichtig gesetzt.
+\item Um Manipulationen mit bekannten Angriffsmethoden zu verhindern, werden bestimmte Maßnahmen getroffen.
+\end{itemize}
+
+\newpage
+
+\section{Testing}
+
+\newpage
+
+\section{Entwicklungsumgebung}
+
+\newpage
+
+\section{Glossar}
+
+\end{document}
