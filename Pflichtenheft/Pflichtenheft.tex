@@ -12,7 +12,7 @@
 
 \makeatletter
 \newcommand{\sectionauthor}[1]{
-	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{2em}}
+	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{1em}}
 	\@afterheading
 }
 \newcommand{\specification}[3]{
@@ -227,88 +227,62 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 \sectionauthor{Mohamad Najjar}
 
 \subsection{Benutzerdaten}
-	\label{D010} \paragraph{/D010/ Benutzerdaten}
-\begin{itemize}
-    	\item Persönliche Daten
-		\begin{itemize}
-			\item Vorname
-			\item Nachname
-			\item E-Mail-Adresse (als Username)
-			\item Passwort (gehasht)
-			\item Adresse (Ort, PLZ, Straße, Hausnummer)
-			\item Userstatus (gesperrt, offen)
-		\end{itemize}
-		
-		
-		\item sonstige Daten
-		\begin{itemize}
-		    \item Rolle ( Bibliotheksmitarbeiter, Administrator, Authentifizierte Nutzer und Anonyme Nutzer) 
-		\end{itemize}
-	\end{itemize}
-	\subsection{Mediumsdaten}
-	\label{D020} \paragraph{/D020/ Mediumsdaten}
-	Folgende Attribute sind fest:
+\label{D010} \paragraph{/D010/ Benutzerdaten} \mbox{} \\[0.5em]
+
+\underline{Persönliche Daten:}\\[0.5em]
+\begin{tabular}{ c c }
+	Vorname & Nachname \\[0.5em]
+	E-Mail-Adresse (als Username) & Passwort (gehasht) \\[0.5em]
+	Adresse (Ort, PLZ, Straße, Hausnummer) & Userstatus (gesperrt, offen)
+\end{tabular} \\[0.5em]
+
+\underline{Sonstige Daten:}\\[0.5em]
+\begin{tabular}{ c c }
+	Rolle (Siehe Produktfunktionen) 
+\end{tabular} \\[0.5em]
 	
-	\begin{itemize}
-	    \item ID 
-	    \item Attributhashwert.
-	    \item Kategorien
-	    \item Maximalausleihdauer
-	    
-	   	\end{itemize}
-	   
-	   Die folgende Attribute sind änderbar:
-	   	\begin{itemize}
-	   \item Typ (Auswahl aus benutzerdefinierter Liste von Typen, z.B. "Buch, CD, etc.")
-	   \item Titel
-	   \item Autor (kann mehrwertig  sein)
-	   \item Version
-	   \item Erscheinungsjahr
-	   \item ISBN/ISSN (Index) 
-	   \item Herausgeber
-	   \item Link auf elektronische Version
-	    
-	\end{itemize}
+\subsection{Mediumsdaten}
+\label{D020} \paragraph{/D020/ Mediumsdaten} \mbox{} \\[0.5em]
+
+\underline{Folgende Attribute sind fest:}\\[0.5em]
+\begin{tabular}{ c c }
+	ID & Attributhashwert \\[0.5em]
+	Kategorien & Maximalausleihdauer
+\end{tabular}\\[0.5em]
+
+\underline{Die folgende Attribute sind änderbar:}\\[0.5em]
+\begin{tabular}{ c c }
+	Typ (Buch, CD, etc.) & Titel \\[0.5em]
+	Autoren (mehrwertig) & Version \\[0.5em]
+	Erscheinungsjahr & ISBN/ISSN (Index) \\[0.5em]
+	Herausgeber & Link auf elektronische Version
+\end{tabular}\\[0.5em]
 		
-	\subsection{Exemplar}
-	\label{D030} \paragraph{/D030/ Exemplar}
-	\begin{itemize}
-        \item Verfügbarkeitsstatus (Ausgeliehen, zur Abholung markiert, verfügbar)
-	    \item Bibliothekssignatur (ID)
-	    \item Operationsfrist (Wann es abzuholen ist bzw. abzugeben ist)
-	    \item Standort
-	    \item Freitext
-	    \item Duplikate
-	   	\end{itemize}
-	   	
+\subsection{Exemplar}
+\label{D030} \paragraph{/D030/ Exemplar} 
+Die Operationsfrist gibt an, wann ein Exemplar abzuholen bzw. abzugeben ist. Sie bezieht sich auf den Verfügbarkeitsstatus, der folgende Werte hat: Ausgeliehen, zur Abholung markiert, verfügbar. \\[0.5em]
+\begin{tabular}{ c c }
+	Verfügbarkeitsstatus & Bibliothekssignatur (ID) \\[0.5em]
+	Operationsfrist & Standort \\[0.5em]
+	Freitext & Duplikate
+\end{tabular}\\[0.5em]
 
-
-%muss die Warteliste weg
-
-	\subsection{Anwendungs- und Einrichtungsdaten}
-	\label{D040} \paragraph{/D040/ Anwendungs- und Einrichtungsdaten}
-	\begin{itemize}
-		\item Name des Betreibers
-		\item Akzeptierte E-Mail Domäne ( RegEx)
-		\item Registrierungsstatus ( offen, geschlossen)
-		\item Impressum mit Kontaktdaten
-		\item Logo
-		\item Datenschutzerklärung
-		\item Ausleihfrist (global)
-        \item Abholungsfrist (global)
-        \item Mahnungszeitversatz
-        \item Anonymes Lesen (Ja, Nein)
-        
-	\end{itemize}
+\subsection{Anwendungs- und Einrichtungsdaten}
+\label{D040} \paragraph{/D040/ Anwendungs- und Einrichtungsdaten} \mbox{} \\[0.5em]
+\begin{tabular}{ c c }
+	Name des Betreibers & Akzeptierte E-Mail Domäne (RegEx) \\[0.5em]
+	Registrierungsstatus (offen, geschlossen) & Impressum mit Kontaktdaten \\[0.5em]
+	Logo & Datenschutzerklärung \\[0.5em]
+	Ausleihfrist (global) & Abholungsfrist (global) \\[0.5em]
+	Mahnungszeitversatz & Anonymes Lesen (Ja, Nein)  
+\end{tabular}\\[0.5em]
 	
 \subsection{Kategorie}
-	\label{D050} \paragraph{/D050/ Kategorie}
-	\begin{itemize}
-	\item ID
-	\item Titel
-	\item Elternkategorie
-	\item Beschreibung
-	\end{itemize}
+\label{D050} \paragraph{/D050/ Kategorie} \mbox{} \\[0.5em]
+\begin{tabular}{ c c }
+	ID & Titel \\[0.5em]
+	Elternkategorie & Beschreibung
+\end{tabular}
 	
 \section{Produktleistung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
@@ -388,35 +362,35 @@ In den Abbildungen \ref{katstoeb}, \ref{katstoebmit}, \ref{mediumsansicht}, \ref
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width = 40em]{Kategorienstöberer}
+    \includegraphics[width = 20em]{Kategorienstöberer}
     \caption{Skizzierung des Kategorienstöberers aus Sicht eines nicht angemeldeten Nutzers}
     \label{katstoeb}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width = 40em]{Kategorienstöberer_Mitarbeiter}
+    \includegraphics[width = 20em]{Kategorienstöberer_Mitarbeiter}
     \caption{Skizzierung des Kategorienstöberers aus Sicht eines Bibliotheksmitarbeiters}
     \label{katstoebmit}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width = 40em]{Mediumsansicht}
+    \includegraphics[width = 20em]{Mediumsansicht}
     \caption{Skizzierung der Mediumsansicht aus Sicht eines angemelden Nutzers}
     \label{mediumsansicht}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width = 40em]{Mediumsansicht_Mitarbeiter}
+    \includegraphics[width = 20em]{Mediumsansicht_Mitarbeiter}
     \caption{Skizzierung der Mediumsansicht aus Sicht eines Bibliotheksmitarbeiters}
     \label{mediumsansichtmit}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width = 40em]{Mediensuche}
+    \includegraphics[width = 20em]{Mediensuche}
     \caption{Skizzierung der Mediensuche aus Sicht eines nicht angemeldeten Nutzers}
     \label{mediensuche}
 \end{figure}
@@ -562,6 +536,7 @@ Der im Abschnitt 'Produktumgebung' beschriebene CIP-Pool Rechner 'schratz'.
 \section{Glossar} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
 \begin{itemize}
+\setlength\itemsep{0.1em}
 \item \underline{OPAC (5.1):} 'Online Public Access Catalog', darunter versteht man den über das Internet zugänglichen Bibliothekskatalog, mit dem der Bestand an Publikationen recherchiert werden kann.
 \item \underline{Webbrowser (Einleitung):} Spezielle Computerprogramme zum Anzeigen von Webseiten im World Wide Web. Bekannte Beispiele sind: Google Chrome, Apple Safare, Mozilla Firefox.
 \item \underline{Webspace (2.1):} Unter einem Webspace versteht man einen Speicherplatz für Dateien auf einem Server, der über das Internet erreichbar ist.
