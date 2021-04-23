@@ -94,7 +94,7 @@ Das System wird von einem Administrator eingesetzt und eingestellt. Das System i
 Im folgenden Abschnitt werden Softwareabhängigkeiten und Kompatibilitäten des Produkts beschrieben.
 \begin{itemize}
 \item \underline{\textbf{Clientsoftware}}: \linebreak
-Die Applikation wird über einen Webbrowser benutzt, dieser sollte die Darstellung in den Auszeichnungssprachen HTML, Version 5 und CSS, Level 3 unterstützen, sowie die Kommunikation mit dem HTTP/1.1-Protokoll. Die Unterstützung von JavaScript (ECMAScript 2020) im Browser ist ebenfalls vorausgesetzt. Explizit getestet werden die aktuellen Versionen der weit verbreiteten Browser: Google Chrome, Version: 88.0; Mozilla Firefox, Version: 85.0 und Apple Safari, Version: 14.0.3. Da HTML 5 (und CSS) zusammen mit JavaScript jedoch seit langem als Web-Standart gilt, ist Abwärtskompatibilität bei den meisten Browsern sehr wahrscheinlich.  
+Die Applikation wird über einen Webbrowser benutzt, dieser sollte die Darstellung in den Auszeichnungssprachen HTML, Version 5 und CSS, Level 3 unterstützen, sowie die Kommunikation mit dem HTTP/1.1-Protokoll. Die Unterstützung von JavaScript (ECMAScript 2020) im Browser ist ebenfalls vorausgesetzt. Explizit getestet werden die aktuellen Versionen der weit verbreiteten Browser: Google Chrome, Version: 88.0; Mozilla Firefox, Version: 85.0 und Apple Safari, Version: 14.0.3. Da HTML 5 (und CSS) zusammen mit JavaScript jedoch seit langem als Web-Standart gilt, ist Abwärtskompatibilität bei den meisten Browsern sehr wahrscheinlich.
 \item \underline{\textbf{Serversoftware}}: \linebreak
 Auf dem Server muss die Laufzeitumgebung 'Java Virtual Maschine' verfügbar sein, hierzu muss das 'Development Kit' OpenJDK 15.0.2 installiert und beim ebenfalls benötigten Java Enterprise Applikationsserver Apache Tomcat, Version 10.0.x registriert werden. Außerdem muss ein E-Mail-Server bereit stehen, der das SMTP-Protokoll unterstützt. Die verwendete Datenbank muss das objektrelationale Datenbankmanagementsystem PostgreSQL, Version 12 benutzen. Die Installation der JVM/Tomcat, das Aufspielen der Anwendung und des Zertifikats (siehe Orgware) sowie die Registrierung der Datenbank und des E-Mail-Servers werden in einem Installationsdokument beschrieben.
 \end{itemize}
@@ -117,7 +117,7 @@ Spezifikation der Datenbank bezieht sich auf die Referenzhardware von 'schratz'.
 \item \underline{\textbf{Client}}: \linebreak
 Die notwendigen Mensch-Maschine Schnittstellen zum Benutzen der Anwendung über einen Browser sind: Bildschirm, Tastatur. Die Benutzung einer Maus oder vergleichbare Cursorsteuerung wird dringend empfohlen. Die Verifizierung eines neuen Benutzers bei der Registrierung im System wird über eine gültige E-Mail-Adresse abgewickelt, folglich muss der Nutzer Zugriff auf ein E-Mail-Konto besitzen. Der Browser des Klienten muss beim Benutzen über eine konstante Anbindung an das Internet (mind. 5 MBit/s) verfügen, eine außergewöhnlich hohe Bandbreite ist nicht erforderlich.
 \item \underline{\textbf{Server}}: \linebreak
-Zur initialen Installation der Anwendung und ihrer Softwareabhängigkeiten sind die selben Mensch-Maschine Schnittstellen wie beim Client notwendig. Da Administratorkonten eine E-Mail-Adresse benötigen, ist bei der Installation der Zugang zu einem E-Mail-Konto erforderlich. Auch benötigt der Server eine konstante Anbindung an das (Intra- und) Internet, um Klientenanfragen beantworten, den E-Mail-Server kontaktieren und Datenbankanfragen absetzen zu können. Die benötigte Bandbreite ist stark abhängig von der zu erwartenden Zahl der gleichzeitigen Zugriffe, für einen Minimalbetrieb mind. 25MBit/s. Um den Webspace über das Internet aufrufen zu können, muss die Domain einen Eintrag im DNS mit der festen IP des Servers besitzen. Die Datenbank kann sich auf dem gleichen Gerät wie der Server, seperat davon im Netzwerk oder geographisch getrennt 'im Internet'  befinden. Sie muss jedoch vom Server aus über einen Hostnamen ansteuerbar sein, je nach Realisierung ist dazu ein VPN-Tunnel notwendig. Um sichere Datenübertragungen mit dem TLS-Protokoll zu ermöglichen, benötigt der Tomcat-Server ein SSL-Zertifikat. Wenn sich der Server mit der Datenbank über das Internet (via SSL-VPN) verbinden soll, muss auch die Datenbank mit einem SSL-Zertifikat ausgestattet sein und die Verbindung zwischen ihr und dem Server sollte eine Bandbreite von ca. 1GBit/s aufweisen. 
+Zur initialen Installation der Anwendung und ihrer Softwareabhängigkeiten sind die selben Mensch-Maschine Schnittstellen wie beim Client notwendig. Da Administratorkonten eine E-Mail-Adresse benötigen, ist bei der Installation der Zugang zu einem E-Mail-Konto erforderlich. Auch benötigt der Server eine konstante Anbindung an das (Intra- und) Internet, um Klientenanfragen beantworten, den E-Mail-Server kontaktieren und Datenbankanfragen absetzen zu können. Die benötigte Bandbreite ist stark abhängig von der zu erwartenden Zahl der gleichzeitigen Zugriffe, für einen Minimalbetrieb mind. 25MBit/s. Um den Webspace über das Internet aufrufen zu können, muss die Domain einen Eintrag im DNS mit der festen IP des Servers besitzen. Die Datenbank kann sich auf dem gleichen Gerät wie der Server, seperat davon im Netzwerk oder geographisch getrennt 'im Internet'  befinden. Sie muss jedoch vom Server aus über einen Hostnamen ansteuerbar sein, je nach Realisierung ist dazu ein VPN-Tunnel notwendig. Um sichere Datenübertragungen mit dem TLS-Protokoll zu ermöglichen, benötigt der Tomcat-Server ein SSL-Zertifikat. Wenn sich der Server mit der Datenbank über das Internet (via SSL-VPN) verbinden soll, muss auch die Datenbank mit einem SSL-Zertifikat ausgestattet sein und die Verbindung zwischen ihr und dem Server sollte eine Bandbreite von ca. 1GBit/s aufweisen.
 \end{itemize}
 
 \section{Produktfunktionen} %-------------------------------------------------------------------------------------------------
@@ -136,15 +136,15 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 
 \subsection{Anonymer Nutzer}
 	\subsubsection{Nutzerverwaltung}
-		\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit einem Namen, einer Adresse, und einer gültigen E-Mail Adresse möglich. 
-			Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse versendet wurde. 
+		\specification{F}{90}{Wenn von Administratoren freigeschaltet, ist eine Registrierung mit einem Namen, einer Adresse, und einer gültigen E-Mail Adresse möglich.
+			Dabei gilt sie nur dann als abgeschlossen, wenn auf den Link zugegriffen wird, der per Email an die angegebene Email-Adresse versendet wurde.
 			Ohne diesen Schritt ist das Konto vorerst zum Ausleihen gesperrt. (\hyperlink{spec:W:70}{Siehe /W70/}) }
 		\specification{F}{100}{Es ist möglich, sich mit einer registrierten E-Mail Adresse und Kennwort ins System einzuloggen. Beim Erfolg handelt es sich dann um einen angemeldeten Nutzer. }
-		\specification{F}{101}{Es kann mit einer gültigen E-Mail Adresse eine Passwortzurücksetzung angefordert werden. 
+		\specification{F}{101}{Es kann mit einer gültigen E-Mail Adresse eine Passwortzurücksetzung angefordert werden.
 			Dazu wird ein Link an die angegebene E-Mail Adresse versendet, wenn sie im System registriert ist. Ansonsten verhält sich die Nutzeroberfläche in beiden Fällen gleich, um die Gültigkeit der Adresse nicht preiszugeben.
 			Durch Zugriff auf diesen Link kann der Nutzer die Passwortzurücksetzung für das angegebene Nutzerkonto abschließen. }
 	\subsubsection{Navigation \& Suche}
-		Es ist zu beachten - Funktionalitäten, die die Anzeige von Kategorien-, Medien-, oder Exemplarenbezogene Details oder Suchergebnissen beinhalten, sind bei anonymen Nutzern nur dann vorhanden, 
+		Es ist zu beachten - Funktionalitäten, die die Anzeige von Kategorien-, Medien-, oder Exemplarenbezogene Details oder Suchergebnissen beinhalten, sind bei anonymen Nutzern nur dann vorhanden,
 		wenn ihnen ein Administrator Lesezugriff auf den OPAC gewährt hat. (\hyperlink{spec:F:10}{Siehe /F10/}) \par \vspace{0.5em}
 		\specification{F}{160}{Es ist möglich, mit Texteingabe nach einer Medien-Kategorie zu suchen. }
 		\specification{F}{170}{Es ist möglich, durch eine Baum-Darstellung aller Kategorien im System zu navigieren. Durch Auswahl einer Kategorie, ist eine Liste von allen darin enthaltenen Medien aufrufbar. }
@@ -167,18 +167,18 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 \subsection{Bibliotheksmitarbeiter}
 	\subsubsection{Ausleihe \& Rückgabe}
 		\specification{F}{300}{Eine Liste von Exemplaren und Nutzer-E-Mails, für die der angegebene Nutzer das gegebene Exemplar zur Abholung markiert hat, ist abrufbar. }
-		\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann ausgeliehen werden. Ab diesem Zeitpunkt verläuft die Ausleihdauer. 
+		\specification{F}{310}{Ein Exemplar, das zur Abholung markiert ist, kann ausgeliehen werden. Ab diesem Zeitpunkt verläuft die Ausleihdauer.
 			Innerhalb dieser Ausleihperiode ist das Exemplar nicht mehr zur Abholung markiert und steht anderen Nutzern nicht mehr zu Verfügung. }
 		\specification{F}{320}{Ein Exemplar kann zurückgegeben werden, wodurch das Exemplar anderen Nutzern wieder zu Verfügung steht. }
 		\specification{F}{321}{Ein Exemplar kann direkt ausgeliehen werden, ohne vorher vom Ausleihenden zur Abholung markiert gewesen zu sein. }
 		\specification{F}{322}{Eine Abholungsmarkierung kann storniert werden. Darüber werden die betroffenen Nutzer per E-Mail benachrichtigt. }
 	\subsubsection{Katalogführung}
-		\specification{F}{360}{Es kann eine Kategorie editiert werden. Dabei kann sie einer anderen Kategorie als Subkategorie gehören. Dies ist mit einer Tiefe von bis zu zwei Kategorien möglich. 
-			Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert. 
+		\specification{F}{360}{Es kann eine Kategorie editiert werden. Dabei kann sie einer anderen Kategorie als Subkategorie gehören. Dies ist mit einer Tiefe von bis zu zwei Kategorien möglich.
+			Vor dem Löschen einer Oberkategorie wird auf Abhängigkeiten hingewiesen und eine Bestätigung gefordert.
 			Es werden durch Löschen nur abhängige Kategorien entfernt und insbesondere keine darin enthaltene Medien. }
-		\specification{F}{400}{Es kann ein Medium editiert werden. Bei der Erstellung müssen die entsprechenden Attribute gesetzt werden. 
+		\specification{F}{400}{Es kann ein Medium editiert werden. Bei der Erstellung müssen die entsprechenden Attribute gesetzt werden.
 			Ein Medienverweis (\hyperlink{spec:F:380}{Siehe /F380/}) ist als ID-Hash (\hyperlink{spec:F:191}{Siehe /F191/}) einzugeben.
-			Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft. Falls ein zugehöriges Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. 
+			Vor dem Löschen eines Mediums wird auf aktuelle Ausleihvorgänge geprüft. Falls ein zugehöriges Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert.
 			Anschließend werden alle enthaltene Exemplare mit gelöscht. }
 		\specification{F}{420}{Es kann zu einem Medium ein Exemplar editiert werden. Vor dem Löschen eines Exemplar wird auf aktuelle Ausleihvorgänge geprüft.
 			Falls das Exemplar zu der Zeit ausgeliehen ist, wird eine Bestätigung gefordert. Anschließend wird das Exemplar gelöscht. }
@@ -187,13 +187,13 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 	\subsubsection{Nutzerverwaltung}
 		\specification{F}{10}{Es ist einstellbar, ob anonyme Nutzer Lesezugriff auf den OPAC haben. }
 		\specification{F}{20}{Es ist einstellbar, ob neue Registrierungen im System erlaubt sind. Falls sie erlaubt sind, kann ein Regex-Ausdruck angegeben werden, der bei der Registrierung die eingegebenen E-Mail Adressen überprüft. }
-		\specification{F}{30}{Ein Nutzerprofil kann editiert werden. Es lassen sich dadurch alle Nutzerdaten und die Rolle aller Nutzer verändern. 
-			Ausgenommen davon ist die eigene Rolle und jegliche Änderung, die dazu führt, dass es keine Administratoren mehr im System vorhanden sind. 
-			Beim Löschen eines Nutzers wird zuerst überprüft, ob von ihm die Rückgabe eines Exemplars erwartet wird. 
+		\specification{F}{30}{Ein Nutzerprofil kann editiert werden. Es lassen sich dadurch alle Nutzerdaten und die Rolle aller Nutzer verändern.
+			Ausgenommen davon ist die eigene Rolle und jegliche Änderung, die dazu führt, dass es keine Administratoren mehr im System vorhanden sind.
+			Beim Löschen eines Nutzers wird zuerst überprüft, ob von ihm die Rückgabe eines Exemplars erwartet wird.
 			In diesem Fall wird zuerst eine Bestätigung gefordert. Anschließend werde sämtliche ausgeliehene Exemplare und leer-gewordene Medien mit gelöscht. }
 		\specification{F}{60}{Es kann mit Angabe von Nutzerattributen nach Nutzern gesucht werden. Es können auch alle Nutzer im System angezeigt werden. }
-		\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden. Dabei existieren zwei arten von Sperren, die für eine Ausleihe durch den Nutzer beide nicht gelten müssen. 
-			Eine Sperre ist frei setzbar, aber nur durch einen Administrator. Die andere Sperre kann durch einen Administrator zwar gesetzt, aber nicht aufgehoben werden. 
+		\specification{W}{70}{Nicht-administrative Benutzerkonten können von weiterer Ausleihe gesperrt und entsperrt werden. Dabei existieren zwei arten von Sperren, die für eine Ausleihe durch den Nutzer beide nicht gelten müssen.
+			Eine Sperre ist frei setzbar, aber nur durch einen Administrator. Die andere Sperre kann durch einen Administrator zwar gesetzt, aber nicht aufgehoben werden.
 			Dies passiert nur nämlich dann, wenn der Nutzer seine E-Mail Adresse neu verifiziert. (\hyperlink{spec:F:120}{Siehe /F120/}) }
 		\specification{W}{80}{Die Liste von gesperrten Nutzerkonten ist aufrufbar. }
 	\subsubsection{Ausleihe \& Rückgabe}
@@ -206,16 +206,16 @@ Zudem wird im Folgenden unter 'editieren' auch das Erstellen und Löschen gemein
 			Wenn bei einem Ausleihvorgang mehrere Werte vorhanden sind, wird zuerst der Nutzerwert, danach der Mediumwert, und als letztes der globale Wert beachtet. }
 		\specification{F}{280}{Eine Liste von Einträgen aus Nutzern, Exemplaren, und Zeitdauern, bei der der Nutzer die Rückgabefrist das gegebene Medium um die gegebene Zeitdauer überschritten hat, ist abrufbar. }
 	\subsubsection{Katalogführung}
-		Zu allen Medien ist eine Menge an frei definierbaren Attributen vorgesehen, mit denen Nutzer von verschiedenen Rollen bei einer Suche oder Werteingabe direkt interagieren können. 
-		Per Default besteht der Attributsatz aus folgenden Attributen: Index (Schlüsselkomponent), Typ, Titel, Version, Autoren (mehrwertig), Erscheinungsdatum, elektronische Version (Verweis), und Herausgeber. 
-		Die Attribute selber verlangen keinen Typ und es muss immer mindestens einen Attribut in dem Attributsatz vorhanden sein, der als Schlüsselkomponent markiert ist. 
+		Zu allen Medien ist eine Menge an frei definierbaren Attributen vorgesehen, mit denen Nutzer von verschiedenen Rollen bei einer Suche oder Werteingabe direkt interagieren können.
+		Per Default besteht der Attributsatz aus folgenden Attributen: Index (Schlüsselkomponent), Typ, Titel, Version, Autoren (mehrwertig), Erscheinungsdatum, elektronische Version (Verweis), und Herausgeber.
+		Die Attribute selber verlangen keinen Typ und es muss immer mindestens einen Attribut in dem Attributsatz vorhanden sein, der als Schlüsselkomponent markiert ist.
 		Es wird garantiert, dass unter allen Medien die Gesamtheit der Attributsatzwerten, bei denen der Attribut als Schlüsselkomponent markiert ist, immer eindeutig ist. Aus diesen Werten leitet sich ein ID-Hash ab. \par \vspace{0.5em}
-		\specification{F}{380}{Es kann ein neuer Attribut im Attributsatz von allen Medien definiert werden. Dieser kann als mehrwertig, als Verweis auf ein anderes Medium, oder als Schlüsselkomponent markiert werden. 
-			Der entsprechende Attributwert für alle Medien ist zuerst leer. 
+		\specification{F}{380}{Es kann ein neuer Attribut im Attributsatz von allen Medien definiert werden. Dieser kann als mehrwertig, als Verweis auf ein anderes Medium, oder als Schlüsselkomponent markiert werden.
+			Der entsprechende Attributwert für alle Medien ist zuerst leer.
 			Ist dieser Attribut als Schlüsselkomponent markiert, so wird es bei der Berechnung eines ID-Hashes verwendet und es werden dementsprechend alle Verweise im gesamten Medienbestand auf einen leeren Wert gesetzt. }
-		\specification{F}{381}{Es kann ein Attribut aus dem Attributsatz von allen Medien gelöscht werden. 
-			Ist dieser Attribut als Schlüsselkomponent markiert, so werden zum einen alle Verweise im gesamten Medienbestand auf einen leeren Wert gesetzt. 
-			Zum anderen werden alle Medien nach den restlichen Schlüsselattributen zusammengefasst. Es werden nämlich alle Duplikatinstanzen gelöscht und alle zugehörige Exemplare dem verbleibenden Mediuminstanz zugeordnet. 
+		\specification{F}{381}{Es kann ein Attribut aus dem Attributsatz von allen Medien gelöscht werden.
+			Ist dieser Attribut als Schlüsselkomponent markiert, so werden zum einen alle Verweise im gesamten Medienbestand auf einen leeren Wert gesetzt.
+			Zum anderen werden alle Medien nach den restlichen Schlüsselattributen zusammengefasst. Es werden nämlich alle Duplikatinstanzen gelöscht und alle zugehörige Exemplare dem verbleibenden Mediuminstanz zugeordnet.
 			Falls es in Folge einer Attributlöschung eine solche Zusammenfassung stattfindet, wird zuerst eine Bestätigung für diese Löschoperation gefordert. }
 	\subsubsection{Weitere Personalisierungen}
 		\specification{F}{450}{Die Name der Einrichtung ist setzbar. }
@@ -242,22 +242,22 @@ section{Produktdaten}
            % \end{description}
 
 		\end{itemize}
-		
-		
+
+
 		\item sonstige Daten
 		\begin{itemize}
-		    \item Rolle ( Schaltermitarbeiter, Administrator, Authentifizierte Nutzer und Anonyme Nutzer) 
+		    \item Rolle ( Schaltermitarbeiter, Administrator, Authentifizierte Nutzer und Anonyme Nutzer)
 		\end{itemize}
 	\end{itemize}
 	\subsection{Mediumsdaten}
 	\label{D020} \paragraph{/D020/ Mediumsdaten}
 	Folgende Attribute sind fest:
-	
+
 	\begin{itemize}
 	    \item ID
 	    \item Link auf elektronische Version
 	   	\end{itemize}
-	   
+
 	   Die folgende Attribute sind änderbar:
 	   	\begin{itemize}
 	   \item Typ (Auswahl aus benutzerdefinierter Liste von Typen, z.B. "Buch, CD, etc.")
@@ -265,11 +265,11 @@ section{Produktdaten}
 	   \item Autor (kann mehrwertig  sein)
 	   \item Version
 	   \item Erscheinungsjahr
-	   \item ISBN/ISSN (Index) 
+	   \item ISBN/ISSN (Index)
 	   \item Herausgeber
-	    
+
 	\end{itemize}
-		
+
 	\subsection{Exemplar}
 	\label{D030} \paragraph{/D030/ Exemplar}
 	\begin{itemize}
@@ -279,7 +279,7 @@ section{Produktdaten}
 	    \item Freitext
 	    \item Duplikate
 	   	\end{itemize}
-	   	
+
 \subsection{Ausleihe}
 	\label{D040} \paragraph{/D040/ Ausleihe}
 	\begin{itemize}
@@ -291,7 +291,7 @@ section{Produktdaten}
 	\item Ablauffrist
 %	\item Tag der Reservierung
 	\end{itemize}
-	
+
 %muss die Warteliste weg
 
 	\subsection{Anwendungs- und Einrichtungsdaten}
@@ -305,65 +305,65 @@ section{Produktdaten}
 		\item Ausleihfristen
         \item Verfallsfristen
 	\end{itemize}
-	
+
 \subsection{Kategorie}
 	\label{D060} \paragraph{/D060/ Kategorie}
 	\begin{itemize}
-	
+
 	\item ID
 	\item Titel
 	\item Elternkategorie
 
-	\end{itemize}	
+	\end{itemize}
 	\section{Produktleistung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Mohamad Najjar}
 \subsection{Benutzerfreundlichkeit}
  \paragraph{/L010/ \label{L010} Bedienbarkeit}
     Ein klares Design der Webanwendung ermöglicht eine einfache und intuitive Bedienung. Die häufig verwendeten Funktionen sind leicht zugänglich. Eine Suchfunktion ist auch  verfügbar. Damit lassen sich Dateien und Einträge leicht finden.
-    
+
      \paragraph{/L020/ \label{L020} Zeichenkodierung} Die Texte  der Website sind UTF-8 kodiert.
-     
+
       \paragraph{/L030/  \label{L030} Online-Hilfe} Dem Benutzer wird zu jeder Seite eine konextsensitive Online-Hilfe angeboten
-      
+
       \paragraph{/L040/ \label{040} Installation}
       Eine schnelle und komfortable Installation für Systembetreiber ist vorgesehen, die auch eine automatische Konfiguration der Datenbank beinhaltet.
-      
+
       \paragraph{/L050/ \label{L050} Eingabe}
       Bei einer fehlerhaften Eingabe in ein HTML-Formular wird eine kumulierte Fehlermeldung zurückgegeben. Felder, die bereits ausgefüllt wurden, müssen nicht erneut eingegeben werden.
-      
+
       \paragraph{/L060/ \label{L060} Tabellen}
-      
+
     Alle Tabellen sind nach ihren jeweiligen Spalten sortierbar. Tabellen,
     die eine bestimmte Anzahl von Einträgen überschreiten, werden durch Paginierung auf mehrere Seiten aufgeteilt. Der Benutzer kann zu den vorherigen oder nächsten 20 Einträge wechseln.
-      
-      
+
+
 \subsection{Zuverlässigkeit und Sicherheit}
    \paragraph{/L070/ \label{070} Datenspeicherung}
    Alle dynamisch veränderbaren Daten werden persisten in einer PostgreSQL-Datenbank gespeichert. Die Konsistenz der Daten ist auch im Mehrbenutzerbetrieb gewährleistet. Im Fall wenn  Änderungen mehrere Datenbanktabellen betreffen, werden Transaktionen verwendet.
-  
+
    \paragraph{/L080/ \label{080} Datenlöschen}
-   
+
   Bestehen Abhängigkeiten ( z.B der Administrator möchte ein Medium löschen und dieses Medium hängt mit anderem Datensatz ab dann wird er  darauf hingewiesen bevor  er  löschen möchte)  zwischen den zu löschenden Daten und anderen Datensätzen, werden diese erst nach einer Warnung an den Benutzer gelöscht.
-  
+
 \subsubsection{Datenschutz}
-	\paragraph{/L090/ \label{L090} 
-	Personenbezogenen Daten} 
+	\paragraph{/L090/ \label{L090}
+	Personenbezogenen Daten}
 	Alle Benutzerdaten, wie z. B. Login-Daten, werden ausschließlich über eine SSL-Verbindung übertragen. Der Zugriff auf sensible Daten durch unbefugte Dritte wird so weit wie möglich verhindert.
-		    
+
 	\paragraph{/L100/ \label{L100} Transparenz}
     Technische Informationen über das System können nicht von außen eingesehen werden.
-		   
+
    \paragraph{/L110/ \label{L110} Passwörter} Passwörter werden gehashed gespeichert.
-   
+
     \paragraph{/L120/ \label{L120} Schutz gegen Manipulationen} Eine Manipulation mit den üblichen Angriffsmethoden wie SQL-Injection oder Cross-Site-Scripting ist ausgeschlossen. Darüber hinaus sind die Benutzer vor Session Hijacking geschützt.
-   
+
     \paragraph{/L130/ \label{L130} Benutzerdaten}
    Alle Benutzerdaten sind nur für autorisierte Benutzer zugänglich.
    Ein unberechtigter Zugriff durch Dritte oder andere Benutzer ist ausgeschlossen.
 
    \paragraph{/L140/ \label{L140} Cookies}
    Cookies werden nciht erzwungen.
-   
+
    \paragraph{/L150/ \label{L150} Logging}
     Das System besitzt einen Logger, welcher das Auftreten von untyptischen Verhalten in einer Logdatei festhält.
 
@@ -371,15 +371,15 @@ section{Produktdaten}
 	        \paragraph{
 	        /L150/ \label{L150} Last}
 	       Die Anwendung sollte in der Lage sein, mindestens 20 Anfragen pro Sekunde unter realistischer Lastverteilung auf einem Referenzplattform (CIP-Pool-Rechner) zu beantworten. In diesem Fall werden 18 der Anfragen beantwortet.
-	       
-	
+
+
 \subsection{Wunschkriterien}
 	    \paragraph{/LW160/ \label{LW160} Sprache}
 	    Das System ist auch in anderen Sprachen verfügbar, z. B. in Englisch.
-	    
-\paragraph{/LW170/ \label{LW170} Farbschema}	    	       
+
+\paragraph{/LW170/ \label{LW170} Farbschema}
 	       Mit der Farbwahl ist es möglich, die Darstellung der betreibenden Einrichtung durch das Erscheinungsbild der Webanwendung anzupassen.
-	       
+
 	   \section{Benutzeroberfläche} %-------------------------------------------------------------------------------------------------
 \sectionauthor{León Liehr}
 
@@ -414,7 +414,7 @@ In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angem
 
 \begin{figure}[h]
     \centering
-    \includegraphics[angle = 270, width = 40em]{site_map}
+    \includegraphics[angle = 270, width = 50em]{site_map}
     \caption{Die Inhaltsübersicht der Webseite (engl. \textit{site map})}
     \label{site_map}
 \end{figure}
@@ -425,15 +425,15 @@ In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angem
 \sectionauthor{Mohamad Najjar}
 
 	Die folgende Tabelle zeigt die Priorität, die jeder Qualitätsanforderung zugewiesen wird.
-	
+
 \begin{center}
-\begin{tabular}{ |l||c|c|c|c| } 
+\begin{tabular}{ |l||c|c|c|c| }
  \hline
   & sehr wichtig & wichtig & weniger wichtig & unwichtig \\
  \hline\hline
  Benutzerfreundlichkeit & X & & & \\
  \hline
- Funktionalität & X & & & \\ 
+ Funktionalität & X & & & \\
  \hline
  Korrektheit & X & & & \\
  \hline
@@ -454,7 +454,7 @@ In den Abbildungen \ref{startseite}, \ref{anmeldemaske}, \ref{mediumsseite_angem
 \item Da  unser System einfach und intuitiv zu bedienen sein soll und die häufigsten Funktionen sollten
  zugänglich sein, wird sehr wichtig  auf die Benutzerfreundlichkeit und Funktionalität gesetzt.
 \item Aus dem Grund, dass sensible Daten zu jedem Zeitpunkt nur für Berechtigte zugänglich sind, wird auf  wichtig gesetzt.
-\item Um nachträgliche Änderungen und Erweiterungen einfach vornehmen zu können, 
+\item Um nachträgliche Änderungen und Erweiterungen einfach vornehmen zu können,
 sollte das System in gewissen Grenzen flexibel genug sein.
 \item Um Manipulationen mit bekannten Angriffsmethoden zu verhindern, werden bestimmte Maßnahmen getroffen.
 \end{itemize}
@@ -487,7 +487,7 @@ Die im Folgenden beschriebenen Testfälle bauen aufeinander auf. Das bedeutet, d
 
 \section{Entwicklungsumgebung} %-------------------------------------------------------------------------------------------------
 \sectionauthor{Jonas Picker}
-Die Entwicklung finden auf verschiedenen Privatrechnern der Teammitglieder statt, deren Bauteile und Betriebssysteme und verwendete Software im Folgenden kurz umrissen werden. Keiner der Rechner weißt sonstige Besonderheiten auf. 
+Die Entwicklung finden auf verschiedenen Privatrechnern der Teammitglieder statt, deren Bauteile und Betriebssysteme und verwendete Software im Folgenden kurz umrissen werden. Keiner der Rechner weißt sonstige Besonderheiten auf.
 \subsection{Software}
 Siehe Tabelle 1.
 \begin{center}
@@ -514,7 +514,7 @@ Siehe Tabelle 1.
 -MacOS Big Sur, Versionen: 11.2.3 und 11.2.1 &-JUnit, Version: 5.7.1 \\
 -Windows 10 Home 20H2 &-Selenium Server (Grid), Version: 3.141.59\\
 -GNU/Linux Arch, Version: 5.11.11 &-EclEmma, Version: 3.1.4\\
--GNU/Linux Debian, Version: 4.19.132-1 &-Mockito, Version: 3.9.3\\ 
+-GNU/Linux Debian, Version: 4.19.132-1 &-Mockito, Version: 3.9.3\\
 \underline{\textbf{Prototypen/Graphen/Zeichnungen}} & \underline{\textbf{Applikationsserver}}\\
 -Balsamiq Wireframes, Version: 4.2.4 &-Apache Tomcat, Version: 10.0.2\\
 -yEd Graph Editor, Version: 3.21.1 & \underline{\textbf{Remote Access}}\\
@@ -533,7 +533,7 @@ Siehe Tabelle 1.
 \subsection{Hardware}
 \begin{itemize}
 \item \underline{\textbf{Entwicklungsrechner}}:\\
-MacBook Pro, 8GB RAM, Intel Core i5 2GHz.\\  
+MacBook Pro, 8GB RAM, Intel Core i5 2GHz.\\
 HP Laptop 15-db1xxx, 16GB RAM, AMD Ryzen 5 3500U 2.1GHz.\\
 2x MacBook Pro, 8GB RAM, Intel Core i5 2.3GHz.\\
 Tower-PC, 16GB RAM, AMD Ryzen 5 3600XT 3.8GHz.
@@ -542,9 +542,9 @@ Der im Abschnitt 'Produktumgebung' beschriebene CIP-Pool Rechner 'schratz'.
 \end{itemize}
 \subsection{Entwicklungsschnittstellen}
 \begin{itemize}
-\item Netzwerk- und Internetverbindung 
-\item Git-verwaltetes Repository der Uni Passau, Website: https://git.fim.uni-passau.de/ 
-\item Virtualisierte Datenbank der Uni Passau, Hostname: bueno.fim.uni-passau.de 
+\item Netzwerk- und Internetverbindung
+\item Git-verwaltetes Repository der Uni Passau, Website: https://git.fim.uni-passau.de/
+\item Virtualisierte Datenbank der Uni Passau, Hostname: bueno.fim.uni-passau.de
 \end{itemize}
 
 \section{Glossar} %-------------------------------------------------------------------------------------------------
