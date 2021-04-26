@@ -1,0 +1,52 @@
+
+% !TeX spellcheck = de_DE
+\documentclass{article}
+
+\usepackage[ngerman]{babel}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{changepage}
+
+\graphicspath{ {./images/} }
+
+\makeatletter
+\newcommand{\sectionauthor}[1]{
+	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{1em}}
+	\@afterheading
+}
+\newcommand{\specification}[3]{
+	{\parindent 0.5em \hangindent 3em \hypertarget{spec:#1:#2}{\textbf{/#1#2/}} #3 \par \nobreak \vspace*{0.5em}}
+}
+\makeatother
+
+%--Einleitung--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Einleitung}
+\sectionauthor{Jonas Picker}
+
+%--Systemarchitektur---------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Systemarchitektur}
+\sectionauthor{Ivan Charviakou}
+
+%--Klassendiagramm---------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Klassendiagramm}
+\sectionauthor{Mohamad Najjar}
+
+%--JSF-Dialoge-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{JSF-Dialoge}
+\sectionauthor{León Liehr}
+
+%--Systemfunktionen----------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Systemfunktionen}
+\sectionauthor{Jonas Picker}
+
+%--Datenfluss--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Datenfluss}
+\sectionauthor{Sergei Pravdin}
+
+%--ER-Modell--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{ER-Modell}
+\sectionauthor{Jonas Picker}
+
+
