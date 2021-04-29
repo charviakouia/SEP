@@ -26,7 +26,7 @@
 %--Einleitung--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Einleitung}
 \sectionauthor{Jonas Picker}
-Hier wird der Entwurf des Bibliotheksmanagementsystems BiBi beschrieben. Das Dokument bezieht sich auf das Lastenheft von Christian Bachmaier und Armin Größlinger und stellt eine technische Vertiefung unseres Pflichtenhefts dar, welches im Folgenden wiederholt referenziert wird. 
+Hier wird der Entwurf des Bibliotheksmanagementsystems BiBi beschrieben. Das Dokument bezieht sich auf das Lastenheft von Christian Bachmaier und Armin Größlinger und stellt eine technische Vertiefung unseres Pflichtenhefts dar, welches im Folgenden wiederholt referenziert wird.
 
 %--Systemarchitektur---------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Systemarchitektur}
@@ -88,11 +88,33 @@ Von uns vorhergesehene Fehler und einige im Hintergrund ablaufende Prozesse werd
 Im System gibt es verschiedene Fristen (Abholungsmarkierung, Ausleihrückgabe [global, pro Medium, pro Nutzer], Gültigkeit des Verifizierungs-/Zurücksetzungslinks, Mahnungszeitversatz) und damit verbundene Aktionen. Um diese Aktionen ausführen zu können, muss das System in gewissen Abständen selbstständig auf die Datenbank zugreifen. In der Klasse ???? ist dafür ein eigener Wartungsthread implementiert.
 \subsection{Starten und Stoppen der Anwendung}
 \noindent \textbf{Start:} Beim Systemstart wird zunächst der oben beschriebene Logging-Mechanismus initialisiert. Im Anschluss liest das System die Konfigurationsdatei ein und versucht die dort angegebene Verbindung zur Datenbank. Bei erfolgreicher Verbindung wird überprüft, ob die benötigten Tabellennamen alle existieren bzw. legt diese bei deren Fehlen an. Sollte die Struktur der Tabellen fehlerhaft sein, wird eine Fehlermeldung geloggt und die Tabellen werden nicht vom System benutzt. Wenn die Datenbank fehlerhaft/nicht verbunden ist, werden eingehende Anfragen mit einer Fehlerseite beantwortet. Nach erfolgreichem Ablauf der vorhin genannten Prozesse wird als nächstes der Wartungsthread angestoßen, um fristenabhängige Aktionen durchzuführen. Danach ist das System vollständig betriebsbereit.\\
-\textbf{Stop:} 
-Beim planmäßigen Herunterfahren des Systems werden zunächst die noch offenen Datenbankverbindungen geschlossen und danach die Anwendung gestoppt. Dda dies sehr schnell passiert, wird währenddessen auf eine extra Umleitung der Nutzer auf eine Fehlerseite verzichtet. Da unsere SQL-Transaktionen dem ACID\footnote{Atomicity, Consistency, Isolation, Durability}-Prinzip folgen, wird die Datenbank jedoch auch beim Herunterfahren während eines Zugriffs in konsistentem Zustand hinterlassen. Nutzersessions überleben das Ausschalten des Servers nicht, d.h. alle eingeloggten Nutzer sind nach einem Neustart des Systems ausgeloggt. Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird mittels einer sogenannten ShutdownHook trotzdem noch versucht, offene Datenbankverbindungen zu schließen. Dies ist bei einem Stromausfall allerdings unmöglich. 
+\textbf{Stop:}
+Beim planmäßigen Herunterfahren des Systems werden zunächst die noch offenen Datenbankverbindungen geschlossen und danach die Anwendung gestoppt. Dda dies sehr schnell passiert, wird währenddessen auf eine extra Umleitung der Nutzer auf eine Fehlerseite verzichtet. Da unsere SQL-Transaktionen dem ACID\footnote{Atomicity, Consistency, Isolation, Durability}-Prinzip folgen, wird die Datenbank jedoch auch beim Herunterfahren während eines Zugriffs in konsistentem Zustand hinterlassen. Nutzersessions überleben das Ausschalten des Servers nicht, d.h. alle eingeloggten Nutzer sind nach einem Neustart des Systems ausgeloggt. Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird mittels einer sogenannten ShutdownHook trotzdem noch versucht, offene Datenbankverbindungen zu schließen. Dies ist bei einem Stromausfall allerdings unmöglich.
 %--Datenfluss--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Datenfluss}
 \sectionauthor{Sergei Pravdin}
+Die Kommunikationen zwischen den Klassen und die Interaktionen des Systems werden durch den Sequenzdiagramme abgebildet. Um einen Datenfluss beispielhaft zu zeigen, werden die zwei Szenarien vorgelegt. Zuerst bucht ein angemeldeter Nutzer ein Medium-Exemplar erfolgreich zur Ausleihe. Im zweiten Szenario bucht ein angemeldeter Nutzer ein Medium-Exemplar erfolglos zur Ausleihe, weil die Verbindung mit der Datenbank fehlgeschlagen ist.
+\subsection{Interaktionen beim erfolgreichen Buchen eines Medium-Exemplars}
+Der Nutzer befindet sich auf der Mediensuche-Seite und wünscht das Buch 'Programmieren lernen' zu buchen. Im System existiert das Medium mit dem Titel 'Programmieren lernen' und der Signatur '17RE'. Ein Exemplar mit der Signatur '17RE (+1)' gehört zu dem genannten Medium. Das System ist so eingestellt, dass die angemeldeten Nutzer Zugriff auf den Medien haben.
+\subsubsection{Suchen nach dem Medium}
+Der Nutzer gibt 'Programmieren lernen' und '17RE' in die Suchfelder 'Titel' und 'Signatur' und klick auf den Suchen-Button. Das Mediensuche-Bean kapselt die Sucheingabe ins MediensucheDTO ein. Das Mediensuche-DTO ruft die Methode 'getMedien' aus dem Mediensuche-DAO auf. Das Mediensuche-DAO ruft die Methode 'getConnection' aus dem Connection-Pool-Bean und bekommt eine Connection von dem zurück. Danach führt das Mediensuche-DAO eine selectSQL-Anfrage durch und gibt eine Liste der entsprechenden Medien dem Mediensuche-DTO zurück. Im nächsten Schritt leitet Mediensuche-DTO diese Liste der Medien dem Mediensuche-Bean weiter. Das Mediensuche-Bean ruft seine Methode 'updateMedien' auf und gibt dem Nutzer die aktualisierte Mediensuche-Seite zurück.
+\subsubsection{Navigation zum Medium}
+Der Nutzer klickt auf das angezeigte Medium 'Programmieren lernen'. Das Mediensuche-Bean ruft die Methode 'navigate' auf und gibt die Mediumsansicht-Seite zurück.
+\subsubsection{Buchen eines Exemplares}
+Der Nutzer klickt auf den Buchen-Button. Das Medium-Bean ruft die Methode checkStatus aus dem UserSession-Bean auf, um zu prüfen, ob der Nutzer Zugriff zum Buchen hat. Das UserSession-Bean gibt das positive Ergebnis dem Medium-Bean zurück. Das Medium-Bean kapselt das Buchen ins Medium-DTO ein und das Medium-DTO ruft die Methode book() aus dem Medium-DAO auf. Das Medium-DAO ruft die Methode 'getConnection' aus dem Connection-Pool-Bean und bekommt eine Connection von dem zurück. Danach führt das Medium-DAO eine updateSQL-Anfrage durch. Im nächsten Schritt gibt Medium-DTO  dem Medium-Bean das Ergebnis der Operation zurück. Das Medium-Bean ruft seine Methode 'updateExamples' auf und gibt dem Nutzer die aktualisierte Medium-Seite zurück. Das Exemplar ist erfolgreich gebucht.
+
+\newpage
+\newgeometry{left=0cm,right=0cm,top=0.5cm,bottom=0cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 45em]{Sequenzdiagramm-2}
+    \caption{Interaktionen bei einem erfolgreichen Buchen eines Medium-Exemplars}
+    \label{Sequenzdiagramm}
+\end{figure}
+
+\restoregeometry
+\newpage
 
 %--ER-Modell--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{ER-Modell}
