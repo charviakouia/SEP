@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage{geometry}
 \usepackage{changepage}
+\usepackage{booktabs}
 
 \graphicspath{ {./images/} }
 
@@ -26,7 +27,7 @@
 %--Einleitung--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Einleitung}
 \sectionauthor{Jonas Picker}
-Hier wird der Entwurf des Bibliotheksmanagementsystems BiBi beschrieben. Das Dokument bezieht sich auf das Lastenheft von Christian Bachmaier und Armin Größlinger und stellt eine technische Vertiefung unseres Pflichtenhefts dar, welches im Folgenden wiederholt referenziert wird. 
+Hier wird der Entwurf des Bibliotheksmanagementsystems BiBi beschrieben. Das Dokument bezieht sich auf das Lastenheft von Christian Bachmaier und Armin Größlinger und stellt eine technische Vertiefung unseres Pflichtenhefts dar, welches im Folgenden wiederholt referenziert wird.
 
 %--Systemarchitektur---------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Systemarchitektur}
@@ -37,8 +38,64 @@ Hier wird der Entwurf des Bibliotheksmanagementsystems BiBi beschrieben. Das Dok
 \sectionauthor{Mohamad Najjar}
 
 %--JSF-Dialoge-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-\section{JSF-Dialoge}
+\section{JSF-Facelets}
 \sectionauthor{León Liehr}
+
+\newcommand{\facelet}[2]{\subsection{#1 (\texttt{#2.xhtml})}}
+
+\facelet{Seitenvorlage}{template}
+
+\facelet{Verwaltungsseite}{administration}
+
+\facelet{Abzuholende Exemplare}{copies-ready-for-pickup}
+
+\facelet{Abzuholende und ausgeliehene Exemplare}{my-copies}
+
+\facelet{Anmeldemaske}{login}
+
+\begin{tabular}{llr}
+    \toprule
+    \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+    \midrule
+    Hyperlink & \textit{Passwort vergessen?} & öffentlich\\
+    Knopf & \textit{Anmelden} & öffentlich\\
+    \bottomrule
+\end{tabular}
+
+\facelet{Datenschutzerklärung}{privacy-policy}
+
+\facelet{Direktausleihe}{direct-lending}
+
+\facelet{E-Mail-Bestätigung}{email-confirmation}
+
+\facelet{Fehlerseite}{error}
+
+\facelet{Impressum}{site-notice}
+
+\facelet{Kategorienbearbeitung}{category-editor}
+
+\facelet{Kategorierenstöberer}{category-browser}
+
+\facelet{Kontakt}{contact}
+
+\facelet{Leihfristverstöße}{lending-period-violations}
+
+\facelet{Medienerstellung}{media-creation}
+
+\facelet{Medienrückgabe}{return}
+
+\facelet{Mediensuche}{media-search}
+
+\facelet{Mediumsansicht}{medium}
+
+\facelet{Mediumschemabearbeitung}{medium-schema-editor}
+
+\facelet{Profilseite}{profile}
+
+\facelet{Registrierungsseite}{registration}
+
+\facelet{Nutzersuche}{user-search}
+
 
 %--Systemfunktionen----------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Systemfunktionen}
@@ -53,8 +110,8 @@ Von uns vorhergesehene Fehler und einige im Hintergrund ablaufende Prozesse werd
 Im System gibt es verschiedene Fristen (Abholungsmarkierung, Ausleihrückgabe [global, pro Medium, pro Nutzer], Gültigkeit des Verifizierungs-/Zurücksetzungslinks, Mahnungszeitversatz) und damit verbundene Aktionen. Um diese Aktionen ausführen zu können, muss das System in gewissen Abständen selbstständig auf die Datenbank zugreifen. In der Klasse ???? ist dafür ein eigener Wartungsthread implementiert.
 \subsection{Starten und Stoppen der Anwendung}
 \noindent \textbf{Start:} Beim Systemstart wird zunächst der oben beschriebene Logging-Mechanismus initialisiert. Im Anschluss liest das System die Konfigurationsdatei ein und versucht die dort angegebene Verbindung zur Datenbank. Bei erfolgreicher Verbindung wird überprüft, ob die benötigten Tabellennamen alle existieren bzw. legt diese bei deren Fehlen an. Sollte die Struktur der Tabellen fehlerhaft sein, wird eine Fehlermeldung geloggt und die Tabellen werden nicht vom System benutzt. Wenn die Datenbank fehlerhaft/nicht verbunden ist, werden eingehende Anfragen mit einer Fehlerseite beantwortet. Nach erfolgreichem Ablauf der vorhin genannten Prozesse wird als nächstes der Wartungsthread angestoßen, um fristenabhängige Aktionen durchzuführen. Danach ist das System vollständig betriebsbereit.\\
-\textbf{Stop:} 
-Beim planmäßigen Herunterfahren des Systems werden zunächst die noch offenen Datenbankverbindungen geschlossen und danach die Anwendung gestoppt. Dda dies sehr schnell passiert, wird währenddessen auf eine extra Umleitung der Nutzer auf eine Fehlerseite verzichtet. Da unsere SQL-Transaktionen dem ACID\footnote{Atomicity, Consistency, Isolation, Durability}-Prinzip folgen, wird die Datenbank jedoch auch beim Herunterfahren während eines Zugriffs in konsistentem Zustand hinterlassen. Nutzersessions überleben das Ausschalten des Servers nicht, d.h. alle eingeloggten Nutzer sind nach einem Neustart des Systems ausgeloggt. Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird mittels einer sogenannten ShutdownHook trotzdem noch versucht, offene Datenbankverbindungen zu schließen. Dies ist bei einem Stromausfall allerdings unmöglich. 
+\textbf{Stop:}
+Beim planmäßigen Herunterfahren des Systems werden zunächst die noch offenen Datenbankverbindungen geschlossen und danach die Anwendung gestoppt. Dda dies sehr schnell passiert, wird währenddessen auf eine extra Umleitung der Nutzer auf eine Fehlerseite verzichtet. Da unsere SQL-Transaktionen dem ACID\footnote{Atomicity, Consistency, Isolation, Durability}-Prinzip folgen, wird die Datenbank jedoch auch beim Herunterfahren während eines Zugriffs in konsistentem Zustand hinterlassen. Nutzersessions überleben das Ausschalten des Servers nicht, d.h. alle eingeloggten Nutzer sind nach einem Neustart des Systems ausgeloggt. Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird mittels einer sogenannten ShutdownHook trotzdem noch versucht, offene Datenbankverbindungen zu schließen. Dies ist bei einem Stromausfall allerdings unmöglich.
 %--Datenfluss--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Datenfluss}
 \sectionauthor{Sergei Pravdin}
