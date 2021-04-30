@@ -56,7 +56,7 @@ Exceptions: Jede Schicht in der gegebenen Anwendung definiert eigene Checked-Exc
 
 Logging: Als Logging-Framework wird der im JDK vordefinierte Framework verwendet. Diese Funktionalität ist nur im Testmodus aktiv und es wird zu einer lokalen Log-Datei geschrieben. \vspace{0.5em}
 
-Validatoren: Das JSF-Framework gibt dem Entwickler die Möglichkeit, Daten auf Korrektheit zu prüfen, bevor sie dem Logikschicht bereitgestellt wird. Da aber komplexere semantische Fehler oft einen größeren Kontext und eine komplexere Behandlung benötigen, wird der Einsatz von diesen Validatoren hauptsächlich auf syntaktische Formattierfehler beschränkt. 
+Validatoren: Das JSF-Framework gibt dem Entwickler die Möglichkeit, Daten auf Korrektheit zu prüfen, bevor sie dem Logikschicht bereitgestellt wird. Da aber komplexere semantische Fehler oft einen größeren Kontext und eine komplexere Behandlung benötigen, wird der Einsatz von diesen Validatoren hauptsächlich auf syntaktische Formattierfehler beschränkt.
 
 \subsection{Design-Patterns: Konkrete Features}
 
@@ -76,67 +76,67 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 \section{Klassendiagramm}
 \sectionauthor{Mohamad Najjar}
 
-   \begin{landscape}
+%   \begin{landscape}
     \begin{figure}
         \includegraphics[scale=0.2]{Klassendiagramm.png}
         \caption{Klassendiagramm}
         \label{fig:Klassendiagramm}
     \end{figure}
-    \end{landscape}
-    
-    \begin{landscape}
+%    \end{landscape}
+
+%    \begin{landscape}
     \begin{figure}
         \includegraphics[scale=0.6]{KlassendiagramDao.png}
         \caption{Klassendiagramm der Daos}
         \label{fig:KlassendiagramDao}
     \end{figure}
-    \end{landscape}
-    
-    \begin{landscape}
+%    \end{landscape}
+
+%    \begin{landscape}
     \begin{figure}
     \centering
         \includegraphics[scale=0.7, angle=270]{KlassendiagramBeans.png}
         \caption{Klassendiagramm der Beans}
         \label{fig:KlassendiagramBeans}
     \end{figure}
-    \end{landscape}
-    
-    \begin{landscape}
+%    \end{landscape}
+
+%    \begin{landscape}
     \begin{figure}
         \includegraphics[scale=0.6]{KlassendiagramDtos.png}
         \caption{Klassendiagramm der Dtos}
         \label{fig:KlassendiagrammDto}
     \end{figure}
-    \end{landscape}
-    
-    
-    \begin{landscape}
+%    \end{landscape}
+
+
+%    \begin{landscape}
     \begin{figure}
         \includegraphics[scale=0.6]{KlassendiagramSystem.png}
         \caption{Klassendiagramm des Systems}
         \label{fig:KlassendiagramSystem}
     \end{figure}
-    \end{landscape}
-    
-    \begin{landscape}
+%    \end{landscape}
+
+%    \begin{landscape}
     \begin{figure}
         \includegraphics[scale=0.6]{klassendiagramValidator.png}
         \caption{Klassendiagramm des Validator}
         \label{fig:KlassendiagramValidator}
     \end{figure}
-    \end{landscape}
-    
-    
-   \begin{landscape}
+%    \end{landscape}
+
+
+%   \begin{landscape}
     \begin{figure}
         \includegraphics[scale=0.6]{KlassendiagramService.png}
         \caption{Klassendiagramm der Services}
         \label{fig:KlassendiagramService}
     \end{figure}
-    \end{landscape}
-    
-    
-    
+%    \end{landscape}
+
+
+
  \begin{center}
     \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
@@ -184,12 +184,12 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
         \end{tabular}
         \end{table}
         \end{center}
-       
+
 
 \begin{center}
     \begin{table}
-        \begin{tabular} { |p{3,5cm}|p{7,5cm}| } 
-            \hline          
+        \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
+            \hline
             Java-Klasse & Beschreibung  \\
              \hline\hline
             UserDto & Enthält alle Daten des Profils eines Benutzers. \\
@@ -206,7 +206,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
         \end{tabular}
         \end{table}
         \end{center}
-       
+
 
   \begin{center}
     \begin{table}
@@ -227,8 +227,8 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
         \end{tabular}
         \end{table}
         \end{center}
-        
-        
+
+
   \begin{center}
     \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
@@ -251,8 +251,8 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
         \end{tabular}
         \end{table}
         \end{center}
-      
-        
+
+
   \begin{center}
     \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
@@ -270,8 +270,8 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
         \end{tabular}
         \end{table}
         \end{center}
-       
-        
+
+
      \begin{center}
        \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
@@ -293,7 +293,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
         \end{tabular}
         \end{table}
         \end{center}
-        
+
 \subsection{Paketdiagramm}
 
     \begin{figure}[h!]
@@ -595,8 +595,8 @@ Von uns vorhergesehene Fehler und einige im Hintergrund ablaufende Prozesse werd
 Im System gibt es verschiedene Fristen (Abholungsmarkierung, Ausleihrückgabe [global, pro Medium, pro Nutzer], Gültigkeit des Verifizierungs-/Zurücksetzungslinks, Mahnungszeitversatz) und damit verbundene Aktionen. Um diese Aktionen ausführen zu können, muss das System in gewissen Abständen selbstständig auf die Datenbank zugreifen. In der Klasse ???? ist dafür ein eigener Wartungsthread implementiert.
 \subsection{Starten und Stoppen der Anwendung}
 \noindent \textbf{Start:} Beim Systemstart wird zunächst der oben beschriebene Logging-Mechanismus initialisiert. Im Anschluss liest das System die Konfigurationsdatei ein und versucht die dort angegebene Verbindung zur Datenbank. Bei erfolgreicher Verbindung wird überprüft, ob die benötigten Tabellennamen alle existieren bzw. legt diese bei deren Fehlen an. Sollte die Struktur der Tabellen fehlerhaft sein, wird eine Fehlermeldung geloggt und die Tabellen werden nicht vom System benutzt. Wenn die Datenbank fehlerhaft/nicht verbunden ist, werden eingehende Anfragen mit einer Fehlerseite beantwortet. Nach erfolgreichem Ablauf der vorhin genannten Prozesse wird als nächstes der Wartungsthread angestoßen, um fristenabhängige Aktionen durchzuführen. Danach ist das System vollständig betriebsbereit.\\
-\textbf{Stop:} 
-Beim planmäßigen Herunterfahren des Systems werden zunächst die noch offenen Datenbankverbindungen geschlossen und danach die Anwendung gestoppt. Da dies sehr schnell passiert, wird währenddessen auf eine extra Umleitung der Nutzer auf eine Fehlerseite verzichtet. Da unsere SQL-Transaktionen dem ACID\footnote{'Atomicity, Consistency, Isolation, Durability' - ein Leitsatz von Eigenschaften für Datenbanktransaktionen}-Prinzip folgen, wird die Datenbank jedoch auch beim Herunterfahren während eines Zugriffs in konsistentem Zustand hinterlassen. Nutzersessions überleben das Ausschalten des Servers nicht, d.h. alle eingeloggten Nutzer sind nach einem Neustart des Systems ausgeloggt. Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird mittels einer sogenannten ShutdownHook trotzdem noch versucht, offene Datenbankverbindungen zu schließen. Dies ist bei einem Stromausfall allerdings unmöglich. 
+\textbf{Stop:}
+Beim planmäßigen Herunterfahren des Systems werden zunächst die noch offenen Datenbankverbindungen geschlossen und danach die Anwendung gestoppt. Da dies sehr schnell passiert, wird währenddessen auf eine extra Umleitung der Nutzer auf eine Fehlerseite verzichtet. Da unsere SQL-Transaktionen dem ACID\footnote{'Atomicity, Consistency, Isolation, Durability' - ein Leitsatz von Eigenschaften für Datenbanktransaktionen}-Prinzip folgen, wird die Datenbank jedoch auch beim Herunterfahren während eines Zugriffs in konsistentem Zustand hinterlassen. Nutzersessions überleben das Ausschalten des Servers nicht, d.h. alle eingeloggten Nutzer sind nach einem Neustart des Systems ausgeloggt. Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird mittels einer sogenannten ShutdownHook trotzdem noch versucht, offene Datenbankverbindungen zu schließen. Dies ist bei einem Stromausfall allerdings unmöglich.
 %--Datenfluss--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Datenfluss}
 \sectionauthor{Sergei Pravdin}
