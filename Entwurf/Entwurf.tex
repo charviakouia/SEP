@@ -9,6 +9,7 @@
 \usepackage{geometry}
 \usepackage{changepage}
 \usepackage{booktabs}
+\usepackage{float}
 
 \graphicspath{ {./images/} }
 
@@ -53,7 +54,7 @@ Exceptions: Jede Schicht in der gegebenen Anwendung definiert eigene Checked-Exc
 
 Logging: Als Logging-Framework wird der im JDK vordefinierte Framework verwendet. Diese Funktionalität ist nur im Testmodus aktiv und es wird zu einer lokalen Log-Datei geschrieben. \vspace{0.5em}
 
-Validatoren: Das JSF-Framework gibt dem Entwickler die Möglichkeit, Daten auf Korrektheit zu prüfen, bevor sie dem Logikschicht bereitgestellt wird. Da aber komplexere semantische Fehler oft einen größeren Kontext und eine komplexere Behandlung benötigen, wird der Einsatz von diesen Validatoren hauptsächlich auf syntaktische Formattierfehler beschränkt. 
+Validatoren: Das JSF-Framework gibt dem Entwickler die Möglichkeit, Daten auf Korrektheit zu prüfen, bevor sie dem Logikschicht bereitgestellt wird. Da aber komplexere semantische Fehler oft einen größeren Kontext und eine komplexere Behandlung benötigen, wird der Einsatz von diesen Validatoren hauptsächlich auf syntaktische Formattierfehler beschränkt.
 
 \subsection{Design-Patterns: Konkrete Features}
 
@@ -63,7 +64,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 
 \subsection{Modeldiagramm}
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width = 50em]{Modeldiagramm}
 \end{figure}
@@ -76,30 +77,112 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 \section{JSF-Facelets}
 \sectionauthor{León Liehr}
 
+\newcommand{\PUB}{jeder}
+\newcommand{\USR}{ang. Nutz.}
+\newcommand{\ANO}{abg. Nutz.}
+\newcommand{\BIB}{Bib.-Mit.}
+\newcommand{\ADM}{Admin.}
+
+Nachfolgend verwenden wir die diese Abkürzungen:
+
+\begin{table}[H]
+\begin{tabular}{rl}
+\toprule
+%\PUB & jeder \\
+\ANO & abgemeldeter Nutzer \\
+\USR & angemeldeter Nutzer \\
+\BIB & Bibliotheksmitarbeiter \\
+\ADM & Administrator \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \newcommand{\facelet}[2]{\subsection{#1 (\texttt{#2.xhtml})}}
+
+\newcommand{\BTN}{Knopf}
+\newcommand{\LNK}{Hyperlink}
+\newcommand{\INP}{Eingabefeld}
+\newcommand{\DRP}{Drop-Down-Liste}
+\newcommand{\TBL}{Tabelle}
+
+\newenvironment{controls}
+{
+\begin{table}[H]
+\begin{minipage}{\textwidth}
+\renewcommand{\thefootnote}{\thempfootnote}
+\begin{tabular}{llr}
+\toprule
+\textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+\midrule
+}{
+\bottomrule
+\end{tabular}
+\end{minipage}
+\end{table}
+}
 
 \facelet{Seitenvorlage}{template}
 
-\facelet{Verwaltungsseite}{administration}
+\begin{controls}
+\BTN\footnote{Dargestellt als Fragezeichenbildsymbol} & zum Anzeigen der kontextsensitiven Hilfe & \PUB\\
+\LNK & zu der erweiterten Suche & \PUB\\
+\INP & für die Mediensuche & \PUB\\
+\LNK & zur Datenschutzerklärung & \PUB\\
+\LNK & zum Impressum & \PUB\\
+\LNK & zum Kontakt & \PUB\\
+\LNK & zu der Profilseite & \USR\\
+\LNK & zum Abmelden; zur Anmeldemaske & \USR\\
+\LNK & zur Anmeldemaske & \ANO\\
+\LNK & zur Registrierungsseite  & \ANO\\
+\LNK & zu den abzuholenden Exemplaren & \BIB\\
+\LNK & zu der Medienrückgabe & \BIB\\
+\LNK & zu der Direktausleihe & \BIB\\
+\LNK & zu der Verwaltung & \ADM\\
+\end{controls}
 
 \facelet{Abzuholende Exemplare}{copies-ready-for-pickup}
 
+\begin{controls}
+\TBL & aller abzuholenden Exemplare & \BIB\\
+\BTN & nächste Seite der obigen Tabelle & \BIB\\
+\BTN & vorige Seite der obigen Tabelle & \BIB\\
+\end{controls}
+
 \facelet{Abzuholende und ausgeliehene Exemplare}{my-copies}
+
+\begin{controls}
+\TBL & aller abzuholenden Exemplare & \USR\\
+\BTN & nächste Seite der obigen Tabelle & \USR\\
+\BTN & vorige Seite der obigen Tabelle & \USR\\
+\TBL & aller ausgeliehenen Exemplare & \USR\\
+\BTN & nächste Seite der obigen Tabelle & \USR\\
+\BTN & vorige Seite der obigen Tabelle & \USR\\
+\end{controls}
 
 \facelet{Anmeldemaske}{login}
 
-\begin{tabular}{llr}
-    \toprule
-    \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
-    \midrule
-    Hyperlink & \textit{Passwort vergessen?} & öffentlich\\
-    Knopf & \textit{Anmelden} & öffentlich\\
-    \bottomrule
-\end{tabular}
+\begin{controls}
+\INP & für die E-Mail-Adresse & \PUB\\
+Passworteingabefeld & & \PUB\\
+\BTN & zum Anmelden & \PUB\\
+\BTN\footnote{Dargestellt als \LNK, um unauffälliger zu sein, da es eine zweitrangige Aktion ist} & zum Passwortzurücksetzen & \PUB\\
+\end{controls}
 
 \facelet{Datenschutzerklärung}{privacy-policy}
 
+\begin{controls}
+\INP & für die Datenschutzerklärung & \ADM\\
+\BTN & zum Speichern der Änderungen an der D. & \ADM\\
+\end{controls}
+
 \facelet{Direktausleihe}{direct-lending}
+
+\begin{controls}
+\INP & für die E-Mail-Adresse des Ausleihendens & \BIB\\
+\INP\footnote{Beim Laden der Seite fünfmal vorhanden. Durch das Pressen des relevanten Knopfs wird ein weiteres Feld angehängt} & für die Signatur eines auszuleihenden Exemplars  & \BIB\\
+\BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
+\BTN & zum Ausleihen & \BIB\\
+\end{controls}
 
 \facelet{E-Mail-Bestätigung}{email-confirmation}
 
@@ -107,30 +190,165 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 
 \facelet{Impressum}{site-notice}
 
+\begin{controls}
+    \INP & für das Impressum & \ADM\\
+    \BTN & zum Speichern der Änderungen am Impressum & \ADM\\
+\end{controls}
+
 \facelet{Kategorienbearbeitung}{category-editor}
 
+\begin{controls}
+\INP & für den Kategorienamen & \BIB\\
+\INP & für die Kategoriebeschreibung & \BIB\\
+\BTN & zum Speichern der Änderungen & \BIB\\
+\end{controls}
+
 \facelet{Kategorierenstöberer}{category-browser}
+
+\begin{controls}
+\INP & für den Suchterm der Kategoriensuche & \PUB\\
+\LNK & zur Kategorienbearbeitung (hier: Erstellung) & \BIB\\
+\BTN & zum Löschen einer Kategorie & \BIB\\
+\LNK & zur Medienerstellung\footnote{unter der aktuellen Kategorie} & \BIB\\
+\end{controls}
 
 \facelet{Kontakt}{contact}
 
 \facelet{Leihfristverstöße}{lending-period-violations}
 
+\begin{controls}
+\TBL & von Exemplaren und Nutzern & \ADM\\
+\BTN & nächste Seite der obigen Tabelle & \ADM\\
+\BTN & vorige Seite der obigen Tabelle & \ADM\\
+\end{controls}
+
 \facelet{Medienerstellung}{media-creation}
+
+\begin{controls}
+
+\end{controls}
 
 \facelet{Medienrückgabe}{return}
 
+\begin{controls}
+
+\end{controls}
+
 \facelet{Mediensuche}{media-search}
+
+\begin{controls}
+\INP & für den Suchterm der freien Suche & \PUB\\
+\BTN & zur Durchführung der Suche & \PUB\\
+\DRP\footnote{
+Beim Laden der Seite dreimal vorhanden, jeweils einmal pro Dreiergruppe bestehend aus mit \footnotemark[\value{mpfootnote}] markierten Elementen.
+Durch das Pressen des relevanten Knopfs wird eine weitere Dreiergruppe angehängt
+} & für den Suchoperator & \PUB\\
+\DRP\footnotemark[\value{mpfootnote}] & für das Suchkriterium & \PUB\\
+\INP\footnotemark[\value{mpfootnote}] & für den Suchterm der diff. Suche & \PUB\\
+\BTN & zum Hinzufügen eines weiteren Suchfelds & \PUB\\
+\TBL & aller Suchergebnisse (falls vorhanden) & \PUB\\
+\BTN & nächste Seite der obigen Tabelle & \PUB\\
+\BTN & vorige Seite der obigen Tabelle & \PUB\\
+\end{controls}
 
 \facelet{Mediumsansicht}{medium}
 
+\begin{controls}
+\LNK & zurück zur Trefferliste (Mediensuche) & \PUB\footnote{Nur sichtbar, falls der Nutzer von der Suche kommt}\\
+\INP\footnote{Existiert pro Medienattribut} & für ein Medienattribut & \BIB\\
+\BTN & zum Speichern der Änderungen an den Medienattributen & \BIB\\
+\BTN & zur Bindung an die Abholung des Mediums & \USR\footnote{Nur, falls dem Nutzer erlaubt ist auszuleihen}\\
+Zeitdauereingabefeld & für die Rückgabefrist & \BIB\\
+\BTN & zum Speichern der Änderungen an der Rückgabefrist & \BIB\\
+\LNK & zum Löschen des Mediums; zur zuvor aufgerufenen Seite & \BIB\\
+\TBL & aller Exemplare & \PUB\\
+\BTN\footnote{existiert pro Exemplar in der Tabelle} & zum Löschen eines Exemplars & \BIB\\
+\BTN\footnotemark[\value{footnote}] & zum Stornieren einer Abholung & \BIB\\
+\LNK\footnotemark[\value{footnote}] & zur Direktausleihe & \BIB\\
+% @Task add footnote at \USR (a previous one)
+\BTN\footnotemark[\value{footnote}] & zur Bindung an die Abholung des Mediums & \USR\\
+\INP & für den Standort eines neuen Exemplars & \BIB\\
+\INP & für die Signatur eines neuen Exemplars & \BIB\\
+\BTN & zum Erstellen eines Exemplars & \BIB\\
+\end{controls}
+
 \facelet{Mediumschemabearbeitung}{medium-schema-editor}
 
-\facelet{Profilseite}{profile}
+\begin{controls}
 
-\facelet{Registrierungsseite}{registration}
+\end{controls}
 
 \facelet{Nutzersuche}{user-search}
 
+\begin{controls}
+    \INP & für den Suchterm & \ADM\\
+    \BTN & zur Durchführung der Suche & \ADM\\
+    \TBL & aller Suchergebnisse (falls vorhanden) & \ADM\\
+    \BTN & nächste Seite der obigen Tabelle & \ADM\\
+    \BTN & vorige Seite der obigen Tabelle & \ADM\\
+\end{controls}
+
+\facelet{Passwortzurücksetzung}{password-reset}
+
+\begin{controls}
+Passworteingabefeld & für das neue Passwort & \PUB\\
+Passworteingabefeld & zur Bestätigung & \PUB\\
+\BTN & zum Zurücksetzen des Passworts & \PUB\\
+\end{controls}
+
+\facelet{Profilseite}{profile}
+
+\begin{controls}
+\INP & für den Vornamen & \USR\\
+\INP & für den Nachnamen & \USR\\
+Passworteingabefeld & & \USR\\
+Passworteingabefeld & zur Bestätigung & \USR\\
+\INP & für die E-Mail-Adresse & \USR\\
+\INP\footnote{bzw. getrennt in Ort, PLZ, Straße, Hausnummer} & für die Adresse & \USR\\
+\DRP & für die Nutzerrolle & \ADM\\
+Checkbox & für den Accountstatus (gesperrt / entsperrt) & \ADM\\
+Checkbox & für den Ausleihstatus (gesperrt / entsperrt) & \ADM\\
+\INP & für die Rückgabefrist & \ADM\\
+\BTN & zum Speichern der Änderungen an den Benutzerdaten & \USR\\
+\LNK & zu den abzuholenden und ausgeliehenen Exemplaren & \USR\\
+\BTN & zum Schließen des Accounts; zur Anmeldemaske & \USR\\
+\BTN & zum Löschen des Nutzers; zur Verwaltungsseite & \ADM\\
+\end{controls}
+
+\facelet{Registrierungsseite}{registration}
+
+\begin{controls}
+\INP & für den Vornamen & \USR\\
+\INP & für den Nachnamen & \USR\\
+Passworteingabefeld & & \USR\\
+Passworteingabefeld & zur Bestätigung & \USR\\
+\INP & für die E-Mail-Adresse & \USR\\
+\INP\footnote{bzw. getrennt in Ort, PLZ, Straße, Hausnummer} & für die Adresse & \USR\\
+\DRP & für die Nutzerrolle & \ADM\\
+\BTN & zum Registrieren des Accounts & \ANO/\ADM\\
+\end{controls}
+
+\facelet{Verwaltungsseite}{administration}
+
+\begin{controls}
+\INP & für die Rückgabefrist & \ADM\\
+\INP & für den Mahnungszeitpunkt & \ADM\\
+\INP & für die Abholfrist & \ADM\\
+\INP & für den Systemnamen & \ADM\\
+Checkbox & für den Zugangsstatus (anonym oder nicht) & \ADM\\
+Checkbox & für den Registrierungsstatus & \ADM\\
+\INP & für den regulären Ausdruck valider E-Mail-Adressen & \ADM\\
+Farbkreis\footnote{Alternativ ein einfaches \INP} & für die erste Farbe des Systems & \ADM\\
+Farbkreis\footnotemark[\value{footnote}] & für die zweite Farbe des Systems & \ADM\\
+Datei-Upload & für das Logo des Systems & \ADM\\
+\BTN & zum Speichern der Änderungen an den Systemeinstellungen & \ADM\\
+\LNK & zu der Medienerstellung & \ADM\\
+\LNK & zu der Registrierungsseite (fremden Nutzer erstellen) & \ADM\\
+\LNK & zur Mediumsschemabearbeitung & \ADM\\
+\LNK & zu den Leihfristverstößen & \ADM\\
+\LNK & zu der Nutzersuche & \ADM\\
+\INP & für den Suchterm der Nutzersuche & \ADM\\
+\end{controls}
 
 %--Systemfunktionen----------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Systemfunktionen}
@@ -145,8 +363,8 @@ Von uns vorhergesehene Fehler und einige im Hintergrund ablaufende Prozesse werd
 Im System gibt es verschiedene Fristen (Abholungsmarkierung, Ausleihrückgabe [global, pro Medium, pro Nutzer], Gültigkeit des Verifizierungs-/Zurücksetzungslinks, Mahnungszeitversatz) und damit verbundene Aktionen. Um diese Aktionen ausführen zu können, muss das System in gewissen Abständen selbstständig auf die Datenbank zugreifen. In der Klasse ???? ist dafür ein eigener Wartungsthread implementiert.
 \subsection{Starten und Stoppen der Anwendung}
 \noindent \textbf{Start:} Beim Systemstart wird zunächst der oben beschriebene Logging-Mechanismus initialisiert. Im Anschluss liest das System die Konfigurationsdatei ein und versucht die dort angegebene Verbindung zur Datenbank. Bei erfolgreicher Verbindung wird überprüft, ob die benötigten Tabellennamen alle existieren bzw. legt diese bei deren Fehlen an. Sollte die Struktur der Tabellen fehlerhaft sein, wird eine Fehlermeldung geloggt und die Tabellen werden nicht vom System benutzt. Wenn die Datenbank fehlerhaft/nicht verbunden ist, werden eingehende Anfragen mit einer Fehlerseite beantwortet. Nach erfolgreichem Ablauf der vorhin genannten Prozesse wird als nächstes der Wartungsthread angestoßen, um fristenabhängige Aktionen durchzuführen. Danach ist das System vollständig betriebsbereit.\\
-\textbf{Stop:} 
-Beim planmäßigen Herunterfahren des Systems werden zunächst die noch offenen Datenbankverbindungen geschlossen und danach die Anwendung gestoppt. Da dies sehr schnell passiert, wird währenddessen auf eine extra Umleitung der Nutzer auf eine Fehlerseite verzichtet. Da unsere SQL-Transaktionen dem ACID\footnote{'Atomicity, Consistency, Isolation, Durability' - ein Leitsatz von Eigenschaften für Datenbanktransaktionen}-Prinzip folgen, wird die Datenbank jedoch auch beim Herunterfahren während eines Zugriffs in konsistentem Zustand hinterlassen. Nutzersessions überleben das Ausschalten des Servers nicht, d.h. alle eingeloggten Nutzer sind nach einem Neustart des Systems ausgeloggt. Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird mittels einer sogenannten ShutdownHook trotzdem noch versucht, offene Datenbankverbindungen zu schließen. Dies ist bei einem Stromausfall allerdings unmöglich. 
+\textbf{Stop:}
+Beim planmäßigen Herunterfahren des Systems werden zunächst die noch offenen Datenbankverbindungen geschlossen und danach die Anwendung gestoppt. Da dies sehr schnell passiert, wird währenddessen auf eine extra Umleitung der Nutzer auf eine Fehlerseite verzichtet. Da unsere SQL-Transaktionen dem ACID\footnote{'Atomicity, Consistency, Isolation, Durability' - ein Leitsatz von Eigenschaften für Datenbanktransaktionen}-Prinzip folgen, wird die Datenbank jedoch auch beim Herunterfahren während eines Zugriffs in konsistentem Zustand hinterlassen. Nutzersessions überleben das Ausschalten des Servers nicht, d.h. alle eingeloggten Nutzer sind nach einem Neustart des Systems ausgeloggt. Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird mittels einer sogenannten ShutdownHook trotzdem noch versucht, offene Datenbankverbindungen zu schließen. Dies ist bei einem Stromausfall allerdings unmöglich.
 %--Datenfluss--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Datenfluss}
 \sectionauthor{Sergei Pravdin}
