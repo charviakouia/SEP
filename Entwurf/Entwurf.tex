@@ -308,277 +308,452 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 \section{JSF-Facelets}
 \sectionauthor{León Liehr}
 
+% TASK add javadocs
+% TASK update AJAX note
+% TASK mention query strings and GET/POST parameters!!
+
 \newcommand{\PUB}{jeder}
-\newcommand{\USR}{ang. Nutz.}
-\newcommand{\ANO}{abg. Nutz.}
-\newcommand{\BIB}{Bib.-Mit.}
-\newcommand{\ADM}{Admin.}
+\newcommand{\ANO}{abgem. Nutzer}
+\newcommand{\USR}{angem. Nutzer}
+\newcommand{\BIB}{Mitarbeiter}
+\newcommand{\ADM}{Administrator}
 
-Nachfolgend verwenden wir die diese Abkürzungen:
+\newcommand{\component}[2]{\subsubsection{#1 (\texttt{#2})}}
+%\newcommand{\page}[2]{\subsubsection{#1, \texttt{#2.xhtml}}}
+\newcommand{\page}[2]{
+    \subsubsection{#1}
+    \paragraph*{Dateipfad} \texttt{#2.xhtml}
+}
 
-\begin{table}[H]
-\begin{tabular}{rl}
-\toprule
-%\PUB & jeder \\
-\ANO & abgemeldeter Nutzer \\
-\USR & angemeldeter Nutzer \\
-\BIB & Bibliotheksmitarbeiter \\
-\ADM & Administrator \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\newcommand{\facelet}[2]{\subsection{#1 (\texttt{#2.xhtml})}}
+\newcommand{\Javadoc}{\paragraph*{Javadoc}}
 
 \newcommand{\BTN}{Knopf}
 \newcommand{\LNK}{Hyperlink}
 \newcommand{\INP}{Eingabefeld}
+\newcommand{\PAS}{Passworteingabefeld}
 \newcommand{\DRP}{Drop-Down-Liste}
-\newcommand{\TBL}{Tabelle}
+\newcommand{\CHK}{Checkbox}
+\newcommand{\OUT}{Ausgabefeld}
+\newcommand{\LST}{Paginierte Liste}
 
 \newenvironment{controls}
 {
-\begin{table}[H]
-\begin{minipage}{\textwidth}
-\renewcommand{\thefootnote}{\thempfootnote}
-\begin{tabular}{llr}
-\toprule
-\textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
-\midrule
-}{
-\bottomrule
-\end{tabular}
-\end{minipage}
-\end{table}
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{ p{7em} p{25em} p{7em} }
+            \toprule
+            \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+            \midrule
+        }
+        {
+            \bottomrule
+        \end{tabular}
+    \end{table}
 }
 
-\facelet{Seitenvorlage}{template}
+Sofern nicht anders ausgewiesen folgt jedem Eingabefeld und \PAS ein Ausgabefeld für Meldungen (genauer gesagt eine JSF-\texttt{HtmlMessage}-Komponente), insb. für von JSF-Validatoren geworfene Fehlermeldungen.
+
+% Frage: sind diese Eingabefelder für E-Mails benutzerdef. Komponenten?
+% Aufgabe schau dir das Kap zu AJAX im Buch an!!
+Aufbauend auf der Voraussetzung einer modernen JavaScript-Implementierung in dem Webbrowser des Clients (Pflichtenheft, Abschnitt 4.1) wird bei Eingabefeldern für E-Mail-Adressen (MANCHER), Signaturen (MANCHER) und Standorten (MANCHER) statt der überholten AJAX-Technologie\footnote{\url{https://xhr.spec.whatwg.org/}} die sog. Fetch API\footnote{\url{https://fetch.spec.whatwg.org/}} verwendet, um während der Eingabe Vorschläge von existierenden Einträgen einblenden zu können.
+
+Mit dem Elementtyp Eingabe wird im Folgenden JSFs \texttt{ui:insert} gemeint.
+
+Zudem werden nachfolgend diese Abkürzungen und Kurzformen verwenden:
+
+% TASK inline table
+\begin{table}[H]
+\centering
+\begin{tabulary}{\textwidth}{RL}
+\toprule
+%\PUB & jeder \\
+\ANO  & abgemeldeter Nutzer \\
+\USR & angemeldeter Nutzer \\
+\BIB & Bibliotheksmitarbeiter \\
+%\ADM & Administrator \\
+\bottomrule
+\end{tabulary}
+\end{table}
+
+\subsection{Komponenten}
+
+%\subsection{Seitenvorlage}
+
+\component{\LST}{PaginatedList}
+
+% TASK attributes, values
 
 \begin{controls}
-\BTN\footnote{Dargestellt als Fragezeichenbildsymbol} & zum Anzeigen der kontextsensitiven Hilfe & \PUB\\
-\LNK & zu der erweiterten Suche & \PUB\\
-\INP & für die Mediensuche & \PUB\\
-\LNK & zur Datenschutzerklärung & \PUB\\
-\LNK & zum Impressum & \PUB\\
-\LNK & zum Kontakt & \PUB\\
-\LNK & zu der Profilseite & \USR\\
-\LNK & zum Abmelden; zur Anmeldemaske & \USR\\
-\LNK & zur Anmeldemaske & \ANO\\
-\LNK & zur Registrierungsseite  & \ANO\\
-\LNK & zu den abzuholenden Exemplaren & \BIB\\
-\LNK & zu der Medienrückgabe & \BIB\\
-\LNK & zu der Direktausleihe & \BIB\\
-\LNK & zu der Verwaltung & \ADM\\
+    \BTN & zum Blättern auf die nächste Seite & \USR\\
+    \BTN & zum Blättern auf die vorige Seite & \USR\\
+    ?? & ?? values & ??\\
 \end{controls}
 
-\facelet{Abzuholende Exemplare}{copies-ready-for-pickup}
+\component{Editierbarer Text}{EditableText}
+
+Das Attribut der Komponente ist der Text.
+
+% QUESTION visibility as an attribute, too?? if yes, how???
 
 \begin{controls}
-\TBL & aller abzuholenden Exemplare & \BIB\\
-\BTN & nächste Seite der obigen Tabelle & \BIB\\
-\BTN & vorige Seite der obigen Tabelle & \BIB\\
+    \OUT & für das Textattribut & \PUB\\
+    \INP & für das Textattribut & \ADM\\
 \end{controls}
 
-\facelet{Abzuholende und ausgeliehene Exemplare}{my-copies}
+\subsection{Seitenvorlagen (Templates)}
+
+\page{Einzige Seitenvorlage}{public/template}\label{template}
 
 \begin{controls}
-\TBL & aller abzuholenden Exemplare & \USR\\
-\BTN & nächste Seite der obigen Tabelle & \USR\\
-\BTN & vorige Seite der obigen Tabelle & \USR\\
-\TBL & aller ausgeliehenen Exemplare & \USR\\
-\BTN & nächste Seite der obigen Tabelle & \USR\\
-\BTN & vorige Seite der obigen Tabelle & \USR\\
+    Einlage & des Titels einer konkreten Seite & \PUB\\
+    Einlage & des Inhalts einer konkreten Seite & \PUB\\
+    \BTN & zum Anzeigen der kontextsensitiven Hilfe; als Fragezeichenbildsymbol dargestellt & \PUB\\
+    \LNK & zu der erweiterten Suche & \PUB\\
+    \INP & für die Mediensuche; alleinig die Betätigung der Eingabetaste sendet ab & \PUB\\
+    \LNK & zu der Profilseite & \USR\\
+    \LNK & zum Abmelden; zur Anmeldemaske & \USR\\
+    \LNK & zur Anmeldemaske & \ANO\\
+    \LNK & zur Registrierungsseite  & \ANO\\
+    \LNK & zu den abzuholenden Exemplaren & \BIB\\
+    \LNK & zu der Medienrückgabe & \BIB\\
+    \LNK & zu der Direktausleihe & \BIB\\
+    \LNK & zu der Verwaltung & \ADM\\
+    \OUT & für globale Meldungen (JSFs \texttt{HtmlMessages}) & \PUB\\
+    \LNK & zur Datenschutzerklärung & \PUB\\
+    \LNK & zum Impressum & \PUB\\
+    \LNK & zum Kontakt & \PUB\\
 \end{controls}
 
-\facelet{Anmeldemaske}{login}
+\subsection{Seiten}
+
+Alle Seiten nehmen die einzige Seitenvorlage (\ref{template}) als Vorlage.
+Jede Seite wird vom einer entsprechenden Backing Bean angetrieben, welche sich namentlich lediglich durch die Schreibweise unterscheidet. So wird bspw. die Seite \texttt{privacy-policy.xhtml} (in \textit{dash case}) mit der Bean \texttt{PrivacyPolicy} (in \textit{upper camel case}) assoziiert.
+
+\page{Abzuholende Exemplare}{staff/copies-ready-for-pickup}
+
+\Javadoc
+This page is used by library staff to be up to speed regarding which copies are ready to be picked up and
+whether they can expect someone to soon enter the library and arrive at their counter.
 
 \begin{controls}
-\INP & für die E-Mail-Adresse & \PUB\\
-Passworteingabefeld & & \PUB\\
-\BTN & zum Anmelden & \PUB\\
-\BTN\footnote{Dargestellt als \LNK, um unauffälliger zu sein, da es eine zweitrangige Aktion ist} & zum Passwortzurücksetzen & \PUB\\
+    \LST & aller abzuholenden Exemplare & \BIB\\
 \end{controls}
 
-\facelet{Datenschutzerklärung}{privacy-policy}
+\page{Eigene abzuholende Exemplare}{account/my-copies-ready-for-pickup}
+
+\Javadoc
+On this page a user gets to know which copies they want to pick up from the library and borrow thereafter
+and how much time they have left to do so until they exceed the deadline.
 
 \begin{controls}
-\INP & für die Datenschutzerklärung & \ADM\\
-\BTN & zum Speichern der Änderungen an der D. & \ADM\\
+    \LST & aller abzuholenden Exemplare & \USR\\
 \end{controls}
 
-\facelet{Direktausleihe}{direct-lending}
+\page{Eigene ausgeliehene Exemplare}{account/my-borrowed-copies}
+
+\Javadoc
+This page informs the user which copies they borrowed from the library and how much time they still have left
+until they have to return them to not exceed the deadline.
 
 \begin{controls}
-\INP & für die E-Mail-Adresse des Ausleihendens & \BIB\\
-\INP\footnote{Beim Laden der Seite fünfmal vorhanden. Durch das Pressen des relevanten Knopfs wird ein weiteres Feld angehängt} & für die Signatur eines auszuleihenden Exemplars  & \BIB\\
-\BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
-\BTN & zum Ausleihen & \BIB\\
+    \LST & aller ausgeliehenen Exemplare & \USR\\
 \end{controls}
 
-\facelet{E-Mail-Bestätigung}{email-confirmation}
+\page{Anmeldemaske}{public/login}
 
-\facelet{Fehlerseite}{error}
-
-\facelet{Impressum}{site-notice}
+\Javadoc
+This page is the one users first face when they are not already logged in.
+It allows them to log into the system to gain the privilege to borrow copies.
+If a logged-in user accesses this page by manually entering its URL, a message is shown instead of the
+login form and they get automatically redirected to their profile page.
 
 \begin{controls}
+    \INP & für die E-Mail-Adresse & \ANO\\
+    \PAS & & \ANO\\
+    \BTN & zum Anmelden & \ANO\\
+    \BTN & zum Passwortzurücksetzen; als \LNK dargestellt, um unauffälliger zu sein, da es eine zweitrangige Aktion ist & \ANO\\
+\end{controls}
+
+\page{Datenschutzerklärung}{public/privacy-policy}
+
+\Javadoc
+This page declares the privacy policy of this system.
+
+\begin{controls}
+    \OUT & für die Datenschutzerklärung & Nicht-\ADM\\
+    \INP & für die Datenschutzerklärung & \ADM\\
+    \BTN & zum Speichern der Änderungen & \ADM\\
+\end{controls}
+
+\page{Direktausleihe}{staff/direct-lending}
+
+\Javadoc
+This page enables staff to lend a person most probably in front of their counter a series of copies.
+It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the relevant input fields. Analogously with the email address stored inside of their membership card.
+
+\begin{controls}
+    \INP & für die E-Mail-Adresse des Ausleihenden & \BIB\\
+    \INP & für die Signatur eines auszuleihenden Exemplars; beim Laden der Seite fünfmal vorhanden. Durch das Pressen des relevanten Knopfs wird ein weiteres Feld angehängt & \BIB\\
+    \BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
+    \BTN & zum Ausleihen & \BIB\\
+\end{controls}
+
+\page{E-Mail-Bestätigung}{public/email-confirmation}
+
+% BEACON TASK BEACON docs etc
+
+% TASK PARAM TOKEN
+
+\Javadoc
+Accessing this page potentially verifies the email address of a specific user. For this,
+it takes a verification token as a query parameter. If absent or invalid, nothing user-facing happens.
+This secures against certain attacks.
+
+%\begin{controls}
+%    \BTN & zur Bestätigung der E-Mail-Adresse & \PUB\\
+%\end{controls}
+
+\page{Fehlerseite}{public/error}
+
+\Javadoc
+The sink for all kinds of fatal errors that happened in the system.
+They are either caused client-side (HTTP status codes 4XX) or server-side (HTTP status codes 5XX).
+If it's a client-side error, the user gets redirected to either the login page or their profile depending on if they are logged in or not. The redirection happens after some fixed amount of time.
+
+\begin{controls}
+    \OUT & für den Titel der Fehlermeldung & \PUB\\
+    \OUT & für die Beschreibung des Fehlers & \PUB\\
+\end{controls}
+
+\page{Impressum}{public/site-notice}
+
+\Javadoc
+This page contains the site notice.
+
+\begin{controls}
+    \OUT & für das Impressum & Nicht-\ADM\\
     \INP & für das Impressum & \ADM\\
     \BTN & zum Speichern der Änderungen am Impressum & \ADM\\
 \end{controls}
 
-\facelet{Kategorienbearbeitung}{category-editor}
+\page{Kategorienbearbeitung}{staff/category-editor}
+
+% Task: rephrase
+\Javadoc The category editor allows the creation and modification of a category.
+Only library staff and administrators are allowed to access this page.
+This page should only be accessed from the category browser, otherwise the required parameters
+are likely missing which would be an error.
+This page can be reached when library staff clicks on the edit button next to a category's name in the browser.
+In this case, the identifier of the category to be edited is transmitted as a parameter.
+This page can be reached when library staff clicks on the create button in the context of a category.
+In that case, the identifier of the category to be treated as the parent of the new category is transmitted
+as a parameter.
 
 \begin{controls}
-\INP & für den Kategorienamen & \BIB\\
-\INP & für die Kategoriebeschreibung & \BIB\\
-\BTN & zum Speichern der Änderungen & \BIB\\
+    \INP & für den Kategorienamen & \BIB\\
+    \INP & für die Kategoriebeschreibung & \BIB\\
+    \BTN & zum Speichern der Änderungen & \BIB\\
 \end{controls}
 
-\facelet{Kategorierenstöberer}{category-browser}
+\page{Kategorierenstöberer}{public/category-browser}
+
+\Javadoc
+This page offers users to browse through all available categories mediums are part of in a structured manner.
+It renders it possible for the consumer to discover new mediums.
 
 \begin{controls}
-\INP & für den Suchterm der Kategoriensuche & \PUB\\
-\LNK & zur Kategorienbearbeitung (hier: Erstellung) & \BIB\\
-\BTN & zum Löschen einer Kategorie & \BIB\\
-\LNK & zur Medienerstellung\footnote{unter der aktuellen Kategorie} & \BIB\\
+    \INP & für den Suchterm der Kategoriensuche & \PUB\\
+    \BTN & zum Durchführung der Suche & \PUB\\
+    \LNK & zur Kategorienbearbeitung (Erstellung einer neuen) & \BIB\\
+    \LNK & zur Kategorienbearbeitung & \BIB\\
+    \BTN & zum Löschen der Kategorie; zur Elterkategorie & \BIB\\
+    \LNK & zur Medienerstellung unter der aktuellen Kategorie & \BIB\\
 \end{controls}
 
-\facelet{Kontakt}{contact}
+\page{Kontakt}{public/contact}
 
-\facelet{Leihfristverstöße}{lending-period-violations}
+\Javadoc The contact form allows any user to get in touch with the library staff.
+Anonymous users have to enter their email address for staff to be able to reply.
+If the user is logged in, the information is simply taken from their account data.
 
 \begin{controls}
-\TBL & von Exemplaren und Nutzern & \ADM\\
-\BTN & nächste Seite der obigen Tabelle & \ADM\\
-\BTN & vorige Seite der obigen Tabelle & \ADM\\
+    Textbereich & für die Frage & \PUB\\
+    \INP & für die E-Mail-Adresse & \ANO\\
+    \INP & für den vollständigen Namen & \ANO\\
+    \INP & für den Ort/die PLZ & \ANO\\
+    \BTN & zum Absenden & \PUB\\
 \end{controls}
 
-\facelet{Medienerstellung}{media-creation}
+\page{Leihfristverstöße}{admin/lending-period-violations}
 
 \begin{controls}
-
+    \LST & von Exemplaren und Nutzern & \ADM\\
 \end{controls}
 
-\facelet{Medienrückgabe}{return}
+\page{Medienerstellung}{staff/medium-creation}
 
 \begin{controls}
-
+    \INP & für ein Medienattribut; existiert pro Medienattribut & \BIB\\
+    Zeitdauereingabefeld & für die Rückgabefrist & \BIB\\
+    \INP & für den Standort eines neuen Exemplars & \BIB\\
+    \INP & für die Signatur eines neuen Exemplars & \BIB\\
+    \BTN & zum Anlegen des neuen Mediums und des ersten Exemplars & \BIB\\
 \end{controls}
 
-\facelet{Mediensuche}{media-search}
+\page{Medienrückgabe}{staff/return}
 
 \begin{controls}
-\INP & für den Suchterm der freien Suche & \PUB\\
-\BTN & zur Durchführung der Suche & \PUB\\
-\DRP\footnote{
-Beim Laden der Seite dreimal vorhanden, jeweils einmal pro Dreiergruppe bestehend aus mit \footnotemark[\value{mpfootnote}] markierten Elementen.
-Durch das Pressen des relevanten Knopfs wird eine weitere Dreiergruppe angehängt
-} & für den Suchoperator & \PUB\\
-\DRP\footnotemark[\value{mpfootnote}] & für das Suchkriterium & \PUB\\
-\INP\footnotemark[\value{mpfootnote}] & für den Suchterm der diff. Suche & \PUB\\
-\BTN & zum Hinzufügen eines weiteren Suchfelds & \PUB\\
-\TBL & aller Suchergebnisse (falls vorhanden) & \PUB\\
-\BTN & nächste Seite der obigen Tabelle & \PUB\\
-\BTN & vorige Seite der obigen Tabelle & \PUB\\
+    \INP & für die E-Mail-Adresse des Abgebenden & \BIB\\
+    \INP & für die Signatur eines abzugebenden Exemplars; beim Laden der Seite fünfmal vorhanden. Durch das Pressen des relevanten Knopfs wird ein weiteres Feld angehängt & \BIB\\
+    \BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
+    \BTN & zum Abgeben & \BIB\\
 \end{controls}
 
-\facelet{Mediumsansicht}{medium}
+\page{Mediensuche}{public/media-search}
 
 \begin{controls}
-\LNK & zurück zur Trefferliste (Mediensuche) & \PUB\footnote{Nur sichtbar, falls der Nutzer von der Suche kommt}\\
-\INP\footnote{Existiert pro Medienattribut} & für ein Medienattribut & \BIB\\
-\BTN & zum Speichern der Änderungen an den Medienattributen & \BIB\\
-\BTN & zur Bindung an die Abholung des Mediums & \USR\footnote{Nur, falls dem Nutzer erlaubt ist auszuleihen}\\
-Zeitdauereingabefeld & für die Rückgabefrist & \BIB\\
-\BTN & zum Speichern der Änderungen an der Rückgabefrist & \BIB\\
-\LNK & zum Löschen des Mediums; zur zuvor aufgerufenen Seite & \BIB\\
-\TBL & aller Exemplare & \PUB\\
-\BTN\footnote{existiert pro Exemplar in der Tabelle} & zum Löschen eines Exemplars & \BIB\\
-\BTN\footnotemark[\value{footnote}] & zum Stornieren einer Abholung & \BIB\\
-\LNK\footnotemark[\value{footnote}] & zur Direktausleihe & \BIB\\
-% @Task add footnote at \USR (a previous one)
-\BTN\footnotemark[\value{footnote}] & zur Bindung an die Abholung des Mediums & \USR\\
-\INP & für den Standort eines neuen Exemplars & \BIB\\
-\INP & für die Signatur eines neuen Exemplars & \BIB\\
-\BTN & zum Erstellen eines Exemplars & \BIB\\
+    \INP & für den Suchterm der freien Suche & \PUB\\
+    \BTN & zur Durchführung der Suche & \PUB\\
+    \DRP & für den Suchoperator; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchkriterium und -feld) & \PUB\\
+    \DRP & für das Suchkriterium; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchoperator und -feld) & \PUB\\
+    \INP & für den Suchterm der differenzierten Suche; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchoperator und -kriterium) & \PUB\\
+    \BTN & zum Hinzufügen eines weiteren Gruppe aus Suchoperator, -kriterium und -feld & \PUB\\
+    \LST & aller Suchergebnisse (falls vorhanden) & \PUB\\
 \end{controls}
 
-\facelet{Mediumschemabearbeitung}{medium-schema-editor}
+\page{Mediumsansicht}{public/medium}
+
+% TASK DONT USE A PAGINATED LIST HERE!!! UPDATE THE STUFF!!!
 
 \begin{controls}
-
+    \LNK & zurück zur Trefferliste / Mediensuche; nur sichtbar, falls der Nutzer von der Suche kommt & \PUB\\
+    % TASK und Nicht-Admin
+    \OUT & für ein Medienattribut; existiert pro Medienattribut & Nicht-\BIB\\
+    \INP & für ein Medienattribut; existiert pro Medienattribut & \BIB\\
+    \BTN & zum Speichern der Änderungen an den Medienattributen & \BIB\\
+    \BTN & zur Bindung an die Abholung des Mediums; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
+    \OUT & für die Rückgabefrist; bezieht auch die nutzerbezogene Frist ein, anders als das \INP{} darunter & \USR\\
+    \INP & für die Rückgabefrist & \BIB\\
+    \BTN & zum Speichern der Änderungen an der Rückgabefrist & \BIB\\
+    \LNK & zum Löschen des Mediums; zur zuvor aufgerufenen Seite & \BIB\\
+    \LST & aller Exemplare & \PUB\\
+    \OUT & für den Standort eines Exemplars; existiert pro Exemplar & \PUB\\
+    \INP & für den Standort eines Exemplars; existiert pro Exemplar & \BIB\\
+    \OUT & für die Signatur eines Exemplars; existiert pro Exemplar & \PUB\\
+    \INP & für die Signatur eines Exemplars; existiert pro Exemplar & \BIB\\
+    \BTN & zum Speichern der Änderung am Exempla; existiert pro Exemplar & \BIB\\
+    \BTN & zum Löschen eines Exemplars; existiert pro Exemplar in der Tabelle & \BIB\\
+    \BTN & zum Stornieren einer Abholung; existiert pro Exemplar in der Tabelle & \BIB\\
+    \LNK & zur Direktausleihe; existiert pro Exemplar in der Tabelle & \BIB\\
+    \BTN & zur Bindung an die Abholung des Mediums; existiert pro Exemplar in der Tabelle; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
+    \INP & für den Standort eines neuen Exemplars & \BIB\\
+    \INP & für die Signatur eines neuen Exemplars & \BIB\\
+    \BTN & zum Erstellen eines Exemplars & \BIB\\
 \end{controls}
 
-\facelet{Nutzersuche}{user-search}
+\page{Mediumschemabearbeitung}{admin/medium-schema-editor}
+
+\begin{controls}
+    \INP & für den Namen eines Attributs; existiert pro Attribut & \ADM\\
+    \DRP & für den Typen eines Attributs; existiert pro Attribut & \ADM\\
+    \DRP & für die Position in der Medienvorschau; existiert pro Attribut & \ADM\\
+    \BTN & zum Löschen eines Attributes; existiert pro Attribut & \ADM\\
+    \BTN & zum Hinzufügen eines weiteren Gruppe aus \INP{}ern und \DRP{}n & \ADM\\
+    \BTN & zum Speichern der Änderungen & \ADM\\
+\end{controls}
+
+\page{Nutzersuche}{admin/user-search}
+
+\Javadoc
+This page enables administrators to search for users.
 
 \begin{controls}
     \INP & für den Suchterm & \ADM\\
     \BTN & zur Durchführung der Suche & \ADM\\
-    \TBL & aller Suchergebnisse (falls vorhanden) & \ADM\\
-    \BTN & nächste Seite der obigen Tabelle & \ADM\\
-    \BTN & vorige Seite der obigen Tabelle & \ADM\\
+    \CHK & für das Einschränken auf gesperrte Nutzer & \ADM\\
+    \LST & aller Suchergebnisse (falls vorhanden) & \ADM\\
 \end{controls}
 
-\facelet{Passwortzurücksetzung}{password-reset}
+\page{Passwortzurücksetzung}{public/password-reset}
+
+%TASK rephrase
+\Javadoc
+This page is reached by a user when they click on the link they received in an email.
+For the mechanisms to work, it takes a token as a query parameter.
+After submitting the form, the user is not logged into the system yet, they are redirected to the login form.
+This secures against certain attacks.
+If the token is absent or invalid, nothing user-facing is going to happen: Clicking the button still means redirection to the login page.
 
 \begin{controls}
-Passworteingabefeld & für das neue Passwort & \PUB\\
-Passworteingabefeld & zur Bestätigung & \PUB\\
-\BTN & zum Zurücksetzen des Passworts & \PUB\\
+    \PAS & für das neue Passwort & \PUB\\
+    \PAS & zur Bestätigung des neuen Passworts & \PUB\\
+    \BTN & zum Zurücksetzen des Passworts; zur Anmeldemaske & \PUB\\
 \end{controls}
 
-\facelet{Profilseite}{profile}
+\page{Profilseite}{account/profile}
+
+% expand
+\Javadoc
+This page is either the profile page of the current user or if it is an administrator possibly also
+of a user different from the logged-in one.
+It allows a user to change their personal information the system stores and it allows administrators to manage other accounts.
 
 \begin{controls}
-\INP & für den Vornamen & \USR\\
-\INP & für den Nachnamen & \USR\\
-Passworteingabefeld & & \USR\\
-Passworteingabefeld & zur Bestätigung & \USR\\
-\INP & für die E-Mail-Adresse & \USR\\
-\INP\footnote{bzw. getrennt in Ort, PLZ, Straße, Hausnummer} & für die Adresse & \USR\\
-\DRP & für die Nutzerrolle & \ADM\\
-Checkbox & für den Accountstatus (gesperrt / entsperrt) & \ADM\\
-Checkbox & für den Ausleihstatus (gesperrt / entsperrt) & \ADM\\
-\INP & für die Rückgabefrist & \ADM\\
-\BTN & zum Speichern der Änderungen an den Benutzerdaten & \USR\\
-\LNK & zu den abzuholenden und ausgeliehenen Exemplaren & \USR\\
-\BTN & zum Schließen des Accounts; zur Anmeldemaske & \USR\\
-\BTN & zum Löschen des Nutzers; zur Verwaltungsseite & \ADM\\
+    % BEACON TASK BEACON \INP_OR_OUT (new component)
+    \INP & für den Vornamen & \USR\\
+    \INP & für den Nachnamen & \USR\\
+    \PAS & für das Passwort & \USR\\
+    \PAS & zur Bestätigung & \USR\\
+    \INP & für die E-Mail-Adresse & \USR\\
+    \INP & für den Ort & \USR\\
+    \INP & für die PLZ & \USR\\
+    \INP & für die Straße& \USR\\
+    \INP & für die Hausnummer & \USR\\
+    \DRP & für die Nutzerrolle & \ADM\\
+    \CHK & zum Sperren des Nutzers & \ADM\\
+    \INP & für die Rückgabefrist & \ADM\\
+    \BTN & zum Speichern der Änderungen an den Benutzerdaten & \USR\\
+    \LNK & zu den abzuholenden und ausgeliehenen Exemplaren & \USR\\
+    \BTN & zum Schließen des Accounts; zur Anmeldemaske & \USR\\
+    \BTN & zum Löschen des Nutzers; zur Verwaltungsseite & \ADM\\
 \end{controls}
 
-\facelet{Registrierungsseite}{registration}
+\page{Registrierungsseite}{public/registration}
 
 \begin{controls}
-\INP & für den Vornamen & \USR\\
-\INP & für den Nachnamen & \USR\\
-Passworteingabefeld & & \USR\\
-Passworteingabefeld & zur Bestätigung & \USR\\
-\INP & für die E-Mail-Adresse & \USR\\
-\INP\footnote{bzw. getrennt in Ort, PLZ, Straße, Hausnummer} & für die Adresse & \USR\\
-\DRP & für die Nutzerrolle & \ADM\\
-\BTN & zum Registrieren des Accounts & \ANO/\ADM\\
+    \INP & für den Vornamen & \USR\\
+    \INP & für den Nachnamen & \USR\\
+    \PAS & & \USR\\
+    \PAS & zur Bestätigung & \USR\\
+    \INP & für die E-Mail-Adresse & \USR\\
+    \INP & für den Ort & \USR\\
+    \INP & für die PLZ & \USR\\
+    \INP & für die Straße & \USR\\
+    \INP & für die Hausnummer & \USR\\
+    \DRP & für die Nutzerrolle & \ADM\\
+    \BTN & zum Registrieren des Accounts & \ANO/\ADM\\
 \end{controls}
 
-\facelet{Verwaltungsseite}{administration}
+\page{Verwaltungsseite}{admin/administration}
 
 \begin{controls}
-\INP & für die Rückgabefrist & \ADM\\
-\INP & für den Mahnungszeitpunkt & \ADM\\
-\INP & für die Abholfrist & \ADM\\
-\INP & für den Systemnamen & \ADM\\
-Checkbox & für den Zugangsstatus (anonym oder nicht) & \ADM\\
-Checkbox & für den Registrierungsstatus & \ADM\\
-\INP & für den regulären Ausdruck valider E-Mail-Adressen & \ADM\\
-Farbkreis\footnote{Alternativ ein einfaches \INP} & für die erste Farbe des Systems & \ADM\\
-Farbkreis\footnotemark[\value{footnote}] & für die zweite Farbe des Systems & \ADM\\
-Datei-Upload & für das Logo des Systems & \ADM\\
-\BTN & zum Speichern der Änderungen an den Systemeinstellungen & \ADM\\
-\LNK & zu der Medienerstellung & \ADM\\
-\LNK & zu der Registrierungsseite (fremden Nutzer erstellen) & \ADM\\
-\LNK & zur Mediumsschemabearbeitung & \ADM\\
-\LNK & zu den Leihfristverstößen & \ADM\\
-\LNK & zu der Nutzersuche & \ADM\\
-\INP & für den Suchterm der Nutzersuche & \ADM\\
+    \INP & für die Rückgabefrist & \ADM\\
+    \INP & für den Mahnungszeitpunkt & \ADM\\
+    \INP & für die Abholfrist & \ADM\\
+    \INP & für den Systemnamen & \ADM\\
+    \CHK & für den Zugangsstatus (anonym oder nicht) & \ADM\\
+    \CHK & für den Registrierungsstatus & \ADM\\
+    \INP & für den regulären Ausdruck valider E-Mail-Adressen & \ADM\\
+    \DRP & für das Farbschema des Systems & \ADM\\
+    Datei-Upload & für das Logo des Systems & \ADM\\
+    \BTN & zum Speichern der Änderungen an den Systemeinstellungen & \ADM\\
+    \LNK & zu der Medienerstellung & \ADM\\
+    \LNK & zu der Registrierungsseite (fremden Nutzer erstellen) & \ADM\\
+    \LNK & zur Mediumsschemabearbeitung & \ADM\\
+    \LNK & zu den Leihfristverstößen & \ADM\\
+    \LNK & zu der Nutzersuche & \ADM\\
+    \INP & für den Suchterm einer Nutzersuche & \ADM\\
+    \BTN & zum Durchführung der Suche & \ADM\\
 \end{controls}
 
 %--Systemfunktionen----------------------------------------------------------------------------------------------------------------------------------------------------------------
