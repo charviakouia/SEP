@@ -823,6 +823,7 @@ Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das Syste
 Beim planmäßigen Herunterfahren des Systems durch das Ausschalten des Tomcat auf dem Server (z.B. via shutdown.sh) reicht die Klasse !!!\hyperlink{}{}!!! eine Nachricht an die Klasse !!!\hyperlink{}{}!!!, von wo aus zunächst der !!!\hyperlink{}{Wartungsthread}!!! beendet und danach die noch offenen Datenbankverbindungen über den !!!\hyperlink{}{Connection-Pool}!!! geschlossen werden. Nach Durchreichen der Erfolgsmeldung nach oben, wird die Anwendung gestoppt. Nutzersessions überleben das Ausschalten des Servers nicht.
 
 %--Datenfluss--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\newpage
 \section{Datenfluss}
 \sectionauthor{Sergei Pravdin}
 Die Kommunikation zwischen den Klassen und die Interaktionen des Systems werden durch die Sequenzdiagramme abgebildet. Um einen Datenfluss beispielhaft zu zeigen, werden die folgenden beiden Szenarien vorgelegt: Zuerst bucht ein angemeldeter Nutzer ein Medium-Exemplar erfolgreich zur Ausleihe. Im zweiten Szenario bucht ein angemeldeter Nutzer ein Medium-Exemplar erfolglos zur Ausleihe, weil die Verbindung mit der Datenbank fehlgeschlagen ist.
@@ -846,6 +847,17 @@ Der Nutzer klickt auf den Buchen-Button eines Exemplars. Das Medium-BB ruft die 
 \restoregeometry
 \newpage
 
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width = 50em]{Sequenzdiagramm-exception-v2}
+    \caption{Interaktionen beim Buchen eines Medium-Exemplares mit fehlender Datenbankverbindung}
+    \label{Sequenzdiagramm}
+\end{figure}
+
+\restoregeometry
+\newpage
 
 %--ER-Modell--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{ER-Modell}
