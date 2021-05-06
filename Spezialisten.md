@@ -1,24 +1,29 @@
 # Spezialisten
 
-| Themengebiet | Spezialist \& Ansprechpartner | Bemerkungen |
-|--------------|-------------------------------|-------------|
-| **Git**      | León                          | |
-| **i18n**     | León                          | Internationalisierung (z.B. Unterstützung mehrerer Sprachen) |
-| **LaTeX**    | Ivan                          | |
-| **Regex**    | Ivan                          | |
-| **JSF Validators \& Converters** | Ivan      | |
-| **RSA**      | Mohamad                       | |
-| **E-Mail** | Mohamad         | wahrsch. insb. Jakarta Mail |
-| **CSS**      | Mohamad                       | |
-| **SQL**      | Jonas                         | |
-| **JSF File Upload** | Jonas                  | wird eventuell nicht gebraucht |
-| **TLS**      | Jonas                         | |
-| **Selenium** | Sergei                        | |
-| **Logging**  | Sergei                        | |
-| **JUnit**    | Sergei                        | |
-| **Configuration** | _nicht zugewiesen_       | |
-| **JSF Templates** | _nicht zugewiesen_       | |
-| **JSF Scopes** | _nicht zugewiesen_          | besonders die Fragestellung wie man Daten von einem View zu dem nächsten schicken kann (flash scope, view parameters, …) |
-| **JSF Components** | _nicht zugewiesen_      | Erstellung von custom/benutzerdefinierten Komponenten |
-| **List Visualization** | _nicht zugewiesen_ | Implementierung jeglicher graphischer Tabellen mit Paginierung etc. unter einer generischen Klasse |
+| Themengebiet          | Spezialist \& Ansprechpartner | Bemerkungen |
+|-----------------------|-------------------------------|-------------|
+| **Git**               | León                          | |
+| **i18n**              | León                          | Internationalisierung (z.B. Unterstützung mehrerer Sprachen) |
+| **JSF Templates**     | León                          | |
+| **JSF Components**    | León                          | Erstellung von custom/benutzerdefinierten Komponenten |
+| **LaTeX**             | Ivan                          | |
+| **Regex**             | Ivan                          | |
+| **E-Mail**            | Ivan                          | wahrsch. insb. Jakarta Mail |
+| **JSF Validators \& Converters** | Ivan               | |
+| **RSA**               | Mohamad                       | |
+| **CSS**               | Mohamad                       | |
+| **Listenabstraktion** | Mohamad                       | Implementierung jeglicher graphischer Tabellen mit Paginierung etc. unter einer generischen Klasse |
+| **SQL**               | Jonas                         | |
+| **JSF File Upload**   | Jonas                         | |
+| **JSF/CDI Scopes**    | Jonas                         | besonders die Fragestellung wie man Daten von einem View zu dem nächsten schicken kann (flash scope, view parameters, …) |
+| **TLS**               | Jonas                         | |
+| **Configuration**     | Jonas                         | Properties-Datei |
+| **Selenium**          | Sergei                        | |
+| **Logging**           | Sergei                        | |
+| **JUnit**             | Sergei                        | |
+
+
+
+
+
 
