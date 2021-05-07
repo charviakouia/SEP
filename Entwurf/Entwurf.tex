@@ -76,120 +76,125 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 \section{Klassendiagramm}
 \sectionauthor{Mohamad Najjar}
 
-%   \begin{landscape}
+\section{Klassendiagram}
+In diesem Kapitel befindet sich die Dokumentation für das UML-Diagramm. Das PDF UML-Diagramm mit dem vollständigen  UML-Diagramm befindet sich im Anhang der E-Mail\\
+Die Vollständigkeit der Attribute der DTOs wurde anhand der Producktdaten geprüft.
+Mit den Facelets des nächsten Kapitels wurden die Beans  abgeglichen.
+Die Methoden jeder Klassen wurden anhand der Produktfunktionen im Lastenheft auf Vollständigkeit geprüft. Zugriff auf die Datenbank wurden mit dem ER-Diagramm verglichen. Andere Klassen wurden anhand der Systemfunktionen und Systemarchtitektur erstellt.\\
+Ein Paar Konventionen:\\
+Alle DTOs haben entsprechende Setter- und Getter-Methoden für Attribute.\\
+Alle Beans, die DTOs referenzieren, haben auch entsprechende Setter- und Getter-Metheoden.\\
+Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
+\subsection{UML-Klassendigramm}
+
+
+
+
     \begin{figure}
-        \includegraphics[scale=0.2]{Klassendiagramm.png}
-        \caption{Klassendiagramm}
-        \label{fig:Klassendiagramm}
+        \includegraphics[scale=0.12]{UMLBibi.pdf}
+        \caption{UML-Klassendiagramm}
+        \label{fig:UML-Klassendkígrramm}
     \end{figure}
-%    \end{landscape}
-
-%    \begin{landscape}
+    
+\subsection{Verwendete Java-Klassen}
+    
+    
     \begin{figure}
-        \includegraphics[scale=0.6]{KlassendiagramDao.png}
-        \caption{Klassendiagramm der Daos}
-        \label{fig:KlassendiagramDao}
+        \includegraphics[scale=0.17]{Beansdiagramm.pdf}
+        \caption{Beans-Klassendiagramm}
+        \label{fig:UML-Klassendkígrramm}
     \end{figure}
-%    \end{landscape}
-
-%    \begin{landscape}
+    
+    
+     \begin{figure}
+        \includegraphics[scale=0.4]{Daodiagramm.pdf}
+        \caption{DAO-Klassendiagramm}
+        \label{fig:UML-Klassendkígrramm}
+    \end{figure}
+    
     \begin{figure}
-    \centering
-        \includegraphics[scale=0.7, angle=270]{KlassendiagramBeans.png}
-        \caption{Klassendiagramm der Beans}
-        \label{fig:KlassendiagramBeans}
+        \includegraphics[scale=0.4]{Dtodiagramm.pdf}
+        \caption{DTO-Klassendiagramm}
+        \label{fig:UML-Klassendkígrramm}
     \end{figure}
-%    \end{landscape}
-
-%    \begin{landscape}
+    
+    
     \begin{figure}
-        \includegraphics[scale=0.6]{KlassendiagramDtos.png}
-        \caption{Klassendiagramm der Dtos}
-        \label{fig:KlassendiagrammDto}
+        \includegraphics[scale=0.4]{Validatorendiagramm.pdf}
+        \caption{Validatoren-Klassendiagramm}
+        \label{fig:UML-Klassendkígrramm}
     \end{figure}
-%    \end{landscape}
-
-
-%    \begin{landscape}
+    
     \begin{figure}
-        \includegraphics[scale=0.6]{KlassendiagramSystem.png}
-        \caption{Klassendiagramm des Systems}
-        \label{fig:KlassendiagramSystem}
+        \includegraphics[scale=0.3]{Utildiagramm.pdf}
+        \caption{Utl-Klassendiagramm}
+        \label{fig:UML-Klassendkígrramm}
     \end{figure}
-%    \end{landscape}
-
-%    \begin{landscape}
-    \begin{figure}
-        \includegraphics[scale=0.6]{klassendiagramValidator.png}
-        \caption{Klassendiagramm des Validator}
-        \label{fig:KlassendiagramValidator}
-    \end{figure}
-%    \end{landscape}
-
-
-%   \begin{landscape}
-    \begin{figure}
-        \includegraphics[scale=0.6]{KlassendiagramService.png}
-        \caption{Klassendiagramm der Services}
-        \label{fig:KlassendiagramService}
-    \end{figure}
-%    \end{landscape}
-
-
-
+    
  \begin{center}
     \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
             \hline
             Java-Klasse & Beschreibung  \\
             \hline\hline
-            Medium & Backing Bean für das Erstellen und Bearbeiten eines Medium. \\
+            Medium & Backing Bean für das Erstellen und Bearbeiten eines Medium.\\
             \hline
-            AdminConfig & Backing Bean für die Einstellung der Webseite. \\
+            AdminConfig & Backing Bean für die Einstellung der Webseite.\\
             \hline
-            ChangePassword & Backing Bean für die Änderung des Passwortes. \\
+            CategoryBrowser & Backing Bean für Erstellen, Bearbeiten, Löschen und Suchen einer Kategorie.\\
+            \hline
+            CopiesReadyForPickup & Backing Bean für die abzuholeneden Exemplare.\\
+            \hline 
+            ChangePassword & Backing Bean für die Änderung des Passwortes.\\
             \hline
             Error & Backing Bean der Seite die Fehlermeldungen anzeigt.\\
             \hline
+            Page & abstracte Klasse für die Vorlage des.\\
+            \hline
             Profile & Backing Bean für das Anzeigen und Bearbeiten des Profils eines Benutzers. \\
             \hline
-            ForgotPassword & Backing Bean für die Seite, auf der man sich einen neues Passwort zusenden lassen kann, wenn man das altes Passwort vergessen hat. \\
+            PasswordReset & Backing Bean für die Seite, auf der man sich einen neues Passwort zusenden lassen kann, wenn man das altes Passwort vergessen hat.\\
              \hline
-            Login & Backing Bean des Logins. \\
+            Login & Backing Bean des Logins.\\
              \hline
-            Register & Backing Bean für das Anlegen eines neuen Benutzers. \\
+            Registeration & Backing Bean für das Anlegen eines neuen Benutzers.\\
             \hline
-            Icon & Backing Bean für das Hochladen und Bearbeiten eines Mediums und Logo des Systems. \\
-            \hline
-            Category & Backing Bean für die Kategorie, die als Liste angezeigt wird. \\
-            \hline
-            UserList & Backing Bean für die Seite der Benutzersuche. \\
+            Category & Backing Bean für die Kategorie, die als Liste angezeigt wird.\\
             \hline
             CollectableCopies & Backing Bean der Seite, auf der alle Exemplare abzuholend makiert. \\
             \hline
-            DirectLendin & Backing Bean für die Seite der Directausleihe. \\
+            DirectLendin & Backing Bean für die Seite der Directausleihe.\\
              \hline
-            EmailConfirm & Backing Bean für die Seite der Emailbestätigung. \\
+            EmailConfirm & Backing Bean für die Seite der Emailbestätigung.\\
              \hline
-            LendingPeriod & Backing Bean für die Seite der Ausleihefrist. \\
+            LendingPeriod & Backing Bean für die Seite der Ausleihefrist.\\
              \hline
-            MediumSearch & Backing Bean für die Seite der Mediumsuche. \\
+            MediumSearch & Backing Bean für die Seite der Mediumsuche.\\
              \hline
-            ReturnForm & Backing Bean für die Seite der Rückgabe. \\
+            Return & Backing Bean für die Seite der Rückgabe.\\
              \hline
-            MediumEdit & Backing Bean für die Seite des Mediumedieren. \\
+              UserSession & Backing Bean für Userlists.\\
              \hline
-            PrivacyPolicy & Backing Bean für die Seite der Datenschutzerklärung. \\
+            MediumCreation & Backing Bean für das Erstellen eines  Mediumeds.\\
+             \hline
+            PrivacyPolicy & Backing Bean für die Seite der Datenschutzerklärung.\\
+            \hline
+            SiteNotice & Backing Bean für das Impressum der  Webanwendung.\\
+            \hline
+            MyBorrwedCopies & Backing Bean für alle ausgeliehene Exemplare.\\
+            \hline
+            MyCopiesReadyForPickUp & Backing Bean für die Seite aller Exemplare, die abzuholend markiert sind.\\
             \hline
         \end{tabular}
         \end{table}
         \end{center}
-
+        
+       
 
 \begin{center}
     \begin{table}
-        \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
-            \hline
+        \begin{tabular} { |p{3,5cm}|p{7,5cm}| } 
+            \hline          
             Java-Klasse & Beschreibung  \\
              \hline\hline
             UserDto & Enthält alle Daten des Profils eines Benutzers. \\
@@ -197,16 +202,31 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
             \hline
             MediumDto & Enthält die Daten eines Mediums. \\
             \hline
+            AttributeDto & Enthält die Daten wie den Namen, ID und den Wert eines Attribut.\\
+            \hline
             CopyDto & Enthält die   Daten eines Exemplar. \\
+            \hline
+            LendingStatus & Aufzählung für den Status einer Ausleihe.\\
+            \hline
+            AvailabilityStatus & Aufzählung für ein Exemplar op es ausgeliehen, zur Abholung markiert oder vorhanden ist. \\
+            \hline
+            AccountStatus & Aufzählung die   Daten eines Exemplar. \\
             \hline
             CategoryDto & Enthält die Daten einer Kategorie. \\
             \hline
-            LinkGeneratorDto & Enthält die Daten des Linkgenerators. \\
+            Role & Aufzählung für die Userrolen  (Admin, Bibliothekmitarbeiter  oder normaler Benutzer. \\
             \hline
+            Theme & Aufzählung für den Registerstatus (offen oder geschloßen). \\
+            \hline
+            MediumPreviewPosition & Aufzählung stellt die Position eines Attribut in einem einzelnen Mediumsuchergebnis dar, welches die Vorschau eines Medium ist. \\
+            \hline
+            SearchOperator & Aufzählung erlaubt Suchkriterien zu kombinieren. \\
+            \hline
+            
         \end{tabular}
         \end{table}
         \end{center}
-
+       
 
   \begin{center}
     \begin{table}
@@ -222,13 +242,17 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
             \hline
             CategoryDao & Kontrolliert den Zugriff auf Kategoriedaten in der Datenbank. \\
             \hline
-            CopyDao & Kontrolliert den Zugriff auf die Exemplardaten in der Datenbank. \\
+            MailDao & Kontrolliert den Zugriff auf die Emailsendung in der Datenbank. \\
+            \hline
+            NoConnectionException & Wird geworfen wenn der Zugriff auf die Daten-bank fehlschlägt. \\
+            \hline
+            NoDataException & Wird geworfen wenn eine Datenanfrage aufgrund nicht vorhandener Daten kein Ergebnis zurückgibt. \\
             \hline
         \end{tabular}
         \end{table}
         \end{center}
-
-
+        
+        
   \begin{center}
     \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
@@ -239,7 +263,8 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
             \hline
             PasswordValidator & Prüft beim Anlegen eines neuen Benutzerkontos oder beim Ändern des Passwortes, ob das Passwort den Mindestanforderungen entspricht. \\
              \hline
-            ConfirmPasswordValidator & Prüft ob die Passwortbestätigung und Passwort übereinstimmen. \\
+            ConfirmPasswordValidator & Prüft ob die Passwortbestätigung und Passwort
+           übereinstimmen. \\
             \hline
            LogoValidator & Validiert ob eine Datei einem gängigen Bildformat entspricht und nicht zu groß oder auch zu klein ist. \\
              \hline
@@ -250,8 +275,8 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
         \end{tabular}
         \end{table}
         \end{center}
-
-
+      
+        
   \begin{center}
     \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
@@ -260,46 +285,32 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
            \hline\hline
             ConnectionPool & Verwaltet die Verbindungen zur Datenbank. \\
             \hline
-            DatabaseSetup& Erstellt das Datenbankschema und die Verbindung mit Datenbank. \\
+            ConfigReader& Zuständig  für das Einlesen der Config-Datei. \\
              \hline
-            SqlTransaction& Wird verwendet, um eine Sql-Transaction zu verarbeiten. \\
+            ResourceBundleHelper & Organisiert die Verwendung von Standardtexten in
+            der richtigen Sprache.\\
+            
+            \hline ResourceBundleHelperNotFoundException & Wird geworfen der ResourceBundleHelper nicht existiert. \\
              \hline
-            DataAcesesException& Wird geworfen,  wenn es keine Verbindung mit Datenbank gibt. \\
+            DataAcesesException & Wird geworfen,  wenn es keine Verbindung mit Datenbank gibt. \\
+            \hline
+            PasswordHashingModule & Stellt die Methoden zum hashen  von Passworten bereit.\\
+            \hline
+            SystemStart & hier werden die Configuration des System eingerichtet und das Starten des Systems organisiert.\\
+            \hline
+            SystemStop & Organisiert das Herunterfahren des Systems.\\
+             \hline
+            TresPassListener & OVerhindert den Zugriff von Unberechtigten aufbestimmte Seite.\\
+            \hline
+            TokenGenerator & hier wird ein Zeichen für Emailverifizierung und Passworzurücksetzung erzeugt.\\
            \hline
         \end{tabular}
         \end{table}
         \end{center}
+       
 
 
-     \begin{center}
-       \begin{table}
-        \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
-             \hline
-            Java-Klasse & Beschreibung \\
-            \hline\hline
-            MediumService &  Service für Aktionen zu Medien. \\
-             \hline
-            ApplicationService & Service für Aktionen zu der Anwendung. \\
-            \hline
-            UserService & Service für Aktionen zu dem Benutzer des System. \\
-            \hline
-            CategoryService & Service für Aktionen zu Kategorie. \\
-            \hline
-            CopyService& Service für Aktionen zu Exemplaren.\\
-             \hline
-           LendingService & Service für Aktionen zu der Ausleihe. \\
-           \hline
-        \end{tabular}
-        \end{table}
-        \end{center}
 
-\subsection{Paketdiagramm}
-
-    \begin{figure}[h!]
-        \includegraphics[scale=0.6]{Paketdigram.png}
-        \caption{Paketdiagramm}
-        \label{fig:Paketdiagramm}
-    \end{figure}
 
 
 
