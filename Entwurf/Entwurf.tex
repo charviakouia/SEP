@@ -313,13 +313,12 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 % TASK mention query strings and GET/POST parameters!!
 
 \newcommand{\PUB}{jeder}
-\newcommand{\ANO}{abgem. Nutzer}
-\newcommand{\USR}{angem. Nutzer}
+\newcommand{\ANO}{Anon.}
+\newcommand{\USR}{Nutzer}
 \newcommand{\BIB}{Mitarbeiter}
-\newcommand{\ADM}{Administrator}
+\newcommand{\ADM}{Admin.}
 
 \newcommand{\component}[2]{\subsubsection{#1 (\texttt{#2})}}
-%\newcommand{\page}[2]{\subsubsection{#1, \texttt{#2.xhtml}}}
 \newcommand{\page}[2]{
     \subsubsection{#1}
     \paragraph*{Dateipfad} \texttt{#2.xhtml}
@@ -367,26 +366,26 @@ Zudem werden nachfolgend diese Abkürzungen und Kurzformen verwenden:
 \begin{tabulary}{\textwidth}{RL}
 \toprule
 %\PUB & jeder \\
-\ANO  & abgemeldeter Nutzer \\
+\ANO  & Anonymus \\
 \USR & angemeldeter Nutzer \\
 \BIB & Bibliotheksmitarbeiter \\
-%\ADM & Administrator \\
+\ADM & Administrator \\
 \bottomrule
 \end{tabulary}
 \end{table}
 
 \subsection{Komponenten}
 
-%\subsection{Seitenvorlage}
-
 \component{\LST}{PaginatedList}
 
 % TASK attributes, values
 
 \begin{controls}
-    \BTN & zum Blättern auf die nächste Seite & \USR\\
-    \BTN & zum Blättern auf die vorige Seite & \USR\\
-    ?? & ?? values & ??\\
+    \BTN & zum Blättern auf die nächste Seite & \PUB\\
+    \BTN & zum Blättern auf die vorige Seite & \PUB\\
+    ?? & ?? values & \\
+    \BTN & ?? SORT SPECIFIC COLUMN (asc/desc) & \PUB\\
+    \OUT & INFO WHERE WE ARE & \PUB\\
 \end{controls}
 
 \component{Editierbarer Text}{EditableText}
@@ -417,6 +416,7 @@ Das Attribut der Komponente ist der Text.
     \LNK & zu den abzuholenden Exemplaren & \BIB\\
     \LNK & zu der Medienrückgabe & \BIB\\
     \LNK & zu der Direktausleihe & \BIB\\
+    \LNK & zu der Medienerstellung & \BIB\\
     \LNK & zu der Verwaltung & \ADM\\
     \OUT & für globale Meldungen (JSFs \texttt{HtmlMessages}) & \PUB\\
     \LNK & zur Datenschutzerklärung & \PUB\\
@@ -500,18 +500,10 @@ It is intended but not a hard requirement that library staff scans the copies gi
 
 \page{E-Mail-Bestätigung}{public/email-confirmation}
 
-% BEACON TASK BEACON docs etc
-
-% TASK PARAM TOKEN
-
 \Javadoc
 Accessing this page potentially verifies the email address of a specific user. For this,
-it takes a verification token as a query parameter. If absent or invalid, nothing user-facing happens.
+it takes a token as a query parameter. If absent or invalid, nothing user-facing happens.
 This secures against certain attacks.
-
-%\begin{controls}
-%    \BTN & zur Bestätigung der E-Mail-Adresse & \PUB\\
-%\end{controls}
 
 \page{Fehlerseite}{public/error}
 
@@ -533,21 +525,20 @@ This page contains the site notice.
 \begin{controls}
     \OUT & für das Impressum & Nicht-\ADM\\
     \INP & für das Impressum & \ADM\\
-    \BTN & zum Speichern der Änderungen am Impressum & \ADM\\
+    \BTN & zum Speichern der Änderungen & \ADM\\
 \end{controls}
 
 \page{Kategorienbearbeitung}{staff/category-editor}
 
 % Task: rephrase
 \Javadoc The category editor allows the creation and modification of a category.
-Only library staff and administrators are allowed to access this page.
-This page should only be accessed from the category browser, otherwise the required parameters
-are likely missing which would be an error.
+Generally this page is accessed from the category browser
 This page can be reached when library staff clicks on the edit button next to a category's name in the browser.
 In this case, the identifier of the category to be edited is transmitted as a parameter.
 This page can be reached when library staff clicks on the create button in the context of a category.
 In that case, the identifier of the category to be treated as the parent of the new category is transmitted
 as a parameter.
+If the parameters are invalid, the user will be redirected to the error page.
 
 \begin{controls}
     \INP & für den Kategorienamen & \BIB\\
@@ -564,27 +555,40 @@ It renders it possible for the consumer to discover new mediums.
 \begin{controls}
     \INP & für den Suchterm der Kategoriensuche & \PUB\\
     \BTN & zum Durchführung der Suche & \PUB\\
+    Baumansicht \ref{treeview} & mancher Kategorien & \PUB\\
     \LNK & zur Kategorienbearbeitung (Erstellung einer neuen) & \BIB\\
     \LNK & zur Kategorienbearbeitung & \BIB\\
     \BTN & zum Löschen der Kategorie; zur Elterkategorie & \BIB\\
     \LNK & zur Medienerstellung unter der aktuellen Kategorie & \BIB\\
 \end{controls}
 
+% TASK BEACON !!!!
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
+        \toprule
+        \midrule
+        \bottomrule
+    \end{tabular}
+    \caption{Baumansicht}
+    \label{treeview}
+\end{table}
+
 \page{Kontakt}{public/contact}
 
-\Javadoc The contact form allows any user to get in touch with the library staff.
-Anonymous users have to enter their email address for staff to be able to reply.
-If the user is logged in, the information is simply taken from their account data.
+\Javadoc The contact page allows any user to get to know how to contact the site owners.
 
 \begin{controls}
-    Textbereich & für die Frage & \PUB\\
-    \INP & für die E-Mail-Adresse & \ANO\\
-    \INP & für den vollständigen Namen & \ANO\\
-    \INP & für den Ort/die PLZ & \ANO\\
-    \BTN & zum Absenden & \PUB\\
+    \OUT & für die Kontaktinformationen & Nicht-\ADM\\
+    \INP & für das Kontaktinformationen & \ADM\\
+    \BTN & zum Speichern der Änderungen & \ADM\\
 \end{controls}
 
 \page{Leihfristverstöße}{admin/lending-period-violations}
+
+\Javadoc
+XXX
 
 \begin{controls}
     \LST & von Exemplaren und Nutzern & \ADM\\
@@ -592,9 +596,12 @@ If the user is logged in, the information is simply taken from their account dat
 
 \page{Medienerstellung}{staff/medium-creation}
 
+\Javadoc
+XXX
+
 \begin{controls}
     \INP & für ein Medienattribut; existiert pro Medienattribut & \BIB\\
-    Zeitdauereingabefeld & für die Rückgabefrist & \BIB\\
+    \INP & für die Rückgabefrist & \BIB\\
     \INP & für den Standort eines neuen Exemplars & \BIB\\
     \INP & für die Signatur eines neuen Exemplars & \BIB\\
     \BTN & zum Anlegen des neuen Mediums und des ersten Exemplars & \BIB\\
@@ -602,14 +609,23 @@ If the user is logged in, the information is simply taken from their account dat
 
 \page{Medienrückgabe}{staff/return}
 
+\Javadoc
+XXX
+
 \begin{controls}
-    \INP & für die E-Mail-Adresse des Abgebenden & \BIB\\
-    \INP & für die Signatur eines abzugebenden Exemplars; beim Laden der Seite fünfmal vorhanden. Durch das Pressen des relevanten Knopfs wird ein weiteres Feld angehängt & \BIB\\
+    \INP & für die E-Mail-Adresse des Kunden & \BIB\\
+    \INP & für die Signatur eines abzugebenden Exemplars; beim Laden der Seite fünfmal vorhanden & \BIB\\
     \BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
     \BTN & zum Abgeben & \BIB\\
 \end{controls}
 
 \page{Mediensuche}{public/media-search}
+
+\Javadoc
+This page permits users to search for mediums given some of their attributes as search criteria.
+Further, a user can search mediums by category and by the signature of one of their copies.
+The page has an optional query parameter corresponding to the search term.
+If it is not provided, nothing will be searched and the paginated list of results will not be displayed at all.
 
 \begin{controls}
     \INP & für den Suchterm der freien Suche & \PUB\\
@@ -618,40 +634,60 @@ If the user is logged in, the information is simply taken from their account dat
     \DRP & für das Suchkriterium; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchoperator und -feld) & \PUB\\
     \INP & für den Suchterm der differenzierten Suche; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchoperator und -kriterium) & \PUB\\
     \BTN & zum Hinzufügen eines weiteren Gruppe aus Suchoperator, -kriterium und -feld & \PUB\\
-    \LST & aller Suchergebnisse (falls vorhanden) & \PUB\\
+    \LST & aller Suchergebnisse; nur sichtbar, wenn schon gesucht wurde & \PUB\\
 \end{controls}
 
 \page{Mediumsansicht}{public/medium}
 
-% TASK DONT USE A PAGINATED LIST HERE!!! UPDATE THE STUFF!!!
+\Javadoc
+XXX
 
 \begin{controls}
     \LNK & zurück zur Trefferliste / Mediensuche; nur sichtbar, falls der Nutzer von der Suche kommt & \PUB\\
-    % TASK und Nicht-Admin
-    \OUT & für ein Medienattribut; existiert pro Medienattribut & Nicht-\BIB\\
-    \INP & für ein Medienattribut; existiert pro Medienattribut & \BIB\\
+    \OUT & für ein Medienattribut; existiert pro Medienattribut; mehrwertige Attribute durch Komma getrennt angezeigt & \ANO, \USR\\
+    \INP & für ein Medienattribut; existiert pro Medienattribut bzw. pro Wert bei mehrwertigen & \BIB\\
     \BTN & zum Speichern der Änderungen an den Medienattributen & \BIB\\
     \BTN & zur Bindung an die Abholung des Mediums; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
     \OUT & für die Rückgabefrist; bezieht auch die nutzerbezogene Frist ein, anders als das \INP{} darunter & \USR\\
     \INP & für die Rückgabefrist & \BIB\\
     \BTN & zum Speichern der Änderungen an der Rückgabefrist & \BIB\\
     \LNK & zum Löschen des Mediums; zur zuvor aufgerufenen Seite & \BIB\\
-    \LST & aller Exemplare & \PUB\\
-    \OUT & für den Standort eines Exemplars; existiert pro Exemplar & \PUB\\
-    \INP & für den Standort eines Exemplars; existiert pro Exemplar & \BIB\\
-    \OUT & für die Signatur eines Exemplars; existiert pro Exemplar & \PUB\\
-    \INP & für die Signatur eines Exemplars; existiert pro Exemplar & \BIB\\
-    \BTN & zum Speichern der Änderung am Exempla; existiert pro Exemplar & \BIB\\
-    \BTN & zum Löschen eines Exemplars; existiert pro Exemplar in der Tabelle & \BIB\\
-    \BTN & zum Stornieren einer Abholung; existiert pro Exemplar in der Tabelle & \BIB\\
-    \LNK & zur Direktausleihe; existiert pro Exemplar in der Tabelle & \BIB\\
-    \BTN & zur Bindung an die Abholung des Mediums; existiert pro Exemplar in der Tabelle; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
+    Tabelle \ref{tableofcopies} & aller Exemplare & \PUB\\
     \INP & für den Standort eines neuen Exemplars & \BIB\\
     \INP & für die Signatur eines neuen Exemplars & \BIB\\
     \BTN & zum Erstellen eines Exemplars & \BIB\\
 \end{controls}
 
+% TASK param given to actions
+% TASK JSF DataTable
+% QUESTION sorting???
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+        \midrule
+        Standort & \OUT & & \PUB\\
+        Standort & \INP & & \BIB\\
+        Verfügbarkeit & \OUT & & \PUB\\
+        Signatur & \OUT & & \PUB\\
+        Signatur & \INP & & \BIB\\
+        Aktionen & \BTN & zum Speichern der Änderungen & \BIB\\
+        Aktionen & \BTN & zum Löschen & \BIB\\
+        Aktionen & \BTN & zum Stornieren einer Abholung & \BIB\\
+        Aktionen & \LNK & zur Direktausleihe & \BIB\\
+        Aktionen & \BTN & zur Bindung an die Abholung; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
+        \bottomrule
+    \end{tabular}
+    \caption{Tabelle aller Exemplare. Jede Zeile existiert pro Exemplar}
+    \label{tableofcopies}
+\end{table}
+
 \page{Mediumschemabearbeitung}{admin/medium-schema-editor}
+
+\Javadoc
+On this page, the administrator can adjust the medium schema (the set of attributes of each medium).
 
 \begin{controls}
     \INP & für den Namen eines Attributs; existiert pro Attribut & \ADM\\
@@ -666,12 +702,14 @@ If the user is logged in, the information is simply taken from their account dat
 
 \Javadoc
 This page enables administrators to search for users.
+The page has an optional query parameter corresponding to the search term.
+If it is not provided, nothing will be searched and the paginated list of results will not be displayed at all.
 
 \begin{controls}
     \INP & für den Suchterm & \ADM\\
     \BTN & zur Durchführung der Suche & \ADM\\
     \CHK & für das Einschränken auf gesperrte Nutzer & \ADM\\
-    \LST & aller Suchergebnisse (falls vorhanden) & \ADM\\
+    \LST & aller Suchergebnisse; nur sichtbar, wenn schon gesucht wurde & \ADM\\
 \end{controls}
 
 \page{Passwortzurücksetzung}{public/password-reset}
@@ -682,7 +720,7 @@ This page is reached by a user when they click on the link they received in an e
 For the mechanisms to work, it takes a token as a query parameter.
 After submitting the form, the user is not logged into the system yet, they are redirected to the login form.
 This secures against certain attacks.
-If the token is absent or invalid, nothing user-facing is going to happen: Clicking the button still means redirection to the login page.
+If the token is absent or invalid, nothing user-facing will happen: Clicking the button still means redirection to the login page.
 
 \begin{controls}
     \PAS & für das neue Passwort & \PUB\\
@@ -720,21 +758,27 @@ It allows a user to change their personal information the system stores and it a
 
 \page{Registrierungsseite}{public/registration}
 
+\Javadoc
+On this page an anonymous user can register themself. Additionally, it can be used by administrators to register new users.
+
 \begin{controls}
-    \INP & für den Vornamen & \USR\\
-    \INP & für den Nachnamen & \USR\\
-    \PAS & & \USR\\
-    \PAS & zur Bestätigung & \USR\\
-    \INP & für die E-Mail-Adresse & \USR\\
-    \INP & für den Ort & \USR\\
-    \INP & für die PLZ & \USR\\
-    \INP & für die Straße & \USR\\
-    \INP & für die Hausnummer & \USR\\
+    \INP & für den Vornamen & \ANO/\ADM\\
+    \INP & für den Nachnamen & \ANO/\ADM\\
+    \PAS & & \ANO/\ADM\\
+    \PAS & zur Bestätigung & \ANO/\ADM\\
+    \INP & für die E-Mail-Adresse & \ANO/\ADM\\
+    \INP & für den Ort & \ANO/\ADM\\
+    \INP & für die PLZ & \ANO/\ADM\\
+    \INP & für die Straße & \ANO/\ADM\\
+    \INP & für die Hausnummer & \ANO/\ADM\\
     \DRP & für die Nutzerrolle & \ADM\\
     \BTN & zum Registrieren des Accounts & \ANO/\ADM\\
 \end{controls}
 
 \page{Verwaltungsseite}{admin/administration}
+
+\Javadoc
+This page provides the means to administrators to change the global settings of the application.
 
 \begin{controls}
     \INP & für die Rückgabefrist & \ADM\\
@@ -747,11 +791,10 @@ It allows a user to change their personal information the system stores and it a
     \DRP & für das Farbschema des Systems & \ADM\\
     Datei-Upload & für das Logo des Systems & \ADM\\
     \BTN & zum Speichern der Änderungen an den Systemeinstellungen & \ADM\\
-    \LNK & zu der Medienerstellung & \ADM\\
     \LNK & zu der Registrierungsseite (fremden Nutzer erstellen) & \ADM\\
     \LNK & zur Mediumsschemabearbeitung & \ADM\\
     \LNK & zu den Leihfristverstößen & \ADM\\
-    \LNK & zu der Nutzersuche & \ADM\\
+    \LNK & zur Nutzersuche & \ADM\\
     \INP & für den Suchterm einer Nutzersuche & \ADM\\
     \BTN & zum Durchführung der Suche & \ADM\\
 \end{controls}
