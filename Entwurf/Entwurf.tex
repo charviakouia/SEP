@@ -14,6 +14,7 @@
 \usepackage{multirow}
 
 \graphicspath{ {./images/} }
+\setlength\parindent{0pt}
 
 \makeatletter
 \newcommand{\sectionauthor}[1]{
@@ -36,40 +37,144 @@ Hier wird der Entwurf des Bibliotheksmanagementsystems BiBi beschrieben. Das Dok
 \section{Systemarchitektur}
 \sectionauthor{Ivan Charviakou}
 
-\subsection{Design-Patterns: Schichtenunabhängigkeit}
 
-MVC: Als grundlegendes Design-Pattern sorgt MVC dafür, dass die Model-, Präsentations-, und Steuerungskomponente voneinander weitgehend entkoppelt sind. Dabei implementiert das JSF-Framework per Default Großteile der Präsentations- und Steuerungskomponenten, aber überlässt die Modelkomponente komplett dem Entwickler. Für die Präsentationskomponente werden nämlich vordefinierte UI-Komponente vorgesehen, während der eingebaute Faces-Servlet die Steuerungsaufgabe übernimmt. Durch selbst-definierte Tag-Libraries und Facelets lassen sich diese beiden Komponenten auch ggf. vervollständigen. \vspace{0.5em}
 
-CDI: Die im JSF-Framework eingebaute CDI-Funktionalität ermöglicht eine direkte Kommunikation zwischen abhängigen Komponenten, die durch JSF verwaltet werden. Solche Beziehungen werden dann mit entsprechenden Annotationen, wie ‚@inject‘, gekennzeichnet. In der gegebenen Anwendung trägt CDI dadurch wesentlich zur Intraschichtenkommunikation bei. \vspace{0.5em}
+\subsection{Einführung}
 
-DTOs: Ein Datentransferobjekt (DTO) enthält die Daten zu einer bestimmten Entität oder zu einem zusammenhängenden Ausschnitt aus verschiedenen Entitäten. In der gegebenen Anwendung entspricht das einem Medium, Exemplar, Nutzer, usw. Durch Übergabe von solchen Objekten an verschiedenen Modelschichten, können sie die Daten unabhängig voneinander anpassen oder evaluieren. Als Beispiel prüft im Model die Logikschicht das Format eines E-Mails, während die Sicherheitsschicht SQL-Injection-Attacken in der Eingabe ausschließt. \vspace{0.5em}
+Die vorgestellte Bibliotheksanwendung wird in Java mittels einer MVC-Architektur unter Verwendung eines 2-Schichten Modells realisiert. Dabei wird JSF als grundlegendes Web-Framework verwendet. Der Vorteil dieser Modellierung ist die Einfachheit der Implementierung und die Modularität der Datenschicht. Aufgrund der wenig umfangreichen Businesslogik bietet aber eine separate Schicht im Gegensatz zum 2-Schichten Modell bei deutlichem Mehraufwand kaum zusätzliche Modularität. \vspace{0.5em}
 
-DAOs und ihre Fassaden: Zu jedem DTO existiert auch ein Datenzugriffsobjekt (DAO), das bei einer Übergabe eines DTOs die enthaltenen Daten speichert bzw. lädt. Damit mehrere Modelschichten diese Prozeduren eigens erweitern können, verwenden die DTOs in der gegebenen Anwendung den Fassade-Muster. Jede betroffene Schicht verwendet zur Erweiterung eines DAOs nämlich die gleiche Schnittstelle und ruft die Schnittstelle der nächsten Schicht auf. Als Beispiel gibt die Logikschicht ein Passwort im Klartext an und übergibt es an eine DAO-Instanz in der Sicherheitsschicht mittels eines DTOs. Diese Schicht berechnet dann aus dem Klartext einen Hash-Wert und leitet diesen Wert an die DAO-Instanz in der Datenzugriffsschicht weiter. \vspace{0.5em}
+Genauer – Das Model besteht aus den folgenden Schichten:
+\begin{itemize}
+	\item \textbf{Logikschicht:} Die Aufgabe dieser Schicht ist es, die Benutzerinteraktion, die Navigation, und die hierzu erforderliche Funktionalitäten zu kapseln. 
+	\item \textbf{Datenschicht:} Da manche Funktionalitäten aus der Logik eine Datenpersistenz voraussetzen, befasst sich diese Schicht mit dem Speichern und Laden von Daten aus einem oder mehreren Quellen.
+\end{itemize}
 
-Event-Listener: Dadurch, dass JSF verschiedene Arten von Listenern bereitstellt, ist eine stärkere Entkopplung von Schichten möglich. Während Action-, Value-Change-, und Phasenlistener hauptsächlich eine Logikschicht ansprechen, kann beispielweise der eingebaute System-Event-Listener für die unabhängige Initialisierung der Modelschichten sorgen.
 
-\subsection{Design-Patterns: Fehlerbehandlung}
 
-Allgemeiner Testmodus: Es wird ein Testmodus eingeführt, der beim Applikationsstart als Parameter angegeben wird. \vspace{0.5em}
+\subsection{Architekturdiagramm}
 
-Exceptions: Jede Schicht in der gegebenen Anwendung definiert eigene Checked-Exceptions, die ggf. durch die Schichten hochgeworfen werden. Dabei wird eine solche Exception in jeder Zwischenschicht gefangen in eine eigens definierte Exception umgewandelt bis eine Schicht sie behandelt. Im Gegensatz werden Unchecked-Exceptions nicht behandelt und führen zum Absturz der Anwendung. Während für eine Präsentations- und Logikschicht oft eine GUI-Anzeige als geeignete Behandlung gilt, ist es für jede Schichten anders. Falls es beispielsweise durch eine Checked-Exception in der Datenzugriffsschicht festgestellt wird, dass die verwendete Datenbank nicht mehr erreichbar ist, wird stattdessen dynamisch auf lokale Applikationsdaten zugegriffen. Unter den DAOs in der Datenzugriffsschicht wird somit der Strategy-Muster angewendet. \vspace{0.5em}
-
-Logging: Als Logging-Framework wird der im JDK vordefinierte Framework verwendet. Diese Funktionalität ist nur im Testmodus aktiv und es wird zu einer lokalen Log-Datei geschrieben. \vspace{0.5em}
-
-Validatoren: Das JSF-Framework gibt dem Entwickler die Möglichkeit, Daten auf Korrektheit zu prüfen, bevor sie dem Logikschicht bereitgestellt wird. Da aber komplexere semantische Fehler oft einen größeren Kontext und eine komplexere Behandlung benötigen, wird der Einsatz von diesen Validatoren hauptsächlich auf syntaktische Formattierfehler beschränkt.
-
-\subsection{Design-Patterns: Konkrete Features}
-
-Connection-Pool: Unter einem Pool bezeichnet man eine Sammlung an Objekten, die angefragt, zurückgegeben, und wiederverwendet werden. Dies vermeidet insbesondere die Erzeugung von solchen Objekten, was in Bezug auf Datenbankverbindungen als aufwendig gilt. Da es trivialerweise nur einen solchen Container geben sollte, wird ein Pool auch als Singleton verwendet. Für die gegebene Anwendung wird die HikariCP Implementierung einer solchen Connection-Pool genommen. Beim Testmodus wird die Anzahl an Verbindungen auf eins gesetzt. \vspace{0.5em}
-
-Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte Daten oder Daten im Cache mit der Zeit ungültig werden. Du solchen Daten gehört beispielsweise die Gültigkeit von einem Passwortrücksetzungslink. Mit einem Wartungsprozess werden solche Inkonsistenzen erkannt und behoben.
-
-\subsection{Modeldiagramm}
+Das folgende Diagramm stellt die MVC-Architektur mit den Beziehungen zwischen den einzelnen Komponenten anhand der gegebenen Applikation dar. Dabei folgt die Komponentenaufteilung grob der Paketstruktur der Applikation. Zudem entsprechen die Farben, die die Komponente im Diagramm besitzen, den Farben im nachfolgenden Klassendiagramm.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width = 50em]{Modeldiagramm}
+	\includegraphics[width = 30em]{Modeldiagramm}
 \end{figure}
+
+
+
+\subsection{Paketstruktur}
+
+Die verwendeten Java-Paketen werden im Folgenden aufgelistet und beschrieben:
+\begin{itemize}
+	\item \textbf{dedede.model.logic:} Dieses Paket bildet die gesamte Funktionalität der Logikschicht ab.
+		\begin{itemize}
+			\item \textbf{dedede.model.logic.managedbeans:} Dieses Paket enthält alle von der JSF-Applikation verwendeten Managed-Beans. 
+				Das sind unter anderem Backing-Beans, die von den Facelets referenziert werden, und jegliche Scoped-Beans, die diesen Backing-Beans zusätzliche Funktionalität bieten.
+			\item \textbf{dedede.model.logic.validators:} Dieses Paket enthält alle von der JSF-Applikation für die Überprüfung der Benutzereingabe verwendeten Validatoren.
+			\item \textbf{dedede.model.logic.converters:} Dieses Paket enthält alle von der JSF-Applikation verwendeten Converters.
+			\item \textbf{dedede.model.logic.exceptions:} Dieses Paket definiert alle applikations-spezifische Exceptions, die von den Klassen aus der Logikschicht geworfen werden. 
+				Insbesondere sind das checked und unchecked Exceptions, die nur in der Logikschicht eine kontextuelle Bedeutung tragen.
+			\item \textbf{dedede.model.logic.util:} Dieses Paket kapselt alle Funktionalitäten, von der die Funktionsweise der Logikschicht abhängt, aber auch über die direkte Benutzerinteraktion hinausgehen. 
+				Das sind unter andrem die E-Mail-Versendungsfunktionalität und die SystemEventListener-Implementierung, die für den Logikschicht-gesteuerten Systemstart und -stopp zuständig ist.
+		\end{itemize}
+	\item \textbf{dedede.model.dataaccess:} Dieses Paket bildet die gesamte Funktionalität der Datenschicht ab.
+		\begin{itemize}
+			\item \textbf{dedede.model.dataaccess.daos:} Dieses Paket enthält alle von der Applikation verwendeten Datenzugriffsobjekten (DAOs).
+			\item \textbf{dedede.model.dataaccess.exceptions:} Dieses Paket definiert alle applikations-spezifische Exceptions, die von den Klassen aus der Datenschicht geworfen werden. 
+				Insbesondere sind das checked und unchecked Exceptions, die nur in der Datenschicht eine kontextuelle Bedeutung tragen.
+			\item \textbf{dedede.model.dataaccess.util:} Dieses Paket kapselt alle Funktionalitäten, von der die Funktionsweise der Datenschicht abhängt. 
+				Dazu zählen unter anderem das Connection-Pool, das für die Datenbankverbindung notwendig ist, und der Wartungsthread, der die Integrität und Gültigkeit der persistierten Daten überwacht.
+		\end{itemize}
+	\item \textbf{dedede.model.data:} Dieses Paket stellt dem Applikationsmodell schichtenübergreifende Datenkonstruktionen bereit.
+		\begin{itemize}
+			\item \textbf{dedede.model.data.dtos:} Dieses Paket enthält alle von der Applikation verwendeten Datentransferobjekten (DTOs).
+		\end{itemize}
+	\item \textbf{dedede.model.util:} In diesem Paket sind schichtenübergreifende Funktionalitäten und Einstellungen zu finden.
+		\begin{itemize}
+			\item \textbf{dedede.model.util.logger:} Dieses Paket beinhaltet eine Implementierung eines Loggers und alle hierzu erforderlichen Einstellungen. Dabei ist dieser Logger aus allen Schichten und Klassen zugreifbar.
+		\end{itemize}
+\end{itemize}
+
+
+\subsection{Design-Patterns}
+
+\paragraph{Dependency-Injection:} 
+In JSF sorgt dieses Pattern dafür, dass eine Managed-Bean-Instanz einer Klasse automatisch bei der Instanziierung zur Verfügung gestellt wird. Dies unterscheidet sich von dem einfachen Anliegen eines Objekts dadurch, dass ein Managed-Bean mit einem größeren, Request-übergreifenden Scope wiederverwendet werden kann. In der gegebenen Anwendung wird dieses Pattern verwendet, um mit Hilfe von Scoped-Beans unter anderem den Applikations- und Session-Zustand zu modellieren. Als Beispiel wird in dem Session-Bean die Rolle eines Nutzers gespeichert, die bei der Nutzeranmeldung gesetzt wird. Durch Dependency-Injection bekommt das Backing-Bean der Medienansicht Zugriff auf diese Rolle, um Rollen-spezifische Funktionalitäten des Facelets anzuzeigen.
+
+\paragraph{Factory-Pattern:} 
+Dieses Pattern erlaubt es, Objekte unabhängig von einer bestimmten Implementierung oder Einstellung zu erzeugen. Somit kann eine Implementierung dynamisch gewählt und leichter angepasst werden. 
+Um einen globalen Exception-Handler in JSF zu definieren, muss man als Beispiel zuerst den vorgegebenen Exception-Handler-Factory erweitern und diesen in den JSF-Konfigurationen registrieren. 
+Dieses Konstrukt erlaubt es, eigene Fehlerbehandlungsprozeduren als Wrapper-Klassen zu definieren, aus denen bei der Konstruktion eines Exception-Handlers ausgewählt wird. 
+Die einzige Funktionalität, die der globale Exception-Handler in der gegebenen Anwendung umsetzt, ist die Weiterleitung des Nutzers nur auf eine Fehlerseite. Trotzdem lässt sich mithilfe dieses Patterns weitere Funktionalitäten definieren. 
+
+\paragraph{Singleton-Pattern:} 
+Das Singleton-Pattern sorgt dafür, dass ein Objekt im Lebenszyklus der Applikation nur einmal instanziiert wird. Ein wichtiger Vorteil eines Singletons ist die einfache Koordination von bestimmten Operationen. 
+In der gegebenen Applikation ist das Connection-Pool als Singleton realisiert. Dadurch wird unter anderem ein koordiniertes Herunterfahren aller Connections im System ermöglicht.
+
+\paragraph{Object-Queuing:} 
+Dieses Pattern dient dazu, die Erzeugung von bestimmten Objekten zu beschränken und diese durch Vergabe und Rückgabe wiederverwendbar zu machen. Dies wird häufig in Fällen eingesetzt, in denen die Erzeugung von den Objekten als aufwendig gilt. 
+Durch Anwendung dieses Patterns werden die Connections aus dem Connection-Pool in ihrer Anzahl beschränkt, anderen Komponenten zur Verfügung gestellt, und anschließend an den Pool zurückgegeben.
+
+\paragraph{Converter:} 
+Ein JSF-Converter hat die Aufgabe, für Objekte eine String-Darstellung zu berechnen, und für eine String-Darstellung ein Objekt. Dies wird in JSF verwendet, um Objekte in der View besser darstellbar oder auswählbar zu machen. 
+Beispielsweise sind für sämtliche Auswahllisten, die intern als Enum-Typen kodiert werden, Converter nötig. So werden unter anderem Nutzerrollen und Attributtypen kodiert.
+
+\paragraph{Data Transfer Objects:} 
+Dieses Konstrukt kapselt zusammenhängende Daten zu einer oder mehreren Entitäten mit Hilfe von Gettern und Settern. Dabei enthält eine DTO keine Logik und wird als POJO implementiert. 
+Zudem werden DTO-Instanzen durch alle Modelschichten durchgereicht und erfüllen in jeder Schicht einen eigenen Zweck. 
+In der Datenschicht werden DTOs an DAOs übergeben und verwendet, um persistente Entity-Instanzen im Datenbestand zu aktualisieren, erstellen, oder löschen. DAOs dürfen auch DTOs erzeugen und befüllen. 
+In der Logikschicht werden DTOs zum einen aus der Datenschicht geholt, um persistierte Daten in der View anzuzeigen. Zum anderen werden sie in der Logikschicht durch Post-Construct-Methoden erzeugt, um von der View befüllt zu werden.
+
+\paragraph{Data Access Objects:} 
+Ein DAO wird verwendet, um Daten zu einer oder mehreren Entitäten mit Hilfe eines DTOs aus dem persistenten Datenbestand zu laden, löschen, aktualisieren, oder einzufügen. 
+Dabei sind komplexere Methodenformulierungen möglich und die verwendete Art von Datenpersistenz bleibt für die Logikschicht transparent. 
+Die DAOs in der gegebenen Anwendung unterstützen Transaktionsmanagement dadurch, dass öffentliche DAO-Steuermethoden package-private Methoden von anderen DAOs aufrufen dürfen. 
+Da die Implementierung der DAOs auf SQL ausgerichtet ist, werden Connection-Objekte durch diese package-private Methoden übergeben. Folglich sind die DAOs als statische Klassen realisiert.
+
+\paragraph{Observer-Pattern:} 
+Dieses Pattern trennt die Rolle eines Observers und die eines Subjekts. Hierbei muss ein Observer dem Subjekt zugewiesen werden, um über Änderungen benachrichtigt zu werden. 
+Dadurch muss im Subjekt nicht fest-kodiert werden, wie viele Observer referenziert werden und welchen Typ sie besitzen. 
+In JSF liegt dieses Pattern einer Implementierung von einem Event- und Phasen-Listener zugrunde. Diese Listener werden nämlich als Observers verwendet, die auf bestimmte Events reagieren.
+
+
+
+\subsection{Fehlerbehandlung}
+
+\paragraph{Validatoren:}
+Das in JSF eingebaute Validatoren-Konstrukt dient als erster Schutz gegen fehlerhafte Nutzereingaben. 
+In einem Validator wird eine Eingabe aus der View auf Korrektheit geprüft und im Fehlerfall eine Validator-Exception geworfen, die in der View als Folge eine Fehlermeldung erzeugt. 
+Als Beispiel von einem Validator aus der gegebenen Applikation dient der E-Mail-Validator. Bevor das System bei einer Registrierung eine E-Mail akzeptiert, wird nämlich überprüft, ob sie zu einem regulären Ausdruck passt. 
+
+\paragraph{Phasen-Listener:} 
+Um unberechtigten Zugriff auf View-Ressourcen und Funktionalitäten zu vermeiden, werden mit Hilfe eines Phasen-Listeners die Nutzerberechtigungen geprüft. 
+Hierbei wird das Interface ‘PhaseListener‘ von JSF vorgegeben, deren Implementierungen lassen sich in der JSF-Konfiguration registrieren. 
+Falls die Nutzerberechtigungen für den angeforderten Zugriff nicht ausreichend sind, wird der Nutzer auf eine Fehlerseite weitergeleitet. 
+Der gleiche Mechanismus wird auch dazu verwendet, Tokens für eine Passwortrücksetzung oder E-Mail-Verifizierung zu registrieren oder entfernen. 
+
+\paragraph{Logging:} 
+Ein wichtiger Aspekt der Fehlererkennung in der gegebenen Applikation ist das Logging-Framework. Durch einen Logger ist es möglich, den Ablauf der Anwendung und dabei entstehende Ereignisse in einer Log-Datei zu dokumentieren. 
+Der in der Applikation verwendete Logger definiert die Levels ‚SEVERE‘, ‚DETAILED‘ und ‚DEVELOPMENT‘ für Log-Einträge. 
+Da sowohl die Logik- als auch die Datenschicht den gleichen Logger verwendet, wird er in der gegebenen Applikation als schichtenübergreifendes Singleton implementiert.
+
+\paragraph{Exception-Handling:} 
+Für jede Modellschicht werden eigene Checked-Exceptions definiert und verwendet. Die Behandlung oder ggf. das Weiterwerfen von diesen Exceptions geschieht in ‚try-catch‘-Blocken im aufrufenden Code. 
+Checked-Exceptions, die aus einer unteren Schicht stammen, können ebenfalls in ‚try-catch‘-Blocken in der oberen Schicht gefangen werden. 
+Um aber die Unabhängigkeit der Schichten zu unterstützen, wird stattdessen eine andere, schichten-spezifische Exception erzeugt und weitergeworfen. 
+Für die Behandlung von sämtlichen nicht-gefangenen Exceptions wird in der Applikation ein eigener globaler Exception-Handler vorgesehen, der den Nutzer auf eine Fehlerseite weiterleitet und die entsprechenden Details zu dieser Exception anzeigt. 
+Das sind unter anderem der Name, die Nachricht, und der Stack-Trace. 
+
+
+
+\subsection{Systemvorgänge}
+
+\paragraph{Systemstart und Shutdown:}
+Obwohl jede Modelschicht hierzu ihre eigenen Klassen und Prozeduren definiert, wird sowohl ein Systemstart als auch ein Shutdown durch die Logikschicht angestoßen. 
+Dies erfolgt durch die Implementierung und Registrierung des ‚SystemEventListeners‘-Interfaces, die aus der Logikschicht die entsprechenden statischen Methoden in der Logikschicht aufruft.
+
+\paragraph{Unerwartetes Shutdown:}
+Die Ausführung von Shutdownfunktionen beim unerwarteten Beenden der JVM, wie das Schließen von Datenbankverbindungen und Connection-Objekte, wird mit Hilfe einer Shutdown-Hooks realisiert. 
+
+
 
 %--Klassendiagramm---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -77,7 +182,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 \sectionauthor{Mohamad Najjar}
 
 %   \begin{landscape}
-    \begin{figure}
+    \begin{figure}[H]
         \includegraphics[scale=0.2]{Klassendiagramm.png}
         \caption{Klassendiagramm}
         \label{fig:Klassendiagramm}
@@ -85,7 +190,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 %    \end{landscape}
 
 %    \begin{landscape}
-    \begin{figure}
+    \begin{figure}[H]
         \includegraphics[scale=0.6]{KlassendiagramDao.png}
         \caption{Klassendiagramm der Daos}
         \label{fig:KlassendiagramDao}
@@ -93,7 +198,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 %    \end{landscape}
 
 %    \begin{landscape}
-    \begin{figure}
+    \begin{figure}[H]
     \centering
         \includegraphics[scale=0.7, angle=270]{KlassendiagramBeans.png}
         \caption{Klassendiagramm der Beans}
@@ -102,7 +207,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 %    \end{landscape}
 
 %    \begin{landscape}
-    \begin{figure}
+    \begin{figure}[H]
         \includegraphics[scale=0.6]{KlassendiagramDtos.png}
         \caption{Klassendiagramm der Dtos}
         \label{fig:KlassendiagrammDto}
@@ -111,7 +216,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 
 
 %    \begin{landscape}
-    \begin{figure}
+    \begin{figure}[H]
         \includegraphics[scale=0.6]{KlassendiagramSystem.png}
         \caption{Klassendiagramm des Systems}
         \label{fig:KlassendiagramSystem}
@@ -119,7 +224,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 %    \end{landscape}
 
 %    \begin{landscape}
-    \begin{figure}
+    \begin{figure}[H]
         \includegraphics[scale=0.6]{klassendiagramValidator.png}
         \caption{Klassendiagramm des Validator}
         \label{fig:KlassendiagramValidator}
@@ -128,7 +233,7 @@ Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte 
 
 
 %   \begin{landscape}
-    \begin{figure}
+    \begin{figure}[H]
         \includegraphics[scale=0.6]{KlassendiagramService.png}
         \caption{Klassendiagramm der Services}
         \label{fig:KlassendiagramService}
