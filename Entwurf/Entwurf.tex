@@ -1087,19 +1087,6 @@ Durch die Methode 'getValue()' des Exception-Handlers wird der Nutzer zur Fehler
 \section{ER-Modell}
 \sectionauthor{Jonas Picker}
 
-\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
-
-\begin{figure}[h]
-    \hypertarget{ERDia}{}
-    \centering
-    \includegraphics[angle = 270, width = 60em]{ER-Diagramm}
-    \caption{Entity-Relationship Diagramm}
-    \label{ER-Diagramm}
-\end{figure}
-
-\restoregeometry
-\newpage
-
 \subsection{Legende}
 Beschreibung des \hyperlink{ERDia}{ER-Diagramms}: \\
 \\
@@ -1121,6 +1108,18 @@ Titel & Erscheinungsjahr &  Verlag \\
 \textbf{Administrator:} Diese Entität modelliert die Rolle der Administratoren. Die von der Benutzerentität ausgehende Hierarchie soll die inklusiven Rollen im System modellieren.  \\
 \textbf{Adresse:} Vom Benutzer abhängig. Enthält die Bestandteile einer Nutzeradresse als Attribute. \\
 \textbf{Anwendung:} Hier werden die setzbaren globalen Variablen und Anwendungseinstellungen modelliert. 'Anonymer Zugang' bestimmt die Berechtigungen anonymer Nutzer beim Besuchen des Webspaces (PfHft. /F10/), während 'Registrierungsstatus' eine offene (in diesem Fall gilt der 'E-Mail RegEx') oder geschlossene Registrierungsfunktion modelliert (PfHft. /F20/). 'Ausleihenstatus' steht für das Umschalten des Systems zur manuellen Freischaltung der Ausleihfunktion. Aus dem 'Mahungsversatz' ergibt sich der Zeitpunkt vor Ablauf einer Rückgabefrist, an dem eine automatische Benachrichtigung versendet wird (PfHft. /F240/). \hypertarget{Farbschemaattribut}{'Farbschema'} merkt sich das zuletzt ausgewählte Farbschema. \\
+
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
+
+\begin{figure}[h]
+    \hypertarget{ERDia}{}
+    \centering
+    \includegraphics[angle = 270, width = 60em]{ER-Diagramm}
+    \caption{Entity-Relationship Diagramm}
+    \label{ER-Diagramm}
+\end{figure}
+
+\restoregeometry
 
 \end{document}
 
