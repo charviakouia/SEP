@@ -66,7 +66,7 @@ Das folgende Diagramm stellt die MVC-Architektur mit den Beziehungen zwischen de
 
 Die verwendeten Java-Paketen werden im Folgenden aufgelistet und beschrieben:
 \begin{itemize}
-	\item \textbf{dedede.model.logic:} Dieses Paket bildet die gesamte Funktionalität der Logikschicht ab.
+	\item \textbf{dedede.model.logic:} \hypertarget{Logikschicht}{Dieses Paket} bildet die gesamte Funktionalität der Logikschicht ab.
 		\begin{itemize}
 			\item \textbf{dedede.model.logic.managedbeans:} Dieses Paket enthält alle von der JSF-Applikation verwendeten Managed-Beans.
 				Das sind unter anderem Backing-Beans, die von den Facelets referenziert werden, und jegliche Scoped-Beans, die diesen Backing-Beans zusätzliche Funktionalität bieten.
@@ -77,7 +77,7 @@ Die verwendeten Java-Paketen werden im Folgenden aufgelistet und beschrieben:
 			\item \textbf{dedede.model.logic.util:} Dieses Paket kapselt alle Funktionalitäten, von der die Funktionsweise der Logikschicht abhängt, aber auch über die direkte Benutzerinteraktion hinausgehen.
 				Das sind unter andrem die E-Mail-Versendungsfunktionalität und die SystemEventListener-Implementierung, die für den Logikschicht-gesteuerten Systemstart und -stopp zuständig ist.
 		\end{itemize}
-	\item \textbf{dedede.model.dataaccess:} Dieses Paket bildet die gesamte Funktionalität der Datenschicht ab.
+	\item \textbf{dedede.model.daaaccess:} \hypertarget{DAOs}{Dieses Paket} bildet die gesamte Funktionalität der Datenschicht ab.
 		\begin{itemize}
 			\item \textbf{dedede.model.dataaccess.daos:} Dieses Paket enthält alle von der Applikation verwendeten Datenzugriffsobjekten (DAOs).
 			\item \textbf{dedede.model.dataaccess.exceptions:} Dieses Paket definiert alle applikations-spezifische Exceptions, die von den Klassen aus der Datenschicht geworfen werden.
@@ -112,7 +112,7 @@ Das Singleton-Pattern sorgt dafür, dass ein Objekt im Lebenszyklus der Applikat
 In der gegebenen Applikation ist das Connection-Pool als Singleton realisiert. Dadurch wird unter anderem ein koordiniertes Herunterfahren aller Connections im System ermöglicht.
 
 \paragraph{Object-Queuing:}
-Dieses Pattern dient dazu, die Erzeugung von bestimmten Objekten zu beschränken und diese durch Vergabe und Rückgabe wiederverwendbar zu machen. Dies wird häufig in Fällen eingesetzt, in denen die Erzeugung von den Objekten als aufwendig gilt.
+\hypertarget{Pooling}{Dieses Pattern} dient dazu, die Erzeugung von bestimmten Objekten zu beschränken und diese durch Vergabe und Rückgabe wiederverwendbar zu machen. Dies wird häufig in Fällen eingesetzt, in denen die Erzeugung von den Objekten als aufwendig gilt.
 Durch Anwendung dieses Patterns werden die Connections aus dem Connection-Pool in ihrer Anzahl beschränkt, anderen Komponenten zur Verfügung gestellt, und anschließend an den Pool zurückgegeben.
 
 \paragraph{Converter:}
@@ -192,6 +192,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 \subsection{UML-Klassendigramm}
 
 \begin{figure}[H]
+\hypertarget{Session}{}
     \includegraphics[scale=0.12]{UMLBibi.pdf}
     \caption{UML-Klassendiagramm}
     \label{fig:UML-Klassendkígrramm}
@@ -216,6 +217,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 
 
     \begin{figure}[H]
+	\hypertarget{DAO}{}
     \includegraphics[scale=0.4]{Daodiagramm.pdf}
     \caption{DAO-Klassendiagramm}
     \label{fig:UML-Klassendkígrramm}
@@ -235,6 +237,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 \end{figure}
 
 \begin{figure}[H]
+\hypertarget{Logger}{}
     \includegraphics[scale=0.3]{Utildiagramm.pdf}
     \caption{Utl-Klassendiagramm}
     \label{fig:UML-Klassendkígrramm}
@@ -373,7 +376,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
             PasswordValidator & Prüft beim Anlegen eines neuen Benutzerkontos oder beim Ändern des Passwortes, ob das Passwort den Mindestanforderungen entspricht. \\
              \hline
             ConfirmPasswordValidator & Prüft ob die Passwortbestätigung und Passwort
-           übereinstimmen. \\
+           übereinstimmen. \\
             \hline
            LogoValidator & Validiert ob eine Datei einem gängigen Bildformat entspricht und nicht zu groß oder auch zu klein ist. \\
              \hline
@@ -392,7 +395,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
               \hline
             Java-Klasse & Beschreibung  \\
            \hline\hline
-            ConnectionPool & Verwaltet die Verbindungen zur Datenbank. \\
+            \hypertarget{ConnectionPool}{ConnectionPool} & Verwaltet die Verbindungen zur Datenbank. \\
             \hline
             ConfigReader& Zuständig  für das Einlesen der Config-Datei. \\
              \hline
@@ -409,7 +412,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
             \hline
             SystemStop & Organisiert das Herunterfahren des Systems.\\
              \hline
-            TresPassListener & OVerhindert den Zugriff von Unberechtigten aufbestimmte Seite.\\
+            \hypertarget{PhaseListener}{TresPassListener} & OVerhindert den Zugriff von Unberechtigten aufbestimmte Seite.\\
             \hline
             TokenGenerator & hier wird ein Zeichen für Emailverifizierung und Passworzurücksetzung erzeugt.\\
            \hline
@@ -427,6 +430,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 %--JSF-Dialoge-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{JSF-Facelets}
 \sectionauthor{León Liehr}
+\hypertarget{Facelets}{}
 
 \newcommand{\PUB}{jeder}
 \newcommand{\ANO}{Anon.}
@@ -1019,23 +1023,23 @@ This page provides the means to administrators to change several global settings
 \sectionauthor{Jonas Picker}
 \subsection{Technische Systemsicherheit}
 \noindent \textbf{Kommunikationsverschlüsselung:} Durch die CA-Zertifizierung des Servers wird eine TLS-Trans-portverschlüsselung bei der Kommunikation zwischen Klient und Server verwendet. Ist die Datenbank, wie im Pflichtenheft (Abschnitt 4.3  'Server') beschrieben, über SSL-VPN angebunden, ist die Kommunikation zwischen ihr und dem Server ebenfalls verschlüsselt. \\
-\textbf{Nutzerberechtigungen:} Für die Überprüfung der Zugangsberechtigungen bei jeder HTTPS-Anfrage implementiert die Klasse !!!\hyperlink{PhaseListener}{}!!! das PhaseListener-Interface, welches zu implementierende Methoden zum Ausführen von Code vor oder nach jeder Phase des JSF-Life-Cycle vorgibt. In unserem Fall wird am frühestmöglichen Punkt (vor der Restore-View-Phase) geprüft, ob der Anfragesteller auch berechtigt ist, die vorhergesehene Antwort vom Server zu erhalten. Aus Redundanzgründen verwenden wir für Seiten, auf die mehrere Nutzerrollen Zugriff haben, die gleichen Facelets. In den jeweiligen Backing-Beans wird dann, durch Zugriff auf die von JSF getrackte Nutzer-Session der Klasse !!!\hyperlink{Session}{}!!!, die Rolle des Benutzers überprüft. Für jeden Seitenbesucher werden dann nur die rollenspezifischen Knöpfe und Anzeigen gerendert (siehe Abschnitt !!!\hyperlink{Facelets}{JSF-Facelets}!!!). Durch die inklusive Rollenhierarchie lassen sich so alle Funktionalitäten der Rollen im gleichen Facelet einbinden.\\
+\textbf{Nutzerberechtigungen:} Für die Überprüfung der Zugangsberechtigungen bei jeder HTTPS-Anfrage wird das \hyperlink{PhaseListener}{PhaseListener-Interface} implementiert, welches Methoden zum Ausführen von Code vor oder nach jeder Phase des JSF-Life-Cycle vorgibt. In unserem Fall wird am frühestmöglichen Punkt (vor der Restore-View-Phase) geprüft, ob der Anfragesteller auch berechtigt ist, die vorhergesehene Antwort vom Server zu erhalten. Aus Redundanzgründen verwenden wir für Seiten, auf die mehrere Nutzerrollen Zugriff haben, die gleichen Facelets. In den jeweiligen Backing-Beans wird dann, durch Zugriff auf die von JSF getrackte Nutzer-Session der Klasse \hyperlink{Session}{UserSession}, die Rolle des Benutzers überprüft. Für jeden Seitenbesucher werden dann nur die rollenspezifischen Knöpfe und Anzeigen gerendert (siehe Abschnitt \hyperlink{Facelets}{JSF-Facelets}). Durch die inklusive Rollenhierarchie lassen sich so alle Funktionalitäten der Rollen im gleichen Facelet einbinden.\\
 \textbf{Session-Hijacking\footnote{Das Stehlen einer validen Nutzer-Session um Zugriff auf den Account und seine Berechtigungen zu erhalten}:} Um diesen Angriffsvektor zu schützen, wird der Identifikator der Nutzer-Session an kritischen Stellen (z.B. nach dem Login) manuell ausgetauscht. \\
 \textbf{Cross-Site-Scripting\footnote{Auch XSS: das Einschleusen von browserinterpretierbarem HTML-Code auf ungesicherte Teile einer Website}:} Das Escapen von HTML-Sonderzeichen wird von JSF bei allen nutzergenerierten Teilen der Anwendung unterstützt. Alle Elemente der JSF-Facelets, die nutzergenerierten In- und Output weitergeben, haben den impliziten Standartwert 'escape=true'. Da wir diesen in unserer Implementierung nie manuell auf 'false' setzen, ist XSS in dieser Applikation unmöglich. \\
-\textbf{SQL-Injection\footnote{Einschleusen von SQL-Code in Formularfelder, um Zugriff auf die Datenbank zu erhalten}:} Durch das Konsequente Verwenden der 'Prepared Statements' in unserer !!!\hyperlink{DAOs}{Datenzugriffsschicht}!!! beugen wir SQL-Injections vor. Diese JDBC-Funktionalität trennt das eigentliche SQL-Statement von den nutzergenerierten Parametern und Verhindern so das Ausführen von maliziösem SQL-Code in der Datenbank. \\
+\textbf{SQL-Injection\footnote{Einschleusen von SQL-Code in Formularfelder, um Zugriff auf die Datenbank zu erhalten}:} Durch das Konsequente Verwenden der 'Prepared Statements' in unserer \hyperlink{DAOs}{Datenzugriffsschicht} beugen wir SQL-Injections vor. Diese JDBC-Funktionalität trennt das eigentliche SQL-Statement von den nutzergenerierten Parametern und Verhindern so das Ausführen von maliziösem SQL-Code in der Datenbank. \\
 \subsection{Logging}
-Mit der Klasse !!!\hyperlink{Logger}{Logger}!!! ist unser System mit einer eigenen Log-Funktion ausgestattet. Diese dient sowohl zum Debugging während der Entwicklung, als auch zum Protokollieren der Fehler und Abläufe im laufenden System. Durch Setzten der Variable 'LOG\_CONSOLE: ' mit den Werten 'TRUE' oder 'FALSE' kann eingestellt in der Konfigurationsdatei\footnote{config.properties im Ordner /WEB-INF (siehe Installationsanleitung)} werden, ob die Meldungen auch in Echtzeit auf der Konsole ausgegeben oder nur in das Log-File geschrieben werden. Es gibt drei Log-Level, zwischen denen, durch Setzen der Variable 'LOG\_LEVEL: ' mit einem der unten aufgeführten Werte, beim Systemstart umgeschaltet werden kann. Die folgenden \hyperlink{Enum}{Log-Stufen} sind inklusiv, die Letzte schließt somit die oberen beiden mit ein. \\
+Mit der Klasse \hyperlink{Logger}{Logger} ist unser System mit einer eigenen Log-Funktion ausgestattet. Diese dient sowohl zum Debugging während der Entwicklung, als auch zum Protokollieren der Fehler und Abläufe im laufenden System. Durch Setzten der Variable 'LOG\_CONSOLE: ' mit den Werten 'TRUE' oder 'FALSE' kann eingestellt in der Konfigurationsdatei\footnote{config.properties im Ordner /WEB-INF (siehe Installationsanleitung)} werden, ob die Meldungen auch in Echtzeit auf der Konsole ausgegeben oder nur in das Log-File geschrieben werden. Es gibt drei Log-Level, zwischen denen, durch Setzen der Variable 'LOG\_LEVEL: ' mit einem der unten aufgeführten Werte, beim Systemstart umgeschaltet werden kann. Die folgenden \hyperlink{Logger}{Log-Stufen} sind inklusiv, die Letzte schließt somit die oberen beiden mit ein. \\
 \textit{'SEVERE':} Diese Einstellung des Loggers protokolliert nur schwere Fehler, die unmittelbare Konsequenzen für den Anwendungsbetrieb haben. Um ein schnelles Volllaufen des Log-Files zu vermeiden, ist dies die Standarteinstellung.\\
 \textit{'DETAILED':} Fehler und fehlgeschlagene Prozeduren, die die Integrität der Anwendung nicht gefährden, werden zusätzlich protokolliert.\\
 \textit{'DEVELOPMENT':} Hierunter fallen sowohl Protokollierungen von erfolgreichen oder seltenen Abläufen, als auch sonstige nützliche Meldungen. Da das Log-File schnell sehr groß und unübersichtlich werden könnte, empfehlen wir, diese Option nur bei Problemen zu wählen.\\
 \subsection{Selbstständige Abläufe}
-Die Klasse !!!\hyperlink{Wartungsthread}{}!!! ermöglicht dem System, selbstständig in einstellbaren Abständen Wartungsaufgaben durchzuführen. Alle unten aufgelisteten Aufgaben sind somit von der der aktuellen Systemzeit des Servers abhängig und werden darüberhinaus nur mit einer maximalen zeitlichen Unsicherheit des gewählten Intervalls durchgeführt. Die Einstellung wird beim Systemstart durch den gesetzten Wert der Variable 'SCAN\_INTERVAL: ' bestimmt. Der von uns empfohlene Standartwert repräsentiert eine Minute, sollten Sie diesen verlängern wollen tragen Sie stattdessen eine andere positive ganze Zahl ein. Der Wartungsthread vergleicht die Operationsfrist der zur Abholung markierten Exemplare mit der aktuellen Systemzeit und setzt bei Überschreitung den Verfügbarkeitsstatus wieder auf 'verfügbar'. Bei Exemplaren mit dem Status 'ausgeliehen' wird, zusätzlich zur Frist, die Mahnungsversatzzeit beachtet und bei Bedarf die Klasse !!!\hyperlink{Email}{}!!! zum Versenden einer E-Mail angestoßen. Die abgelaufenen Tokens der Benutzer-Tabelle werden ebenfalls gelöscht. Zum Versenden der E-Mails wird das SMTP-Protokoll ohne Authentifikation verwendet. Dazu muss in der Konfigurationsdatei die Variable 'MAILSERVERHOST: ' mit der Adresse des verwendeten Mail-Servers und 'MAILSERVERPORT: ' mit dessen Port (Standart ist 25) befüllt werden. Außerdem muss die E-Mail-Adresse eines stellvertretenden Absenders für die Bibliothek in die Variable 'MAILSOURCE: ' eingetragen werden.
+Die Klasse \hyperlink{Logger}{MaintananceProcesses} ermöglicht dem System, selbstständig in einstellbaren Abständen Wartungsaufgaben durchzuführen. Alle unten aufgelisteten Aufgaben sind somit von der der aktuellen Systemzeit des Servers abhängig und werden darüberhinaus nur mit einer maximalen zeitlichen Unsicherheit des gewählten Intervalls durchgeführt. Die Einstellung wird beim Systemstart durch den gesetzten Wert der Variable 'SCAN\_INTERVAL: ' bestimmt. Der von uns empfohlene Standartwert repräsentiert eine Minute, sollten Sie diesen verlängern wollen tragen Sie stattdessen eine andere positive ganze Zahl ein. Der Wartungsthread vergleicht die Operationsfrist der zur Abholung markierten Exemplare mit der aktuellen Systemzeit und setzt bei Überschreitung den Verfügbarkeitsstatus wieder auf 'verfügbar'. Bei Exemplaren mit dem Status 'ausgeliehen' wird, zusätzlich zur Frist, die Mahnungsversatzzeit beachtet und bei Bedarf die Klasse \hyperlink{Session}{MailService} zum Versenden einer E-Mail angestoßen. Die abgelaufenen Tokens der Benutzer-Tabelle werden ebenfalls gelöscht. Zum Versenden der E-Mails wird das SMTP-Protokoll ohne Authentifikation verwendet. Dazu muss in der Konfigurationsdatei die Variable 'MAILSERVERHOST: ' mit der Adresse des verwendeten Mail-Servers und 'MAILSERVERPORT: ' mit dessen Port (Standart ist 25) befüllt werden. Außerdem muss die E-Mail-Adresse eines stellvertretenden Absenders für die Bibliothek in die Variable 'MAILSOURCE: ' eingetragen werden.
 \subsection{Datenbankverbindung}
-Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird trotzdem mittels einer ShutdownHook noch das Schließen offener Datenbankverbindungen versucht. Außerdem wird durch das logische Zusammenfassen der voneinander abhängigen Datenbanktransaktionen in den Steuermethoden der !!!\hyperlink{}{DAOs}!!! sichergestellt, dass das ACID-Prinzip bestmöglich eingehalten und die Datenbank im Fehlerfall in einem konsistenten Zustand hinterlassen wird. Dies ist jedoch (z.B. bei einem Stromausfall) nicht immer möglich. Wie !!!\hyperlink{Pooling}{hier}!!! beschrieben, wird die Datenbank durch Connection Pooling geschont.
+Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird trotzdem mittels einer ShutdownHook noch das Schließen offener Datenbankverbindungen versucht. Außerdem wird durch das logische Zusammenfassen der voneinander abhängigen Datenbanktransaktionen in den Steuermethoden der \hyperlink{DAO}{DAOs} sichergestellt, dass das ACID-Prinzip bestmöglich eingehalten und die Datenbank im Fehlerfall in einem konsistenten Zustand hinterlassen wird. Dies ist jedoch (z.B. bei einem Stromausfall) nicht immer möglich. Wie \hyperlink{Pooling}{hier} beschrieben, wird die Datenbank durch Connection Pooling geschont.
 \subsection{Starten und Stoppen der Anwendung}
-\noindent \textbf{Start:} Durch Implementierung des SystemEventListener-Interface werden beim Systemstart von der Klasse!!!\hyperlink{EventListener}{}!!! alle weiteren Aktionen aus der !!!\hyperlink{Logikschicht}{Logikschicht}!!! heraus angestoßen. Die Initialisierung des !!!\hyperlink{Logger}{Loggers}!!! geschieht zuerst, danach wird die Konfigurationsdatei vom !!!\hyperref{ConfigReader}{ConfigReader}!!! eingelesen, das Log-Level und der gewählte Konsolenausgabemodus gesetzt und die Parameter für die E-Mail Funktionen der Klasse !!!\hyperlink{Email}{}!!! übergeben. Mit den restlichen Parametern wird eine !!!\hyperlink{DAOInit}{eigene Initialisierungsklasse}!!! für Prozesse der !!!\hyperlink{DAOs}{Datenzugriffsschicht}!!! aufgerufen, in der zunächst die Datenbankverbindung überprüft wird. Sollten die Verbindung fehlschlagen, wird, ähnlich zu !!!\hyperlink{Fehlersequenz}{diesem Prozess}!!!, eine Fehlermeldung ausgegeben/geloggt. Im Erfolgsfall wird dann überprüft, ob die benötigten Tabellenstrukturen bereits vorhanden sind. Falls nicht wird das manuelle Anlegen der Tabellen (Mediumsschema wird mit dem \hyperlink{Standartattributsatz}{Standartattributsatz} befüllt) über einen Konsoleninput mit 'Y' oder 'N' entschieden werden müssen. Bei existierenden Tabellen wird  nun der !!!\hyperlink{ConnectionPool}{Connection-Pool}!!! initialisiert und der !!!\hyperlink{Wartungsthread}{Wartungsthread}!!! aktiviert um den Startprozess der !!!\hyperlink{DAOs}{Datenzugriffsschicht}!!! abzuschließen. Es wird jetzt das zuletzt ausgewählte \hyperlink{Farbschemaattribut}{Farbschema} aus der Datenbank abgefragt, und als Parameter an die !!!\hyperlink{Logikschicht}{obere Schicht}!!! weitergeleitet, wo dann das ausgewählte Farbschema eingestellt wird. Danach ist das System betriebsbereit. \\
+\noindent \textbf{Start:} Durch \hypertarget{Init}{Implementierung} des SystemEventListener-Interface werden beim Systemstart alle weiteren Aktionen aus der \hyperlink{Logikschicht}{Logikschicht} heraus angestoßen. Die Initialisierung des \hyperlink{Logger}{Loggers} geschieht zuerst, danach wird die Konfigurationsdatei vom \hyperlink{Logger}{ConfigReader} eingelesen, das Log-Level und der gewählte Konsolenausgabemodus gesetzt und die Parameter für die E-Mail Funktionen der Klasse \hyperlink{Email}{MailService} übergeben. Mit den restlichen Parametern wird die Klasse \hyperlink{DAOInit}{DataLayerInitializer} für Initialisierungsprozesse der \hyperlink{DAOs}{Datenzugriffsschicht} aufgerufen, in der zunächst die Datenbankverbindung überprüft wird. Sollten die Verbindung fehlschlagen, wird, ähnlich zu \hyperlink{Fehlersequenz}{diesem Prozess}, eine Fehlermeldung ausgegeben/geloggt. Im Erfolgsfall wird dann überprüft, ob die benötigten Tabellenstrukturen bereits vorhanden sind. Falls nicht wird das manuelle Anlegen der Tabellen (Mediumsschema wird mit dem \hyperlink{Standartattributsatz}{Standartattributsatz} befüllt) über einen Konsoleninput mit 'Y' oder 'N' entschieden werden müssen. Bei existierenden Tabellen wird  nun der \hyperlink{Logger}{Connection-Pool} initialisiert und der \hyperlink{Logger}{Wartungsthread} aktiviert um den Startprozess der \hyperlink{DAOs}{Datenzugriffsschicht} abzuschließen. Es wird jetzt das zuletzt ausgewählte \hyperlink{Farbschemaattribut}{Farbschema} aus der Datenbank abgefragt, und als Parameter an die \hyperlink{Logikschicht}{obere Schicht} weitergeleitet, wo dann das ausgewählte Farbschema eingestellt wird. Danach ist das System betriebsbereit. \\
 \textbf{Stop:}
-Beim planmäßigen Herunterfahren des Systems durch das Ausschalten des Tomcat auf dem Server (z.B. via shutdown.sh) reicht die Klasse !!!\hyperlink{EventListener}{}!!! eine Nachricht an die Klasse !!!\hyperlink{DAOInit}{}!!!, von wo aus zunächst der !!!\hyperlink{Wartungsthread}{Wartungsthread}!!! kontrolliert beendet und danach die noch offenen Datenbankverbindungen über den !!!\hyperlink{ConnectionPool}{Connection-Pool}!!! geschlossen werden. Nach Durchreichen der Erfolgsmeldung nach oben, wird die Anwendung gestoppt. Nutzersessions überleben das Ausschalten des Servers nicht.
+Beim planmäßigen Herunterfahren des Systems durch das Ausschalten des Tomcat auf dem Server (z.B. via shutdown.sh) reicht die \hyperlink{Init}{Initialisierungklasse} der \hyperlink{Logikschicht}{Logikschicht} eine Nachricht an die Klasse \hyperlink{Logger}{DataLayerInitializer}, von wo aus zunächst der \hyperlink{Logger}{Wartungsthread} kontrolliert beendet und danach die noch offenen Datenbankverbindungen über den \hyperlink{ConnectionPool}{Connection-Pool} geschlossen werden. Nach Durchreichen der Erfolgsmeldung nach oben, wird die Anwendung gestoppt. Nutzersessions überleben das Ausschalten des Servers nicht.
 
 %--Datenfluss--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \newpage
@@ -1069,6 +1073,7 @@ Durch die Methode 'getValue()' des Exception-Handlers wird der Nutzer zur Fehler
 \newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
 
 \begin{figure}[h]
+	\hypertarget{Fehlersequenz}{}
     \centering
     \includegraphics[width = 50em]{Sequenzdiagramm-exception-v3}
     \caption{Interaktionen beim Buchen eines Medium-Exemplares mit fehlender Datenbankverbindung}
