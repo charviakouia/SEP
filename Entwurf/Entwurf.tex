@@ -428,10 +428,6 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 \section{JSF-Facelets}
 \sectionauthor{León Liehr}
 
-% TASK add javadocs
-% TASK update AJAX note
-% TASK mention query strings and GET/POST parameters!!
-
 \newcommand{\PUB}{jeder}
 \newcommand{\ANO}{Anon.}
 \newcommand{\USR}{Nutzer}
@@ -445,6 +441,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 }
 
 \newcommand{\Javadoc}{\paragraph*{Javadoc}}
+\newcommand{\Parameter}{\paragraph*{Parameter}}
 
 \newcommand{\BTN}{Knopf}
 \newcommand{\LNK}{Hyperlink}
@@ -453,7 +450,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 \newcommand{\DRP}{Drop-Down-Liste}
 \newcommand{\CHK}{Checkbox}
 \newcommand{\OUT}{Ausgabefeld}
-\newcommand{\LST}{Paginierte Liste}
+\newcommand{\LST}{paginierte Liste}
 
 \newenvironment{controls}
 {
@@ -472,11 +469,12 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 
 Sofern nicht anders ausgewiesen folgt jedem Eingabefeld und \PAS ein Ausgabefeld für Meldungen (genauer gesagt eine JSF-\texttt{HtmlMessage}-Komponente), insb. für von JSF-Validatoren geworfene Fehlermeldungen.
 
-% Frage: sind diese Eingabefelder für E-Mails benutzerdef. Komponenten?
-% Aufgabe schau dir das Kap zu AJAX im Buch an!!
-Aufbauend auf der Voraussetzung einer modernen JavaScript-Implementierung in dem Webbrowser des Clients (Pflichtenheft, Abschnitt 4.1) wird bei Eingabefeldern für E-Mail-Adressen (MANCHER), Signaturen (MANCHER) und Standorten (MANCHER) statt der überholten AJAX-Technologie\footnote{\url{https://xhr.spec.whatwg.org/}} die sog. Fetch API\footnote{\url{https://fetch.spec.whatwg.org/}} verwendet, um während der Eingabe Vorschläge von existierenden Einträgen einblenden zu können.
-
 Mit dem Elementtyp Eingabe wird im Folgenden JSFs \texttt{ui:insert} gemeint.
+
+Mit Parametern (einer Seite) werden in diesem Abschnitt \textit{query parameters}, Teil eines \textit{query string}s, gemeint.
+Des Weiteren wird, wenn nicht anders notiert, angenommen, dass \LNK{}s, welche zu Seiten mit Parametern führen, Parameter mit Daten tragen und dass diese Daten aus dem unmittelbaren Kontext stammen. Z.B. führt ein „\LNK{} zur Mediumsansicht“ zu der Mediumsansicht mit dem Parameter \texttt{id}, welcher einen aus dem Zusammenhang ersichtlichen Wert beinhaltet.
+
+Medienvorschauposition XXX.
 
 Zudem werden nachfolgend diese Abkürzungen und Kurzformen verwenden:
 
@@ -485,7 +483,6 @@ Zudem werden nachfolgend diese Abkürzungen und Kurzformen verwenden:
 \centering
 \begin{tabulary}{\textwidth}{RL}
 \toprule
-%\PUB & jeder \\
 \ANO  & Anonymus \\
 \USR & angemeldeter Nutzer \\
 \BIB & Bibliotheksmitarbeiter \\
@@ -496,30 +493,56 @@ Zudem werden nachfolgend diese Abkürzungen und Kurzformen verwenden:
 
 \subsection{Komponenten}
 
-\component{\LST}{PaginatedList}
+Die tatsächliche Sichtbarkeiten sind abhängig von der konkreten Instanziierung der Vorlage.
 
-% TASK attributes, values
+\component{Paginierte Liste}{PaginatedList}
+
+Namen und Anzahl der Spalten und der Inhalt der Liste sind Attribute dieser Komponente, die pro
+Instanz gesetzt werden.
 
 \begin{controls}
     \BTN & zum Blättern auf die nächste Seite & \PUB\\
     \BTN & zum Blättern auf die vorige Seite & \PUB\\
-    ?? & ?? values & \\
-    \BTN & ?? SORT SPECIFIC COLUMN (asc/desc) & \PUB\\
-    \OUT & INFO WHERE WE ARE & \PUB\\
+    \BTN & zum Sortieren einer Spalte; erneutes Klicken wechselt zwischen auf- und absteigender Sortierung; existiert pro Spalte & \PUB\\
+    \OUT & für die aktuelle Seitenzahl und Anzahl an Seiten & \PUB\\
+    \OUT & Inhalt der einer Zeile; existiert pro Eintrag (beschränkt auf Seitengröße) & \PUB\\
 \end{controls}
 
-\component{Editierbarer Text}{EditableText}
+\component{Baumansicht}{TreeView}
 
-Das Attribut der Komponente ist der Text.
-
-% QUESTION visibility as an attribute, too?? if yes, how???
+Verschachtelte Listen von Kategorien.
 
 \begin{controls}
-    \OUT & für das Textattribut & \PUB\\
-    \INP & für das Textattribut & \ADM\\
+    \OUT & für den Namen einer Kategorie; existiert pro Kategorie & \PUB\\
+    \BTN & zum Laden ausgeblendeter Kategorien; klappt evtl. eine entfernte Gruppe aus Kategorien zsm; verwendet das Backend paginierter Listen wieder & \PUB\\
+\end{controls}
+
+\component{Medienvorschau}{MediumPreview}
+
+Attribute dieser Komponente korrespondieren mit den fünf untenstehenden Begriffen in Anführungszeichen.
+Diese werden auch als Medienvorschaupositionen bezeichnet. Sie bilden eine dynamische (zur Laufzeit bestimmte) Untermenge aller Medienattribute ab, die in manchen paginierten Listen repräsentativ für ein Medium stehen.
+
+\begin{controls}
+    \OUT & für den „Titel“ & \PUB\\
+    \OUT & für das „Titelanhängsel“ & \PUB\\
+    \OUT & für den „Untertitel“ & \PUB\\
+    \OUT & für die „Beschreibung“ & abhängig\\
+    \OUT & für das „Bild“ & abhängig\\
+\end{controls}
+
+\component{Reaktives Eingabefeld}{ReactiveInputField}
+
+Eingabefeld, welches während der Eingabe durch den Nutzer mithilfe von AJAX Vorschläge anzeigt.
+
+\begin{controls}
+    \INP & & \PUB\\
+    \texttt{f:ajax} & auf Änderung im \INP wartend; Änderung zur Datenliste weitergebend & \PUB\\
+    HTML-\texttt{datalist} & enthält eine Anzahl an Vorschlägen & \PUB\\
 \end{controls}
 
 \subsection{Seitenvorlagen (Templates)}
+
+Die tatsächliche Sichtbarkeiten sind abhängig von der konkreten Instanziierung der Vorlage.
 
 \page{Einzige Seitenvorlage}{public/template}\label{template}
 
@@ -559,25 +582,69 @@ whether they can expect someone to soon enter the library and arrive at their co
     \LST & aller abzuholenden Exemplare & \BIB\\
 \end{controls}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+        \midrule
+        Exemplar & \LNK & die Signatur eines Exemplars; zur Direktausleihe & \BIB\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht & \BIB\\
+        Nutzer & \OUT & E-Mail-Adresse & Nicht-\ADM\\
+        Nutzer & \LNK & E-Mail-Adresse; zum Profil & \ADM\\
+        Zeit & \OUT & Dauer bis zum Zeitpunkt der Fristüberschreitung & \BIB\\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
+\end{table}
+
 \page{Eigene abzuholende Exemplare}{account/my-copies-ready-for-pickup}
 
 \Javadoc
 On this page a user gets to know which copies they want to pick up from the library and borrow thereafter
-and how much time they have left to do so until they exceed the deadline.
+and how much time they have left to do so until they exceed the lending period.
 
 \begin{controls}
     \LST & aller abzuholenden Exemplare & \USR\\
 \end{controls}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{27em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \midrule
+        Exemplar & \OUT & die Signatur eines Exemplars\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
+        Zeit & \OUT & Dauer bis zum Überschreiten der Abholungsfrist\\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
+\end{table}
+
 \page{Eigene ausgeliehene Exemplare}{account/my-borrowed-copies}
 
 \Javadoc
 This page informs the user which copies they borrowed from the library and how much time they still have left
-until they have to return them to not exceed the deadline.
+until they have to return them to not exceed the lending period.
 
 \begin{controls}
     \LST & aller ausgeliehenen Exemplare & \USR\\
 \end{controls}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{27em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \midrule
+        Exemplar & \OUT & die Signatur eines Exemplars\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
+        Zeit & \OUT & Dauer bis zum Überschreiten der Rückgabefrist\\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
+\end{table}
 
 \page{Anmeldemaske}{public/login}
 
@@ -589,7 +656,7 @@ login form and they get automatically redirected to their profile page.
 
 \begin{controls}
     \INP & für die E-Mail-Adresse & \ANO\\
-    \PAS & & \ANO\\
+    \PAS & für das Passwort & \ANO\\
     \BTN & zum Anmelden & \ANO\\
     \BTN & zum Passwortzurücksetzen; als \LNK dargestellt, um unauffälliger zu sein, da es eine zweitrangige Aktion ist & \ANO\\
 \end{controls}
@@ -607,18 +674,24 @@ This page declares the privacy policy of this system.
 
 \page{Direktausleihe}{staff/direct-lending}
 
+\Parameter
+Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureingabefeld.
+
 \Javadoc
 This page enables staff to lend a person most probably in front of their counter a series of copies.
-It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the relevant input fields. Analogously with the email address stored inside of their membership card.
+It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the corresp. input fields. Analogously with the email address stored inside of their membership card.
 
 \begin{controls}
-    \INP & für die E-Mail-Adresse des Ausleihenden & \BIB\\
-    \INP & für die Signatur eines auszuleihenden Exemplars; beim Laden der Seite fünfmal vorhanden. Durch das Pressen des relevanten Knopfs wird ein weiteres Feld angehängt & \BIB\\
-    \BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
+    R. \INP & für die E-Mail-Adresse des Ausleihenden & \BIB\\
+    R. \INP & für die Signatur eines auszuleihenden Exemplars; beim Laden der Seite fünfmal vorhanden & \BIB\\
+    \BTN & zum Hinzufügen eines weiteren Signatureingabefelds & \BIB\\
     \BTN & zum Ausleihen & \BIB\\
 \end{controls}
 
 \page{E-Mail-Bestätigung}{public/email-confirmation}
+
+\Parameter
+Optional \texttt{token}.
 
 \Javadoc
 Accessing this page potentially verifies the email address of a specific user. For this,
@@ -650,14 +723,14 @@ This page contains the site notice.
 
 \page{Kategorienbearbeitung}{staff/category-editor}
 
-% Task: rephrase
+\Parameter
+Entweder \texttt{id}: Kennung der zu bearbeitenden Kategorie.
+Oder \texttt{parent-id}: Kennung der Elterkategorie, unter welcher eine neue Kategorie erstellt werden soll.
+
 \Javadoc The category editor allows the creation and modification of a category.
-Generally this page is accessed from the category browser
-This page can be reached when library staff clicks on the edit button next to a category's name in the browser.
-In this case, the identifier of the category to be edited is transmitted as a parameter.
-This page can be reached when library staff clicks on the create button in the context of a category.
-In that case, the identifier of the category to be treated as the parent of the new category is transmitted
-as a parameter.
+Generally this page is accessed from the category browser:
+In case the library staff clicks on the edit button next to a category's name in the browser, the corresp. identifier will be transmitted as the Parameter \texttt{id}.
+In the other case, it's the create button in the context of a category and the parameter is \texttt{parent-id}.
 If the parameters are invalid, the user will be redirected to the error page.
 
 \begin{controls}
@@ -673,27 +746,17 @@ This page offers users to browse through all available categories mediums are pa
 It renders it possible for the consumer to discover new mediums.
 
 \begin{controls}
-    \INP & für den Suchterm der Kategoriensuche & \PUB\\
+    R. \INP & für den Suchterm der Kategoriensuche & \PUB\\
     \BTN & zum Durchführung der Suche & \PUB\\
-    Baumansicht \ref{treeview} & mancher Kategorien & \PUB\\
-    \LNK & zur Kategorienbearbeitung (Erstellung einer neuen) & \BIB\\
+    Baumansicht & mancher Kategorien & \PUB\\
+    \OUT & für den Namen der ausgewählten Kategorie & \PUB\\
+    \OUT & für die Beschreibung der ausgewählten Kategorie & \PUB\\
     \LNK & zur Kategorienbearbeitung & \BIB\\
     \BTN & zum Löschen der Kategorie; zur Elterkategorie & \BIB\\
     \LNK & zur Medienerstellung unter der aktuellen Kategorie & \BIB\\
+    \LST & aller Medien (Medienvorschauen) in der ausgewählten Kategorie; je ein \LNK zur Medienansicht & \PUB\\
+    \LNK & zur Kategorienbearbeitung (Erstellung einer neuen) & \BIB\\
 \end{controls}
-
-% TASK BEACON !!!!
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
-        \toprule
-        \midrule
-        \bottomrule
-    \end{tabular}
-    \caption{Baumansicht}
-    \label{treeview}
-\end{table}
 
 \page{Kontakt}{public/contact}
 
@@ -708,19 +771,38 @@ It renders it possible for the consumer to discover new mediums.
 \page{Leihfristverstöße}{admin/lending-period-violations}
 
 \Javadoc
-XXX
+This page displays a list of copies which haven't been returned yet together with the assoc. user who exceeded the lending period.
 
 \begin{controls}
     \LST & von Exemplaren und Nutzern & \ADM\\
 \end{controls}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{27em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \midrule
+        Exemplar & \LNK & die Signatur eines Exemplars; zur Medienrückgabe\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
+        Nutzer & \LNK & E-Mail-Adresse; zum Profil\\
+        Überschreitung & \OUT & Dauer seit dem Zeitpunkt der Fristüberschreitung\\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
+\end{table}
+
 \page{Medienerstellung}{staff/medium-creation}
 
+\Parameter
+Optional \texttt{category}: Kategorie, unter welcher das Medium erstellt werden soll. Füllt das entsprechende Feld.
+
 \Javadoc
-XXX
+This page allows staff and administrators to add new mediums.
 
 \begin{controls}
     \INP & für ein Medienattribut; existiert pro Medienattribut & \BIB\\
+    \INP & für die Kategorie & \BIB\\
     \INP & für die Rückgabefrist & \BIB\\
     \INP & für den Standort eines neuen Exemplars & \BIB\\
     \INP & für die Signatur eines neuen Exemplars & \BIB\\
@@ -729,17 +811,24 @@ XXX
 
 \page{Medienrückgabe}{staff/return}
 
+\Parameter
+Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureingabefeld.
+
 \Javadoc
-XXX
+This page enables staff to inform the system that a series of copies were returned to the library, probably right after the user left them at their counter.
+It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the corresp. input fields. Analogously with the email address stored inside of their membership card.
 
 \begin{controls}
-    \INP & für die E-Mail-Adresse des Kunden & \BIB\\
-    \INP & für die Signatur eines abzugebenden Exemplars; beim Laden der Seite fünfmal vorhanden & \BIB\\
+    R. \INP & für die E-Mail-Adresse des Kunden & \BIB\\
+    R. \INP & für die Signatur eines abzugebenden Exemplars; beim Laden der Seite fünfmal vorhanden & \BIB\\
     \BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
     \BTN & zum Abgeben & \BIB\\
 \end{controls}
 
 \page{Mediensuche}{public/media-search}
+
+\Parameter
+Optional \texttt{query}: Suchterm.
 
 \Javadoc
 This page permits users to search for mediums given some of their attributes as search criteria.
@@ -754,18 +843,24 @@ If it is not provided, nothing will be searched and the paginated list of result
     \DRP & für das Suchkriterium; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchoperator und -feld) & \PUB\\
     \INP & für den Suchterm der differenzierten Suche; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchoperator und -kriterium) & \PUB\\
     \BTN & zum Hinzufügen eines weiteren Gruppe aus Suchoperator, -kriterium und -feld & \PUB\\
-    \LST & aller Suchergebnisse; nur sichtbar, wenn schon gesucht wurde & \PUB\\
+    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht; nur sichtbar, wenn schon gesucht wurde & \PUB\\
 \end{controls}
 
 \page{Mediumsansicht}{public/medium}
 
+\Parameter
+Zwangsweise \texttt{id}: Kennung des anzuzeigenden Mediums.
+
 \Javadoc
-XXX
+This page provides information about a specific medium and their copies available in the library.
+Here, users can borrow a copy by committing themselves to pick up the copy from a library site and actually borrowing it there. To trigger the procedure, they can either click on the pick-up button next to a specific copy or on an isolated button which selects an available copy at random.
+If the parameter is missing, the user will be redirected to the medium search page.
 
 \begin{controls}
     \LNK & zurück zur Trefferliste / Mediensuche; nur sichtbar, falls der Nutzer von der Suche kommt & \PUB\\
     \OUT & für ein Medienattribut; existiert pro Medienattribut; mehrwertige Attribute durch Komma getrennt angezeigt & \ANO, \USR\\
     \INP & für ein Medienattribut; existiert pro Medienattribut bzw. pro Wert bei mehrwertigen & \BIB\\
+    \BTN & zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
     \BTN & zum Speichern der Änderungen an den Medienattributen & \BIB\\
     \BTN & zur Bindung an die Abholung des Mediums; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
     \OUT & für die Rückgabefrist; bezieht auch die nutzerbezogene Frist ein, anders als das \INP{} darunter & \USR\\
@@ -773,14 +868,10 @@ XXX
     \BTN & zum Speichern der Änderungen an der Rückgabefrist & \BIB\\
     \LNK & zum Löschen des Mediums; zur zuvor aufgerufenen Seite & \BIB\\
     Tabelle \ref{tableofcopies} & aller Exemplare & \PUB\\
-    \INP & für den Standort eines neuen Exemplars & \BIB\\
+    R. \INP & für den Standort eines neuen Exemplars & \BIB\\
     \INP & für die Signatur eines neuen Exemplars & \BIB\\
     \BTN & zum Erstellen eines Exemplars & \BIB\\
 \end{controls}
-
-% TASK param given to actions
-% TASK JSF DataTable
-% QUESTION sorting???
 
 \begin{table}[H]
     \centering
@@ -796,11 +887,12 @@ XXX
         Aktionen & \BTN & zum Speichern der Änderungen & \BIB\\
         Aktionen & \BTN & zum Löschen & \BIB\\
         Aktionen & \BTN & zum Stornieren einer Abholung & \BIB\\
-        Aktionen & \LNK & zur Direktausleihe & \BIB\\
+        Aktionen & \LNK & zur Direktausleihe; nur sichtbar, falls verfügbar & \BIB\\
+        Aktionen & \LNK & zur Medienrückgabe; nur sichtbar, falls ausgeliehen & \BIB\\
         Aktionen & \BTN & zur Bindung an die Abholung; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
         \bottomrule
     \end{tabular}
-    \caption{Tabelle aller Exemplare. Jede Zeile existiert pro Exemplar}
+    \caption{Tabelle aller Exemplare als JSF-\texttt{DataTable}. Jede Zeile existiert pro Exemplar}
     \label{tableofcopies}
 \end{table}
 
@@ -812,6 +904,7 @@ On this page, the administrator can adjust the medium schema (the set of attribu
 \begin{controls}
     \INP & für den Namen eines Attributs; existiert pro Attribut & \ADM\\
     \DRP & für den Typen eines Attributs; existiert pro Attribut & \ADM\\
+    \DRP & für die Wertigkeit (ein-, mehrwertig) eines Attributs; existiert pro Attribut & \ADM\\
     \DRP & für die Position in der Medienvorschau; existiert pro Attribut & \ADM\\
     \BTN & zum Löschen eines Attributes; existiert pro Attribut & \ADM\\
     \BTN & zum Hinzufügen eines weiteren Gruppe aus \INP{}ern und \DRP{}n & \ADM\\
@@ -819,6 +912,9 @@ On this page, the administrator can adjust the medium schema (the set of attribu
 \end{controls}
 
 \page{Nutzersuche}{admin/user-search}
+
+\Parameter
+Optional \texttt{query}: Suchterm.
 
 \Javadoc
 This page enables administrators to search for users.
@@ -829,15 +925,17 @@ If it is not provided, nothing will be searched and the paginated list of result
     \INP & für den Suchterm & \ADM\\
     \BTN & zur Durchführung der Suche & \ADM\\
     \CHK & für das Einschränken auf gesperrte Nutzer & \ADM\\
-    \LST & aller Suchergebnisse; nur sichtbar, wenn schon gesucht wurde & \ADM\\
+    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht; nur sichtbar, wenn schon gesucht wurde & \ADM\\
 \end{controls}
 
 \page{Passwortzurücksetzung}{public/password-reset}
 
-%TASK rephrase
+\Parameter
+Optional \texttt{token}.
+
 \Javadoc
 This page is reached by a user when they click on the link they received in an email.
-For the mechanisms to work, it takes a token as a query parameter.
+The account is identified through a token passed as parameter.
 After submitting the form, the user is not logged into the system yet, they are redirected to the login form.
 This secures against certain attacks.
 If the token is absent or invalid, nothing user-facing will happen: Clicking the button still means redirection to the login page.
@@ -857,7 +955,6 @@ of a user different from the logged-in one.
 It allows a user to change their personal information the system stores and it allows administrators to manage other accounts.
 
 \begin{controls}
-    % BEACON TASK BEACON \INP_OR_OUT (new component)
     \INP & für den Vornamen & \USR\\
     \INP & für den Nachnamen & \USR\\
     \PAS & für das Passwort & \USR\\
@@ -898,7 +995,7 @@ On this page an anonymous user can register themself. Additionally, it can be us
 \page{Verwaltungsseite}{admin/administration}
 
 \Javadoc
-This page provides the means to administrators to change the global settings of the application.
+This page provides the means to administrators to change several global settings of the application.
 
 \begin{controls}
     \INP & für die Rückgabefrist & \ADM\\
