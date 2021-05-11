@@ -14,6 +14,7 @@
 \usepackage{multirow}
 
 \graphicspath{ {./images/} }
+\setlength\parindent{0pt}
 
 \makeatletter
 \newcommand{\sectionauthor}[1]{
@@ -36,40 +37,144 @@ Hier wird der Entwurf des Bibliotheksmanagementsystems BiBi beschrieben. Das Dok
 \section{Systemarchitektur}
 \sectionauthor{Ivan Charviakou}
 
-\subsection{Design-Patterns: Schichtenunabhängigkeit}
 
-MVC: Als grundlegendes Design-Pattern sorgt MVC dafür, dass die Model-, Präsentations-, und Steuerungskomponente voneinander weitgehend entkoppelt sind. Dabei implementiert das JSF-Framework per Default Großteile der Präsentations- und Steuerungskomponenten, aber überlässt die Modelkomponente komplett dem Entwickler. Für die Präsentationskomponente werden nämlich vordefinierte UI-Komponente vorgesehen, während der eingebaute Faces-Servlet die Steuerungsaufgabe übernimmt. Durch selbst-definierte Tag-Libraries und Facelets lassen sich diese beiden Komponenten auch ggf. vervollständigen. \vspace{0.5em}
 
-CDI: Die im JSF-Framework eingebaute CDI-Funktionalität ermöglicht eine direkte Kommunikation zwischen abhängigen Komponenten, die durch JSF verwaltet werden. Solche Beziehungen werden dann mit entsprechenden Annotationen, wie ‚@inject‘, gekennzeichnet. In der gegebenen Anwendung trägt CDI dadurch wesentlich zur Intraschichtenkommunikation bei. \vspace{0.5em}
+\subsection{Einführung}
 
-DTOs: Ein Datentransferobjekt (DTO) enthält die Daten zu einer bestimmten Entität oder zu einem zusammenhängenden Ausschnitt aus verschiedenen Entitäten. In der gegebenen Anwendung entspricht das einem Medium, Exemplar, Nutzer, usw. Durch Übergabe von solchen Objekten an verschiedenen Modelschichten, können sie die Daten unabhängig voneinander anpassen oder evaluieren. Als Beispiel prüft im Model die Logikschicht das Format eines E-Mails, während die Sicherheitsschicht SQL-Injection-Attacken in der Eingabe ausschließt. \vspace{0.5em}
+Die vorgestellte Bibliotheksanwendung wird in Java mittels einer MVC-Architektur unter Verwendung eines 2-Schichten Modells realisiert. Dabei wird JSF als grundlegendes Web-Framework verwendet. Der Vorteil dieser Modellierung ist die Einfachheit der Implementierung und die Modularität der Datenschicht. Aufgrund der wenig umfangreichen Businesslogik bietet aber eine separate Schicht im Gegensatz zum 2-Schichten Modell bei deutlichem Mehraufwand kaum zusätzliche Modularität. \vspace{0.5em}
 
-DAOs und ihre Fassaden: Zu jedem DTO existiert auch ein Datenzugriffsobjekt (DAO), das bei einer Übergabe eines DTOs die enthaltenen Daten speichert bzw. lädt. Damit mehrere Modelschichten diese Prozeduren eigens erweitern können, verwenden die DTOs in der gegebenen Anwendung den Fassade-Muster. Jede betroffene Schicht verwendet zur Erweiterung eines DAOs nämlich die gleiche Schnittstelle und ruft die Schnittstelle der nächsten Schicht auf. Als Beispiel gibt die Logikschicht ein Passwort im Klartext an und übergibt es an eine DAO-Instanz in der Sicherheitsschicht mittels eines DTOs. Diese Schicht berechnet dann aus dem Klartext einen Hash-Wert und leitet diesen Wert an die DAO-Instanz in der Datenzugriffsschicht weiter. \vspace{0.5em}
+Genauer – Das Model besteht aus den folgenden Schichten:
+\begin{itemize}
+	\item \textbf{Logikschicht:} Die Aufgabe dieser Schicht ist es, die Benutzerinteraktion, die Navigation, und die hierzu erforderliche Funktionalitäten zu kapseln.
+	\item \textbf{Datenschicht:} Da manche Funktionalitäten aus der Logik eine Datenpersistenz voraussetzen, befasst sich diese Schicht mit dem Speichern und Laden von Daten aus einem oder mehreren Quellen.
+\end{itemize}
 
-Event-Listener: Dadurch, dass JSF verschiedene Arten von Listenern bereitstellt, ist eine stärkere Entkopplung von Schichten möglich. Während Action-, Value-Change-, und Phasenlistener hauptsächlich eine Logikschicht ansprechen, kann beispielweise der eingebaute System-Event-Listener für die unabhängige Initialisierung der Modelschichten sorgen.
 
-\subsection{Design-Patterns: Fehlerbehandlung}
 
-Allgemeiner Testmodus: Es wird ein Testmodus eingeführt, der beim Applikationsstart als Parameter angegeben wird. \vspace{0.5em}
+\subsection{Architekturdiagramm}
 
-Exceptions: Jede Schicht in der gegebenen Anwendung definiert eigene Checked-Exceptions, die ggf. durch die Schichten hochgeworfen werden. Dabei wird eine solche Exception in jeder Zwischenschicht gefangen in eine eigens definierte Exception umgewandelt bis eine Schicht sie behandelt. Im Gegensatz werden Unchecked-Exceptions nicht behandelt und führen zum Absturz der Anwendung. Während für eine Präsentations- und Logikschicht oft eine GUI-Anzeige als geeignete Behandlung gilt, ist es für jede Schichten anders. Falls es beispielsweise durch eine Checked-Exception in der Datenzugriffsschicht festgestellt wird, dass die verwendete Datenbank nicht mehr erreichbar ist, wird stattdessen dynamisch auf lokale Applikationsdaten zugegriffen. Unter den DAOs in der Datenzugriffsschicht wird somit der Strategy-Muster angewendet. \vspace{0.5em}
-
-Logging: Als Logging-Framework wird der im JDK vordefinierte Framework verwendet. Diese Funktionalität ist nur im Testmodus aktiv und es wird zu einer lokalen Log-Datei geschrieben. \vspace{0.5em}
-
-Validatoren: Das JSF-Framework gibt dem Entwickler die Möglichkeit, Daten auf Korrektheit zu prüfen, bevor sie dem Logikschicht bereitgestellt wird. Da aber komplexere semantische Fehler oft einen größeren Kontext und eine komplexere Behandlung benötigen, wird der Einsatz von diesen Validatoren hauptsächlich auf syntaktische Formattierfehler beschränkt.
-
-\subsection{Design-Patterns: Konkrete Features}
-
-Connection-Pool: Unter einem Pool bezeichnet man eine Sammlung an Objekten, die angefragt, zurückgegeben, und wiederverwendet werden. Dies vermeidet insbesondere die Erzeugung von solchen Objekten, was in Bezug auf Datenbankverbindungen als aufwendig gilt. Da es trivialerweise nur einen solchen Container geben sollte, wird ein Pool auch als Singleton verwendet. Für die gegebene Anwendung wird die HikariCP Implementierung einer solchen Connection-Pool genommen. Beim Testmodus wird die Anzahl an Verbindungen auf eins gesetzt. \vspace{0.5em}
-
-Wartungsthread: In der gegebenen Anwendung kann es vorkommen, dass persistierte Daten oder Daten im Cache mit der Zeit ungültig werden. Du solchen Daten gehört beispielsweise die Gültigkeit von einem Passwortrücksetzungslink. Mit einem Wartungsprozess werden solche Inkonsistenzen erkannt und behoben.
-
-\subsection{Modeldiagramm}
+Das folgende Diagramm stellt die MVC-Architektur mit den Beziehungen zwischen den einzelnen Komponenten anhand der gegebenen Applikation dar. Dabei folgt die Komponentenaufteilung grob der Paketstruktur der Applikation. Zudem entsprechen die Farben, die die Komponente im Diagramm besitzen, den Farben im nachfolgenden Klassendiagramm.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width = 50em]{Modeldiagramm}
+	\includegraphics[width = 30em]{Modeldiagramm}
 \end{figure}
+
+
+
+\subsection{Paketstruktur}
+
+Die verwendeten Java-Paketen werden im Folgenden aufgelistet und beschrieben:
+\begin{itemize}
+	\item \textbf{dedede.model.logic:} \hypertarget{Logikschicht}{Dieses Paket} bildet die gesamte Funktionalität der Logikschicht ab.
+		\begin{itemize}
+			\item \textbf{dedede.model.logic.managedbeans:} Dieses Paket enthält alle von der JSF-Applikation verwendeten Managed-Beans.
+				Das sind unter anderem Backing-Beans, die von den Facelets referenziert werden, und jegliche Scoped-Beans, die diesen Backing-Beans zusätzliche Funktionalität bieten.
+			\item \textbf{dedede.model.logic.validators:} Dieses Paket enthält alle von der JSF-Applikation für die Überprüfung der Benutzereingabe verwendeten Validatoren.
+			\item \textbf{dedede.model.logic.converters:} Dieses Paket enthält alle von der JSF-Applikation verwendeten Converters.
+			\item \textbf{dedede.model.logic.exceptions:} Dieses Paket definiert alle applikations-spezifische Exceptions, die von den Klassen aus der Logikschicht geworfen werden.
+				Insbesondere sind das checked und unchecked Exceptions, die nur in der Logikschicht eine kontextuelle Bedeutung tragen.
+			\item \textbf{dedede.model.logic.util:} Dieses Paket kapselt alle Funktionalitäten, von der die Funktionsweise der Logikschicht abhängt, aber auch über die direkte Benutzerinteraktion hinausgehen.
+				Das sind unter andrem die E-Mail-Versendungsfunktionalität und die SystemEventListener-Implementierung, die für den Logikschicht-gesteuerten Systemstart und -stopp zuständig ist.
+		\end{itemize}
+	\item \textbf{dedede.model.daaaccess:} \hypertarget{DAOs}{Dieses Paket} bildet die gesamte Funktionalität der Datenschicht ab.
+		\begin{itemize}
+			\item \textbf{dedede.model.dataaccess.daos:} Dieses Paket enthält alle von der Applikation verwendeten Datenzugriffsobjekten (DAOs).
+			\item \textbf{dedede.model.dataaccess.exceptions:} Dieses Paket definiert alle applikations-spezifische Exceptions, die von den Klassen aus der Datenschicht geworfen werden.
+				Insbesondere sind das checked und unchecked Exceptions, die nur in der Datenschicht eine kontextuelle Bedeutung tragen.
+			\item \textbf{dedede.model.dataaccess.util:} Dieses Paket kapselt alle Funktionalitäten, von der die Funktionsweise der Datenschicht abhängt.
+				Dazu zählen unter anderem das Connection-Pool, das für die Datenbankverbindung notwendig ist, und der Wartungsthread, der die Integrität und Gültigkeit der persistierten Daten überwacht.
+		\end{itemize}
+	\item \textbf{dedede.model.data:} Dieses Paket stellt dem Applikationsmodell schichtenübergreifende Datenkonstruktionen bereit.
+		\begin{itemize}
+			\item \textbf{dedede.model.data.dtos:} Dieses Paket enthält alle von der Applikation verwendeten Datentransferobjekten (DTOs).
+		\end{itemize}
+	\item \textbf{dedede.model.util:} In diesem Paket sind schichtenübergreifende Funktionalitäten und Einstellungen zu finden.
+		\begin{itemize}
+			\item \textbf{dedede.model.util.logger:} Dieses Paket beinhaltet eine Implementierung eines Loggers und alle hierzu erforderlichen Einstellungen. Dabei ist dieser Logger aus allen Schichten und Klassen zugreifbar.
+		\end{itemize}
+\end{itemize}
+
+
+\subsection{Design-Patterns}
+
+\paragraph{Dependency-Injection:}
+In JSF sorgt dieses Pattern dafür, dass eine Managed-Bean-Instanz einer Klasse automatisch bei der Instanziierung zur Verfügung gestellt wird. Dies unterscheidet sich von dem einfachen Anliegen eines Objekts dadurch, dass ein Managed-Bean mit einem größeren, Request-übergreifenden Scope wiederverwendet werden kann. In der gegebenen Anwendung wird dieses Pattern verwendet, um mit Hilfe von Scoped-Beans unter anderem den Applikations- und Session-Zustand zu modellieren. Als Beispiel wird in dem Session-Bean die Rolle eines Nutzers gespeichert, die bei der Nutzeranmeldung gesetzt wird. Durch Dependency-Injection bekommt das Backing-Bean der Medienansicht Zugriff auf diese Rolle, um Rollen-spezifische Funktionalitäten des Facelets anzuzeigen.
+
+\paragraph{Factory-Pattern:}
+Dieses Pattern erlaubt es, Objekte unabhängig von einer bestimmten Implementierung oder Einstellung zu erzeugen. Somit kann eine Implementierung dynamisch gewählt und leichter angepasst werden.
+Um einen globalen Exception-Handler in JSF zu definieren, muss man als Beispiel zuerst den vorgegebenen Exception-Handler-Factory erweitern und diesen in den JSF-Konfigurationen registrieren.
+Dieses Konstrukt erlaubt es, eigene Fehlerbehandlungsprozeduren als Wrapper-Klassen zu definieren, aus denen bei der Konstruktion eines Exception-Handlers ausgewählt wird.
+Die einzige Funktionalität, die der globale Exception-Handler in der gegebenen Anwendung umsetzt, ist die Weiterleitung des Nutzers nur auf eine Fehlerseite. Trotzdem lässt sich mithilfe dieses Patterns weitere Funktionalitäten definieren.
+
+\paragraph{Singleton-Pattern:}
+Das Singleton-Pattern sorgt dafür, dass ein Objekt im Lebenszyklus der Applikation nur einmal instanziiert wird. Ein wichtiger Vorteil eines Singletons ist die einfache Koordination von bestimmten Operationen.
+In der gegebenen Applikation ist das Connection-Pool als Singleton realisiert. Dadurch wird unter anderem ein koordiniertes Herunterfahren aller Connections im System ermöglicht.
+
+\paragraph{Object-Queuing:}
+\hypertarget{Pooling}{Dieses Pattern} dient dazu, die Erzeugung von bestimmten Objekten zu beschränken und diese durch Vergabe und Rückgabe wiederverwendbar zu machen. Dies wird häufig in Fällen eingesetzt, in denen die Erzeugung von den Objekten als aufwendig gilt.
+Durch Anwendung dieses Patterns werden die Connections aus dem Connection-Pool in ihrer Anzahl beschränkt, anderen Komponenten zur Verfügung gestellt, und anschließend an den Pool zurückgegeben.
+
+\paragraph{Converter:}
+Ein JSF-Converter hat die Aufgabe, für Objekte eine String-Darstellung zu berechnen, und für eine String-Darstellung ein Objekt. Dies wird in JSF verwendet, um Objekte in der View besser darstellbar oder auswählbar zu machen.
+Beispielsweise sind für sämtliche Auswahllisten, die intern als Enum-Typen kodiert werden, Converter nötig. So werden unter anderem Nutzerrollen und Attributtypen kodiert.
+
+\paragraph{Data Transfer Objects:}
+Dieses Konstrukt kapselt zusammenhängende Daten zu einer oder mehreren Entitäten mit Hilfe von Gettern und Settern. Dabei enthält eine DTO keine Logik und wird als POJO implementiert.
+Zudem werden DTO-Instanzen durch alle Modelschichten durchgereicht und erfüllen in jeder Schicht einen eigenen Zweck.
+In der Datenschicht werden DTOs an DAOs übergeben und verwendet, um persistente Entity-Instanzen im Datenbestand zu aktualisieren, erstellen, oder löschen. DAOs dürfen auch DTOs erzeugen und befüllen.
+In der Logikschicht werden DTOs zum einen aus der Datenschicht geholt, um persistierte Daten in der View anzuzeigen. Zum anderen werden sie in der Logikschicht durch Post-Construct-Methoden erzeugt, um von der View befüllt zu werden.
+
+\paragraph{Data Access Objects:}
+Ein DAO wird verwendet, um Daten zu einer oder mehreren Entitäten mit Hilfe eines DTOs aus dem persistenten Datenbestand zu laden, löschen, aktualisieren, oder einzufügen.
+Dabei sind komplexere Methodenformulierungen möglich und die verwendete Art von Datenpersistenz bleibt für die Logikschicht transparent.
+Die DAOs in der gegebenen Anwendung unterstützen Transaktionsmanagement dadurch, dass öffentliche DAO-Steuermethoden package-private Methoden von anderen DAOs aufrufen dürfen.
+Da die Implementierung der DAOs auf SQL ausgerichtet ist, werden Connection-Objekte durch diese package-private Methoden übergeben. Folglich sind die DAOs als statische Klassen realisiert.
+
+\paragraph{Observer-Pattern:}
+Dieses Pattern trennt die Rolle eines Observers und die eines Subjekts. Hierbei muss ein Observer dem Subjekt zugewiesen werden, um über Änderungen benachrichtigt zu werden.
+Dadurch muss im Subjekt nicht fest-kodiert werden, wie viele Observer referenziert werden und welchen Typ sie besitzen.
+In JSF liegt dieses Pattern einer Implementierung von einem Event- und Phasen-Listener zugrunde. Diese Listener werden nämlich als Observers verwendet, die auf bestimmte Events reagieren.
+
+
+
+\subsection{Fehlerbehandlung}
+
+\paragraph{Validatoren:}
+Das in JSF eingebaute Validatoren-Konstrukt dient als erster Schutz gegen fehlerhafte Nutzereingaben.
+In einem Validator wird eine Eingabe aus der View auf Korrektheit geprüft und im Fehlerfall eine Validator-Exception geworfen, die in der View als Folge eine Fehlermeldung erzeugt.
+Als Beispiel von einem Validator aus der gegebenen Applikation dient der E-Mail-Validator. Bevor das System bei einer Registrierung eine E-Mail akzeptiert, wird nämlich überprüft, ob sie zu einem regulären Ausdruck passt.
+
+\paragraph{Phasen-Listener:}
+Um unberechtigten Zugriff auf View-Ressourcen und Funktionalitäten zu vermeiden, werden mit Hilfe eines Phasen-Listeners die Nutzerberechtigungen geprüft.
+Hierbei wird das Interface ‘PhaseListener‘ von JSF vorgegeben, deren Implementierungen lassen sich in der JSF-Konfiguration registrieren.
+Falls die Nutzerberechtigungen für den angeforderten Zugriff nicht ausreichend sind, wird der Nutzer auf eine Fehlerseite weitergeleitet.
+Der gleiche Mechanismus wird auch dazu verwendet, Tokens für eine Passwortrücksetzung oder E-Mail-Verifizierung zu registrieren oder entfernen.
+
+\paragraph{Logging:}
+Ein wichtiger Aspekt der Fehlererkennung in der gegebenen Applikation ist das Logging-Framework. Durch einen Logger ist es möglich, den Ablauf der Anwendung und dabei entstehende Ereignisse in einer Log-Datei zu dokumentieren.
+Der in der Applikation verwendete Logger definiert die Levels ‚SEVERE‘, ‚DETAILED‘ und ‚DEVELOPMENT‘ für Log-Einträge.
+Da sowohl die Logik- als auch die Datenschicht den gleichen Logger verwendet, wird er in der gegebenen Applikation als schichtenübergreifendes Singleton implementiert.
+
+\paragraph{Exception-Handling:}
+Für jede Modellschicht werden eigene Checked-Exceptions definiert und verwendet. Die Behandlung oder ggf. das Weiterwerfen von diesen Exceptions geschieht in ‚try-catch‘-Blocken im aufrufenden Code.
+Checked-Exceptions, die aus einer unteren Schicht stammen, können ebenfalls in ‚try-catch‘-Blocken in der oberen Schicht gefangen werden.
+Um aber die Unabhängigkeit der Schichten zu unterstützen, wird stattdessen eine andere, schichten-spezifische Exception erzeugt und weitergeworfen.
+Für die Behandlung von sämtlichen nicht-gefangenen Exceptions wird in der Applikation ein eigener globaler Exception-Handler vorgesehen, der den Nutzer auf eine Fehlerseite weiterleitet und die entsprechenden Details zu dieser Exception anzeigt.
+Das sind unter anderem der Name, die Nachricht, und der Stack-Trace.
+
+
+
+\subsection{Systemvorgänge}
+
+\paragraph{Systemstart und Shutdown:}
+Obwohl jede Modelschicht hierzu ihre eigenen Klassen und Prozeduren definiert, wird sowohl ein Systemstart als auch ein Shutdown durch die Logikschicht angestoßen.
+Dies erfolgt durch die Implementierung und Registrierung des ‚SystemEventListeners‘-Interfaces, die aus der Logikschicht die entsprechenden statischen Methoden in der Logikschicht aufruft.
+
+\paragraph{Unerwartetes Shutdown:}
+Die Ausführung von Shutdownfunktionen beim unerwarteten Beenden der JVM, wie das Schließen von Datenbankverbindungen und Connection-Objekte, wird mit Hilfe einer Shutdown-Hooks realisiert.
+
+
 
 %--Klassendiagramm---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -87,50 +192,58 @@ Alle Beans, die DTOs referenzieren, haben auch entsprechende Setter- und Getter-
 Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 \subsection{UML-Klassendigramm}
 
+\begin{figure}[H]
+\hypertarget{Session}{}
+    \includegraphics[scale=0.12]{UMLBibi.pdf}
+    \caption{UML-Klassendiagramm}
+    \label{fig:UML-Klassendkígrramm}
+\end{figure}
 
+\subsection{Paketdiagramm}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Paketdiagramm.pdf}
+    \caption{Paketdiagramm}
+    \label{fig:UML-Paketdkígrramm}
+\end{figure}
 
-    \begin{figure}
-        \includegraphics[scale=0.12]{UMLBibi.pdf}
-        \caption{UML-Klassendiagramm}
-        \label{fig:UML-Klassendkígrramm}
-    \end{figure}
-    
 \subsection{Verwendete Java-Klassen}
-    
-    
-    \begin{figure}
-        \includegraphics[scale=0.17]{Beansdiagramm.pdf}
-        \caption{Beans-Klassendiagramm}
-        \label{fig:UML-Klassendkígrramm}
-    \end{figure}
-    
-    
-     \begin{figure}
-        \includegraphics[scale=0.4]{Daodiagramm.pdf}
-        \caption{DAO-Klassendiagramm}
-        \label{fig:UML-Klassendkígrramm}
-    \end{figure}
-    
-    \begin{figure}
-        \includegraphics[scale=0.4]{Dtodiagramm.pdf}
-        \caption{DTO-Klassendiagramm}
-        \label{fig:UML-Klassendkígrramm}
-    \end{figure}
-    
-    
-    \begin{figure}
-        \includegraphics[scale=0.4]{Validatorendiagramm.pdf}
-        \caption{Validatoren-Klassendiagramm}
-        \label{fig:UML-Klassendkígrramm}
-    \end{figure}
-    
-    \begin{figure}
-        \includegraphics[scale=0.3]{Utildiagramm.pdf}
-        \caption{Utl-Klassendiagramm}
-        \label{fig:UML-Klassendkígrramm}
-    \end{figure}
-    
+
+\begin{figure}[H]
+    \includegraphics[scale=0.17]{Beansdiagramm.pdf}
+    \caption{Beans-Klassendiagramm}
+    \label{fig:UML-Klassendkígrramm}
+\end{figure}
+
+
+    \begin{figure}[H]
+	\hypertarget{DAO}{}
+    \includegraphics[scale=0.4]{Daodiagramm.pdf}
+    \caption{DAO-Klassendiagramm}
+    \label{fig:UML-Klassendkígrramm}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[scale=0.4]{Dtodiagramm.pdf}
+    \caption{DTO-Klassendiagramm}
+    \label{fig:UML-Klassendkígrramm}
+\end{figure}
+
+
+\begin{figure}[H]
+    \includegraphics[scale=0.4]{Validatorendiagramm.pdf}
+    \caption{Validatoren-Klassendiagramm}
+    \label{fig:UML-Klassendkígrramm}
+\end{figure}
+
+\begin{figure}[H]
+\hypertarget{Logger}{}
+    \includegraphics[scale=0.3]{Utildiagramm.pdf}
+    \caption{Utl-Klassendiagramm}
+    \label{fig:UML-Klassendkígrramm}
+\end{figure}
+
  \begin{center}
     \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
@@ -191,6 +304,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
         
        
 
+
 \begin{center}
     \begin{table}
         \begin{tabular} { |p{3,5cm}|p{7,5cm}| } 
@@ -222,7 +336,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
             \hline
             SearchOperator & Aufzählung erlaubt Suchkriterien zu kombinieren. \\
             \hline
-            
+
         \end{tabular}
         \end{table}
         \end{center}
@@ -264,7 +378,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
             PasswordValidator & Prüft beim Anlegen eines neuen Benutzerkontos oder beim Ändern des Passwortes, ob das Passwort den Mindestanforderungen entspricht. \\
              \hline
             ConfirmPasswordValidator & Prüft ob die Passwortbestätigung und Passwort
-           übereinstimmen. \\
+           übereinstimmen. \\
             \hline
            LogoValidator & Validiert ob eine Datei einem gängigen Bildformat entspricht und nicht zu groß oder auch zu klein ist. \\
              \hline
@@ -283,13 +397,13 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
               \hline
             Java-Klasse & Beschreibung  \\
            \hline\hline
-            ConnectionPool & Verwaltet die Verbindungen zur Datenbank. \\
+            \hypertarget{ConnectionPool}{ConnectionPool} & Verwaltet die Verbindungen zur Datenbank. \\
             \hline
             ConfigReader& Zuständig  für das Einlesen der Config-Datei. \\
              \hline
             ResourceBundleHelper & Organisiert die Verwendung von Standardtexten in
             der richtigen Sprache.\\
-            
+
             \hline ResourceBundleHelperNotFoundException & Wird geworfen der ResourceBundleHelper nicht existiert. \\
              \hline
             DataAcesesException & Wird geworfen,  wenn es keine Verbindung mit Datenbank gibt. \\
@@ -300,7 +414,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
             \hline
             SystemStop & Organisiert das Herunterfahren des Systems.\\
              \hline
-            TresPassListener & OVerhindert den Zugriff von Unberechtigten aufbestimmte Seite.\\
+            \hypertarget{PhaseListener}{TresPassListener} & OVerhindert den Zugriff von Unberechtigten aufbestimmte Seite.\\
             \hline
             TokenGenerator & hier wird ein Zeichen für Emailverifizierung und Passworzurücksetzung erzeugt.\\
            \hline
@@ -315,28 +429,27 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 
 
 
+
+
 %--JSF-Dialoge-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{JSF-Facelets}
 \sectionauthor{León Liehr}
-
-% TASK add javadocs
-% TASK update AJAX note
-% TASK mention query strings and GET/POST parameters!!
+\hypertarget{Facelets}{}
 
 \newcommand{\PUB}{jeder}
-\newcommand{\ANO}{abgem. Nutzer}
-\newcommand{\USR}{angem. Nutzer}
+\newcommand{\ANO}{Anon.}
+\newcommand{\USR}{Nutzer}
 \newcommand{\BIB}{Mitarbeiter}
-\newcommand{\ADM}{Administrator}
+\newcommand{\ADM}{Admin.}
 
 \newcommand{\component}[2]{\subsubsection{#1 (\texttt{#2})}}
-%\newcommand{\page}[2]{\subsubsection{#1, \texttt{#2.xhtml}}}
 \newcommand{\page}[2]{
     \subsubsection{#1}
     \paragraph*{Dateipfad} \texttt{#2.xhtml}
 }
 
 \newcommand{\Javadoc}{\paragraph*{Javadoc}}
+\newcommand{\Parameter}{\paragraph*{Parameter}}
 
 \newcommand{\BTN}{Knopf}
 \newcommand{\LNK}{Hyperlink}
@@ -345,7 +458,7 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 \newcommand{\DRP}{Drop-Down-Liste}
 \newcommand{\CHK}{Checkbox}
 \newcommand{\OUT}{Ausgabefeld}
-\newcommand{\LST}{Paginierte Liste}
+\newcommand{\LST}{paginierte Liste}
 
 \newenvironment{controls}
 {
@@ -364,11 +477,10 @@ Jedes Paket hat die selbe Farbe, die ihre Klassen haben.
 
 Sofern nicht anders ausgewiesen folgt jedem Eingabefeld und \PAS ein Ausgabefeld für Meldungen (genauer gesagt eine JSF-\texttt{HtmlMessage}-Komponente), insb. für von JSF-Validatoren geworfene Fehlermeldungen.
 
-% Frage: sind diese Eingabefelder für E-Mails benutzerdef. Komponenten?
-% Aufgabe schau dir das Kap zu AJAX im Buch an!!
-Aufbauend auf der Voraussetzung einer modernen JavaScript-Implementierung in dem Webbrowser des Clients (Pflichtenheft, Abschnitt 4.1) wird bei Eingabefeldern für E-Mail-Adressen (MANCHER), Signaturen (MANCHER) und Standorten (MANCHER) statt der überholten AJAX-Technologie\footnote{\url{https://xhr.spec.whatwg.org/}} die sog. Fetch API\footnote{\url{https://fetch.spec.whatwg.org/}} verwendet, um während der Eingabe Vorschläge von existierenden Einträgen einblenden zu können.
-
 Mit dem Elementtyp Eingabe wird im Folgenden JSFs \texttt{ui:insert} gemeint.
+
+Mit Parametern (einer Seite) werden in diesem Abschnitt \textit{query parameters}, Teil eines \textit{query string}s, gemeint.
+Des Weiteren wird, wenn nicht anders notiert, angenommen, dass \LNK{}s, welche zu Seiten mit Parametern führen, Parameter mit Daten tragen und dass diese Daten aus dem unmittelbaren Kontext stammen. Z.B. führt ein „\LNK{} zur Mediumsansicht“ zu der Mediumsansicht mit dem Parameter \texttt{id}, welcher einen aus dem Zusammenhang ersichtlichen Wert beinhaltet.
 
 Zudem werden nachfolgend diese Abkürzungen und Kurzformen verwenden:
 
@@ -377,41 +489,66 @@ Zudem werden nachfolgend diese Abkürzungen und Kurzformen verwenden:
 \centering
 \begin{tabulary}{\textwidth}{RL}
 \toprule
-%\PUB & jeder \\
-\ANO  & abgemeldeter Nutzer \\
+\ANO  & Anonymus \\
 \USR & angemeldeter Nutzer \\
 \BIB & Bibliotheksmitarbeiter \\
-%\ADM & Administrator \\
+\ADM & Administrator \\
 \bottomrule
 \end{tabulary}
 \end{table}
 
 \subsection{Komponenten}
 
-%\subsection{Seitenvorlage}
+Die tatsächliche Sichtbarkeiten sind abhängig von der konkreten Instanziierung der Vorlage.
 
-\component{\LST}{PaginatedList}
+\component{Paginierte Liste}{PaginatedList}
 
-% TASK attributes, values
+Namen und Anzahl der Spalten und der Inhalt der Liste sind Attribute dieser Komponente, die pro
+Instanz gesetzt werden.
 
 \begin{controls}
-    \BTN & zum Blättern auf die nächste Seite & \USR\\
-    \BTN & zum Blättern auf die vorige Seite & \USR\\
-    ?? & ?? values & ??\\
+    \BTN & zum Blättern auf die nächste Seite & \PUB\\
+    \BTN & zum Blättern auf die vorige Seite & \PUB\\
+    \BTN & zum Sortieren einer Spalte; erneutes Klicken wechselt zwischen auf- und absteigender Sortierung; existiert pro Spalte & \PUB\\
+    \OUT & für die aktuelle Seitenzahl und Anzahl an Seiten & \PUB\\
+    \OUT & Inhalt der einer Zeile; existiert pro Eintrag (beschränkt auf Seitengröße) & \PUB\\
 \end{controls}
 
-\component{Editierbarer Text}{EditableText}
+\component{Baumansicht}{TreeView}
 
-Das Attribut der Komponente ist der Text.
-
-% QUESTION visibility as an attribute, too?? if yes, how???
+Verschachtelte Listen von Kategorien.
 
 \begin{controls}
-    \OUT & für das Textattribut & \PUB\\
-    \INP & für das Textattribut & \ADM\\
+    \OUT & für den Namen einer Kategorie; existiert pro Kategorie & \PUB\\
+    \BTN & zum Laden ausgeblendeter Kategorien; klappt evtl. eine entfernte Gruppe aus Kategorien zsm; verwendet das Backend paginierter Listen wieder & \PUB\\
+\end{controls}
+
+\component{Medienvorschau}{MediumPreview}
+
+Attribute dieser Komponente korrespondieren mit den fünf untenstehenden Begriffen in Anführungszeichen.
+Diese werden auch als Medienvorschaupositionen bezeichnet. Sie bilden eine dynamische (zur Laufzeit bestimmte) Untermenge aller Medienattribute ab, die in manchen paginierten Listen repräsentativ für ein Medium stehen.
+
+\begin{controls}
+    \OUT & für den „Titel“ & \PUB\\
+    \OUT & für das „Titelanhängsel“ & \PUB\\
+    \OUT & für den „Untertitel“ & \PUB\\
+    \OUT & für die „Beschreibung“ & abhängig\\
+    \OUT & für das „Bild“ & abhängig\\
+\end{controls}
+
+\component{Reaktives Eingabefeld}{ReactiveInputField}
+
+Eingabefeld, welches während der Eingabe durch den Nutzer mithilfe von AJAX Vorschläge anzeigt.
+
+\begin{controls}
+    \INP & & \PUB\\
+    \texttt{f:ajax} & auf Änderung im \INP wartend; Änderung zur Datenliste weitergebend & \PUB\\
+    HTML-\texttt{datalist} & enthält eine Anzahl an Vorschlägen & \PUB\\
 \end{controls}
 
 \subsection{Seitenvorlagen (Templates)}
+
+Die tatsächliche Sichtbarkeiten sind abhängig von der konkreten Instanziierung der Vorlage.
 
 \page{Einzige Seitenvorlage}{public/template}\label{template}
 
@@ -428,6 +565,7 @@ Das Attribut der Komponente ist der Text.
     \LNK & zu den abzuholenden Exemplaren & \BIB\\
     \LNK & zu der Medienrückgabe & \BIB\\
     \LNK & zu der Direktausleihe & \BIB\\
+    \LNK & zu der Medienerstellung & \BIB\\
     \LNK & zu der Verwaltung & \ADM\\
     \OUT & für globale Meldungen (JSFs \texttt{HtmlMessages}) & \PUB\\
     \LNK & zur Datenschutzerklärung & \PUB\\
@@ -450,25 +588,69 @@ whether they can expect someone to soon enter the library and arrive at their co
     \LST & aller abzuholenden Exemplare & \BIB\\
 \end{controls}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+        \midrule
+        Exemplar & \LNK & die Signatur eines Exemplars; zur Direktausleihe & \BIB\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht & \BIB\\
+        Nutzer & \OUT & E-Mail-Adresse & Nicht-\ADM\\
+        Nutzer & \LNK & E-Mail-Adresse; zum Profil & \ADM\\
+        Zeit & \OUT & Dauer bis zum Zeitpunkt der Fristüberschreitung & \BIB\\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
+\end{table}
+
 \page{Eigene abzuholende Exemplare}{account/my-copies-ready-for-pickup}
 
 \Javadoc
 On this page a user gets to know which copies they want to pick up from the library and borrow thereafter
-and how much time they have left to do so until they exceed the deadline.
+and how much time they have left to do so until they exceed the lending period.
 
 \begin{controls}
     \LST & aller abzuholenden Exemplare & \USR\\
 \end{controls}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{27em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \midrule
+        Exemplar & \OUT & die Signatur eines Exemplars\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
+        Zeit & \OUT & Dauer bis zum Überschreiten der Abholungsfrist\\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
+\end{table}
+
 \page{Eigene ausgeliehene Exemplare}{account/my-borrowed-copies}
 
 \Javadoc
 This page informs the user which copies they borrowed from the library and how much time they still have left
-until they have to return them to not exceed the deadline.
+until they have to return them to not exceed the lending period.
 
 \begin{controls}
     \LST & aller ausgeliehenen Exemplare & \USR\\
 \end{controls}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{27em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \midrule
+        Exemplar & \OUT & die Signatur eines Exemplars\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
+        Zeit & \OUT & Dauer bis zum Überschreiten der Rückgabefrist\\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
+\end{table}
 
 \page{Anmeldemaske}{public/login}
 
@@ -480,7 +662,7 @@ login form and they get automatically redirected to their profile page.
 
 \begin{controls}
     \INP & für die E-Mail-Adresse & \ANO\\
-    \PAS & & \ANO\\
+    \PAS & für das Passwort & \ANO\\
     \BTN & zum Anmelden & \ANO\\
     \BTN & zum Passwortzurücksetzen; als \LNK dargestellt, um unauffälliger zu sein, da es eine zweitrangige Aktion ist & \ANO\\
 \end{controls}
@@ -498,31 +680,29 @@ This page declares the privacy policy of this system.
 
 \page{Direktausleihe}{staff/direct-lending}
 
+\Parameter
+Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureingabefeld.
+
 \Javadoc
 This page enables staff to lend a person most probably in front of their counter a series of copies.
-It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the relevant input fields. Analogously with the email address stored inside of their membership card.
+It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the corresp. input fields. Analogously with the email address stored inside of their membership card.
 
 \begin{controls}
-    \INP & für die E-Mail-Adresse des Ausleihenden & \BIB\\
-    \INP & für die Signatur eines auszuleihenden Exemplars; beim Laden der Seite fünfmal vorhanden. Durch das Pressen des relevanten Knopfs wird ein weiteres Feld angehängt & \BIB\\
-    \BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
+    R. \INP & für die E-Mail-Adresse des Ausleihenden & \BIB\\
+    R. \INP & für die Signatur eines auszuleihenden Exemplars; beim Laden der Seite fünfmal vorhanden & \BIB\\
+    \BTN & zum Hinzufügen eines weiteren Signatureingabefelds & \BIB\\
     \BTN & zum Ausleihen & \BIB\\
 \end{controls}
 
 \page{E-Mail-Bestätigung}{public/email-confirmation}
 
-% BEACON TASK BEACON docs etc
-
-% TASK PARAM TOKEN
+\Parameter
+Optional \texttt{token}.
 
 \Javadoc
 Accessing this page potentially verifies the email address of a specific user. For this,
-it takes a verification token as a query parameter. If absent or invalid, nothing user-facing happens.
+it takes a token as a query parameter. If absent or invalid, nothing user-facing happens.
 This secures against certain attacks.
-
-%\begin{controls}
-%    \BTN & zur Bestätigung der E-Mail-Adresse & \PUB\\
-%\end{controls}
 
 \page{Fehlerseite}{public/error}
 
@@ -544,21 +724,20 @@ This page contains the site notice.
 \begin{controls}
     \OUT & für das Impressum & Nicht-\ADM\\
     \INP & für das Impressum & \ADM\\
-    \BTN & zum Speichern der Änderungen am Impressum & \ADM\\
+    \BTN & zum Speichern der Änderungen & \ADM\\
 \end{controls}
 
 \page{Kategorienbearbeitung}{staff/category-editor}
 
-% Task: rephrase
+\Parameter
+Entweder \texttt{id}: Kennung der zu bearbeitenden Kategorie.
+Oder \texttt{parent-id}: Kennung der Elterkategorie, unter welcher eine neue Kategorie erstellt werden soll.
+
 \Javadoc The category editor allows the creation and modification of a category.
-Only library staff and administrators are allowed to access this page.
-This page should only be accessed from the category browser, otherwise the required parameters
-are likely missing which would be an error.
-This page can be reached when library staff clicks on the edit button next to a category's name in the browser.
-In this case, the identifier of the category to be edited is transmitted as a parameter.
-This page can be reached when library staff clicks on the create button in the context of a category.
-In that case, the identifier of the category to be treated as the parent of the new category is transmitted
-as a parameter.
+Generally this page is accessed from the category browser:
+In case the library staff clicks on the edit button next to a category's name in the browser, the corresp. identifier will be transmitted as the Parameter \texttt{id}.
+In the other case, it's the create button in the context of a category and the parameter is \texttt{parent-id}.
+If the parameters are invalid, the user will be redirected to the error page.
 
 \begin{controls}
     \INP & für den Kategorienamen & \BIB\\
@@ -573,39 +752,64 @@ This page offers users to browse through all available categories mediums are pa
 It renders it possible for the consumer to discover new mediums.
 
 \begin{controls}
-    \INP & für den Suchterm der Kategoriensuche & \PUB\\
+    R. \INP & für den Suchterm der Kategoriensuche & \PUB\\
     \BTN & zum Durchführung der Suche & \PUB\\
-    \LNK & zur Kategorienbearbeitung (Erstellung einer neuen) & \BIB\\
+    Baumansicht & mancher Kategorien & \PUB\\
+    \OUT & für den Namen der ausgewählten Kategorie & \PUB\\
+    \OUT & für die Beschreibung der ausgewählten Kategorie & \PUB\\
     \LNK & zur Kategorienbearbeitung & \BIB\\
     \BTN & zum Löschen der Kategorie; zur Elterkategorie & \BIB\\
     \LNK & zur Medienerstellung unter der aktuellen Kategorie & \BIB\\
+    \LST & aller Medien (Medienvorschauen) in der ausgewählten Kategorie; je ein \LNK zur Medienansicht & \PUB\\
+    \LNK & zur Kategorienbearbeitung (Erstellung einer neuen) & \BIB\\
 \end{controls}
 
 \page{Kontakt}{public/contact}
 
-\Javadoc The contact form allows any user to get in touch with the library staff.
-Anonymous users have to enter their email address for staff to be able to reply.
-If the user is logged in, the information is simply taken from their account data.
+\Javadoc The contact page allows any user to get to know how to contact the site owners.
 
 \begin{controls}
-    Textbereich & für die Frage & \PUB\\
-    \INP & für die E-Mail-Adresse & \ANO\\
-    \INP & für den vollständigen Namen & \ANO\\
-    \INP & für den Ort/die PLZ & \ANO\\
-    \BTN & zum Absenden & \PUB\\
+    \OUT & für die Kontaktinformationen & Nicht-\ADM\\
+    \INP & für das Kontaktinformationen & \ADM\\
+    \BTN & zum Speichern der Änderungen & \ADM\\
 \end{controls}
 
 \page{Leihfristverstöße}{admin/lending-period-violations}
+
+\Javadoc
+This page displays a list of copies which haven't been returned yet together with the assoc. user who exceeded the lending period.
 
 \begin{controls}
     \LST & von Exemplaren und Nutzern & \ADM\\
 \end{controls}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{27em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \midrule
+        Exemplar & \LNK & die Signatur eines Exemplars; zur Medienrückgabe\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
+        Nutzer & \LNK & E-Mail-Adresse; zum Profil\\
+        Überschreitung & \OUT & Dauer seit dem Zeitpunkt der Fristüberschreitung\\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
+\end{table}
+
 \page{Medienerstellung}{staff/medium-creation}
+
+\Parameter
+Optional \texttt{category}: Kategorie, unter welcher das Medium erstellt werden soll. Füllt das entsprechende Feld.
+
+\Javadoc
+This page allows staff and administrators to add new mediums.
 
 \begin{controls}
     \INP & für ein Medienattribut; existiert pro Medienattribut & \BIB\\
-    Zeitdauereingabefeld & für die Rückgabefrist & \BIB\\
+    \INP & für die Kategorie & \BIB\\
+    \INP & für die Rückgabefrist & \BIB\\
     \INP & für den Standort eines neuen Exemplars & \BIB\\
     \INP & für die Signatur eines neuen Exemplars & \BIB\\
     \BTN & zum Anlegen des neuen Mediums und des ersten Exemplars & \BIB\\
@@ -613,14 +817,30 @@ If the user is logged in, the information is simply taken from their account dat
 
 \page{Medienrückgabe}{staff/return}
 
+\Parameter
+Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureingabefeld.
+
+\Javadoc
+This page enables staff to inform the system that a series of copies were returned to the library, probably right after the user left them at their counter.
+It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the corresp. input fields. Analogously with the email address stored inside of their membership card.
+
 \begin{controls}
-    \INP & für die E-Mail-Adresse des Abgebenden & \BIB\\
-    \INP & für die Signatur eines abzugebenden Exemplars; beim Laden der Seite fünfmal vorhanden. Durch das Pressen des relevanten Knopfs wird ein weiteres Feld angehängt & \BIB\\
+    R. \INP & für die E-Mail-Adresse des Kunden & \BIB\\
+    R. \INP & für die Signatur eines abzugebenden Exemplars; beim Laden der Seite fünfmal vorhanden & \BIB\\
     \BTN & zum Hinzufügen eines weiteren Signaturfelds & \BIB\\
     \BTN & zum Abgeben & \BIB\\
 \end{controls}
 
 \page{Mediensuche}{public/media-search}
+
+\Parameter
+Optional \texttt{query}: Suchterm.
+
+\Javadoc
+This page permits users to search for mediums given some of their attributes as search criteria.
+Further, a user can search mediums by category and by the signature of one of their copies.
+The page has an optional query parameter corresponding to the search term.
+If it is not provided, nothing will be searched and the paginated list of results will not be displayed at all.
 
 \begin{controls}
     \INP & für den Suchterm der freien Suche & \PUB\\
@@ -629,44 +849,68 @@ If the user is logged in, the information is simply taken from their account dat
     \DRP & für das Suchkriterium; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchoperator und -feld) & \PUB\\
     \INP & für den Suchterm der differenzierten Suche; beim Laden der Seite dreimal vorhanden (je gruppiert mit Suchoperator und -kriterium) & \PUB\\
     \BTN & zum Hinzufügen eines weiteren Gruppe aus Suchoperator, -kriterium und -feld & \PUB\\
-    \LST & aller Suchergebnisse (falls vorhanden) & \PUB\\
+    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht; nur sichtbar, wenn schon gesucht wurde & \PUB\\
 \end{controls}
 
 \page{Mediumsansicht}{public/medium}
 
-% TASK DONT USE A PAGINATED LIST HERE!!! UPDATE THE STUFF!!!
+\Parameter
+Zwangsweise \texttt{id}: Kennung des anzuzeigenden Mediums.
+
+\Javadoc
+This page provides information about a specific medium and their copies available in the library.
+Here, users can borrow a copy by committing themselves to pick up the copy from a library site and actually borrowing it there. To trigger the procedure, they can either click on the pick-up button next to a specific copy or on an isolated button which selects an available copy at random.
+If the parameter is missing, the user will be redirected to the medium search page.
 
 \begin{controls}
     \LNK & zurück zur Trefferliste / Mediensuche; nur sichtbar, falls der Nutzer von der Suche kommt & \PUB\\
-    % TASK und Nicht-Admin
-    \OUT & für ein Medienattribut; existiert pro Medienattribut & Nicht-\BIB\\
-    \INP & für ein Medienattribut; existiert pro Medienattribut & \BIB\\
+    \OUT & für ein Medienattribut; existiert pro Medienattribut; mehrwertige Attribute durch Komma getrennt angezeigt & \ANO, \USR\\
+    \INP & für ein Medienattribut; existiert pro Medienattribut bzw. pro Wert bei mehrwertigen & \BIB\\
+    \BTN & zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
     \BTN & zum Speichern der Änderungen an den Medienattributen & \BIB\\
     \BTN & zur Bindung an die Abholung des Mediums; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
     \OUT & für die Rückgabefrist; bezieht auch die nutzerbezogene Frist ein, anders als das \INP{} darunter & \USR\\
     \INP & für die Rückgabefrist & \BIB\\
     \BTN & zum Speichern der Änderungen an der Rückgabefrist & \BIB\\
     \LNK & zum Löschen des Mediums; zur zuvor aufgerufenen Seite & \BIB\\
-    \LST & aller Exemplare & \PUB\\
-    \OUT & für den Standort eines Exemplars; existiert pro Exemplar & \PUB\\
-    \INP & für den Standort eines Exemplars; existiert pro Exemplar & \BIB\\
-    \OUT & für die Signatur eines Exemplars; existiert pro Exemplar & \PUB\\
-    \INP & für die Signatur eines Exemplars; existiert pro Exemplar & \BIB\\
-    \BTN & zum Speichern der Änderung am Exempla; existiert pro Exemplar & \BIB\\
-    \BTN & zum Löschen eines Exemplars; existiert pro Exemplar in der Tabelle & \BIB\\
-    \BTN & zum Stornieren einer Abholung; existiert pro Exemplar in der Tabelle & \BIB\\
-    \LNK & zur Direktausleihe; existiert pro Exemplar in der Tabelle & \BIB\\
-    \BTN & zur Bindung an die Abholung des Mediums; existiert pro Exemplar in der Tabelle; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
-    \INP & für den Standort eines neuen Exemplars & \BIB\\
+    Tabelle \ref{tableofcopies} & aller Exemplare & \PUB\\
+    R. \INP & für den Standort eines neuen Exemplars & \BIB\\
     \INP & für die Signatur eines neuen Exemplars & \BIB\\
     \BTN & zum Erstellen eines Exemplars & \BIB\\
 \end{controls}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
+        \toprule
+        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+        \midrule
+        Standort & \OUT & & \PUB\\
+        Standort & \INP & & \BIB\\
+        Verfügbarkeit & \OUT & & \PUB\\
+        Signatur & \OUT & & \PUB\\
+        Signatur & \INP & & \BIB\\
+        Aktionen & \BTN & zum Speichern der Änderungen & \BIB\\
+        Aktionen & \BTN & zum Löschen & \BIB\\
+        Aktionen & \BTN & zum Stornieren einer Abholung & \BIB\\
+        Aktionen & \LNK & zur Direktausleihe; nur sichtbar, falls verfügbar & \BIB\\
+        Aktionen & \LNK & zur Medienrückgabe; nur sichtbar, falls ausgeliehen & \BIB\\
+        Aktionen & \BTN & zur Bindung an die Abholung; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
+        \bottomrule
+    \end{tabular}
+    \caption{Tabelle aller Exemplare als JSF-\texttt{DataTable}. Jede Zeile existiert pro Exemplar}
+    \label{tableofcopies}
+\end{table}
+
 \page{Mediumschemabearbeitung}{admin/medium-schema-editor}
+
+\Javadoc
+On this page, the administrator can adjust the medium schema (the set of attributes of each medium).
 
 \begin{controls}
     \INP & für den Namen eines Attributs; existiert pro Attribut & \ADM\\
     \DRP & für den Typen eines Attributs; existiert pro Attribut & \ADM\\
+    \DRP & für die Wertigkeit (ein-, mehrwertig) eines Attributs; existiert pro Attribut & \ADM\\
     \DRP & für die Position in der Medienvorschau; existiert pro Attribut & \ADM\\
     \BTN & zum Löschen eines Attributes; existiert pro Attribut & \ADM\\
     \BTN & zum Hinzufügen eines weiteren Gruppe aus \INP{}ern und \DRP{}n & \ADM\\
@@ -675,25 +919,32 @@ If the user is logged in, the information is simply taken from their account dat
 
 \page{Nutzersuche}{admin/user-search}
 
+\Parameter
+Optional \texttt{query}: Suchterm.
+
 \Javadoc
 This page enables administrators to search for users.
+The page has an optional query parameter corresponding to the search term.
+If it is not provided, nothing will be searched and the paginated list of results will not be displayed at all.
 
 \begin{controls}
     \INP & für den Suchterm & \ADM\\
     \BTN & zur Durchführung der Suche & \ADM\\
     \CHK & für das Einschränken auf gesperrte Nutzer & \ADM\\
-    \LST & aller Suchergebnisse (falls vorhanden) & \ADM\\
+    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht; nur sichtbar, wenn schon gesucht wurde & \ADM\\
 \end{controls}
 
 \page{Passwortzurücksetzung}{public/password-reset}
 
-%TASK rephrase
+\Parameter
+Optional \texttt{token}.
+
 \Javadoc
 This page is reached by a user when they click on the link they received in an email.
-For the mechanisms to work, it takes a token as a query parameter.
+The account is identified through a token passed as parameter.
 After submitting the form, the user is not logged into the system yet, they are redirected to the login form.
 This secures against certain attacks.
-If the token is absent or invalid, nothing user-facing is going to happen: Clicking the button still means redirection to the login page.
+If the token is absent or invalid, nothing user-facing will happen: Clicking the button still means redirection to the login page.
 
 \begin{controls}
     \PAS & für das neue Passwort & \PUB\\
@@ -710,7 +961,6 @@ of a user different from the logged-in one.
 It allows a user to change their personal information the system stores and it allows administrators to manage other accounts.
 
 \begin{controls}
-    % BEACON TASK BEACON \INP_OR_OUT (new component)
     \INP & für den Vornamen & \USR\\
     \INP & für den Nachnamen & \USR\\
     \PAS & für das Passwort & \USR\\
@@ -731,21 +981,27 @@ It allows a user to change their personal information the system stores and it a
 
 \page{Registrierungsseite}{public/registration}
 
+\Javadoc
+On this page an anonymous user can register themself. Additionally, it can be used by administrators to register new users.
+
 \begin{controls}
-    \INP & für den Vornamen & \USR\\
-    \INP & für den Nachnamen & \USR\\
-    \PAS & & \USR\\
-    \PAS & zur Bestätigung & \USR\\
-    \INP & für die E-Mail-Adresse & \USR\\
-    \INP & für den Ort & \USR\\
-    \INP & für die PLZ & \USR\\
-    \INP & für die Straße & \USR\\
-    \INP & für die Hausnummer & \USR\\
+    \INP & für den Vornamen & \ANO/\ADM\\
+    \INP & für den Nachnamen & \ANO/\ADM\\
+    \PAS & & \ANO/\ADM\\
+    \PAS & zur Bestätigung & \ANO/\ADM\\
+    \INP & für die E-Mail-Adresse & \ANO/\ADM\\
+    \INP & für den Ort & \ANO/\ADM\\
+    \INP & für die PLZ & \ANO/\ADM\\
+    \INP & für die Straße & \ANO/\ADM\\
+    \INP & für die Hausnummer & \ANO/\ADM\\
     \DRP & für die Nutzerrolle & \ADM\\
     \BTN & zum Registrieren des Accounts & \ANO/\ADM\\
 \end{controls}
 
 \page{Verwaltungsseite}{admin/administration}
+
+\Javadoc
+This page provides the means to administrators to change several global settings of the application.
 
 \begin{controls}
     \INP & für die Rückgabefrist & \ADM\\
@@ -758,11 +1014,10 @@ It allows a user to change their personal information the system stores and it a
     \DRP & für das Farbschema des Systems & \ADM\\
     Datei-Upload & für das Logo des Systems & \ADM\\
     \BTN & zum Speichern der Änderungen an den Systemeinstellungen & \ADM\\
-    \LNK & zu der Medienerstellung & \ADM\\
     \LNK & zu der Registrierungsseite (fremden Nutzer erstellen) & \ADM\\
     \LNK & zur Mediumsschemabearbeitung & \ADM\\
     \LNK & zu den Leihfristverstößen & \ADM\\
-    \LNK & zu der Nutzersuche & \ADM\\
+    \LNK & zur Nutzersuche & \ADM\\
     \INP & für den Suchterm einer Nutzersuche & \ADM\\
     \BTN & zum Durchführung der Suche & \ADM\\
 \end{controls}
@@ -771,42 +1026,46 @@ It allows a user to change their personal information the system stores and it a
 \section{Systemfunktionen}
 \sectionauthor{Jonas Picker}
 \subsection{Technische Systemsicherheit}
-\noindent \textbf{Kommunikationserschlüsselung:} Durch die CA-Zertifizierung des Servers wird eine TLS-Trans-portverschlüsselung bei der Kommunikation zwischen Klient und Server verwendet. Ist die Datenbank, wie im Pflichtenheft (Abschnitt 4.3  'Server') beschrieben, über SSL-VPN angebunden, ist die Kommunikation zwischen ihr und dem Server ebenfalls verschlüsselt. \\
-\textbf{Nutzerberechtigungen:} Für die Überprüfung der Zugangsberechtigungen bei jeder HTTPS-Anfrage implementiert die Klasse !!!\hyperlink{}{}!!! das PhaseListener-Interface, welches zu implementierende Methoden zum Ausführen von Code vor oder nach jeder Phase des JSF-Life-Cycle vorgibt. In unserem Fall wird am frühestmöglichen Punkt (vor der Restore-View-Phase) geprüft, ob der Anfragesteller auch berechtigt ist, die vorhergesehene Antwort vom Server zu erhalten. Aus Redundanzgründen verwenden wir für Seiten, auf die mehrere Nutzerrollen Zugriff haben, die gleichen Facelets. In den jeweiligen Backing-Beans wird dann, durch Zugriff auf die von JSF getrackte Nutzer-Session der Klasse  !!!\hyperlink{}{}!!!, die Rolle des Benutzers überprüft. Für jeden Seitenbesucher werden dann nur die rollenspezifischen Knöpfe und Anzeigen gerendert (siehe !!!\hyperlink{}{auch}!!!). Durch die inklusive Rollenhierarchie lassen sich so alle Funktionalitäten der Rollen im gleichen Facelet einbinden.\\
+\noindent \textbf{Kommunikationsverschlüsselung:} Durch die CA-Zertifizierung des Servers wird eine TLS-Trans-portverschlüsselung bei der Kommunikation zwischen Klient und Server verwendet. Ist die Datenbank, wie im Pflichtenheft (Abschnitt 4.3  'Server') beschrieben, über SSL-VPN angebunden, ist die Kommunikation zwischen ihr und dem Server ebenfalls verschlüsselt. \\
+\textbf{Nutzerberechtigungen:} Für die Überprüfung der Zugangsberechtigungen bei jeder HTTPS-Anfrage wird das \hyperlink{PhaseListener}{PhaseListener-Interface} implementiert, welches Methoden zum Ausführen von Code vor oder nach jeder Phase des JSF-Life-Cycle vorgibt. In unserem Fall wird am frühestmöglichen Punkt (vor der Restore-View-Phase) geprüft, ob der Anfragesteller auch berechtigt ist, die vorhergesehene Antwort vom Server zu erhalten. Aus Redundanzgründen verwenden wir für Seiten, auf die mehrere Nutzerrollen Zugriff haben, die gleichen Facelets. In den jeweiligen Backing-Beans wird dann, durch Zugriff auf die von JSF getrackte Nutzer-Session der Klasse \hyperlink{Session}{UserSession}, die Rolle des Benutzers überprüft. Für jeden Seitenbesucher werden dann nur die rollenspezifischen Knöpfe und Anzeigen gerendert (siehe Abschnitt \hyperlink{Facelets}{JSF-Facelets}). Durch die inklusive Rollenhierarchie lassen sich so alle Funktionalitäten der Rollen im gleichen Facelet einbinden.\\
 \textbf{Session-Hijacking\footnote{Das Stehlen einer validen Nutzer-Session um Zugriff auf den Account und seine Berechtigungen zu erhalten}:} Um diesen Angriffsvektor zu schützen, wird der Identifikator der Nutzer-Session an kritischen Stellen (z.B. nach dem Login) manuell ausgetauscht. \\
 \textbf{Cross-Site-Scripting\footnote{Auch XSS: das Einschleusen von browserinterpretierbarem HTML-Code auf ungesicherte Teile einer Website}:} Das Escapen von HTML-Sonderzeichen wird von JSF bei allen nutzergenerierten Teilen der Anwendung unterstützt. Alle Elemente der JSF-Facelets, die nutzergenerierten In- und Output weitergeben, haben den impliziten Standartwert 'escape=true'. Da wir diesen in unserer Implementierung nie manuell auf 'false' setzen, ist XSS in dieser Applikation unmöglich. \\
-\textbf{SQL-Injection\footnote{Einschleusen von SQL-Code in Formularfelder, um Zugriff auf die Datenbank zu erhalten}:} Durch das Konsequente Verwenden der 'Prepared Statements' in unserer !!!\hyperlink{}{Datenzugriffsschicht}!!! beugen wir SQL-Injections vor. Diese JDBC-Funktionalität trennt das eigentliche SQL-Statement von den nutzergenerierten Parametern und Verhindern so das Ausführen von maliziösem SQL-Code in der Datenbank. \\
+\textbf{SQL-Injection\footnote{Einschleusen von SQL-Code in Formularfelder, um Zugriff auf die Datenbank zu erhalten}:} Durch das Konsequente Verwenden der 'Prepared Statements' in unserer \hyperlink{DAOs}{Datenzugriffsschicht} beugen wir SQL-Injections vor. Diese JDBC-Funktionalität trennt das eigentliche SQL-Statement von den nutzergenerierten Parametern und Verhindern so das Ausführen von maliziösem SQL-Code in der Datenbank. \\
 \subsection{Logging}
-Mit der Klasse !!!\hyperlink{}{}!!! ist unser System mit einer eigenen Log-Funktion ausgestattet. Diese dient sowohl zum Debugging während der Entwicklung, als auch zum Protokollieren der Fehler und Abläufe im laufenden System. Durch Setzten der Variable 'LOG\_CONSOLE: ' mit den Werten 'TRUE' oder 'FALSE' kann eingestellt in der Konfigurationsdatei werden, ob die Meldungen auch in Echtzeit auf der Konsole ausgegeben oder nur in das Log-File geschrieben werden. Es gibt drei Log-Level, zwischen denen, durch Setzen der Variable 'LOG\_LEVEL: ' mit einem der unten aufgeführten Werte, beim Systemstart umgeschaltet werden kann. Die folgenden Kategorien sind inklusiv, die Letzte schließt somit die oberen beiden mit ein. \\
+Mit der Klasse \hyperlink{Logger}{Logger} ist unser System mit einer eigenen Log-Funktion ausgestattet. Diese dient sowohl zum Debugging während der Entwicklung, als auch zum Protokollieren der Fehler und Abläufe im laufenden System. Durch Setzten der Variable 'LOG\_CONSOLE: ' mit den Werten 'TRUE' oder 'FALSE' kann eingestellt in der Konfigurationsdatei\footnote{config.properties im Ordner /WEB-INF (siehe Installationsanleitung)} werden, ob die Meldungen auch in Echtzeit auf der Konsole ausgegeben oder nur in das Log-File geschrieben werden. Es gibt drei Log-Level, zwischen denen, durch Setzen der Variable 'LOG\_LEVEL: ' mit einem der unten aufgeführten Werte, beim Systemstart umgeschaltet werden kann. Die folgenden \hyperlink{Logger}{Log-Stufen} sind inklusiv, die Letzte schließt somit die oberen beiden mit ein. \\
 \textit{'SEVERE':} Diese Einstellung des Loggers protokolliert nur schwere Fehler, die unmittelbare Konsequenzen für den Anwendungsbetrieb haben. Um ein schnelles Volllaufen des Log-Files zu vermeiden, ist dies die Standarteinstellung.\\
 \textit{'DETAILED':} Fehler und fehlgeschlagene Prozeduren, die die Integrität der Anwendung nicht gefährden, werden zusätzlich protokolliert.\\
-\textit{'DEVELOPMENT':} Hierunter fallen sowohl Protokollierungen von erfolgreichen oder seltenen Abläufen, alsauch sonstige nützliche Meldungen. Da das Log-File schnell sehr groß und unübersichtlich werden könnte, empfehlen wir, diese Option nur bei Problemen zu wählen.\\
+\textit{'DEVELOPMENT':} Hierunter fallen sowohl Protokollierungen von erfolgreichen oder seltenen Abläufen, als auch sonstige nützliche Meldungen. Da das Log-File schnell sehr groß und unübersichtlich werden könnte, empfehlen wir, diese Option nur bei Problemen zu wählen.\\
 \subsection{Selbstständige Abläufe}
-Die Klasse !!!\hyperlink{}{}!!! ermöglicht dem System, selbstständig in einstellbaren Abständen Wartungsaufgaben durchzuführen. Alle unten aufgelisteten Aufgaben sind somit von der der aktuellen Systemzeit des Servers abhängig und werden darüberhinaus nur mit einer maximalen zeitlichen Unsicherheit des gewählten Intervalls durchgeführt. Die Einstellung wird beim Systemstart durch den gesetzten Wert der Variable 'SCAN\_INTERVAL: ' bestimmt. Der von uns empfohlene Standartwert repräsentiert eine Minute, sollten Sie diesen verlängern wollen tragen Sie stattdessen eine andere positive ganze Zahl ein. Der Wartungsthread vergleicht die Operationsfrist der zur Abholung markierten Exemplare mit der aktuellen Systemzeit und setzt bei Überschreitung den Verfügbarkeitsstatus wieder auf 'verfügbar'. Bei Exemplaren mit dem Status 'ausgeliehen' wird, zusätzlich zur Frist, die Mahnungsversatzzeit beachtet und bei Bedarf die Klasse !!!\hyperlink{}{}!!! zum Versenden einer E-Mail angestoßen. Die abgelaufenen Tokens der Benutzer-Tabelle werden ebenfalls gelöscht.
+Die Klasse \hyperlink{Logger}{MaintananceProcesses} ermöglicht dem System, selbstständig in einstellbaren Abständen Wartungsaufgaben durchzuführen. Alle unten aufgelisteten Aufgaben sind somit von der der aktuellen Systemzeit des Servers abhängig und werden darüberhinaus nur mit einer maximalen zeitlichen Unsicherheit des gewählten Intervalls durchgeführt. Die Einstellung wird beim Systemstart durch den gesetzten Wert der Variable 'SCAN\_INTERVAL: ' bestimmt. Der von uns empfohlene Standartwert repräsentiert eine Minute, sollten Sie diesen verlängern wollen tragen Sie stattdessen eine andere positive ganze Zahl ein. Der Wartungsthread vergleicht die Operationsfrist der zur Abholung markierten Exemplare mit der aktuellen Systemzeit und setzt bei Überschreitung den Verfügbarkeitsstatus wieder auf 'verfügbar'. Bei Exemplaren mit dem Status 'ausgeliehen' wird, zusätzlich zur Frist, die Mahnungsversatzzeit beachtet und bei Bedarf die Klasse \hyperlink{Session}{MailService} zum Versenden einer E-Mail angestoßen. Die abgelaufenen Tokens der Benutzer-Tabelle werden ebenfalls gelöscht. Zum Versenden der E-Mails wird das SMTP-Protokoll ohne Authentifikation verwendet. Dazu muss in der Konfigurationsdatei die Variable 'MAILSERVERHOST: ' mit der Adresse des verwendeten Mail-Servers und 'MAILSERVERPORT: ' mit dessen Port (Standart ist 25) befüllt werden. Außerdem muss die E-Mail-Adresse eines stellvertretenden Absenders für die Bibliothek in die Variable 'MAILSOURCE: ' eingetragen werden.
 \subsection{Datenbankverbindung}
-Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird trotzdem mittels einer ShutdownHook noch das Schließen offener Datenbankverbindungen versucht. Außerdem wird durch das logische Zusammenfassen der voneinander abhängigen Datenbanktransaktionen in den Steuermethoden der !!!\hyperlink{}{DAOs}!!! sichergestellt, dass das ACID-Prinzip bestmöglich eingehalten und die Datenbank im Fehlerfall in einem konsistenten Zustand hinterlassen wird. Dies ist jedoch (z.B. bei einem Stromausfall) nicht immer möglich.
+Wenn die Java Laufzeitumgebung des Systems plötzlich beendet wird und das System abstürzt, wird trotzdem mittels einer ShutdownHook noch das Schließen offener Datenbankverbindungen versucht. Außerdem wird durch das logische Zusammenfassen der voneinander abhängigen Datenbanktransaktionen in den Steuermethoden der \hyperlink{DAO}{DAOs} sichergestellt, dass das ACID-Prinzip bestmöglich eingehalten und die Datenbank im Fehlerfall in einem konsistenten Zustand hinterlassen wird. Dies ist jedoch (z.B. bei einem Stromausfall) nicht immer möglich. Wie \hyperlink{Pooling}{hier} beschrieben, wird die Datenbank durch Connection Pooling geschont.
 \subsection{Starten und Stoppen der Anwendung}
-\noindent \textbf{Start:} Durch Implementierung des SystemEventListener-Interface werden beim Systemstart von der Klasse!!!\hyperlink{}{}!!! alle weiteren Aktionen angestoßen. Die Initialisierung des !!!\hyperlink{}{Loggers}!!! geschieht zuerst, danach wird die Konfigurationsdatei eingelesen, das Log-Level und der gewählte Konsolenausgabemodus gesetzt und mit den restlichen Parametern eine !!!\hyperlink{}{eigene Initialisierungsklasse}!!! für Prozesse der !!!\hyperlink{}{Datenzugriffsschicht}!!! aufgerufen, in der zunächst die Datenbankverbindung überprüft wird. Sollten die Verbindung fehlschlagen, wird, ähnlich zu !!!\hyperlink{}{diesem Prozess}!!!, eine Fehlermeldung ausgegeben/geloggt. Im Erfolgsfall wird dann überprüft, ob die benötigten Tabellenstrukturen bereits vorhanden sind. Falls nicht wird das manuelle Anlegen der Tabellen (Mediumsschema wird mit dem \hyperlink{Standartattributsatz}{Standartattributsatz} befüllt) über einen Konsoleninput mit 'Y' oder 'N' entschieden werden müssen. Bei existierenden Tabellen wird  nun der !!!\hyperlink{}{Connection-Pool}!!! initialisiert und der Startprozess der !!!\hyperlink{}{Datenzugriffsschicht}!!! ist abgeschlossen. Es wird nun das zuvor ausgewählte \hyperlink{Farbschemaattribut}{Farbschema} aus der Datenbank abgefragt, an die !!!\hyperlink{}{darüberliegende Schicht}!!! weitergeleitet und von !!!\hyperlink{}{dort}!!! aus der !!!\hyperlink{}{Wartungsthread}!!! aktiviert und das ausgewählte Farbschema eingestellt, danach ist das System betriebsbereit. \\
-\textbf{Stop:} 
-Beim planmäßigen Herunterfahren des Systems durch das Ausschalten des Tomcat auf dem Server (z.B. via shutdown.sh) reicht die Klasse !!!\hyperlink{}{}!!! eine Nachricht an die Klasse !!!\hyperlink{}{}!!!, von wo aus zunächst der !!!\hyperlink{}{Wartungsthread}!!! beendet und danach die noch offenen Datenbankverbindungen über den !!!\hyperlink{}{Connection-Pool}!!! geschlossen werden. Nach Durchreichen der Erfolgsmeldung nach oben, wird die Anwendung gestoppt. Nutzersessions überleben das Ausschalten des Servers nicht.
+\noindent \textbf{Start:} Durch \hypertarget{Init}{Implementierung} des SystemEventListener-Interface werden beim Systemstart alle weiteren Aktionen aus der \hyperlink{Logikschicht}{Logikschicht} heraus angestoßen. Die Initialisierung des \hyperlink{Logger}{Loggers} geschieht zuerst, danach wird die Konfigurationsdatei vom \hyperlink{Logger}{ConfigReader} eingelesen, das Log-Level und der gewählte Konsolenausgabemodus gesetzt und die Parameter für die E-Mail Funktionen der Klasse \hyperlink{Email}{MailService} übergeben. Mit den restlichen Parametern wird die Klasse \hyperlink{DAOInit}{DataLayerInitializer} für Initialisierungsprozesse der \hyperlink{DAOs}{Datenzugriffsschicht} aufgerufen, in der zunächst die Datenbankverbindung überprüft wird. Sollten die Verbindung fehlschlagen, wird, ähnlich zu \hyperlink{Fehlersequenz}{diesem Prozess}, eine Fehlermeldung ausgegeben/geloggt. Im Erfolgsfall wird dann überprüft, ob die benötigten Tabellenstrukturen bereits vorhanden sind. Falls nicht wird das manuelle Anlegen der Tabellen (Mediumsschema wird mit dem \hyperlink{Standartattributsatz}{Standartattributsatz} befüllt) über einen Konsoleninput mit 'Y' oder 'N' entschieden werden müssen. Bei existierenden Tabellen wird  nun der \hyperlink{Logger}{Connection-Pool} initialisiert und der \hyperlink{Logger}{Wartungsthread} aktiviert um den Startprozess der \hyperlink{DAOs}{Datenzugriffsschicht} abzuschließen. Es wird jetzt das zuletzt ausgewählte \hyperlink{Farbschemaattribut}{Farbschema} aus der Datenbank abgefragt, und als Parameter an die \hyperlink{Logikschicht}{obere Schicht} weitergeleitet, wo dann das ausgewählte Farbschema eingestellt wird. Danach ist das System betriebsbereit. \\
+\textbf{Stop:} Beim planmäßigen Herunterfahren des Systems durch das Ausschalten des Tomcat auf dem Server (z.B. via shutdown.sh) reicht die \hyperlink{Init}{Initialisierungklasse} der \hyperlink{Logikschicht}{Logikschicht} eine Nachricht an die Klasse \hyperlink{Logger}{DataLayerInitializer}, von wo aus zunächst der \hyperlink{Logger}{Wartungsthread} kontrolliert beendet und danach die noch offenen Datenbankverbindungen über den \hyperlink{ConnectionPool}{Connection-Pool} geschlossen werden. Nach Durchreichen der Erfolgsmeldung nach oben, wird die Anwendung gestoppt. Nutzersessions überleben das Ausschalten des Servers nicht.
 
 %--Datenfluss--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\newpage
 \section{Datenfluss}
 \sectionauthor{Sergei Pravdin}
-Die Kommunikation zwischen den Klassen und die Interaktionen des Systems werden durch die Sequenzdiagramme abgebildet. Um einen Datenfluss beispielhaft zu zeigen, werden die folgenden beiden Szenarien vorgelegt: Zuerst bucht ein angemeldeter Nutzer ein Medium-Exemplar erfolgreich zur Ausleihe. Im zweiten Szenario bucht ein angemeldeter Nutzer ein Medium-Exemplar erfolglos zur Ausleihe, weil die Verbindung mit der Datenbank fehlgeschlagen ist.
+Die Kommunikation zwischen den Klassen und die Interaktionen des Systems werden durch die Sequenzdiagramme abgebildet. Um einen Datenfluss beispielhaft zu zeigen, werden die folgenden beiden Szenarien vorgelegt: Zuerst bucht ein angemeldeter Nutzer ein Medium-Exemplar erfolgreich zur Ausleihe. Im zweiten Szenario bucht ein angemeldeter Nutzer ein Medium-Exemplar erfolglos zur Ausleihe, weil die Verbindung mit der Datenbank fehlgeschlagen ist. Das System ist so eingestellt, dass die angemeldeten Nutzer Zugriff auf die Medien haben. Der Nutzer möchte ein Exemplar des Mediums 'Programmieren lernen' buchen. Im System existiert das Medium mit dem Titel 'Programmieren lernen' und mit der Signatur (ID) '17RE'. Das Exemplar mit der Signatur (ID) '17RE (+1)' gehört zu dem genannten Medium und ist für eine Buchung verfügbar. Der Nutzer ruft die Mediumsseite 'medium.xhtml?id=17RE' auf.
 \subsection{Interaktionen beim erfolgreichen Buchen eines Medium-Exemplars}
-Das System ist so eingestellt, dass die angemeldeten Nutzer Zugriff auf die Medien haben. Der Nutzer möchte ein Exemplar des Mediums 'Programmieren lernen' buchen. Im System existiert das Medium mit dem Titel 'Programmieren lernen' und mit der Signatur (ID) '17RE'. Das Exemplar mit der Signatur (ID) '17RE (+1)' gehört zu dem genannten Medium und ist für eine Buchung verfügbar. Der Nutzer ruft die Mediumsseite 'medium.xhtml?id=17RE' auf.
 \subsubsection{Initialisierung der Mediumsseite}
-Um das entsprechende Medium zu laden, erzeugt das Medium-BB ein Medium-DTO und setzt den ID-Parameter '17RE' in das Medium-DTO. Danach ruft das Medium-BB die statische Methode MediumDAO.loadMedium(mediumDTO) auf. Das Medium-DAO bekommt eine Verbindung aus dem ConnectionPool durch die Methode getInstance(). Mit dieser Verbindung und dem erhaltenen Medium-DTO wird eine SELECT-Anfrage in der Datenbank durchgeführt. Im nächsten Schritt wird die Verbindung aus dem ConnectionPool zum Medium-DAO aufgelöst. Abschließend erzeugt das Medium-DAO ein neues Medium-DTO und füllt es durch die entsprechenden SET-Methoden aus. Als Ergebnis der Methode 'loadMedium' bekommt das Medium-BB das erfüllte Medium-DTO und setzt die Parameter des Medium durch SET-Methoden. Die Mediumsseite wird nun erfolgreich geladen.
+Beim Laden der Mediumsseite wird die Methode 'init' als @PostConstruct zuerst aufgerufen. Die 'init'-Methode erzeugt ein Medium-DTO, das der Nutzer bekommt und setzt eine Medium-ID, die aus dem 'viewParam' kommt. Danach wird die 'viewAction()' durchgeführt, die die Mediumsseite durch die statische Methode aus dem Medium-DAO liefern muss. Das Medium-DAO bekommt auf der Datenschicht die Verbindung von der Singlton-ConnectionPool-Klasse durch die Methoden 'getInstance()' und 'getConnection()'. Im Körper der Methode 'loadMedium' wird eine SELECT-Anfrage durchgeführt, nachdem gibt das Medium-DAO die Verbindung durch die Methode 'releaseConnection' frei. Das Medium-DAO erfüllt mit erhaltenden von der Datenbank Attributen das Medium-DTO und gibt es dem Medium-BB zurück. Die Mediumsseite ist nun durch die Methode 'getAttributes' des Medium-DTOs komplett geladen.
 \subsubsection{Buchen eines Exemplares}
-Der Nutzer klickt auf den Buchen-Button eines Exemplars. Das Medium-BB ruft die Methode checkStatus() aus dem UserSession-BB auf, um zu prüfen, ob der Nutzer Zugriff auf die Funktion Buchen hat. Das UserSession-BB meldet dem Medium-BB ein positives Ergebnis zurück. Das Medium-BB erzeugt ein Medium-DTO und kapselt die Medium-Attribute ins Medium-DTO ein. Danach ruft das Medium-BB die statische Methode MediumDAO.fetchCopy(mediumDTO) auf. Das Medium-DAO bekommt eine Verbindung aus dem ConnectionPool durch die Methode getInstance() und mit dieser Verbindung und dem erhaltenen Medium-DTO wird eine UPDATE-Anfrage in der Datenbank durchgeführt. Im nächsten Schritt wird die Verbindung des ConnectionPool zum Medium-DAO aufgelöst. Schließlich erzeugt das Medium-DAO ein neues Medium-DTO und füllt es durch die entsprechenden SET-Methoden. Als Ergebnis der Methode 'fetchCopy' bekommt das Medium-BB das aktualisierte Medium-DTO und aktualisiert die Parameter des Medium durch SET-Methoden. Der Nutzer bekommt eine FacesMessage und die Buchung ist erfolgreich abgeschlossen.
+Durch die Methode 'getCopies' des Medium-DTOs ist ein gewünschtes Exemplar dem Nutzer sichtbar. Der Nutzer klickt auf den Buchen-Button des Exemplars. Somit wird die Methode 'setCopyID' des Medium-DTOs aufgerufen, um die entsprechende ID festzulegen. Beim Klicken ruft der Nutzer die Methode 'fetchCopy' des Medium-BBs. Im Körper dieser Methode wird die Methode checkStatus() aus dem UserSession-BB aufgerufen, um zu prüfen, ob der Nutzer Zugriff auf die Funktion Buchen hat. Das UserSession-Bean meldet dem Medium-BB ein positives Ergebnis zurück. Das Medium-BB ruft die statische Methode MediumDAO.fetchCopy(mediumDTO) auf. Das Medium-DAO bekommt auf der Datenschicht die Verbindung von der Singlton-ConnectionPool-Klasse durch die Methoden 'getInstance()' und 'getConnection()'. Im Körper der Methode 'loadMedium' wird eine UPDATE-Anfrage durchgeführt, nachdem gibt das Medium-DAO die Verbindung durch die Methode 'releaseConnection' frei. Als Ergebnis der Methode 'fetchCopy' bekommt das Medium-BB das aktualisierte Medium-DTO. Der Nutzer bekommt eine Nachricht durch die statische Methode 'RessourceBandleHandler.getValue()' und die Buchung ist erfolgreich abgeschlossen.
+\subsection{Interaktionen beim Buchen eines Medium-Exemplares mit fehlender Datenbankverbindung}
+\subsubsection{Initialisierung der Mediumsseite}
+Beim Laden der Mediumsseite wird die Methode 'init' als @PostConstruct zuerst aufgerufen. Die 'init'-Methode erzeugt ein Medium-DTO, das der Nutzer bekommt und setzt eine Medium-ID, die aus dem 'viewParam' kommt. Danach wird die 'viewAction()' durchgeführt, die die Mediumsseite durch die statische Methode aus dem Medium-DAO liefern muss. Das Medium-DAO bekommt auf der Datenschicht wegen technischen Problemen keine Verbindung von der Singlton-ConnectionPool-Klasse und die Methode 'getConnection' wirft einen SQLException. Das Medium-DAO wandelt den SQLException in den DataAccess-Exception um und wirft den dem Medium-BB. Mittels 'catch' ruft das Medium-BB die Methode 'handle' des ExceptionHandlers und das Exception-Handler schreibt den Fehler ins Loger durch 'addValue()' auf.
+\subsubsection{Weiterleitung zur Fehlersseite}
+Durch die Methode 'getValue()' des Exception-Handlers wird der Nutzer zur Fehlersseite weitergeleitet und bekommt von dem Resource-Bandle-Handler eine entsprechende Nachricht über den Fehler. Die Buchung ist nun erfolglos abgeschlossen.
 \newpage
 
 \newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width = 50em]{Sequenzdiagramm-success}
+    \includegraphics[width = 50em]{Sequenzdiagramm-success-v2}
     \caption{Interaktionen beim erfolgreichen Buchen eines Medium-Exemplares}
     \label{Sequenzdiagramm}
 \end{figure}
@@ -814,23 +1073,22 @@ Der Nutzer klickt auf den Buchen-Button eines Exemplars. Das Medium-BB ruft die 
 \restoregeometry
 \newpage
 
-
-%--ER-Modell--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-\section{ER-Modell}
-\sectionauthor{Jonas Picker}
-
-\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
 
 \begin{figure}[h]
-    \hypertarget{ERDia}{}
+	\hypertarget{Fehlersequenz}{}
     \centering
-    \includegraphics[angle = 270, width = 60em]{ER-Diagramm}
-    \caption{Entity-Relationship Diagramm}
-    \label{ER-Diagramm}
+    \includegraphics[width = 50em]{Sequenzdiagramm-exception-v3}
+    \caption{Interaktionen beim Buchen eines Medium-Exemplares mit fehlender Datenbankverbindung}
+    \label{Sequenzdiagramm}
 \end{figure}
 
 \restoregeometry
 \newpage
+
+%--ER-Modell--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{ER-Modell}
+\sectionauthor{Jonas Picker}
 
 \subsection{Legende}
 Beschreibung des \hyperlink{ERDia}{ER-Diagramms}: \\
@@ -853,6 +1111,18 @@ Titel & Erscheinungsjahr &  Verlag \\
 \textbf{Administrator:} Diese Entität modelliert die Rolle der Administratoren. Die von der Benutzerentität ausgehende Hierarchie soll die inklusiven Rollen im System modellieren.  \\
 \textbf{Adresse:} Vom Benutzer abhängig. Enthält die Bestandteile einer Nutzeradresse als Attribute. \\
 \textbf{Anwendung:} Hier werden die setzbaren globalen Variablen und Anwendungseinstellungen modelliert. 'Anonymer Zugang' bestimmt die Berechtigungen anonymer Nutzer beim Besuchen des Webspaces (PfHft. /F10/), während 'Registrierungsstatus' eine offene (in diesem Fall gilt der 'E-Mail RegEx') oder geschlossene Registrierungsfunktion modelliert (PfHft. /F20/). 'Ausleihenstatus' steht für das Umschalten des Systems zur manuellen Freischaltung der Ausleihfunktion. Aus dem 'Mahungsversatz' ergibt sich der Zeitpunkt vor Ablauf einer Rückgabefrist, an dem eine automatische Benachrichtigung versendet wird (PfHft. /F240/). \hypertarget{Farbschemaattribut}{'Farbschema'} merkt sich das zuletzt ausgewählte Farbschema. \\
+
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
+
+\begin{figure}[h]
+    \hypertarget{ERDia}{}
+    \centering
+    \includegraphics[angle = 270, width = 60em]{ER-Diagramm}
+    \caption{Entity-Relationship Diagramm}
+    \label{ER-Diagramm}
+\end{figure}
+
+\restoregeometry
 
 \end{document}
 
