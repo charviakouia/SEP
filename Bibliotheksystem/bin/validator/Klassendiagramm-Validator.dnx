@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--xtools2_universal_type_manager-->
+<!--Rational Software Architect Designer 9.7.0-->
+<?com.ibm.xtools.emf.core.signature <signature id="com.ibm.xtools.mmi.ui.signatures.diagram" version="7.0.0"><feature description="" name="Rational Modeling Platform (com.ibm.xtools.rmp)" url="" version="7.0.0"/></signature>?>
+<umlnotation:UMLDiagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmlns:umlnotation="http://www.ibm.com/xtools/1.5.3/Umlnotation" xmi:id="_SujcoK6fEeu7PuEReRs2bQ" type="Class" name="Klassendiagramm-Validator.dnx">
+  <eAnnotations xmi:id="_Sujcoa6fEeu7PuEReRs2bQ" source="com.ibm.xtools.common.ui.reduction.editingCapabilities">
+    <details xmi:id="_Sujcoq6fEeu7PuEReRs2bQ" key="com.ibm.xtools.activities.javaVisualizerActivity" value="1"/>
+  </eAnnotations>
+  <children xmi:type="umlnotation:UMLShape" xmi:id="_SyMmgK6fEeu7PuEReRs2bQ" fontName="Sans" fontHeight="8" fillColor="14277119" transparency="0" lineColor="12632258" lineWidth="1" showStereotype="Label">
+    <children xmi:type="notation:DecorationNode" xmi:id="_SyNNkK6fEeu7PuEReRs2bQ" type="ImageCompartment">
+      <layoutConstraint xmi:type="notation:Size" xmi:id="_SyNNka6fEeu7PuEReRs2bQ" width="1320" height="1320"/>
+    </children>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_SyNNkq6fEeu7PuEReRs2bQ" type="Stereotype"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_SyNNk66fEeu7PuEReRs2bQ" type="Name"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_SyNNlK6fEeu7PuEReRs2bQ" type="Parent"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_SyNNla6fEeu7PuEReRs2bQ" visible="false" type="ANNOTATION_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_SyN0oK6fEeu7PuEReRs2bQ" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_SyN0oa6fEeu7PuEReRs2bQ" type="ANNOTATED_OPERATION_COMPARTMENT"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=ConfirmPasswordValidator%5Bjcu%5Ename=ConfirmPasswordValidator.java%5Bjpack%5Ename=validator%5Bjsrcroot%5Esrcfolder=src%5Bproject%5Eid=Bibliotheksystem%5D%5D%5D%5D$uml.Class"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_SyMmga6fEeu7PuEReRs2bQ" x="5280" y="4620"/>
+  </children>
+  <children xmi:type="umlnotation:UMLShape" xmi:id="_Tyb7gK6fEeu7PuEReRs2bQ" fontName="Sans" fontHeight="8" fillColor="14277119" transparency="0" lineColor="12632258" lineWidth="1" showStereotype="Label">
+    <children xmi:type="notation:DecorationNode" xmi:id="_Tyb7gq6fEeu7PuEReRs2bQ" type="ImageCompartment">
+      <layoutConstraint xmi:type="notation:Size" xmi:id="_Tyb7g66fEeu7PuEReRs2bQ" width="1320" height="1320"/>
+    </children>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tyb7hK6fEeu7PuEReRs2bQ" type="Stereotype"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tyb7ha6fEeu7PuEReRs2bQ" type="Name"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tyb7hq6fEeu7PuEReRs2bQ" type="Parent"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tyb7h66fEeu7PuEReRs2bQ" visible="false" type="ANNOTATION_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tyb7iK6fEeu7PuEReRs2bQ" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tyb7ia6fEeu7PuEReRs2bQ" type="ANNOTATED_OPERATION_COMPARTMENT"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=EmailValidator%5Bjcu%5Ename=EmailValidator.java%5Bjpack%5Ename=validator%5Bjsrcroot%5Esrcfolder=src%5Bproject%5Eid=Bibliotheksystem%5D%5D%5D%5D$uml.Class"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Tyb7ga6fEeu7PuEReRs2bQ" x="12144" y="4620"/>
+  </children>
+  <children xmi:type="umlnotation:UMLShape" xmi:id="_Tyb7iq6fEeu7PuEReRs2bQ" fontName="Sans" fontHeight="8" fillColor="14277119" transparency="0" lineColor="12632258" lineWidth="1" showStereotype="Label">
+    <children xmi:type="notation:DecorationNode" xmi:id="_TycikK6fEeu7PuEReRs2bQ" type="ImageCompartment">
+      <layoutConstraint xmi:type="notation:Size" xmi:id="_Tycika6fEeu7PuEReRs2bQ" width="1320" height="1320"/>
+    </children>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tycikq6fEeu7PuEReRs2bQ" type="Stereotype"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tycik66fEeu7PuEReRs2bQ" type="Name"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_TycilK6fEeu7PuEReRs2bQ" type="Parent"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tycila6fEeu7PuEReRs2bQ" type="ANNOTATION_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tycilq6fEeu7PuEReRs2bQ" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tycil66fEeu7PuEReRs2bQ" type="ANNOTATED_OPERATION_COMPARTMENT"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=UserValidator%5Bjcu%5Ename=UserValidator.java%5Bjpack%5Ename=validator%5Bjsrcroot%5Esrcfolder=src%5Bproject%5Eid=Bibliotheksystem%5D%5D%5D%5D$uml.Class"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Tyb7i66fEeu7PuEReRs2bQ"/>
+  </children>
+  <children xmi:type="umlnotation:UMLShape" xmi:id="_TycimK6fEeu7PuEReRs2bQ" fontName="Sans" fontHeight="8" fillColor="14277119" transparency="0" lineColor="12632258" lineWidth="1" showStereotype="Label">
+    <children xmi:type="notation:DecorationNode" xmi:id="_Tycimq6fEeu7PuEReRs2bQ" type="ImageCompartment">
+      <layoutConstraint xmi:type="notation:Size" xmi:id="_Tycim66fEeu7PuEReRs2bQ" width="1320" height="1320"/>
+    </children>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_TycinK6fEeu7PuEReRs2bQ" type="Stereotype"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tycina6fEeu7PuEReRs2bQ" type="Name"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tycinq6fEeu7PuEReRs2bQ" type="Parent"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_TydJoK6fEeu7PuEReRs2bQ" type="ANNOTATION_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_TydJoa6fEeu7PuEReRs2bQ" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_TydJoq6fEeu7PuEReRs2bQ" type="ANNOTATED_OPERATION_COMPARTMENT"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=PasswordValidator%5Bjcu%5Ename=PasswordValidator.java%5Bjpack%5Ename=validator%5Bjsrcroot%5Esrcfolder=src%5Bproject%5Eid=Bibliotheksystem%5D%5D%5D%5D$uml.Class"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Tycima6fEeu7PuEReRs2bQ" x="12408" y="264"/>
+  </children>
+  <children xmi:type="umlnotation:UMLShape" xmi:id="_TydJo66fEeu7PuEReRs2bQ" fontName="Sans" fontHeight="8" fillColor="14277119" transparency="0" lineColor="12632258" lineWidth="1" showStereotype="Label">
+    <children xmi:type="notation:DecorationNode" xmi:id="_TydJpa6fEeu7PuEReRs2bQ" type="ImageCompartment">
+      <layoutConstraint xmi:type="notation:Size" xmi:id="_TydJpq6fEeu7PuEReRs2bQ" width="1320" height="1320"/>
+    </children>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_TydJp66fEeu7PuEReRs2bQ" type="Stereotype"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_TydJqK6fEeu7PuEReRs2bQ" type="Name"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_TydJqa6fEeu7PuEReRs2bQ" type="Parent"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_TydJqq6fEeu7PuEReRs2bQ" type="ANNOTATION_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_TydJq66fEeu7PuEReRs2bQ" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_TydJrK6fEeu7PuEReRs2bQ" type="ANNOTATED_OPERATION_COMPARTMENT"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=PeriodValidator%5Bjcu%5Ename=PeriodValidator.java%5Bjpack%5Ename=validator%5Bjsrcroot%5Esrcfolder=src%5Bproject%5Eid=Bibliotheksystem%5D%5D%5D%5D$uml.Class"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_TydJpK6fEeu7PuEReRs2bQ" x="6204" y="132"/>
+  </children>
+  <children xmi:type="umlnotation:UMLShape" xmi:id="_TydJra6fEeu7PuEReRs2bQ" fontName="Sans" fontHeight="8" fillColor="14277119" transparency="0" lineColor="12632258" lineWidth="1" showStereotype="Label">
+    <children xmi:type="notation:DecorationNode" xmi:id="_TydwsK6fEeu7PuEReRs2bQ" type="ImageCompartment">
+      <layoutConstraint xmi:type="notation:Size" xmi:id="_Tydwsa6fEeu7PuEReRs2bQ" width="1320" height="1320"/>
+    </children>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tydwsq6fEeu7PuEReRs2bQ" type="Stereotype"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_Tydws66fEeu7PuEReRs2bQ" type="Name"/>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_TydwtK6fEeu7PuEReRs2bQ" type="Parent"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tydwta6fEeu7PuEReRs2bQ" type="ANNOTATION_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tydwtq6fEeu7PuEReRs2bQ" type="ANNOTATED_ATTRIBUTE_COMPARTMENT"/>
+    <children xmi:type="notation:ListCompartment" xmi:id="_Tydwt66fEeu7PuEReRs2bQ" type="ANNOTATED_OPERATION_COMPARTMENT"/>
+    <element xmi:type="uml:Class" href="mmi:///#jsrctype%5Ename=LogoValidator%5Bjcu%5Ename=LogoValidator.java%5Bjpack%5Ename=validator%5Bjsrcroot%5Esrcfolder=src%5Bproject%5Eid=Bibliotheksystem%5D%5D%5D%5D$uml.Class"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_TydJrq6fEeu7PuEReRs2bQ" y="4488"/>
+  </children>
+  <element xsi:nil="true"/>
+</umlnotation:UMLDiagram>
