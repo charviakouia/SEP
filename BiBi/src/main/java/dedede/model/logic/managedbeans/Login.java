@@ -1,6 +1,6 @@
 package dedede.model.logic.managedbeans;
 
-public class Login extends Page<C> {
+public class Login<C> extends Page<C> {
 	
 	
 	

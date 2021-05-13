@@ -1,15 +1,10 @@
 package dedede.model.logic.managedbeans;
 
-@Named
-@
 
-public class PrivacyPolicy extends Page<C> {
+public class PrivacyPolicy<C> extends Page<C> {
 	
 	private String privacyPolicy;
-	
-	
-	public void save() {
-		
-	}
+
+	public void save() {}
 
 }

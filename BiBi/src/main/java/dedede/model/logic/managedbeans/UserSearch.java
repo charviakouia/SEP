@@ -2,8 +2,8 @@ package dedede.model.logic.managedbeans;
 
 import java.io.Serializable;
 
-@Named
-@RequestScoped
+//@Named
+//@RequestScoped
 public class UserSearch extends PaginatedList implements Serializable {
 	
 	

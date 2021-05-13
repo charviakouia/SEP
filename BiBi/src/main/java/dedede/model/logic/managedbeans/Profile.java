@@ -4,10 +4,12 @@ import dedede.model.data.dtos.UserDto;
 import dedede.model.logic.validators.EmailValidator;
 import dedede.model.logic.validators.PasswordValidator;
 import dedede.model.persistence.daos.UserDao;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 
-@Named
-@ViewScoped
-public class Profile extends Page<C> {
+//@Named
+//@ViewScoped
+public class Profile<C> extends Page<C> {
 	
 	private UserDao user;
 	

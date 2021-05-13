@@ -2,8 +2,9 @@ package dedede.model.logic.managedbeans;
 
 import dedede.model.data.dtos.CopyDto;
 import dedede.model.data.dtos.MediumDto;
-
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 
 @Named
 @ViewScoped

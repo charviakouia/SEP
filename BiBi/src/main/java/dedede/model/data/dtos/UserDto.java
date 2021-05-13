@@ -22,7 +22,7 @@ public class UserDto {
 	
 	private boolean isEmailVerified;
 	
-	private Role userRole;
+	// private Role userRole;
 	
 	private String street;
 	
@@ -32,12 +32,9 @@ public class UserDto {
 	
 	private int hausNumber;
 	
-	private AvailabilityStatus availabilityStatus;
+	// private AvailabilityStatus availabilityStatus;
 	
-	private AccountStatus accountStatus;
-	
-	
-	
+	// private AccountStatus accountStatus;
 	
 
 }

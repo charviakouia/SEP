@@ -1,8 +1,11 @@
 package dedede.model.logic.managedbeans;
 
-@Named
-@RequestScoped
-public class SiteNotice extends Page<C> {
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
+
+//@Named
+//@RequestScoped
+public class SiteNotice<C> extends Page<C> {
 	
 	
 	private String siteNotice;

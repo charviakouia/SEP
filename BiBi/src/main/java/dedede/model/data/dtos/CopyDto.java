@@ -12,7 +12,7 @@ public class CopyDto {
 	
 	private Date deadline;
 	
-	private AvailabilityStatus availabilityStaus;
+	// private AvailabilityStatus availabilityStaus;
 	
 	
 

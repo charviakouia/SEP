@@ -1,7 +1,7 @@
 package dedede.model.logic.managedbeans;
 
-@Named
-@ViewScoped
+//@Named
+//@ViewScoped
 public class MediumSearch extends PaginatedList {
 	
 	public void searchMedium() {
