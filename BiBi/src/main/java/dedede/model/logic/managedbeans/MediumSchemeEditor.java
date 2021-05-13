@@ -1,9 +1,7 @@
 package dedede.model.logic.managedbeans;
 
-public class MediumSchemeEditor  {
-	
-	
-	   
+public class MediumSchemeEditor<C> extends Page<C> {
+
 	public void deleteAttribute() {
 		
 	}

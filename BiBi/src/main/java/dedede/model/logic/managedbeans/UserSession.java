@@ -1,8 +1,10 @@
 package dedede.model.logic.managedbeans;
 
-import dedede.model.data.dtos.UserDto;
-
 import java.io.Serializable;
+
+import dedede.model.data.dtos.UserDto;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
 @Named
 @SessionScoped

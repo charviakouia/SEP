@@ -3,12 +3,13 @@ package dedede.model.logic.managedbeans;
 
 import dedede.model.data.dtos.UserDto;
 import dedede.model.persistence.daos.ApplicationDao;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
-import javax.annotation.PostConstruct;
-
-@Named
-@RequestScoped
-public class Registration  {
+//@Named
+//@RequestScoped
+public class Registration<C> extends Page<C> {
 	
 	
 	private ApplicationDao applicationDao;

@@ -1,12 +1,14 @@
 package dedede.model.logic.managedbeans;
 
-@Named
-@SessionSecoped
-public class EmailConfirmation {
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+
+//@Named
+//@SessionScoped
+public class EmailConfirmation<C> extends Page<C> {
 	
 	public void confirmEmail() {
 		
 	}
-	
 
 }

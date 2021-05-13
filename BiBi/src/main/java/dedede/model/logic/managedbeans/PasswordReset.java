@@ -1,5 +1,10 @@
 package dedede.model.logic.managedbeans;
 
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 @Named
 @RequestScoped

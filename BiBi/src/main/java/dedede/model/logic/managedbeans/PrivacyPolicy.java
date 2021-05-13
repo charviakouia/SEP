@@ -1,15 +1,12 @@
 package dedede.model.logic.managedbeans;
 
-@Named
-@
+import jakarta.inject.Named;
 
-public class PrivacyPolicy {
+@Named
+public class PrivacyPolicy<C> extends Page<C> {
 	
 	private String privacyPolicy;
-	
-	
-	public void save() {
-		
-	}
+
+	public void save() {}
 
 }

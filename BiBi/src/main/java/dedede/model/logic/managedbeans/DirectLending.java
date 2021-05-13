@@ -1,8 +1,12 @@
 package dedede.model.logic.managedbeans;
 
-@Named
-@SessionScoped
-public class DirectLending {
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import java.io.Serializable;
+
+//@Named
+//@SessionScoped
+public class DirectLending<C> extends Page<C> implements Serializable {
 	
 	public void lendMedium() {
 		
