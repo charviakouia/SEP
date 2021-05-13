@@ -9,7 +9,11 @@ import jakarta.inject.Named;
 
 @Named
 @RequestScoped
+<<<<<<< HEAD
 public class Registration  {
+=======
+public class Registration extends Page<C> {
+>>>>>>> origin/ivansBranch
 	
 	
 	private ApplicationDao applicationDao;

@@ -6,7 +6,11 @@ import jakarta.inject.Named;
 
 @Named
 @ApplicationScoped
+<<<<<<< HEAD
 public class Error {
+=======
+public class Error extends Page<C> {
+>>>>>>> origin/ivansBranch
 	
 	private EntityInstanceDoesNotExistException entityInstanceDoesNotExistException;
 	

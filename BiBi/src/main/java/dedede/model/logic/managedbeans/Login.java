@@ -1,6 +1,10 @@
 package dedede.model.logic.managedbeans;
 
+<<<<<<< HEAD
 public class Login {
+=======
+public class Login extends Page<C> {
+>>>>>>> origin/ivansBranch
 	
 	
 	

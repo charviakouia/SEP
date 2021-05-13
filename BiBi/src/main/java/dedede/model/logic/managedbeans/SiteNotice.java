@@ -5,7 +5,11 @@ import jakarta.inject.Named;
 
 @Named
 @RequestScoped
+<<<<<<< HEAD
 public class SiteNotice  {
+=======
+public class SiteNotice extends Page<C> {
+>>>>>>> origin/ivansBranch
 	
 	
 	private String siteNotice;

@@ -9,7 +9,11 @@ import jakarta.inject.Named;
 
 @Named
 @ViewScoped
+<<<<<<< HEAD
 public class Profile {
+=======
+public class Profile extends Page<C> {
+>>>>>>> origin/ivansBranch
 	
 	private UserDao user;
 	

@@ -7,7 +7,11 @@ import jakarta.inject.Named;
 
 @Named
 @ViewScoped
+<<<<<<< HEAD
 public class MediumCreation {
+=======
+public class MediumCreation extends Page<C> {
+>>>>>>> origin/ivansBranch
 	
 	private MediumDao mediumDao;
 	
