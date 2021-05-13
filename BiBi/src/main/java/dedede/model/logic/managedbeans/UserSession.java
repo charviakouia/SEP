@@ -8,8 +8,8 @@ import jakarta.inject.Named;
 
 @Named
 @SessionScoped
-public class UserSession implements Serializable{
-	
-	private UserDto userLogedIn;
+public class UserSession implements Serializable {
+
+	private UserDto loggedInUser;
 
 }

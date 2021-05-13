@@ -5,14 +5,13 @@ import dedede.model.persistence.daos.UserDao;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
-//@Named
-//@ViewScoped
-public class MediumCreation<C> extends Page<C> {
+@Named
+@ViewScoped
+public class MediumCreation {
 	
 	private MediumDao mediumDao;
 	
 	private UserDao userDao;
-
 	
 	public void createMediumAndFirstCopy() {
 		

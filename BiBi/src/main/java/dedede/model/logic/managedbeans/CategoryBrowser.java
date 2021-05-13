@@ -1,12 +1,9 @@
 package dedede.model.logic.managedbeans;
 
+import jakarta.inject.Named;
+
+@Named
 public class CategoryBrowser extends PaginatedList {
-	
-	private int id;
-	
-	private String  description;
-	
-	private String title;
 	
 	public void createCategory() {
 		

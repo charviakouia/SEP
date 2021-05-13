@@ -2,7 +2,6 @@ package dedede.model.persistence.daos;
 
 import dedede.model.data.dtos.CategoryDto;
 import dedede.model.logic.managedbeans.PaginatedList;
-import dedede.model.logic.managedbeans.Page;
 
 /**
  * This DAO (data access object) manages data pertaining to a category.
@@ -60,7 +59,7 @@ public final class CategoryDao {
 	 * @return					A paginated list of DTO containers with the category data.
 	 * @see						dedede.model.data.dtos.CategoryDto
 	 */
-    public static Page<CategoryDto> getAllCategories(int pageSize, int pageNumber){
+    public static PaginatedList getAllCategories(int pageSize, int pageNumber){
 		return null;
 	}
 
@@ -75,7 +74,7 @@ public final class CategoryDao {
 	 * @return					A paginated list of DTO containers with the category data.
 	 * @see						dedede.model.data.dtos.CategoryDto
 	 */
-    public static Page<CategoryDto> searchCategory(String text, int pageSize, int pageNumber){
+    public static PaginatedList searchCategory(String text, int pageSize, int pageNumber){
 		return null;
 	}
 

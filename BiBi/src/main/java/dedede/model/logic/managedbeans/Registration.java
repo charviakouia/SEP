@@ -7,10 +7,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
-//@Named
-//@RequestScoped
-public class Registration<C> extends Page<C> {
-	
+@Named
+@RequestScoped
+public class Registration {
 	
 	private ApplicationDao applicationDao;
 	

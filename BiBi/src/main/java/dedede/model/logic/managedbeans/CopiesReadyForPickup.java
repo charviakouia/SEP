@@ -1,12 +1,11 @@
 package dedede.model.logic.managedbeans;
 
-import dedede.model.data.dtos.CopyDto;
-
 import java.util.List;
 
+import dedede.model.data.dtos.CopyDto;
+
 public class CopiesReadyForPickup extends PaginatedList {
-	
+
 	private List<CopyDto> listCopies;
-	
 
 }

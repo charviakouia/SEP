@@ -1,11 +1,14 @@
 package dedede.model.logic.managedbeans;
 
+import dedede.model.data.dtos.ApplicationDto;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 @Named
-public class PrivacyPolicy<C> extends Page<C> {
+@ViewScoped
+public class PrivacyPolicy {
 	
-	private String privacyPolicy;
+	private ApplicationDto application;
 
 	public void save() {}
 

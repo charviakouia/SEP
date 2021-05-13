@@ -1,20 +1,17 @@
 package dedede.model.logic.managedbeans;
 
-public class Login<C> extends Page<C> {
+public class Login {
 
 	private String email;
-	
+
 	private String password;
-	
-	
-	
+
 	void login() {
-		
+
 	}
-	
+
 	public void forgotPasword() {
-		
+
 	}
-    
-	
+
 }

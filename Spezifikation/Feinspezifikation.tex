@@ -388,11 +388,11 @@ It renders it possible for the consumer to discover new mediums.
 
 \Javadoc The contact page allows any user to get to know how to contact the site owners.
 
-\begin{controls}
-    \OUT & für die Kontaktinformationen & Nicht-\ADM\\
-    \INP & für das Kontaktinformationen & \ADM\\
-    \BTN & zum Speichern der Änderungen & \ADM\\
-\end{controls}
+\begincontrols[public/contact]
+    % TASK readonly for users and staff
+    \INP & \M{value} & \MB{contact.application.contactInfo} & \ADM\\
+    \BTN & \M{action} & \MB{contact.save()} & \ADM\\
+\endcontrols
 
 \page{Leihfristverstöße}{admin/lending-period-violations}
 

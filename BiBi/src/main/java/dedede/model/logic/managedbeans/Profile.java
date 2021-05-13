@@ -7,9 +7,9 @@ import dedede.model.persistence.daos.UserDao;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
-//@Named
-//@ViewScoped
-public class Profile<C> extends Page<C> {
+@Named
+@ViewScoped
+public class Profile {
 	
 	private UserDao user;
 	
@@ -32,8 +32,6 @@ public class Profile<C> extends Page<C> {
 	private Profile profile1;
 
 	private PasswordReset passwordReset1;
-	
-	
 	
 	
 	public void delete() {

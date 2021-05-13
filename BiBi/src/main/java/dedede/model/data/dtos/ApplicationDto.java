@@ -2,36 +2,30 @@ package dedede.model.data.dtos;
 
 import java.util.Date;
 
-import dedede.model.logic.managedbeans.SiteNotice;
 import dedede.model.logic.util.RegisterStatus;
 import dedede.model.logic.util.Theme;
 
 public class ApplicationDto {
 	
-	private String applicationName;
+	private String name;
 
-	private SiteNotice siteNotice;
+	private String siteNotice;
 	
-	private String privacyPolcy;
+	private String privacyPolicy;
+
+	private String contactInfo;
 	
 	private byte[] logo;
 	
 	private String emailRegEx;
 	
-	// private Theme css;
+	private Theme css;
 	
-	private String lendingStaus;
+	private String lendingStatus;
 	
 	private Date connectionDeadline;
 	
 	private Date returnPeriod;
 	
-	// private RegisterStatus registerStatus;
-
-	private UserDto userDto1;
-	
-	
-	
-
-
+	private RegisterStatus registerStatus;
 }

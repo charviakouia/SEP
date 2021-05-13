@@ -8,11 +8,11 @@ import dedede.model.logic.util.Role;
 
 public class UserDto {
 	
-	private int userId;
+	private int id;
 	
 	private String firstName;
 	
-	private String sureName;
+	private String lastName;
 	
 	private Date returnDeadline;
 	
@@ -24,7 +24,7 @@ public class UserDto {
 	
 	private boolean isEmailVerified;
 	
-	// private Role userRole;
+	private Role userRole;
 	
 	private String street;
 	
