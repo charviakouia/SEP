@@ -5,11 +5,12 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 @Named
-@SessionScoped
-public class Admininstration {
+public class Admininstration   {
 	
-	@Inject
+
 	private ApplicationDto applicationDto;
 	
 	public void save() {

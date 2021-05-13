@@ -1,5 +1,5 @@
 package dedede.model.persistence.exceptions;
 
-public class MaxConnectionsException {
+public class MaxConnectionsException extends Throwable {
 
 }

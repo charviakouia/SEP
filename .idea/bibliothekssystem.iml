@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jakarta.faces-3.0.0" level="project" />
+    <orderEntry type="library" name="weld-servlet-shaded-4.0.0.Final" level="project" />
   </component>
 </module>
