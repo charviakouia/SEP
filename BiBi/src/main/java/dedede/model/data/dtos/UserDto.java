@@ -2,7 +2,9 @@ package dedede.model.data.dtos;
 
 import java.util.Date;
 
-
+/**
+ * A class for aggregate and encapsulate data about an user for transfer.
+ */
 public class UserDto {
 	
 	

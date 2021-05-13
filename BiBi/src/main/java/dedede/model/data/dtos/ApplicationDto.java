@@ -4,6 +4,9 @@ import backing_beans.Impressum;
 
 import java.util.Date;
 
+/**
+ * A class for aggregate and encapsulate data about an application for transfer.
+ */
 public class ApplicationDto {
 	
 	
