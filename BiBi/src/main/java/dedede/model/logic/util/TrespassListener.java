@@ -7,19 +7,14 @@ import jakarta.faces.event.PhaseListener;
 public class TrespassListener implements PhaseListener {
 
 	@Override
-	public void afterPhase(PhaseEvent phaseEvent) {
-
-	}
+	public void afterPhase(PhaseEvent phaseEvent) {}
 
 	@Override
-	public void beforePhase(PhaseEvent phaseEvent) {
-
-	}
+	public void beforePhase(PhaseEvent phaseEvent) { }
 
 	@Override
 	public PhaseId getPhaseId() {
 		return null;
-		
 	}
 
 }

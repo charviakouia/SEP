@@ -10,6 +10,5 @@ public class EmailConfirmation<C> extends Page<C> {
 	public void confirmEmail() {
 		
 	}
-	
 
 }

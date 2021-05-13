@@ -1,6 +1,7 @@
 package dedede.model.persistence.daos;
 
 import dedede.model.data.dtos.CategoryDto;
+import dedede.model.logic.managedbeans.PaginatedList;
 import dedede.model.logic.managedbeans.Page;
 
 /**
@@ -12,8 +13,9 @@ import dedede.model.logic.managedbeans.Page;
  * @author Meta Knight
  *
  */
+
 public final class CategoryDao {
-	
+
 	private UserDao userService;
 	private CategoryDao categoryDao;
 

@@ -2,7 +2,6 @@ package dedede.model.logic.managedbeans;
 
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
-
 import java.io.Serializable;
 
 //@Named

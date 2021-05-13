@@ -2,9 +2,11 @@ package dedede.model.data.dtos;
 
 import java.util.Date;
 
+import dedede.model.logic.util.AccountStatus;
+import dedede.model.logic.util.Role;
+
 
 public class UserDto {
-	
 	
 	private int userId;
 	
@@ -29,12 +31,10 @@ public class UserDto {
 	private String location;
 	
 	private int plz;
+
+	private int streetNumber;
 	
-	private int hausNumber;
-	
-	// private AvailabilityStatus availabilityStatus;
-	
-	// private AccountStatus accountStatus;
+	private AccountStatus accountStatus;
 	
 
 }

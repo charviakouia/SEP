@@ -7,14 +7,10 @@ import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
 @FacesValidator
-public class LogoValidator implements Validator {
-	
-	public void validate() {
-		
-	}
+public class LogoValidator implements Validator<String> {
 
 	@Override
-	public void validate(FacesContext facesContext, UIComponent uiComponent, Object o) throws ValidatorException {
+	public void validate(FacesContext facesContext, UIComponent uiComponent, String s) throws ValidatorException {
 
 	}
 }

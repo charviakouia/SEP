@@ -10,12 +10,12 @@ import jakarta.inject.Named;
 
 @Named
 @FacesValidator
-public class UserValidator implements Validator {
+public class UserValidator implements Validator<String> {
 	
 	private UserDto userValidator;
 
 	@Override
-	public void validate(FacesContext facesContext, UIComponent uiComponent, Object o) throws ValidatorException {
+	public void validate(FacesContext facesContext, UIComponent uiComponent, String s) throws ValidatorException {
 
 	}
 }
