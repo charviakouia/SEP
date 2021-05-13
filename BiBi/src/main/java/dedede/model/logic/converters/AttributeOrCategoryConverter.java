@@ -1,4 +1,11 @@
 package dedede.model.logic.converters;
 
-public class AttributeOrCategoryConverter {
+import dedede.model.logic.util.AttributeOrCategory;
+import jakarta.faces.convert.EnumConverter;
+
+public class AttributeOrCategoryConverter extends EnumConverter {
+	
+	public AttributeOrCategoryConverter() {
+		super(AttributeOrCategory.class);
+	}
 }

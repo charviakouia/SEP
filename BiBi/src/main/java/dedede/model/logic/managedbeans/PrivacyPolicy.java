@@ -1,8 +1,8 @@
 package dedede.model.logic.managedbeans;
 
-@Named
-@
+import jakarta.inject.Named;
 
+@Named
 public class PrivacyPolicy {
 	
 	private String privacyPolicy;

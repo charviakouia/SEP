@@ -1,15 +1,17 @@
 package dedede.model.data.dtos;
 
-import backing_beans.Impressum;
-
 import java.util.Date;
+
+import dedede.model.logic.managedbeans.SiteNotice;
+import dedede.model.logic.util.RegisterStatus;
+import dedede.model.logic.util.Theme;
 
 public class ApplicationDto {
 	
 	
 	private String applicationName;
 	
-	private Impressum siteNotice;
+	private SiteNotice siteNotice;
 	
 	private String privacyPolcy;
 	

@@ -4,6 +4,8 @@ import dedede.model.data.dtos.UserDto;
 import dedede.model.logic.validators.EmailValidator;
 import dedede.model.logic.validators.PasswordValidator;
 import dedede.model.persistence.daos.UserDao;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 
 @Named
 @ViewScoped
