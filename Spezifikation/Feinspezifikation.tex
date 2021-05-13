@@ -10,6 +10,8 @@
 \usepackage{float}
 \usepackage{tabulary}
 \usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
@@ -62,17 +64,19 @@ Zudem entsprechen die Farben, die die Pakete im Diagramm besitzen, den Farben im
 Die Ordnerstruktur des Projekts wird als Ordnerbaum dargestellt. 
 Während die Paketstruktur im Ordner 'BiBi.src.main.java' abgebildet ist, enthält 'BiBi.src.main.webapp.view' die verwendeten Facelets mit entsprechender Rollenzuordnung. \vspace{0.5em}
 
-\begin{figure}[h]
-
-\end{figure}
-
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
-	\includegraphics[width = 20em]{Modeldiagramm}
-\end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width = 15em]{FileStructure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width = 19em]{Modeldiagramm}
+		\caption{Modeldiagramm}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width = 15em]{FileStructure}
+		\caption{Ordnerstruktur}
+	\end{subfigure}
 \end{figure}
 
 %----------------------------------------------------------------------Kapitel 3--------------------------------------------------------------------------------------------
