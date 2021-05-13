@@ -1,5 +1,9 @@
 package dedede.model.logic.managedbeans;
 
+import java.util.ArrayList;
+
+import dedede.model.logic.util.AttributeOrCategory;
+import dedede.model.logic.util.SearchOperator;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -7,12 +11,25 @@ import jakarta.inject.Named;
 @ViewScoped
 public class MediumSearch extends PaginatedList {
 	
-	public void searchMedium() {
+	private String generalSearchTerm;
+	
+	private ArrayList<NuancedSearchQuery> nuancedSearchQueries;
+	
+	public void search() {
 		
 	}
 	
-	public void addAditionalSearchField() {
+	public void addSearchField() {
 		
 	}
 
+}
+
+class NuancedSearchQuery {
+	
+	private SearchOperator operator;
+	
+	private AttributeOrCategory criterion;
+	
+	private String searchTerm;
 }
