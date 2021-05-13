@@ -2,7 +2,7 @@ package dedede.model.logic.managedbeans;
 
 import dedede.model.data.dtos.ApplicationDto;
 
-public class Admininstration extends Page {
+public class Admininstration  {
 	
 	private ApplicationDto applicationDto;
 	

@@ -7,7 +7,7 @@ import dedede.model.persistence.daos.UserDao;
 
 @Named
 @ViewScoped
-public class Profile extends Page {
+public class Profile {
 	
 	private UserDao user;
 	

@@ -4,7 +4,7 @@ import dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 
 @Named
 @ApplicationScoped
-public class Error extends Page {
+public class Error {
 	
 	private EntityInstanceDoesNotExistException entityInstanceDoesNotExistException;
 	

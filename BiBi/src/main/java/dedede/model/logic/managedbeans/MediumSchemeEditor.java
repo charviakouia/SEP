@@ -1,6 +1,6 @@
 package dedede.model.logic.managedbeans;
 
-public class MediumSchemeEditor extends Page {
+public class MediumSchemeEditor  {
 	
 	
 	   

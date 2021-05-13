@@ -3,7 +3,7 @@ package dedede.model.logic.managedbeans;
 @Named
 @
 
-public class PrivacyPolicy extends Page{
+public class PrivacyPolicy {
 	
 	private String privacyPolicy;
 	

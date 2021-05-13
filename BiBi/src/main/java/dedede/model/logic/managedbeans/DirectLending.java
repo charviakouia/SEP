@@ -2,7 +2,7 @@ package dedede.model.logic.managedbeans;
 
 @Named
 @SessionScoped
-public class DirectLending extends Page{
+public class DirectLending {
 	
 	public void lendMedium() {
 		
