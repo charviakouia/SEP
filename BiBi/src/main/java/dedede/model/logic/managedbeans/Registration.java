@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 
 @Named
 @RequestScoped
-public class Registration extends Page {
+public class Registration extends Page<C> {
 	
 	
 	private ApplicationDao applicationDao;

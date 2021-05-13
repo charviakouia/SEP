@@ -2,7 +2,7 @@ package dedede.model.logic.managedbeans;
 
 @Named
 @RequestScoped
-public class SiteNotice extends Page {
+public class SiteNotice extends Page<C> {
 	
 	
 	private String siteNotice;

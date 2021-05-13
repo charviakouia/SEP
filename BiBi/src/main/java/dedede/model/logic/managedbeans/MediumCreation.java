@@ -5,7 +5,7 @@ import dedede.model.persistence.daos.UserDao;
 
 @Named
 @ViewScoped
-public class MediumCreation extends Page{
+public class MediumCreation extends Page<C> {
 	
 	private MediumDao mediumDao;
 	
