@@ -7,6 +7,11 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
+/**
+ * The backing bean for the registration page.
+ * On this page an anonymous user can register themself. Additionally, it can be used by
+ * administrators to register new users.
+ */
 @Named
 @RequestScoped
 public class Registration {
@@ -22,6 +27,9 @@ public class Registration {
 		
 	}
 	
+	/**
+	 * As an anonymous user register to the system.
+	 */
 	public void register() {
 		
 	}

@@ -9,6 +9,11 @@ import dedede.model.data.dtos.UserDto;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
+/**
+ * Backing bean for the direct landing page.
+ * Here, library staff or higher can lend copies to user.
+ *
+ */
 @Named
 @SessionScoped
 public class DirectLending implements Serializable {
@@ -20,10 +25,16 @@ public class DirectLending implements Serializable {
 
 	private ArrayList<CopyDto> copies;
 
-	public void lendMedium() {
+	/**
+	 * Lend the selected list of copies to the given user.
+	 */
+	public void lendCopies() {
 
 	}
 
+	/**
+	 * Add a signature input field.
+	 */
 	public void addSignatureInputField() {
 
 	}

@@ -1,18 +1,27 @@
 package dedede.model.logic.managedbeans;
 
-import dedede.model.persistence.daos.MediumDao;
-import dedede.model.persistence.daos.UserDao;
+import dedede.model.data.dtos.CopyDto;
+import dedede.model.data.dtos.MediumDto;
+import dedede.model.data.dtos.UserDto;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
+/**
+ * Backing bean for the medium creation facelet.
+ */
 @Named
 @ViewScoped
 public class MediumCreation {
 	
-	private MediumDao mediumDao;
+	private MediumDto medium;
 	
-	private UserDao userDao;
+	private CopyDto copy;
 	
+	private UserDto user;
+	
+	/**
+	 * Create this medium and its first copy.
+	 */
 	public void createMediumAndFirstCopy() {
 		
 	}
