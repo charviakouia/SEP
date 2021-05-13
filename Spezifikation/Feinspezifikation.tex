@@ -54,15 +54,26 @@ Bei diesem Dokument handelt es sich um die Feinspezifikation unseres Bibliotheks
 \section{Projektübersicht}
 \sectionauthor{Ivan Charviakou}
 
-\subsection{Paketübersicht}
-Das folgende Diagramm stellt die MVC-Architektur mit den Beziehungen zwischen den einzelnen Komponenten anhand der gegebenen Applikation dar.
+\subsection{Paketübersicht und Ordnerstruktur}
+Das angegebene Diagramm stellt die MVC-Architektur mit den Beziehungen zwischen den einzelnen Komponenten anhand der gegebenen Applikation dar.
 Dabei folgt die Komponentenaufteilung der Paketstruktur der Applikation und es werden die Paketnamen zusammen mit den wichtigsten darin enthaltenen Klassen / Komponenten / Funktionalitäten angegeben.
-Zudem entsprechen die Farben, die die Pakete im Diagramm besitzen, den Farben im nachfolgenden Klassendiagramm.
+Zudem entsprechen die Farben, die die Pakete im Diagramm besitzen, den Farben im nachfolgenden Klassendiagramm. \vspace{0.5em}
 
-\subsection{Ordnerstruktur}
-Im Folgenden wird die Ordnerstruktur des Projekts als Ordnerbaum dargestellt.
-Während die Paketstruktur im Ordner 'BiBi.src.main.java' abgebildet ist, enthält 'BiBi.src.main.webapp.view' die verwendeten Facelets mit entsprechender Rollenzuordnung.
+Die Ordnerstruktur des Projekts wird als Ordnerbaum dargestellt.
+Während die Paketstruktur im Ordner 'BiBi.src.main.java' abgebildet ist, enthält 'BiBi.src.main.webapp.view' die verwendeten Facelets mit entsprechender Rollenzuordnung. \vspace{0.5em}
 
+\begin{figure}[h]
+
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width = 20em]{Modeldiagramm}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width = 15em]{FileStructure}
+\end{figure}
 
 %----------------------------------------------------------------------Kapitel 3--------------------------------------------------------------------------------------------
 
@@ -79,16 +90,20 @@ Während die Paketstruktur im Ordner 'BiBi.src.main.java' abgebildet ist, enthä
 \section{View}
 \sectionauthor{León Liehr}
 
-\newcommand{\M}[1]{\texttt{#1}}
-\newcommand{\tag}[2]{\M{#1:#2}}
+\newcommand{\M}[1]{\texttt{#1}} % monospaced
+\newcommand{\tag}[2]{\M{#1:#2}} % JSF tag
+\newcommand{\B}[1]{\#\{#1\}} % JSF binding
+\newcommand{\MB}[1]{\M{\B{#1}}} % monospaced JSF binding
 
 \subsection{Komponenten}
 
 JSF Composite Components.
 
-\subsection{Vorlagen}
+\subsection{Seitenvorlagen}
 
 JSF Templates.
+
+\subsubsection{Einzige Seitenvorlage}
 
 \begin{table}[H]
     \centering
@@ -100,8 +115,9 @@ JSF Templates.
         \midrule
         \tag{ui}{insert} & \M{name} & \M{title} & \\
         \tag{ui}{insert} & \M{name} & \M{content} & \\
-        \tag{ui}{include} & \M{src} & \M{header.xhtml} & \\
-        \tag{ui}{include} & \M{src} & \M{footer.xhtml} & \\
+        \tag{ui}{include} & \M{src} & \M{header.xhtml}\textsuperscript{\ref{facelet_header}} & \\
+        \tag{h}{messages} & \M{globalOnly} & \M{true} & \\
+        \tag{ui}{include} & \M{src} & \M{footer.xhtml}\textsuperscript{\ref{facelet_footer}} & \\
         \bottomrule
     \end{tabular}
     \caption{\M{template.xhtml}}
@@ -116,10 +132,14 @@ JSF Templates.
         \textbf{Typ} & \textbf{Name} & \textbf{Wert} & \textbf{Sichtbarkeit}\\
         \midrule
         \multirow{2}{*}{\tag{h}{commandButton}} & \M{id} & \M{xxx} & \\
-        & \M{action} & \M{header.displayHelpText()} & \\
+        & \M{action} & \MB{header.displayHelpText()} & \\
+        \tag{h}{inputText} & \M{value} & \MB{header.mediumSearchTerm} & \\
+        \tag{h}{commandLink} & \M{action} & \MB{header.logOut} & \\
+        \tag{h}{outputLink} & \M{value} & \M{profile.xhtml?id=\B{header.user.id}} & \\
         \bottomrule
     \end{tabular}
     \caption{\M{header.xhtml}}
+    \label{facelet_header}
 \end{table}
 
 \begin{table}[H]
@@ -133,6 +153,7 @@ JSF Templates.
         \bottomrule
     \end{tabular}
     \caption{\M{footer.xhtml}}
+    \label{facelet_footer}
 \end{table}
 
 %Einlage & des Titels einer konkreten Seite & \PUB\\
