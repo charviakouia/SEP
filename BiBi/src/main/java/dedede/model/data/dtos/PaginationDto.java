@@ -53,28 +53,5 @@ public class PaginationDto implements Serializable {
 
 	}
 
-	public void nextPage() {
 
-	}
-
-	public void setPage(int page) {
-
-	}
-
-	public void previousPage() {
-
-	}
-
-	public int getCurrentPage() {
-		return page;
-	}
-
-	public void setSortBy(String sortBy) {
-
-	}
-
-	public String getSortBy() {
-		return sortBy;
-
-	}
 }
