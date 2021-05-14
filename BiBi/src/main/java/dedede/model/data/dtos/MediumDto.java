@@ -12,9 +12,9 @@ public class MediumDto {
 	
 	private Integer id;
 	
-	private Set<AttributeDto> attribute;
+	private Set<AttributeDto> attributes;
 
-	private Set<CopyDto> attribute;
+	private Set<CopyDto> copies;
 	
 	private String category;
 
@@ -26,12 +26,21 @@ public class MediumDto {
 		this.id = id;
 	}
 
-	public Set<AttributeDto> getAttribute() {
-		return attribute;
+	public Set<AttributeDto> getAttributes() {
+		return attributes;
 	}
 
-	public void setAttribute(Set<AttributeDto> attribute) {
-		this.attribute = attribute;
+	public void setAttributes(Set<AttributeDto> attributes) {
+		this.attributes = attributes;
+	}
+	
+
+	public Set<CopyDto> getCopies() {
+		return copies;
+	}
+
+	public void setCopies(Set<CopyDto> copies) {
+		this.copies = copies;
 	}
 
 	public String getCategory() {
