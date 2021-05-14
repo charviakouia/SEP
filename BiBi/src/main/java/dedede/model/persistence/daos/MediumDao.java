@@ -1,10 +1,10 @@
 package dedede.model.persistence.daos;
 
+import java.util.List;
+
 import dedede.model.data.dtos.CopyDto;
 import dedede.model.data.dtos.MediumDto;
 import dedede.model.data.dtos.UserDto;
-
-import java.util.List;
 
 /**
  * This DAO (data access object) manages data pertaining to a medium or a copy.
@@ -17,6 +17,10 @@ import java.util.List;
  */
 public final class MediumDao {
 
+	private MediumDao() {
+		throw new IllegalStateException();
+	}
+	
 	/**
 	 * Enters medium data into the persistent data store.
 	 * The enclosed ID must not be associated with an existing data entry in the data store.

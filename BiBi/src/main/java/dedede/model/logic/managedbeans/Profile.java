@@ -1,10 +1,8 @@
 package dedede.model.logic.managedbeans;
 
 import dedede.model.data.dtos.UserDto;
-import dedede.model.logic.validators.EmailValidator;
-import dedede.model.logic.validators.PasswordValidator;
-import dedede.model.persistence.daos.UserDao;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -17,30 +15,17 @@ import jakarta.inject.Named;
 @ViewScoped
 public class Profile {
 	
-	private UserDao user;
-	
-	private UserDto userDto;
+	private UserDto user;
 	
 	private String password;
 	
-	private String reapeatPasword;
+	private String confirmedPassword;
 	
-	private String email;
-	
-	private String userId;
-	
-	private EmailValidator emailValidator;
-	
-	private PasswordValidator passwordValidator;
-	
+	@Inject
 	private UserSession userSession;
-
-	private Profile profile1;
-
-	private PasswordReset passwordReset1;
 	
 	/**
-	 * As admin delete the user.
+	 * Close one's own account if this is the profile of the current user or delete a user as an admin.
 	 */
 	public void delete() {
 		

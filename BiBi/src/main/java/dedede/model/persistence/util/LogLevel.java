@@ -1,6 +1,6 @@
 package dedede.model.persistence.util;
 
-public enum LoggerLevel {
+public enum LogLevel {
 	SEVERE, DETAILED, DEVELOPMENT
 
 }

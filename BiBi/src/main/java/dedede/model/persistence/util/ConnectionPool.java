@@ -6,11 +6,30 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectionPool {
 	
+	private static volatile ConnectionPool INSTANCE = null;
 	
 	private Queue<Connection> connections = null;
 	
 	private final AtomicInteger maxConnections = new AtomicInteger();
 	
+	private ConnectionPool() {
+		if (INSTANCE != null) {
+			throw new IllegalStateException();
+		}
+	}
+	
+	// https://fullstackdeveloper.guru/2020/04/06/how-to-implement-singleton-pattern-in-java/
+	public static ConnectionPool getInstance() {
+		if (INSTANCE == null) {
+			synchronized (ConnectionPool.class) {
+				if (INSTANCE == null) {					
+					INSTANCE = new ConnectionPool();
+				}
+			}
+		}
+		
+		return INSTANCE;
+	}
 	
 	public Connection fetchConnection() {
 		

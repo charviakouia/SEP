@@ -1,12 +1,12 @@
 package dedede.model.logic.util;
 
-public class PasswordHashingModule {
+public final class PasswordHashingModule {
 	
 	private PasswordHashingModule() {
-		
+		throw new IllegalStateException();
 	}
 
-	public String hashPassword() {
+	public static String hashPassword() {
 		return null;
 		
 	}

@@ -1,8 +1,12 @@
 package dedede.model.logic.util;
 
-public class TokenGenerator {
+public final class TokenGenerator {
 
-	public static String generateToken() {
+	private TokenGenerator() {
+		throw new IllegalStateException();
+	}
+	
+	public static Token generateToken() {
 		return null;
 	}
 }
