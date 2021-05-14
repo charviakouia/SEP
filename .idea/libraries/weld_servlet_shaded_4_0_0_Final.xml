@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="weld-servlet-shaded-4.0.0.Final">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/BiBi/src/main/webapp/WEB-INF/lib/weld-servlet-shaded-4.0.0.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/BiBi/src/main/webapp/WEB-INF/lib/jakarta.mail-2.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/BiBi/src/main/webapp/WEB-INF/lib/jakarta.faces-3.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

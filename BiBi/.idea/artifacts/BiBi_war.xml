@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="BiBi:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>BiBi</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="BiBi-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="BiBi:war exploded" />
+    </root>
+  </artifact>
+</component>
