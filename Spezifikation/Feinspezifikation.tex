@@ -265,13 +265,15 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \section{View}
 \sectionauthor{León Liehr}
 
-TODO
+Was noch fehlt:
 
 \begin{itemize}
     \item IDs pro Element
-    \item Korrekte Sichtbarkeiten
+    \item Korrekte Sichtbarkeiten (es fehlt konditionales read-only zB)
     \item Composite-Component-Definitionen für paginierte Liste etc.
     \item Manchmal fehlt repeat-Element
+    \item Manche Tabellen sind noch nicht im neuen Format (die, die „Beschreibung“ haben)
+    \item Converter und Validators sind nicht aufgezeichnnet
 \end{itemize}
 
 \newcommand{\M}[1]{\texttt{#1}} % monospaced
@@ -338,8 +340,6 @@ TODO
 
 \newcommand{\component}[2]{\subsubsection{#1 (\texttt{#2})}}
 
-\newcommand{\Parameter}{\paragraph*{Parameter}}
-
 \newcommand{\BTN}{\tag{h}{commandButton}}
 \newcommand{\LNK}{\tag{h}{outputLink}}
 \newcommand{\INP}{\tag{h}{inputText}}
@@ -392,7 +392,7 @@ JSF Templates.
 
 \subsection{Seiten}
 
-\subsection{Abzuholende Exemplare}\label{page_copies_ready_for_pickup}
+\subsubsection{Abzuholende Exemplare}\label{page_copies_ready_for_pickup}
 
 \begin{controls}
     \LST & aller abzuholenden Exemplare & \BIB\\
@@ -414,7 +414,7 @@ JSF Templates.
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
 \end{table}
 
-\subsection{Eigene abzuholende Exemplare}\label{page_my_copies_ready_for_pickup}
+\subsubsection{Eigene abzuholende Exemplare}\label{page_my_copies_ready_for_pickup}
 
 \begin{controls}
     \LST & aller abzuholenden Exemplare & \USR\\
@@ -434,7 +434,7 @@ JSF Templates.
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
 \end{table}
 
-\subsection{Eigene ausgeliehene Exemplare}\label{page_my_borrowed_copies}
+\subsubsection{Eigene ausgeliehene Exemplare}\label{page_my_borrowed_copies}
 
 \begin{controls}
     \LST & aller ausgeliehenen Exemplare & \USR\\
@@ -454,7 +454,7 @@ JSF Templates.
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
 \end{table}
 
-\subsection{Anmeldemaske}\label{page_login}
+\subsubsection{Anmeldemaske}\label{page_login}
 
 \begincontrols[public/login]
     \INP & \M{value} & \MB{login.user.email} & \ANO\\
@@ -463,7 +463,7 @@ JSF Templates.
     \tag{h}{commandLink} & \M{action} & \MB{login.resetPassword()} & \ANO\\
 \endcontrols
 
-\subsection{Datenschutzerklärung}\label{page_privacy_policy}
+\subsubsection{Datenschutzerklärung}\label{page_privacy_policy}
 
 \begincontrols[public/privacy-policy]
     % TASK do the readonly stuff!!
@@ -471,34 +471,35 @@ JSF Templates.
     \BTN & \M{action} & \MB{privacyPolicy.save()} & \ADM\\
 \endcontrols
 
-\subsection{Direktausleihe}\label{pagw_direct_lending}
-
-\Parameter
-Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureingabefeld.
+\subsubsection{Direktausleihe}\label{page_direct_lending}
 
 \begincontrols[staff/reactive-lending]
     \tag{bibi}{reactiveInputText} & \M{value} & \MB{directLending.user.email} & \BIB\\
-    % BEACON TASK 5x vorhanden!!!!!
-    \tag{bibi}{reactiveInputText} & \M{value} & \MB{COPY.signature} & \BIB\\
+    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{directLending.copies} & \multirow{2}{*}{\BIB}\\
+    & \M{var} & \hyperref[subcontrol_direct_lending_copy]{\M{copy}} & \\
     \BTN & \M{action} & \MB{directLending.addSignatureInputField()} & \BIB\\
     \BTN & \M{action} & \MB{directLending.lendCopies()} & \BIB\\
 \endcontrols
 
-\subsection{E-Mail-Bestätigung}\label{page_email_confirmation}
+\beginsubcontrols[Bedienelemente pro Exemplar (5 bei Seitenaufruf)][subcontrol_direct_lending_copy]
+\tag{bibi}{reactiveInputText} & \M{value} & \MB{copy.signature} & \BIB\\
+\endsubcontrols
+
+\subsubsection{E-Mail-Bestätigung}\label{page_email_confirmation}
 
 \begincontrols[public/email-confirmation]
     \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{token} & \multirow{2}{*}{\PUB}\\
     & \M{value} & \MB{emailConfirmation.token} &\\
 \endcontrols
 
-\subsection{Fehlerseite}\label{page_error}
+\subsubsection{Fehlerseite}\label{page_error}
 
 \begin{controls}
     \OUT & für den Titel der Fehlermeldung & \PUB\\
     \OUT & für die Beschreibung des Fehlers & \PUB\\
 \end{controls}
 
-\subsection{Impressum}\label{page_site_notice}
+\subsubsection{Impressum}\label{page_site_notice}
 
 \begincontrols[public/site-notice]
     % TASK readonly for users and staff
@@ -506,7 +507,7 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \BTN & \M{action} & \MB{siteNotice.save()} & \ADM\\
 \endcontrols
 
-\subsection{Kategorienbearbeitung}\label{page_category_editor}
+\subsubsection{Kategorienbearbeitung}\label{page_category_editor}
 
 \begincontrols[staff/category-editor]
     \INP & \M{value} & \MB{categoryEditor.category.name} & \BIB\\
@@ -514,23 +515,21 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \BTN & \M{action} & \MB{categoryEditor.save()} & \BIB\\
 \endcontrols
 
-\subsection{Kategorierenstöberer}\label{page_category_browser}
+\subsubsection{Kategorierenstöberer}\label{page_category_browser}
 
 \begincontrols[public/category-browser]
     \tag{bibi}{reactiveInputField} & \M{value} & \MB{categoryBrowser.searchTerm} & \PUB\\
     \BTN & \M{action} & \MB{categoryBroswer.searchCategory()} & \PUB\\
-    %TODO!!!
-%    Baumansicht & mancher Kategorien & \PUB\\
+    \tag{bibi}{treeView} & & & \PUB \\
     \OUT & \M{value} & \MB{categoryBrowser.category.name} & \PUB\\
     \OUT & \M{value} & \MB{categoryBrowser.category.description} & \PUB\\
     \tag{h}{commandLink} & \M{action} & \hyperref[page_category_editor]{\M{staff/category-editor.xhtml}} & \BIB\\ % edit
     \tag{h}{commandLink} & \M{action} & \hyperref[page_category_editor]{\M{staff/category-editor.xhtml}} & \BIB\\ % create
     \BTN & \M{action} & \MB{categoryBroswer.delete()} & \BIB\\
-    % BEAON TASK
-%    \LST & aller Medien (Medienvorschauen) in der ausgewählten Kategorie; je ein \LNK zur Medienansicht & \PUB\\
+    \LST & & aller Medien (Medienvorschauen) in der ausgewählten Kategorie & \PUB\\
 \endcontrols
 
-\subsection{Kontakt}\label{page_contact}
+\subsubsection{Kontakt}\label{page_contact}
 
 \begincontrols[public/contact]
     % TASK readonly for users and staff
@@ -538,7 +537,7 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \BTN & \M{action} & \MB{contact.save()} & \ADM\\
 \endcontrols
 
-\subsection{Leihfristverstöße}\label{page_lending_period_violations}
+\subsubsection{Leihfristverstöße}\label{page_lending_period_violations}
 
 \begin{controls}
     \LST & von Exemplaren und Nutzern & \ADM\\
@@ -559,11 +558,11 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
 \end{table}
 
-\subsection{Medienerstellung}\label{page_medium_creation}
+\subsubsection{Medienerstellung}\label{page_medium_creation}
 
 \begincontrols[staff/medium-creation]
-    % TASK pro medienattribut
-    \INP & \M{value} & \MB{ATTRIBUTE} & \BIB\\
+    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{mediumCreation.medium.attributes} & \multirow{2}{*}{\BIB}\\
+    & \M{var} & \hyperref[subcontrol_medium_creation_attribute]{\M{attribute}} &\\
     \INP & \M{value} & \MB{mediumCreation.medium.category} & \BIB\\
     \INP & \M{value} & \MB{mediumCreation.medium.returnPeriod} & \BIB\\
     \INP & \M{value} & \MB{mediumCreation.copy.location} & \BIB\\
@@ -571,33 +570,46 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \BTN & \M{action} & \MB{mediumCreation.create()} & \BIB\\
 \endcontrols
 
-\subsection{Medienrückgabe}\label{page_return_form}
+\beginsubcontrols[Bedienelemente pro Attribut][subcontrol_medium_creation_attribute]
+% QUESTION what other attributes (lavel attribut.type??)
+\INP & \M{value} & \MB{attribute.value} & \BIB\\
+\endsubcontrols
+
+\subsubsection{Medienrückgabe}\label{page_return_form}
 
 \begincontrols[staff/return-form]
     \tag{bibi}{reactiveInputField} & \M{value} & \MB{returnForm.user.email} & \BIB\\
-    % TASK BEACON repeat 5 times (or more)!!!
-    \tag{bibi}{reactiveInputField} & \M{value} & \MB{COPY.signature} & \BIB\\
+    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{returnForm.copies} & \multirow{2}{*}{\BIB}\\
+    & \M{var} & \hyperref[subcontrol_return_form_copy]{\M{copy}} & \\
     \BTN & \M{action} & \MB{returnForm.addSignatureInputField()} & \BIB\\
     \BTN & \M{action} & \MB{returnForm.returnMedium()} & \BIB\\
 \endcontrols
 
-\subsection{Mediensuche}\label{page_medium_search}
+\beginsubcontrols[Bedienelemente pro Exemplare (5 bei Seitenaufruf)][subcontrol_return_form_copy]
+\tag{bibi}{reactiveInputField} & \M{value} & \MB{copy.signature} & \BIB\\
+\endsubcontrols
+
+\subsubsection{Mediensuche}\label{page_medium_search}
 
 \begincontrols[public/medium-search]
     \INP & \M{value} & \MB{mediumSearch.generalSearchTerm} & \PUB\\
     \BTN & \M{action} & \MB{mediumSearch.search()} & \PUB\\
-    % TASK three times, converter, grouped
-    \DRP & \M{value} & \MB{QUERY.operator} & \PUB\\
-    % TASK three times, converter, grouped
-    \DRP & \M{value} & \MB{QUERY.criterion} & \PUB\\
-    % TASK three times, grouped
-    \INP & \M{value} & \MB{QUERY.term} & \PUB\\
+    \tag{ui}{repeat} & \M{value} & \MB{mediumSearch.searchQueries} & \PUB\\
     \BTN & \M{action} & \MB{mediumSearch.addNuancedSearchQuery())} & \PUB\\
     % BEACON TEMPORARY
-    \LST & & aller Suchergebnisse (als Medienvorschauen)e & \PUB\\
+    \LST & & aller Suchergebnisse (als Medienvorschauen) & \PUB\\
 \endcontrols
 
-\subsection{Mediumsansicht}\label{page_medium}
+\beginsubcontrols[Bedienelemente pro Suchabfrage (3 bei Seitenaufruf)][subcontrol_medium_search_query]
+% TASK converter
+\DRP & \M{value} & \MB{query.operator} & \PUB\\
+% TASK three times, converter, grouped
+\DRP & \M{value} & \MB{query.criterion} & \PUB\\
+% TASK three times, grouped
+\INP & \M{value} & \MB{query.term} & \PUB\\
+\endsubcontrols
+
+\subsubsection{Mediumsansicht}\label{page_medium}
 
 \begincontrols[public/medium]
     \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{id} & \multirow{2}{*}{\PUB}\\
@@ -658,7 +670,7 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \label{data_table_medium_copies}
 \end{table}
 
-\subsection{Mediumschemabearbeitung}\label{page_medium_schema_editor}
+\subsubsection{Mediumschemabearbeitung}\label{page_medium_schema_editor}
 
 \begincontrols[admin/medium-schema-editor]
     \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{mediumSchemaEditor.attributes} & \multirow{2}{*}{\ADM}\\
@@ -675,17 +687,18 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
 \BTN & \M{action} & \MB{mediumSchemaEditor.deleteAttribute(attribute.id)} & \ADM\\
 \endsubcontrols
 
-\subsection{Nutzersuche}\label{page_user_search}
+\subsubsection{Nutzersuche}\label{page_user_search}
 
 \begincontrols[admin/user-search]
     \INP & \M{value} & \MB{userSearch.searchTerm} & \ADM\\
     \BTN & \M{action} & \MB{userSearch.searchUser()} & \ADM\\
     \CHK & \M{value} & \MB{userSearch.accountStatus} & \ADM\\
     %TODO beacon
-%    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht; nur sichtbar, wenn schon gesucht wurde & \ADM\\
+    \LST & & & \ADM\\
+    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht & \ADM\\
 \endcontrols
 
-\subsection{Passwortzurücksetzung}\label{page_password_reset}
+\subsubsection{Passwortzurücksetzung}\label{page_password_reset}
 
 \begincontrols[public/password-reset]
     \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{token} & \multirow{2}{*}{\PUB}\\
@@ -695,9 +708,12 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \BTN & \M{action} & \MB{passwordReset.resetPassword()} & \PUB\\
 \endcontrols
 
-\subsection{Profilseite}\label{page_profile}
+\subsubsection{Profilseite}\label{page_profile}
 
 \begincontrols[account/profile]
+    % welche sichtbarkeit
+    \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{id} & \multirow{2}{*}{\USR}\\
+    & \M{value} & \MB{profile.user.id} &\\
     \INP & \M{value} & \MB{profile.user.firstName} & \USR\\
     \INP & \M{value} & \MB{profile.user.lastName} & \USR\\
     \PAS & \M{value} & \MB{profile.password} & \USR\\
@@ -716,7 +732,7 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \BTN & \M{action} & \MB{profile.delete()} & \USR\\
 \endcontrols
 
-\subsection{Registrierungsseite}\label{page_registration}
+\subsubsection{Registrierungsseite}\label{page_registration}
 
 \begincontrols[public/registration]
     \INP & \M{value} & \MB{registration.user.firstName} & \ANO/\ADM\\
@@ -732,7 +748,7 @@ Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureinga
     \BTN & \M{action} & \MB{registration.register()} & \ANO/\ADM\\
 \endcontrols
 
-\subsection{Verwaltungsseite}\label{page_administration}
+\subsubsection{Verwaltungsseite}\label{page_administration}
 
 \begincontrols[admin/administration]
     \INP & \M{value} & \MB{administration.application.returnPeriod} & \ADM\\
