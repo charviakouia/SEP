@@ -21,7 +21,7 @@
 
 \hypersetup{
     colorlinks,
-    linkcolor={red!50!black},
+    linkcolor={cyan!50!black},
     citecolor={blue!50!black},
     urlcolor={blue!80!black}
 }
@@ -75,7 +75,6 @@ Die Ordnerstruktur des Projekts wird als Ordnerbaum dargestellt.
 Während die Paketstruktur im Ordner 'BiBi.src.main.java' abgebildet ist, enthält 'BiBi.src.main.webapp.view' die verwendeten Facelets mit entsprechender Rollenzuordnung. \vspace{0.5em}
 
 \begin{figure}[H]
-\hypertarget{DAOs}{}
 \centering
 \includegraphics[width = 40em]{Modeldiagramm}
 \caption{Modeldiagramm}
@@ -88,27 +87,30 @@ Während die Paketstruktur im Ordner 'BiBi.src.main.java' abgebildet ist, enthä
 \end{figure}
 
 %----------------------------------------------------------------------Kapitel 3--------------------------------------------------------------------------------------------
-\section{UML-Klassendiagramm}
+\section{UML-Klassendiagramme}
 \sectionauthor{Mohamad Najjar}
 
 
 Das Paketdiagramm veranschaulicht  die Rollen und Beziehungen der Pakete im Sichtmodell. Als Legende die es für die im Klassendiagramm verwendeten Farben.
-\subsection{Klassendiagarmm}
+
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
 \begin{figure}[H]
 		\centering
 		\includegraphics[width = 52em]{Paketdiagramm}
 		\caption{Paketdiagramm}
 	\end{figure}
 
-\subsection{Verwendete Java-Klassen}
+
 
 \begin{figure}[H]
+\hypertarget{Usersession}{}
 		\centering
 		\includegraphics[width = 52em]{Klassendiagramm-Backingbeans}
 		\caption{Klassendiagramm-Backingbeans}
 	\end{figure}
 
 \begin{figure}[H]
+\hypertarget{DAOs}{}
 		\centering
 		\includegraphics[width = 52em]{KlassendiagrammDaos}
 		\caption{Klassendiagramm der Daos}
@@ -119,6 +121,13 @@ Das Paketdiagramm veranschaulicht  die Rollen und Beziehungen der Pakete im Sich
 		\centering
 		\includegraphics[width = 52em]{Klassendiagramm-Convertors}
 		\caption{Klassendiagramm der Konverter}
+	\end{figure}
+
+\begin{figure}[H]
+\hypertarget{Validator}{}
+		\centering
+		\includegraphics[width = 52em]{KlassendiagrammValidators}
+		\caption{Klassendiagramm der Validatoren}
 	\end{figure}
 
 
@@ -135,6 +144,8 @@ Das Paketdiagramm veranschaulicht  die Rollen und Beziehungen der Pakete im Sich
 	\end{figure}
 
 \begin{figure}[H]
+\hypertarget{PhaseListener}{}
+\hypertarget{Hash}{}
 		\centering
 		\includegraphics[width = 52em]{KlassendiagrammUtilObere}
 		\caption{Klassendiagramm der logic.util}
@@ -152,8 +163,8 @@ Das Paketdiagramm veranschaulicht  die Rollen und Beziehungen der Pakete im Sich
 		\centering
 		\includegraphics[width = 52em]{Klassendiagramm-ExceptionUnten}
 		\caption{Klassendiagramm der persistence.exceptions}
-	\end{figure}
-
+\end{figure}
+\restoregeometry
 %----------------------------------------------------------------------Kapitel 4--------------------------------------------------------------------------------------------
 \newpage
 \section{Bibliotheken}
@@ -921,14 +932,14 @@ Dieses Kapitel baut auf dem Abschnitt 'technische Systemsicherheit' des Entwurfs
 \textbf{HTML/JavaScript:} \hypertarget{XSS}{Um} das Einschleusen von HTML- (und eingebetteten JavaScript-) Code, in nutzergenerierte Inhalte der Webseite zu verhindern, verfügen die JSF-Facelet Elemente für User-Inputs über integrierte Escaping-Funktionen. Alle nutzergenerierten Anzeigen der Webseite werden so direkt am Input geschützt.
 \subsection{Insecure Direct Object References}
 Unbefugte direkte Zugriffe auf zugangsbeschränkte Teile der Anwendung werden abgefangen.\\ 
-Nutzer könnten versuchen, manuell die URL-Parameter in der Adresszeile zu verändern. In der Medienansicht könnte man so z.B. durch Ändern der ID auf die Ansicht eines anderen Mediums gelangen. Bei einer Anfrage werden erste Maßnahmen der Zugriffskontrolle nach der \texttt{RESTORE\_VIEW}-Phase im \hyperlink{PhaseListener}{Trespasslistener}!!! vorgenommen. Hier wird über die Sessionmap die Nutzerrolle und der Loginstatus mit der URL-Struktur der Anfrage abgeglichen und bei invalidem Zugriff entsprechend umgeleitet. Um denselben Zugriffsprozess wie im Mediumsansicht-Beispiel bei der Profilseite zu verhindern, wird im Backing-Bean durch Zugriff auf die URL-Parameter geprüft, ob der Nutzer berechtigt ist, andere Profile als sein eigenes anzusehen. 
+Nutzer könnten versuchen, manuell die URL-Parameter in der Adresszeile zu verändern. In der Medienansicht könnte man so z.B. durch Ändern der ID auf die Ansicht eines anderen Mediums gelangen. Bei einer Anfrage werden erste Maßnahmen der Zugriffskontrolle nach der \texttt{RESTORE\_VIEW}-Phase im \hyperlink{PhaseListener}{Trespasslistener} vorgenommen. Hier wird über die Sessionmap die Nutzerrolle und der Loginstatus mit der URL-Struktur der Anfrage abgeglichen und bei invalidem Zugriff entsprechend umgeleitet. Um denselben Zugriffsprozess wie im Mediumsansicht-Beispiel bei der Profilseite zu verhindern, wird im Backing-Bean durch Zugriff auf die URL-Parameter geprüft, ob der Nutzer berechtigt ist, andere Profile als sein eigenes anzusehen. 
 \subsection{Session Fixation}
-Wie bereits im Abschnitt 'Session-Hijacking' des Entwurfs erwähnt, tauschen wir unmittelbar nach dem Login eines Benutzers im \hyperlink{Login}{Backing-Bean}!!! den Identifikator der Nutzer-Session aus. \hyperlink{Session}{UserSession}!!!-Objekte werden nur für eingeloggte Nutzer angelegt und beim Login werden keine vorherigen Zustandsinformationen übernommen.  Zusätzlich zur Zerstörung beim Logout haben alle Sessions Tomcat-intern einen Inaktivitätstimeout von 30 Minuten, den wir beibehalten werden (andere Servlet Container verwenden denselben Timeout).
+Wie bereits im Abschnitt 'Session-Hijacking' des Entwurfs erwähnt, tauschen wir unmittelbar nach dem Login eines Benutzers im \hyperlink{Login}{Backing-Bean} den Identifikator der Nutzer-Session aus. \hyperlink{Session}{UserSession}-Objekte werden nur für eingeloggte Nutzer angelegt und beim Login werden keine vorherigen Zustandsinformationen übernommen.  Zusätzlich zur Zerstörung beim Logout haben alle Sessions Tomcat-intern einen Inaktivitätstimeout von 30 Minuten, den wir beibehalten werden (andere Servlet Container verwenden denselben Timeout).
 \subsection{Userinput}
 Neben dem Vorbeugen von \hyperlink{Injections}{Injections} gibt es weitere Maßnahmen zum Absichern von Nutzereingaben.\\
 \textbf{Admins:} Ausnahmen von den \hyperlink{XSS}{XSS-Gegenmaßnahmen} bilden das Impressum, die Datenschutzerklärung und  die Kontaktinformationen, da wir Administratoren beim editieren mehr Gestaltungsmöglichkeiten geben wollen. Andere Nutzerrollen haben keinen schreibenden Zugriff auf diese Teile der Webseite.\\
-\textbf{Passwörter:} Eine Mindestlänge von 8 Zeichen in Groß- und Kleinschreibung und das enthalten einer Zahl wird durch den \hyperlink{Passwordvalidator}{PasswordValidator}!!! sichergestellt. Registrierte Passwörter werden nicht im Klartext gespeichert, sondern in der Klasse \hyperlink{Hash}{PasswordHashingModule}!!! durch eine Hashfunktion geschickt. Durch vorheriges Anhängen eines Salts\footnote{Ein kurzer, zufällig generierter String.} an das Passwort werden Kollisionen der Hashfunktion unwahrscheinlicher und gleiche Passwörter entsprechen nicht mehr demselben Hashwert.\\
-\textbf{E-Mail-Adressen:} Bei der Registrierung eines neuen Nutzerkontos oder der Änderung der Adresse wird der vom Administrator festgelegte RegEx zuerst bedient und danach wird auf Duplikate in der Datenbank geprüft. Dies geschieht im \hyperlink{Emailvalidator}{EmailValidator}!!!. Der anschließende Verifizierungsprozess stellt die Gültigkeit der Adresse sicher.
+\textbf{Passwörter:} Eine Mindestlänge von 8 Zeichen in Groß- und Kleinschreibung und das enthalten einer Zahl wird durch den \hyperlink{Validator}{PasswordValidator} sichergestellt. Registrierte Passwörter werden nicht im Klartext gespeichert, sondern in der Klasse \hyperlink{Hash}{PasswordHashingModule} durch eine Hashfunktion geschickt. Durch vorheriges Anhängen eines Salts\footnote{Ein kurzer, zufällig generierter String.} an das Passwort werden Kollisionen der Hashfunktion unwahrscheinlicher und gleiche Passwörter entsprechen nicht mehr demselben Hashwert.\\
+\textbf{E-Mail-Adressen:} Bei der Registrierung eines neuen Nutzerkontos oder der Änderung der Adresse wird der vom Administrator festgelegte RegEx zuerst bedient und danach wird auf Duplikate in der Datenbank geprüft. Dies geschieht im \hyperlink{Validator}{EmailValidator}. Der anschließende Verifizierungsprozess stellt die Gültigkeit der Adresse sicher.
 \subsection{System Secrecy}
 Die Hintergrundprozesse und Technologien werden bestmöglich versteckt.\\
 \textbf{Rollenisolation:} Ist der Nutzer berechtigt, das unter der URL erreichbare Facelet zu sehen, werden, anhand der Nutzerrolle,vorhandene Knöpfe und Eingabefelder je nach Rollenberechtigungen gerendert oder ausgeblendet. So haben Rollen der unteren Hierarchieschichten keine Information über die Möglichkeiten der darüber liegenden.\\
