@@ -1,5 +1,6 @@
 package dedede.model.data.dtos;
 
+import java.time.Duration;
 import java.util.Set;
 
 /**
@@ -17,6 +18,8 @@ public class MediumDto {
 	private Set<CopyDto> copies;
 	
 	private String category;
+	
+	private Duration returnPeriod;
 
 	public Integer getId() {
 		return id;
@@ -50,6 +53,13 @@ public class MediumDto {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
+
+	public Duration getReturnPeriod() {
+		return returnPeriod;
+	}
+
+	public void setReturnPeriod(Duration returnPeriod) {
+		this.returnPeriod = returnPeriod;
+	}
 
 }

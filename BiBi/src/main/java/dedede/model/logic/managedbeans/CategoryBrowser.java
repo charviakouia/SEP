@@ -1,5 +1,6 @@
 package dedede.model.logic.managedbeans;
 
+import dedede.model.data.dtos.CategoryDto;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -12,6 +13,10 @@ import jakarta.inject.Named;
 @Named
 @ViewScoped
 public class CategoryBrowser extends PaginatedList {
+	
+	private String searchTerm;
+	
+	private CategoryDto category;
 	
 	public void createCategory() {
 		

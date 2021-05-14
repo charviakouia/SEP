@@ -20,9 +20,9 @@ public class ApplicationDto {
 
 	private byte[] logo;
 
-	private String emailRegEx;
+	private String emailAddressSuffixRegEx;
 
-	private Theme css;
+	private Theme theme;
 
 	private String lendingStatus;
 
@@ -74,20 +74,20 @@ public class ApplicationDto {
 		this.logo = logo;
 	}
 
-	public String getEmailRegEx() {
-		return emailRegEx;
+	public String getEmailAddressSuffixRegEx() {
+		return emailAddressSuffixRegEx;
 	}
 
-	public void setEmailRegEx(String emailRegEx) {
-		this.emailRegEx = emailRegEx;
+	public void setEmailAddressSuffixRegEx(String emailAddressSuffixRegEx) {
+		this.emailAddressSuffixRegEx = emailAddressSuffixRegEx;
 	}
 
-	public Theme getCss() {
-		return css;
+	public Theme getTheme() {
+		return theme;
 	}
 
-	public void setCss(Theme css) {
-		this.css = css;
+	public void setTheme(Theme theme) {
+		this.theme = theme;
 	}
 
 	public String getLendingStatus() {
