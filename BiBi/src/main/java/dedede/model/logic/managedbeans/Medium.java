@@ -80,12 +80,12 @@ public class Medium extends PaginatedList {
 	}
 
 	/**
-	 * Edit a copy of this medium.
+	 * Save changes made to a copy of this medium.
 	 * 
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void editCopy(int index) throws IllegalArgumentException {
+	public void saveCopy(int index) throws IllegalArgumentException {
 
 	}
 
@@ -105,7 +105,27 @@ public class Medium extends PaginatedList {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String lend(int index) throws IllegalArgumentException {
+	public String lendCopy(int index) throws IllegalArgumentException {
+		return null;
+	}
+	
+	/**
+	 * Go to the return form taking a copy of this medium.
+	 * 
+	 * @param index The index into the list of copies.
+	 * @throws IllegalArgumentException If the index is out of bounds.
+	 */
+	public String returnCopy(int index) throws IllegalStateException {
+		return null;
+	}
+	
+	/**
+	 * Pick up a copy of this medium.
+	 * 
+	 * @param index The index into the list of copies.
+	 * @throws IllegalArgumentException If the index is out of bounds.
+	 */
+	public String pickUpCopy(int index) throws IllegalStateException {
 		return null;
 	}
 

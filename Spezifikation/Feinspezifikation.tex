@@ -1,3 +1,4 @@
+
 \documentclass{article}
 
 \usepackage[ngerman]{babel}
@@ -9,12 +10,21 @@
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{tabulary}
+\usepackage{xcolor}
 \usepackage{multirow}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{lscape}
 
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
 
 \makeatletter
 \newcommand{\sectionauthor}[1]{
@@ -38,7 +48,7 @@
 
 \begin{document}
 \maketitle
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width = 30em]{Logo}
 \end{figure}
@@ -128,7 +138,79 @@ Folgende Bibliotheken bzw. Frameworks werden für die Entwicklung unseres Biblio
 \end{controls}
 
 %----------------------------------------------------------------------Kapitel 5--------------------------------------------------------------------------------------------
+\section{Systemkonfiguration}
+Dieser Abschnitt beschreibt die Konfigurationsdatei und Sprachausgabe der Anwendung.
+\subsection{Konfigurationsdatei}
+\indent Die Anwendung wird in einer Datei namens 'config' im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{{\texttt.properties}-Format} konfiguriert. Diese Datei wird dann mit Java-internen Funktionalitäten \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html}{dieser Klasse} über einen Stream eingelesen. Sie ist im Verzeichnis der Anwendung unter \texttt{/WebContent/WEB-INF/} zu finden und ist unten sowohl kurz \hyperlink{configTabelle}{beschrieben}, als auch \hyperlink{configFoto}{fotographiert} .
+\subsubsection{Inhaltsbeschreibung}
+\hypertarget{propSchema}{}
+Die mit \textcolor{green}{!} oder \textcolor{green}{\#} eingeleiteten Zeilen der Dateien enthalten Kommentare. Alle unmarkierten Zeilen halten ein Paar aus einem Schlüssel und einem mit \texttt{:} getrennten Wert. Nur die Werte dürfen verändert werden! 
 
+\begin{center}
+\begin{table}[H]
+\begin{tabular} {| m{4cm} | m{6cm} | m{5cm} |}
+\hline
+\hypertarget{configTabelle}{Schlüsselname} & Wertebeschreibung & Wertebereich \\
+\hline
+DB\_HOST & Die URL (bzw. URI) unter der der Datenbankserver erreichbar ist.& Ein \hyperlink{https://datatracker.ietf.org/doc/html/rfc3986}{'Uniform Ressource Identifier'}. Pflichtfeld!\\
+\hline
+DB\_PORT & Der Port unter dem der Server Anfragen entgegennimmt. & Eine ganze Zahl von 0 bis 65535. Pflichtfeld!\\
+\hline
+DB\_NAME & Der Name der Datenbank auf dem Server. & Ein String. Pflichtfeld!\\
+\hline
+DB\_USER & Der Name eines in der Datenbank registrierten Benutzers. & Ein String. Pflichtfeld!\\
+\hline
+DB\_PASSWORD & Das Passwort des oben angegebenen Datenbankbenutzers. & Ein String. Pflichtfeld!\\
+\hline
+DB\_CAPACITY & Die maximale Anzahl an Verbindungen, die die Datenbank dem Server zu Verfügung stellen kann. & Eine natürliche Zahl (nicht 0). Standartwert ist 42.\\
+\hline
+MAILSERVER\_HOST & Der URI unter der der E-Mail-Server erreichbar ist. &  Ein \hyperlink{https://datatracker.ietf.org/doc/html/rfc3986}{'Uniform Ressource Identifier'}. Pflichtfeld! \\ 
+\hline
+MAILSERVER\_PORT & Der Port durch den Anfragen an den Server geleitet werden. & Eine ganze Zahl von 0 bis 65535. Pflichtfeld! Standartwert ist 25. \\
+\hline
+MAIL\_SOURCE & Die Absenderadresse für E-Mails des Bibliothekssystems. & Gültige E-Mail-Adressen folgen \hyperlink{https://datatracker.ietf.org/doc/html/rfc5322}{diesem Schema}. Pflichtfeld!\\
+\hline
+SCAN\_INTERVAL & Der Wartungsthread des Systems führt in diesem Interval automatische Aufgaben durch. & Eine natürliche Zahl (nicht 0) die Minuten repräsentiert. Standartwert ist 20. \\
+\hline
+DEFAULT\_ADMIN\_MAIL & Diese Zeichenkette wird ohne Verifizierung als E-Mail des ersten Administratoraccounts eingetragen, falls es noch keinen gibt (im System auch änderbar).  & Gültige E-Mail-Adressen folgen \hyperlink{https://datatracker.ietf.org/doc/html/rfc5322}{diesem Schema}, andernfalls kommen versendete Mails nicht an. Schlüssel ist auch Standartwert.\\
+\hline
+DEFAULT\_PASSWORD & Das Passwort des obigen Admin-Accounts. Sollte umgehend geändert werden. & Eine (möglichst zufällige) Zeichenkette. Standartwert ist 'bibadmin', dieser sollte sofort geändert werden!. \\
+\hline
+LOG\_LEVEL & Eine Granularitätsoption für die Protokollierung der Fehler und Systemabläufe. & Im Detailgrad aufsteigend: 'SEVERE', 'DETAILED', 'DEVELOPMENT'. Standart ist 'SEVERE', andere Werte werden ignoriert. \\
+\hline
+LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben oder nur ins Log geschrieben werden. & Ein Boolean aus 'TRUE' oder 'FALSE'. Andere Werte werden ignoriert. Standartwert ist 'FALSE'. \\
+\hline
+\end{tabular}
+\end{table}
+\end{center}
+
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
+\begin{figure}
+\hypertarget{configFoto}{}
+\centering
+\includegraphics[angle = 270, width = 53em]{configProperties}
+\caption{Die \texttt{config.properties} Datei}
+\end{figure}
+\restoregeometry
+
+\subsection{Sprachressourcen}
+\indent Obwohl die Anwendung primär in Deutsch ausgeliefert wird, bietet die modulare Bauweise eine Erweiterungsmöglichkeit um andere Sprachausgaben. Dazu werden alle angezeigten Strings einer Sprache zentral im Ordner \texttt{/src/ressources/} des Applikationsverzeichnisses im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{\texttt{.properties}-Format} gespeichert. Die Namenskonvention für diese Dateien ist \texttt{messages\_xx.properties}, wobei \texttt{xx} durch das jeweilige \hyperlink{https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes}{Sprachenkürzel} ersetzt wird. Die Pakete sind durch Eintrag in die \texttt{faces-config.xml} im JSF-Framework registriert. Damit sind die Schlüssel mittels EL in den Facelets referenzierbar. So kann die Sprache, entweder auf der Profilseite manuell oder auch automatisch durch die Browserpräferenz, pro Nutzer-Session dynamisch eingestellt werden. Standartsprache ist Deutsch. Die Dateien selbst folgen obigen \hyperlink{propSchema}{Schema}. Die Schlüssel können einfach kopiert, mit Werten ergänzt und in den \texttt{/ressources}-Ordner gelegt werden. Ein Beispiel für die \hyperlink{messagesde}{deutsche} und \hyperlink{messagesen}{englische} Datei ist anbei.
+
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
+\begin{figure}
+\hypertarget{messagesen}{}
+\centering
+\includegraphics[width=60em]{messagesen}
+\caption{Englisches Sprachpaket}
+\end{figure}
+
+\begin{figure}  
+\hypertarget{messagesde}{}
+\centering
+\includegraphics[width=60em]{messagesde}
+\caption{Deutsches Sprachpaket}
+\end{figure}
+\restoregeometry
 
 %----------------------------------------------------------------------Kapitel 6--------------------------------------------------------------------------------------------
 
@@ -136,13 +218,22 @@ Folgende Bibliotheken bzw. Frameworks werden für die Entwicklung unseres Biblio
 \section{View}
 \sectionauthor{León Liehr}
 
+TODO
+
+\begin{itemize}
+    \item IDs pro Element
+    \item Korrekte Sichtbarkeiten
+    \item Composite-Component-Definitionen für paginierte Liste etc.
+    \item Manchmal fehlt repeat-Element
+\end{itemize}
+
 \newcommand{\M}[1]{\texttt{#1}} % monospaced
 \newcommand{\tag}[2]{\M{#1:#2}} % JSF tag
 \newcommand{\B}[1]{\#\{#1\}} % JSF binding
 \newcommand{\MB}[1]{\M{\B{#1}}} % monospaced JSF binding
 
 % @Beacon @Temporary
-\newenvironment{controls}
+\renewenvironment{controls}
 {
     \begin{table}[H]
         \centering
@@ -174,6 +265,24 @@ Folgende Bibliotheken bzw. Frameworks werden für die Entwicklung unseres Biblio
     \end{table}
 }
 
+\long\def\beginsubcontrols [#1][#2] #3\endsubcontrols
+{
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{ l l l l }
+            \toprule
+            & \multicolumn{2}{l}{\textbf{Attribut}} &\\
+            \cmidrule(r){2-3}
+            \textbf{Typ} & \textbf{Name} & \textbf{Wert} & \textbf{Sichtbarkeit}\\
+            \midrule
+            #3
+            \bottomrule
+        \end{tabular}
+        \caption{#1}
+        \label{#2}
+    \end{table}
+}
+
 \newcommand{\PUB}{jeder}
 \newcommand{\ANO}{Anon.}
 \newcommand{\USR}{Nutzer}
@@ -181,12 +290,7 @@ Folgende Bibliotheken bzw. Frameworks werden für die Entwicklung unseres Biblio
 \newcommand{\ADM}{Admin.}
 
 \newcommand{\component}[2]{\subsubsection{#1 (\texttt{#2})}}
-\newcommand{\page}[2]{
-    \subsubsection{#1}
-    \paragraph*{Dateipfad} \texttt{#2.xhtml}
-}
 
-\newcommand{\Javadoc}{\paragraph*{Javadoc}}
 \newcommand{\Parameter}{\paragraph*{Parameter}}
 
 \newcommand{\BTN}{\tag{h}{commandButton}}
@@ -194,9 +298,11 @@ Folgende Bibliotheken bzw. Frameworks werden für die Entwicklung unseres Biblio
 \newcommand{\INP}{\tag{h}{inputText}}
 \newcommand{\PAS}{\tag{h}{inputSecret}}
 \newcommand{\DRP}{\tag{h}{selectOneMenu}}
-\newcommand{\CHK}{Checkbox}
+\newcommand{\CHK}{\tag{h}{selectBooleanCheckbox}}
 \newcommand{\OUT}{\tag{h}{outputText}}
-\newcommand{\LST}{paginierte Liste}
+\newcommand{\LST}{\tag{bibi}{paginatedList}}
+
+\begin{landscape}
 
 \subsection{Komponenten}
 
@@ -220,30 +326,26 @@ JSF Templates.
     \multirow{2}{*}{\tag{h}{commandButton}} & \M{id} & \M{xxx} & \\
     & \M{action} & \MB{header.displayHelpText()} & \\
     \INP & \M{value} & \MB{header.mediumSearchTerm} & \\
-    \LNK & \M{value} & \M{medium-search.xhtml} & \\
+    \LNK & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}} & \\
     \tag{h}{graphicImage} & \M{value} & \MB{header.application.logo} & \\
     \OUT & \M{value} & \MB{header.application.name} & \\
     \tag{h}{commandLink} & \M{action} & \MB{header.logOut()} & \\
-    \LNK & \M{value} & \M{login.xhtml} & \\
-    \LNK & \M{value} & \M{registration.xhtml} & \\
-    \LNK & \M{value} & \M{profile.xhtml?id=\B{header.user.id}} & \\
+    \LNK & \M{value} & \hyperref[page_login]{\M{public/login.xhtml}} & \\
+    \LNK & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}} & \\
+    \LNK & \M{value} & \hyperref[page_profile]{\M{profile.xhtml?id=\B{header.user.id}}} & \\
 \endcontrols
 
 \subsubsection{Fußzeile}\label{page_footer}
 
 \begincontrols[footer]
-    \LNK & \M{value} & \M{privacy-policy.xhtml} & \\
-    \LNK & \M{value} & \M{site-notice.xhtml} & \\
-    \LNK & \M{value} & \M{contact.xhtml} & \\
+    \LNK & \M{value} & \hyperref[page_privacy_policy]{\M{public/privacy-policy.xhtml}} & \\
+    \LNK & \M{value} & \hyperref[page_site_notice]{\M{public/site-notice.xhtml}} & \\
+    \LNK & \M{value} & \hyperref[page_contact]{\M{public/contact.xhtml}} & \\
 \endcontrols
 
 \subsection{Seiten}
 
-\page{Abzuholende Exemplare}{staff/copies-ready-for-pickup}
-
-\Javadoc
-This page is used by library staff to be up to speed regarding which copies are ready to be picked up and
-whether they can expect someone to soon enter the library and arrive at their counter.
+\subsection{Abzuholende Exemplare}\label{page_copies_ready_for_pickup}
 
 \begin{controls}
     \LST & aller abzuholenden Exemplare & \BIB\\
@@ -265,11 +367,7 @@ whether they can expect someone to soon enter the library and arrive at their co
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
 \end{table}
 
-\page{Eigene abzuholende Exemplare}{account/my-copies-ready-for-pickup}
-
-\Javadoc
-On this page a user gets to know which copies they want to pick up from the library and borrow thereafter
-and how much time they have left to do so until they exceed the lending period.
+\subsection{Eigene abzuholende Exemplare}\label{page_my_copies_ready_for_pickup}
 
 \begin{controls}
     \LST & aller abzuholenden Exemplare & \USR\\
@@ -289,11 +387,7 @@ and how much time they have left to do so until they exceed the lending period.
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
 \end{table}
 
-\page{Eigene ausgeliehene Exemplare}{account/my-borrowed-copies}
-
-\Javadoc
-This page informs the user which copies they borrowed from the library and how much time they still have left
-until they have to return them to not exceed the lending period.
+\subsection{Eigene ausgeliehene Exemplare}\label{page_my_borrowed_copies}
 
 \begin{controls}
     \LST & aller ausgeliehenen Exemplare & \USR\\
@@ -313,13 +407,7 @@ until they have to return them to not exceed the lending period.
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
 \end{table}
 
-\page{Anmeldemaske}{public/login}
-
-\Javadoc
-This page is the one users first face when they are not already logged in.
-It allows them to log into the system to gain the privilege to borrow copies.
-If a logged-in user accesses this page by manually entering its URL, a message is shown instead of the
-login form and they get automatically redirected to their profile page.
+\subsection{Anmeldemaske}\label{page_login}
 
 \begincontrols[public/login]
     \INP & \M{value} & \MB{login.user.email} & \ANO\\
@@ -328,60 +416,42 @@ login form and they get automatically redirected to their profile page.
     \tag{h}{commandLink} & \M{action} & \MB{login.resetPassword()} & \ANO\\
 \endcontrols
 
-\page{Datenschutzerklärung}{public/privacy-policy}
+\subsection{Datenschutzerklärung}\label{page_privacy_policy}
 
-\Javadoc
-This page declares the privacy policy of this system.
+\begincontrols[public/privacy-policy]
+    % TASK do the readonly stuff!!
+    \INP & \M{value} & \MB{privacyPolicy.application.privacyPolicy} & \ADM\\
+    \BTN & \M{action} & \MB{privacyPolicy.save()} & \ADM\\
+\endcontrols
 
-\begin{controls}
-    \OUT & für die Datenschutzerklärung & Nicht-\ADM\\
-    \INP & für die Datenschutzerklärung & \ADM\\
-    \BTN & zum Speichern der Änderungen & \ADM\\
-\end{controls}
-
-\page{Direktausleihe}{staff/direct-lending}
+\subsection{Direktausleihe}\label{pagw_direct_lending}
 
 \Parameter
 Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureingabefeld.
 
-\Javadoc
-This page enables staff to lend a person most probably in front of their counter a series of copies.
-It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the corresp. input fields. Analogously with the email address stored inside of their membership card.
-
 \begincontrols[staff/reactive-lending]
-    \tag{bibi}{reactiveInputText} & \M{value} & \MB{directLending.borrowingUser.email} & \BIB\\
+    \tag{bibi}{reactiveInputText} & \M{value} & \MB{directLending.user.email} & \BIB\\
     % BEACON TASK 5x vorhanden!!!!!
     \tag{bibi}{reactiveInputText} & \M{value} & \MB{COPY.signature} & \BIB\\
     \BTN & \M{action} & \MB{directLending.addSignatureInputField()} & \BIB\\
-    \BTN & \M{action} & \MB{directLending.lendMedium()} & \BIB\\
+    \BTN & \M{action} & \MB{directLending.lendCopies()} & \BIB\\
 \endcontrols
 
-\page{E-Mail-Bestätigung}{public/email-confirmation}
+\subsection{E-Mail-Bestätigung}\label{page_email_confirmation}
 
-\Parameter
-Optional \texttt{token}.
+\begincontrols[public/email-confirmation]
+    \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{token} & \multirow{2}{*}{\PUB}\\
+    & \M{value} & \MB{emailConfirmation.token} &\\
+\endcontrols
 
-\Javadoc
-Accessing this page potentially verifies the email address of a specific user. For this,
-it takes a token as a query parameter. If absent or invalid, nothing user-facing happens.
-This secures against certain attacks.
-
-\page{Fehlerseite}{public/error}
-
-\Javadoc
-The sink for all kinds of fatal errors that happened in the system.
-They are either caused client-side (HTTP status codes 4XX) or server-side (HTTP status codes 5XX).
-If it's a client-side error, the user gets redirected to either the login page or their profile depending on if they are logged in or not. The redirection happens after some fixed amount of time.
+\subsection{Fehlerseite}\label{page_error}
 
 \begin{controls}
     \OUT & für den Titel der Fehlermeldung & \PUB\\
     \OUT & für die Beschreibung des Fehlers & \PUB\\
 \end{controls}
 
-\page{Impressum}{public/site-notice}
-
-\Javadoc
-This page contains the site notice.
+\subsection{Impressum}\label{page_site_notice}
 
 \begincontrols[public/site-notice]
     % TASK readonly for users and staff
@@ -389,17 +459,7 @@ This page contains the site notice.
     \BTN & \M{action} & \MB{siteNotice.save()} & \ADM\\
 \endcontrols
 
-\page{Kategorienbearbeitung}{staff/category-editor}
-
-\Parameter
-Entweder \texttt{id}: Kennung der zu bearbeitenden Kategorie.
-Oder \texttt{parent-id}: Kennung der Elterkategorie, unter welcher eine neue Kategorie erstellt werden soll.
-
-\Javadoc The category editor allows the creation and modification of a category.
-Generally this page is accessed from the category browser:
-In case the library staff clicks on the edit button next to a category's name in the browser, the corresp. identifier will be transmitted as the Parameter \texttt{id}.
-In the other case, it's the create button in the context of a category and the parameter is \texttt{parent-id}.
-If the parameters are invalid, the user will be redirected to the error page.
+\subsection{Kategorienbearbeitung}\label{page_category_editor}
 
 \begincontrols[staff/category-editor]
     \INP & \M{value} & \MB{categoryEditor.category.name} & \BIB\\
@@ -407,28 +467,23 @@ If the parameters are invalid, the user will be redirected to the error page.
     \BTN & \M{action} & \MB{categoryEditor.save()} & \BIB\\
 \endcontrols
 
-\page{Kategorierenstöberer}{public/category-browser}
+\subsection{Kategorierenstöberer}\label{page_category_browser}
 
-\Javadoc
-This page offers users to browse through all available categories mediums are part of in a structured manner.
-It renders it possible for the consumer to discover new mediums.
+\begincontrols[public/category-browser]
+    \tag{bibi}{reactiveInputField} & \M{value} & \MB{categoryBrowser.searchTerm} & \PUB\\
+    \BTN & \M{action} & \MB{categoryBroswer.searchCategory()} & \PUB\\
+    %TODO!!!
+%    Baumansicht & mancher Kategorien & \PUB\\
+    \OUT & \M{value} & \MB{categoryBrowser.category.name} & \PUB\\
+    \OUT & \M{value} & \MB{categoryBrowser.category.description} & \PUB\\
+    \tag{h}{commandLink} & \M{action} & \hyperref[page_category_editor]{\M{staff/category-editor.xhtml}} & \BIB\\ % edit
+    \tag{h}{commandLink} & \M{action} & \hyperref[page_category_editor]{\M{staff/category-editor.xhtml}} & \BIB\\ % create
+    \BTN & \M{action} & \MB{categoryBroswer.delete()} & \BIB\\
+    % BEAON TASK
+%    \LST & aller Medien (Medienvorschauen) in der ausgewählten Kategorie; je ein \LNK zur Medienansicht & \PUB\\
+\endcontrols
 
-\begin{controls}
-    R. \INP & für den Suchterm der Kategoriensuche & \PUB\\
-    \BTN & zum Durchführung der Suche & \PUB\\
-    Baumansicht & mancher Kategorien & \PUB\\
-    \OUT & für den Namen der ausgewählten Kategorie & \PUB\\
-    \OUT & für die Beschreibung der ausgewählten Kategorie & \PUB\\
-    \LNK & zur Kategorienbearbeitung & \BIB\\
-    \BTN & zum Löschen der Kategorie; zur Elterkategorie & \BIB\\
-    \LNK & zur Medienerstellung unter der aktuellen Kategorie & \BIB\\
-    \LST & aller Medien (Medienvorschauen) in der ausgewählten Kategorie; je ein \LNK zur Medienansicht & \PUB\\
-    \LNK & zur Kategorienbearbeitung (Erstellung einer neuen) & \BIB\\
-\end{controls}
-
-\page{Kontakt}{public/contact}
-
-\Javadoc The contact page allows any user to get to know how to contact the site owners.
+\subsection{Kontakt}\label{page_contact}
 
 \begincontrols[public/contact]
     % TASK readonly for users and staff
@@ -436,10 +491,7 @@ It renders it possible for the consumer to discover new mediums.
     \BTN & \M{action} & \MB{contact.save()} & \ADM\\
 \endcontrols
 
-\page{Leihfristverstöße}{admin/lending-period-violations}
-
-\Javadoc
-This page displays a list of copies which haven't been returned yet together with the assoc. user who exceeded the lending period.
+\subsection{Leihfristverstöße}\label{page_lending_period_violations}
 
 \begin{controls}
     \LST & von Exemplaren und Nutzern & \ADM\\
@@ -460,13 +512,7 @@ This page displays a list of copies which haven't been returned yet together wit
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
 \end{table}
 
-\page{Medienerstellung}{staff/medium-creation}
-
-\Parameter
-Optional \texttt{category}: Kategorie, unter welcher das Medium erstellt werden soll. Füllt das entsprechende Feld.
-
-\Javadoc
-This page allows staff and administrators to add new mediums.
+\subsection{Medienerstellung}\label{page_medium_creation}
 
 \begincontrols[staff/medium-creation]
     % TASK pro medienattribut
@@ -478,33 +524,17 @@ This page allows staff and administrators to add new mediums.
     \BTN & \M{action} & \MB{mediumCreation.create()} & \BIB\\
 \endcontrols
 
-\page{Medienrückgabe}{staff/return}
+\subsection{Medienrückgabe}\label{page_return_form}
 
-\Parameter
-Optional \texttt{copy}: Signatur eines Exemplars. Füllt das erste Signatureingabefeld.
-
-\Javadoc
-This page enables staff to inform the system that a series of copies were returned to the library, probably right after the user left them at their counter.
-It is intended but not a hard requirement that library staff scans the copies given to them by the customer with a dedicated device which automatically pastes the signatures into the corresp. input fields. Analogously with the email address stored inside of their membership card.
-
-\begincontrols[staff/return]
-    \tag{bibi}{reactiveInputField} & \M{value} & \MB{return.user.email} & \BIB\\
+\begincontrols[staff/return-form]
+    \tag{bibi}{reactiveInputField} & \M{value} & \MB{returnForm.user.email} & \BIB\\
     % TASK BEACON repeat 5 times (or more)!!!
     \tag{bibi}{reactiveInputField} & \M{value} & \MB{COPY.signature} & \BIB\\
-    \BTN & \M{action} & \MB{return.addSignatureInputField()} & \BIB\\
-    \BTN & \M{action} & \MB{return.returnMedium()} & \BIB\\
+    \BTN & \M{action} & \MB{returnForm.addSignatureInputField()} & \BIB\\
+    \BTN & \M{action} & \MB{returnForm.returnMedium()} & \BIB\\
 \endcontrols
 
-\page{Mediensuche}{public/media-search}
-
-\Parameter
-Optional \texttt{query}: Suchterm.
-
-\Javadoc
-This page permits users to search for mediums given some of their attributes as search criteria.
-Further, a user can search mediums by category and by the signature of one of their copies.
-The page has an optional query parameter corresponding to the search term.
-If it is not provided, nothing will be searched and the paginated list of results will not be displayed at all.
+\subsection{Mediensuche}\label{page_medium_search}
 
 \begincontrols[public/medium-search]
     \INP & \M{value} & \MB{mediumSearch.generalSearchTerm} & \PUB\\
@@ -517,182 +547,265 @@ If it is not provided, nothing will be searched and the paginated list of result
     \INP & \M{value} & \MB{QUERY.term} & \PUB\\
     \BTN & \M{action} & \MB{mediumSearch.addNuancedSearchQuery())} & \PUB\\
     % BEACON TEMPORARY
-    \LST & & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht; nur sichtbar, wenn schon gesucht wurde & \PUB\\
+    \LST & & aller Suchergebnisse (als Medienvorschauen)e & \PUB\\
 \endcontrols
 
-\page{Mediumsansicht}{public/medium}
+\subsection{Mediumsansicht}\label{page_medium}
 
-\Parameter
-Zwangsweise \texttt{id}: Kennung des anzuzeigenden Mediums.
+\begincontrols[public/medium]
+    \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{id} & \multirow{2}{*}{\PUB}\\
+    & \M{value} & \MB{medium.medium.id} & \\
+    % TODO nur sichtbar wenn man von der Suche kommt
+    \LNK & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}} & \PUB\\
+    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{medium.medium.attributes} & \multirow{2}{*}{\PUB}\\
+    & \M{var} & \hyperref[subcontrol_medium_attribute]{\M{attribute}} & \\
+    \BTN & \M{action} & \MB{medium.saveAttributes()} & \BIB\\
+    \BTN & \M{action} & \MB{medium.pickUpAnyCopy()} & \USR\\
+    \OUT & \M{value} & \MB{medium.returnPeriod} & \USR\\
+    \INP & \M{value} & \MB{medium.medium.returnPeriod} & \BIB\\
+    \BTN & \M{action} & \MB{medium.saveReturnPeriod()} & \BIB\\
+    \BTN & \M{action} & \MB{medium.delete()} & \BIB\\
+    \multirow{3}{*}{\tag{h}{dataTable}} & \M{value} & \MB{medium.copies} & \multirow{3}{*}{\PUB}\\
+    & \M{var} & \hyperref[data_table_medium_copies]{\M{copy}} & \\
+    & \M{varStatus} & \M{status} & \\
+    \tag{bibi}{reactiveInputField} & \M{value} & \MB{medium.copy.location} & \BIB\\
+    \INP & \M{value} & \MB{medium.copy.signature} & \BIB\\
+    \BTN & \M{action} & \MB{medium.createCopy()} & \BIB\\
+\endcontrols
 
-\Javadoc
-This page provides information about a specific medium and their copies available in the library.
-Here, users can borrow a copy by committing themselves to pick up the copy from a library site and actually borrowing it there. To trigger the procedure, they can either click on the pick-up button next to a specific copy or on an isolated button which selects an available copy at random.
-If the parameter is missing, the user will be redirected to the medium search page.
-
-\begin{controls}
-    \LNK & zurück zur Trefferliste / Mediensuche; nur sichtbar, falls der Nutzer von der Suche kommt & \PUB\\
-    \OUT & für ein Medienattribut; existiert pro Medienattribut; mehrwertige Attribute durch Komma getrennt angezeigt & \ANO, \USR\\
-    \INP & für ein Medienattribut; existiert pro Medienattribut bzw. pro Wert bei mehrwertigen & \BIB\\
-    \BTN & zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
-    \BTN & zum Speichern der Änderungen an den Medienattributen & \BIB\\
-    \BTN & zur Bindung an die Abholung des Mediums; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
-    \OUT & für die Rückgabefrist; bezieht auch die nutzerbezogene Frist ein, anders als das \INP{} darunter & \USR\\
-    \INP & für die Rückgabefrist & \BIB\\
-    \BTN & zum Speichern der Änderungen an der Rückgabefrist & \BIB\\
-    \LNK & zum Löschen des Mediums; zur zuvor aufgerufenen Seite & \BIB\\
-    Tabelle \ref{tableofcopies} & aller Exemplare & \PUB\\
-    R. \INP & für den Standort eines neuen Exemplars & \BIB\\
-    \INP & für die Signatur eines neuen Exemplars & \BIB\\
-    \BTN & zum Erstellen eines Exemplars & \BIB\\
-\end{controls}
+\beginsubcontrols[Bedienelemente pro Attribut][subcontrol_medium_attribute]
+%    \OUT & für ein Medienattribut; existiert pro Medienattribut; mehrwertige Attribute durch Komma getrennt angezeigt & \ANO, \USR\\
+% TASK visibility
+% TASK multivalued
+\INP & \M{value} & \MB{attribute.value} & \BIB\\
+% TODO existiert pro Mediena
+%    \BTN & \M{action} & \MB{medium.addAttributeInputField()} zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
+\endsubcontrols
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
+    \begin{tabular}{ l l l l l }
         \toprule
-        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+        & & \multicolumn{2}{l}{\textbf{Attribut}} &\\
+        \cmidrule(r){3-4}
+        \textbf{\tag{h}{column}} & \textbf{Typ} & \textbf{Name} & \textbf{Wert} & \textbf{Sichtbarkeit}\\
         \midrule
-        Standort & \OUT & & \PUB\\
-        Standort & \INP & & \BIB\\
-        Verfügbarkeit & \OUT & & \PUB\\
-        Signatur & \OUT & & \PUB\\
-        Signatur & \INP & & \BIB\\
-        Aktionen & \BTN & zum Speichern der Änderungen & \BIB\\
-        Aktionen & \BTN & zum Löschen & \BIB\\
-        Aktionen & \BTN & zum Stornieren einer Abholung & \BIB\\
-        Aktionen & \LNK & zur Direktausleihe; nur sichtbar, falls verfügbar & \BIB\\
-        Aktionen & \LNK & zur Medienrückgabe; nur sichtbar, falls ausgeliehen & \BIB\\
-        Aktionen & \BTN & zur Bindung an die Abholung; nur sichtbar, falls es dem Nutzer erlaubt ist auszuleihen & \USR\\
+
+%        Standort & \OUT & & \PUB\\
+        Standort & \INP & \M{value} & \MB{copy.location} & \BIB\\
+        Verfügbarkeit & \OUT & \M{value} & \MB{copy.availabilityStatus} & \PUB\\
+%        Signatur & \OUT & & \PUB\\
+        Signatur & \INP & \M{value} & \MB{copy.signature} & \BIB\\
+        Aktionen & \BTN & \M{action} & \MB{medium.saveCopy(status.index)} & \BIB\\
+        Aktionen & \BTN & \M{action} & \MB{medium.deleteCopy(status.index)} & \BIB\\
+        Aktionen & \BTN & \M{action} & \MB{medium.cancelPickup(status.index)} & \BIB\\
+        % nur sichtbar falls verfügbar TODO
+        Aktionen & \tag{h}{commandLink} & \M{action} & \MB{medium.lendCopy(status.index)} & \BIB\\
+        % nur falls ausgeliehen TODO
+        Aktionen & \tag{h}{commandLink} & \M{action} & \MB{medium.returnCopy(status.index)} & \BIB\\
+        % nur wenn nutzer darf TODO
+        Aktionen & \BTN & \M{action} & \MB{medium.pickUpCopy(status.index)} & \USR\\
         \bottomrule
     \end{tabular}
-    \caption{Tabelle aller Exemplare als JSF-\texttt{DataTable}. Jede Zeile existiert pro Exemplar}
-    \label{tableofcopies}
+    \caption{Bedienelemente pro Exemplar}
+    \label{data_table_medium_copies}
 \end{table}
 
-\page{Mediumschemabearbeitung}{admin/medium-schema-editor}
+\subsection{Mediumschemabearbeitung}\label{page_medium_schema_editor}
 
-\Javadoc
-On this page, the administrator can adjust the medium schema (the set of attributes of each medium).
+\begincontrols[admin/medium-schema-editor]
+    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{mediumSchemaEditor.attributes} & \multirow{2}{*}{\ADM}\\
+    & \M{var} & \hyperref[subcontrol_schema_editor_attribute]{\M{attribute}} & \\
+    \BTN & \M{action} & \MB{mediumSchemaEditor.addAttributeInputField()} & \ADM\\
+    \BTN & \M{action} & \MB{mediumSchemaEditor.save()} & \ADM\\
+\endcontrols
 
-\begin{controls}
-    \INP & für den Namen eines Attributs; existiert pro Attribut & \ADM\\
-    \DRP & für den Typen eines Attributs; existiert pro Attribut & \ADM\\
-    \DRP & für die Wertigkeit (ein-, mehrwertig) eines Attributs; existiert pro Attribut & \ADM\\
-    \DRP & für die Position in der Medienvorschau; existiert pro Attribut & \ADM\\
-    \BTN & zum Löschen eines Attributes; existiert pro Attribut & \ADM\\
-    \BTN & zum Hinzufügen eines weiteren Gruppe aus \INP{}ern und \DRP{}n & \ADM\\
-    \BTN & zum Speichern der Änderungen & \ADM\\
-\end{controls}
+\beginsubcontrols[Bedienelemente pro Attribut][subcontrol_schema_editor_attribute]
+\INP & \M{value} & \MB{attribute.name} & \ADM\\
+\DRP & \M{value} & \MB{attribute.type} & \ADM\\
+\DRP & \M{value} & \MB{attribute.multiplicity} & \ADM\\
+\DRP & \M{value} & \MB{attribute.position} & \ADM\\
+\BTN & \M{action} & \MB{mediumSchemaEditor.deleteAttribute(attribute.id)} & \ADM\\
+\endsubcontrols
 
-\page{Nutzersuche}{admin/user-search}
+\subsection{Nutzersuche}\label{page_user_search}
 
-\Parameter
-Optional \texttt{query}: Suchterm.
+\begincontrols[admin/user-search]
+    \INP & \M{value} & \MB{userSearch.searchTerm} & \ADM\\
+    \BTN & \M{action} & \MB{userSearch.searchUser()} & \ADM\\
+    \CHK & \M{value} & \MB{userSearch.accountStatus} & \ADM\\
+    %TODO beacon
+%    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht; nur sichtbar, wenn schon gesucht wurde & \ADM\\
+\endcontrols
 
-\Javadoc
-This page enables administrators to search for users.
-The page has an optional query parameter corresponding to the search term.
-If it is not provided, nothing will be searched and the paginated list of results will not be displayed at all.
-
-\begin{controls}
-    \INP & für den Suchterm & \ADM\\
-    \BTN & zur Durchführung der Suche & \ADM\\
-    \CHK & für das Einschränken auf gesperrte Nutzer & \ADM\\
-    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht; nur sichtbar, wenn schon gesucht wurde & \ADM\\
-\end{controls}
-
-\page{Passwortzurücksetzung}{public/password-reset}
-
-\Parameter
-Optional \texttt{token}.
-
-\Javadoc
-This page is reached by a user when they click on the link they received in an email.
-The account is identified through a token passed as parameter.
-After submitting the form, the user is not logged into the system yet, they are redirected to the login form.
-This secures against certain attacks.
-If the token is absent or invalid, nothing user-facing will happen: Clicking the button still means redirection to the login page.
+\subsection{Passwortzurücksetzung}\label{page_password_reset}
 
 \begincontrols[public/password-reset]
     \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{token} & \multirow{2}{*}{\PUB}\\
     & \M{value} & \MB{passwordReset.token} & \\
     \PAS & \M{value} & \MB{passwordReset.password} & \PUB\\
-    \PAS & \M{value} & \MB{passwordReset.confirmPassword} & \PUB\\
+    \PAS & \M{value} & \MB{passwordReset.confirmedPassword} & \PUB\\
     \BTN & \M{action} & \MB{passwordReset.resetPassword()} & \PUB\\
 \endcontrols
 
-\page{Profilseite}{account/profile}
+\subsection{Profilseite}\label{page_profile}
 
-% expand
-\Javadoc
-This page is either the profile page of the current user or if it is an administrator possibly also
-of a user different from the logged-in one.
-It allows a user to change their personal information the system stores and it allows administrators to manage other accounts.
+\begincontrols[account/profile]
+    \INP & \M{value} & \MB{profile.user.firstName} & \USR\\
+    \INP & \M{value} & \MB{profile.user.lastName} & \USR\\
+    \PAS & \M{value} & \MB{profile.password} & \USR\\
+    \PAS & \M{value} & \MB{profile.confirmedPassword} & \USR\\
+    \INP & \M{value} & \MB{profile.user.emailAddress} & \USR\\
+    \INP & \M{value} & \MB{profile.user.zipCode} & \USR\\
+    \INP & \M{value} & \MB{profile.user.city} & \USR\\
+    \INP & \M{value} & \MB{profile.user.street} & \USR\\
+    \INP & \M{value} & \MB{profile.user.streetNumber} & \USR\\
+    \DRP & \M{value} & \MB{profile.user.role} & \ADM\\
+    \CHK & \M{value} & \MB{profile.user.accountStatus} & \ADM\\
+    \INP & \M{value} & \MB{profile.user.lendingPeriod} & \ADM\\
+    \BTN & \M{action} & \MB{profile.save()} & \USR\\
+    \LNK & \M{value} & \hyperref[page_my_copies_ready_for_pickup]{ \M{account/my-copies-ready-for-pickup.xhtml}} & \USR\\
+    \LNK & \M{value} & \hyperref[page_my_borrowed_copies]{ \M{account/my-borrowed-copies.xhtml}} & \USR\\
+    \BTN & \M{action} & \MB{profile.delete()} & \USR\\
+\endcontrols
 
-\begin{controls}
-    \INP & für den Vornamen & \USR\\
-    \INP & für den Nachnamen & \USR\\
-    \PAS & für das Passwort & \USR\\
-    \PAS & zur Bestätigung & \USR\\
-    \INP & für die E-Mail-Adresse & \USR\\
-    \INP & für den Ort & \USR\\
-    \INP & für die PLZ & \USR\\
-    \INP & für die Straße& \USR\\
-    \INP & für die Hausnummer & \USR\\
-    \DRP & für die Nutzerrolle & \ADM\\
-    \CHK & zum Sperren des Nutzers & \ADM\\
-    \INP & für die Rückgabefrist & \ADM\\
-    \BTN & zum Speichern der Änderungen an den Benutzerdaten & \USR\\
-    \LNK & zu den abzuholenden und ausgeliehenen Exemplaren & \USR\\
-    \BTN & zum Schließen des Accounts; zur Anmeldemaske & \USR\\
-    \BTN & zum Löschen des Nutzers; zur Verwaltungsseite & \ADM\\
-\end{controls}
+\subsection{Registrierungsseite}\label{page_registration}
 
-\page{Registrierungsseite}{public/registration}
+\begincontrols[public/registration]
+    \INP & \M{value} & \MB{registration.user.firstName} & \ANO/\ADM\\
+    \INP & \M{value} & \MB{registration.user.lastName} & \ANO/\ADM\\
+    \PAS & \M{value} & \MB{registration.password} & \ANO/\ADM\\
+    \PAS & \M{value} & \MB{registration.confirmedPassword} & \ANO/\ADM\\
+    \INP & \M{value} & \MB{registration.user.emailAddress} & \ANO/\ADM\\
+    \INP & \M{value} & \MB{registration.user.zipCode} & \ANO/\ADM\\
+    \INP & \M{value} & \MB{registration.user.city} & \ANO/\ADM\\
+    \INP & \M{value} & \MB{registration.user.street} & \ANO/\ADM\\
+    \INP & \M{value} & \MB{registration.user.streetNumber} & \ANO/\ADM\\
+    \DRP & \M{value} & \MB{registration.user.role} & \ADM\\
+    \BTN & \M{action} & \MB{registration.register()} & \ANO/\ADM\\
+\endcontrols
 
-\Javadoc
-On this page an anonymous user can register themself. Additionally, it can be used by administrators to register new users.
+\subsection{Verwaltungsseite}\label{page_administration}
 
-\begin{controls}
-    \INP & für den Vornamen & \ANO/\ADM\\
-    \INP & für den Nachnamen & \ANO/\ADM\\
-    \PAS & & \ANO/\ADM\\
-    \PAS & zur Bestätigung & \ANO/\ADM\\
-    \INP & für die E-Mail-Adresse & \ANO/\ADM\\
-    \INP & für den Ort & \ANO/\ADM\\
-    \INP & für die PLZ & \ANO/\ADM\\
-    \INP & für die Straße & \ANO/\ADM\\
-    \INP & für die Hausnummer & \ANO/\ADM\\
-    \DRP & für die Nutzerrolle & \ADM\\
-    \BTN & zum Registrieren des Accounts & \ANO/\ADM\\
-\end{controls}
+\begincontrols[admin/administration]
+    \INP & \M{value} & \MB{administration.application.returnPeriod} & \ADM\\
+    \INP & \M{value} & \MB{administration.application.warningPeriod} & \ADM\\
+    \INP & \M{value} & \MB{administration.application.pickupPeriod} & \ADM\\
+    \INP & \M{value} & \MB{administration.application.name} & \ADM\\
+    \CHK & \M{value} & \MB{administration.application.registerStatus} & \ADM\\
+    \INP & \M{value} & \MB{administration.application.emailAddressSuffixRegEx} & \ADM\\
+    \DRP & \M{value} & \MB{administration.application.theme} & \ADM\\
+    \tag{h}{inputFile} & \M{value} & \MB{administration.application.logo} & \ADM\\
+    \BTN & \M{action} & \MB{administration.save()} & \ADM\\
+    \LNK & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}} & \ADM\\
+    \LNK & \M{value} & \hyperref[page_medium_schema_editor]{\M{admin/medium-schema-editor.xhtml}} & \ADM\\
+    \LNK & \M{value} & \hyperref[page_lending_period_violations]{\M{admin/lending-period-violations.xhtml}} & \ADM\\
+    \LNK & \M{value} & \hyperref[page_user_search]{\M{admin/user-search.xhtml}}& \ADM\\
+    \INP & \M{value} & \MB{administration.userSearchTerm} & \ADM\\
+    \BTN & \M{action} & \MB{administration.searchUser()} & \ADM\\
+\endcontrols
 
-\page{Verwaltungsseite}{admin/administration}
-
-\Javadoc
-This page provides the means to administrators to change several global settings of the application.
-
-\begin{controls}
-    \INP & für die Rückgabefrist & \ADM\\
-    \INP & für den Mahnungszeitpunkt & \ADM\\
-    \INP & für die Abholfrist & \ADM\\
-    \INP & für den Systemnamen & \ADM\\
-    \CHK & für den Zugangsstatus (anonym oder nicht) & \ADM\\
-    \CHK & für den Registrierungsstatus & \ADM\\
-    \INP & für den regulären Ausdruck valider E-Mail-Adressen & \ADM\\
-    \DRP & für das Farbschema des Systems & \ADM\\
-    Datei-Upload & für das Logo des Systems & \ADM\\
-    \BTN & zum Speichern der Änderungen an den Systemeinstellungen & \ADM\\
-    \LNK & zu der Registrierungsseite (fremden Nutzer erstellen) & \ADM\\
-    \LNK & zur Mediumsschemabearbeitung & \ADM\\
-    \LNK & zu den Leihfristverstößen & \ADM\\
-    \LNK & zur Nutzersuche & \ADM\\
-    \INP & für den Suchterm einer Nutzersuche & \ADM\\
-    \BTN & zum Durchführung der Suche & \ADM\\
-\end{controls}
+\end{landscape}
 
 %----------------------------------------------------------------------Kapitel 7--------------------------------------------------------------------------------------------
+\section{Datenbankschema}
+In diesem Abschnitt wird die Umwandlung des ER-Diagramms (Siehe Entwurf Kapitel 7) in ein relationales Datenbankschema behandelt und untersucht.
+\subsection{Umwandlungsentscheidungen}
+\textbf{Starke Entitäten:} Die starken Entitäten \hyperlink{Medium}{'Medium'},\hyperlink{Category}{'Kategorie'} und \hyperlink{User}{'Benutzer'} werden klassisch in eigene Tabellen mit den markierten Primärschlüsseln umgewandelt. \hyperlink{Application}{'Anwendung'} wird als einzeilige Tabelle mit konstantem Primärschlüssel umgesetzt. Die Spezialisierungen der Entität 'Benutzer' werden, aus Mangel an eigenen Attributen, in die Benutzertabelle mittels des neuen Attributs 'userRole' integriert. \\
+\textbf{Schwache Entitäten:} Die zum Benutzer gehörige Entität 'Adresse' wird mit der \hyperlink{User}{Benutzertabelle} fusioniert, da wir die Adresse in unserem System nicht weiterverarbeiten und die Anzahl zusammenwohnender Nutzer verschwindend gering sein wird. Da es sich bei den Attributen 'Signatur' und 'Bibliotheksstandort' um nutzergenerierte Werte handelt, wird die vom Medium abhängige 'Exemplar'-Entität in eine \hyperlink{Copy}{Tabelle} mit dem Kompositschlüssel (\textit{mediumID, copyID}) transformiert. Mit den Entitäten \hyperlink{CustomAttribute}{'Attribut'} und \hyperlink{AttributeType}{'Attributtyp'} wird ebenso verfahren, die jeweiligen Kompositschlüssel sind (\textit{mediumID, attributeID}) und (\textit{attributeID, typeID}). \\
+\textbf{Relationen:} Alle hat-ein-Relationen verschwinden. Da sich die Relationen 'markiert' und 'ausgeliehen' gegenseitig ausschließen, werden sie in der \hyperlink{Copy}{'Exemplar'-Tabelle} in einen einzigen Fremdschlüssel umgewandelt, der zusammen mit dem Verfügbarkeitsstatus die gleichen Funktionalitäten der Originalrelationen abbilden kann. Aus der Relation 'ist Kind von' entsteht ebenfalls eine eigene Spalte \textit{parent} in der \hyperlink{Category}{'Kategorie'-Tabelle}. Da der oberste Knoten der Hierarchie keinen Elternknoten besitzt, ist hier ebenfalls \texttt{NULL} erlaubt. Bei Löschung der Elternkategorie wird eine kaskadierende Löschung der Kinder vorgenommen. Die Relation 'eingeordnet unter' wird in einen Fremdschlüssel in der \hyperlink{Medium}{'Medium'-Tabelle} umgewandelt, der auch \texttt{NULL} als Wert erlaubt. Hier wird von den im ER-Diagramm spezifizierten Kardinalitäten abgewichen und Medien, die nicht manuell in eine Kategorie eingeordnet wurden, nehmen nicht an der Relation Teil (\texttt{NULL} repräsentiert den Top-Knoten). \\
+\subsection{Konventionen und eigene Datentypen}
+\textbf{Namenskonventionen:} Eigens definierte Datentypen und Attribute normaler Entitätstabellen werden in Camel-Case, aber klein geschrieben. Werte der \texttt{ENUM}s werden klein geschrieben. Tabellennamen sind in normalem Camel-Case. \\
+\textbf{Eigene Datentypen:} Statt dem Einlesen von Strings werden im Java-Code des Systems Enums verwendet, um Zustände zu speichern. Diese werden auch in der Datenbank in Form von eigenen \hyperlink{ENUMs}{Enumerationstypen} gespeichert. 
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
+\begin{figure}
+\hypertarget{ENUMs}{}
+\centering
+\includegraphics[width=9cm]{SQLENUMs1}
+\caption{Die systemeigenen \texttt{ENUM}-Typen}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=9cm]{SQLENUMs2}
+\caption{Weitere \texttt{ENUM}-Typen}	
+\end{figure}
+
+\begin{figure}
+\hypertarget{User}{}
+\flushleft
+\includegraphics[width=50em]{SQLUSER}
+\caption{SQL-Anweisung zum Erstellen der Nutzertabelle, mit automatischem Setzen der Tokenerstellzeit.}
+\end{figure}
+
+\begin{figure}
+\hypertarget{Medium}{}
+\flushleft
+\includegraphics[width=60em]{SQLMEDIUM}
+\caption{SQL-Anweisung zum Erstellen der 'Medium'-Tabelle.}
+\end{figure}
+
+\begin{figure}
+\hypertarget{Application}{}
+\flushleft
+\includegraphics[width=45em]{SQLAPPLICATION}
+\caption{SQL-Anweisung zum Erstellen der 'Applikations'-Tabelle. Hier werden Anwendungseinstellungen gespeichert.}
+\end{figure}
+
+\begin{figure}
+\hypertarget{Category}{}
+\flushleft
+\includegraphics[width=60em]{SQLCATEGORY}
+\caption{SQL-Anweisung zum Erstellen der 'Kategorie'-Tabelle.}
+\end{figure}
+
+\begin{figure}
+\hypertarget{CustomAttribut}{}
+\flushleft
+\includegraphics[width=60em]{SQLCUSTOMATTRIBUTE}
+\caption{SQL-Anweisung zum Erstellen der 'Attribute'-Tabelle.}
+\end{figure}
+
+\begin{figure}
+\hypertarget{AttributeType}{}
+\flushleft
+\includegraphics[width=60em]{SQLATTRIBUTETYPE}
+\caption{SQL-Anweisung zum Erstellen der Tabelle für Attributtypen.}
+\end{figure}
+
+\begin{figure}
+\hypertarget{Copy}{}
+\centering
+\includegraphics[width=60em]{SQLCOPY}
+\caption{SQL-Anweisung zum Erstellen der 'Exemplar'-Tabelle mit Integritätschecks für die 'ausgeliehen'- und  'markiert'-Relationen.}
+\end{figure}
+\restoregeometry
+
+\subsection{Normalformanalyse}
+Zunächst werden die erstellten Tabellen in klassischer Notation für Relationen aufgelistet: \\
+\\
+\textbf{User}:\{ \textit{userID, emailAddress, passwordHashSalt, passwordHash, name, surname, postalCode, city, street, houseNumber, token, tokenCreation, userLendPeriod, lendStatus, verificationStatus,\\ userRole} \}\\
+\textbf{Medium}:\{ \textit{mediumID, hasCategory} \}\\
+\textbf{Application}:\{ \textit{one, bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, lookAndFeel, anonRights,\\ userLendStatus} \}\\
+\textbf{Category}:\{ \textit{categoryID, title, description, parent} \}\\
+\textbf{CustomAttribute}:\{ \textit{attributeID, fromMedium, attributeName, attributeValue} \}\\
+\textbf{AttributeType}:\{ \textit{typeID, fromAttribute, previewPosition, multiplicity, modifiability, dataType} \}\\
+\textbf{Copy}:\{ \textit{copyID, fromMedium, signature, bibPosition, status, deadline, actor} \}\\
+\\
+Aus den funktionalen Abhängigkeiten zwischen den Attributen ergeben sich verschiedene Superschlüssel für die Relationen. Die Superschlüsselmöglichkeiten sind eingeklammert.\\
+\\
+\textbf{User}:\{ (\texttt{userID}), (\texttt{emailAddress}), (\texttt{token}), (\texttt{userID, token}), (\texttt{userID, emailAddress}), \\ (\texttt{emailAddress, token}), (\texttt{userID, emailAddress, token}), \textit{passwordHashSalt, passwordHash, name, surname, postalCode, city, street, houseNumber, tokenCreation, userLendPeriod, lendStatus, verificationStatus, userRole} \}
+Es gibt sowohl Städte mit mehreren Postleitzahlen, als auch Postleitzahlen, die mehrere Städte/Dörfer einschließen. Somit legen sich die Attributwerte nicht gegenseitig eindeutig fest und es besteht keine funktionale Abhängigkeit.\\
+\textbf{Medium}:\{ (\texttt{mediumID}), \textit{hasCategory} \}\\
+\textbf{Application}:\{ (\texttt{one}),\textit{ bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, lookAndFeel, anonRights,\\ userLendStatus} \}\\
+\textbf{Category}:\{ (\texttt{categoryID}), \textit{title, description, parent} \}\\
+\textbf{CustomAttribute}:\{ (\texttt{fromMedium, attributeID}),  \textit{attributeValue, attributeName} \}\\
+\textbf{AttributeType}:\{ (\texttt{fromAttribute, typeID}), \textit{previewPosition, multiplicity, modifiability, dataType} \}\\
+\textbf{Copy}:\{ (\texttt{fromMedium, copyID}), (\texttt{fromMedium, signature}), (\texttt{fromMedium, signature, copyID}), \textit{bibPosition, status, deadline, actor} \}
+Die Attribute \textit{status, deadline, actor} beeinflussen sich gegenseitig, \textit{deadline} hängt jedoch noch von anderen Limits außerhalb dieser Relation ab und wird somit nicht eindeutig durch Änderungen von \textit{actor} oder \textit{status} festgelegt. Da nur der Status 'available' den Wert \texttt{NULL} im Attribut \textit{actor} impliziert und alle anderen Werte keine eindeutige Zuordnung festlegen, gibt es hier keine schlüsselunabhängigen Abhängigkeiten.\\
+\\
+Aus den minimalen Superschlüssel ergeben sich die Kandidatenschlüsselmöglichkeiten. Da alle Attributewerte nur atomare Werte annehmen können, ist das Schema in erster Normalform. Da es ebenfalls kein nichtprimes\footnote{Ein Attribut, welches nicht Teil eines Kandidatenschlüssels ist.} Attribut gibt, welches von einer echten Teilmenge eines Schlüssel funktional abhängig ist, gilt für das Schema die zweite Normalform. Für jede funktionale Abhängigkeit \textit{X $\rightarrow$ A} gilt außerdem: Entweder ist \textit{A} prim oder\textit{X} ist ein Superschlüssel der Relation. Damit folgt die dritte Normalform. Ohne schlüsselunabhängige Abhängigkeiten bleiben zur Untersuchung nur noch Attribute der überlappenden Kandidatenschlüssel übrig. In keine Richtung bestehen weder zwischen \textit{userID $\leftrightarrow$ token}, \textit{emailAddress $\leftrightarrow$ token} oder \textit{emailAddress $\leftrightarrow$ userID} noch zwischen \textit{signature $\leftrightarrow$ copyID} funktionale Zusammenhänge. Das Relationenschema ist somit in Boyce-Codd-Normalform, da alle Abhängigkeiten von Superschlüsseln ausgehen.
+
 
 
 %----------------------------------------------------------------------Kapitel 8--------------------------------------------------------------------------------------------
@@ -717,7 +830,7 @@ Durch die Methode 'getCopies' des Medium-DTOs ist das gewünschte Exemplar für 
 
 \subsection{Interaktionen beim Buchen eines Medium-Exemplars mit fehlender Datenbankverbindung}
 \subsubsection{Initialisierung der Mediumsseite}
-Beim Laden der Mediumsseite wird zuerst die Methode 'init' als @PostConstruct aufgerufen. Die 'init'-Methode erzeugt ein Medium-DTO, das Medium-DTO hat eine Kollektion der CopyDTOs und eine Kollektion der AttributeDTOs, folglich werden sie vom Medium-DTO erstellt. Der Nutzer bekommt das MediumDTO und setzt eine Medium-ID, die aus dem 'viewParam' zur Verfügung gestellt wird. Danach wird die 'viewAction()' durchgeführt, welche die Mediumsseite durch die statische Methode aus dem Medium-DAO liefern muss. Das Medium-DAO bekommt durch die Methoden 'getInstance()' und 'getConnection()' auf der Persistence-Schicht eine Verbindung von der Singleton-ConnectionPool-Klasse. Aufgrund der fehlenden Verbindung mit der Datenbank kann das Medium-DAO keine SELECT-Anfrage durchführen, deshalb bekommt das Medium-DAO einen SQL-Exception. Das Medium-DAO wandelt den SQL-Exception in den DataAccess-Exception um, danach gibt das Medium-DAO eine Verbindung durch die Methode 'releaseConnection' frei. Im nächsten Schritt wirft das MediumDAO einen Data-Access-Exception in den Medium-BB ein. Der Nutzer ruft die Methode 'handle' des ExceptionHandlers auf; der ExceptionHandler gibt den Fehler durch die Methoden 'getInstance()' und 'addValue(Data-Access-Exception)' in die Singleton-Logger-Klasse ein. Danach bekommt der ExceptionHandler eine Message vom Resource-Bandle-Handler und setzt diese Message in die ErrorBB-Klasse ein. 
+Beim Laden der Mediumsseite wird zuerst die Methode 'init' als @PostConstruct aufgerufen. Die 'init'-Methode erzeugt ein Medium-DTO, das Medium-DTO hat eine Kollektion der CopyDTOs und eine Kollektion der AttributeDTOs, folglich werden sie vom Medium-DTO erstellt. Der Nutzer bekommt das MediumDTO und setzt eine Medium-ID, die aus dem 'viewParam' zur Verfügung gestellt wird. Danach wird die 'viewAction()' durchgeführt, welche die Mediumsseite durch die statische Methode aus dem Medium-DAO liefern muss. Das Medium-DAO bekommt durch die Methoden 'getInstance()' und 'getConnection()' auf der Persistence-Schicht eine Verbindung von der Singleton-ConnectionPool-Klasse. Aufgrund der fehlenden Verbindung mit der Datenbank kann das Medium-DAO keine SELECT-Anfrage durchführen, deshalb bekommt das Medium-DAO einen SQL-Exception. Das Medium-DAO wandelt den SQL-Exception in den DataAccess-Exception um, danach gibt das Medium-DAO eine Verbindung durch die Methode 'releaseConnection' frei. Im nächsten Schritt wirft das MediumDAO einen Data-Access-Exception in den Medium-BB ein. Der Nutzer ruft die Methode 'handle' des ExceptionHandlers auf; der ExceptionHandler gibt den Fehler durch die Methoden 'getInstance()' und 'addValue(Data-Access-Exception)' in die Singleton-Logger-Klasse ein. Danach bekommt der ExceptionHandler eine Message vom Resource-Bandle-Handler und setzt diese Message in die ErrorBB-Klasse ein.
 \subsubsection{Weiterleitung zur Fehlerseite}
 Als Ergebnis der Methode 'handle' liefert der ExceptionHandler dem Nutzer den Link zur Fehlerseite. Das Laden der Fehlerseite wird auf dem Sequenzdiagramm nicht abgebildet.
 
@@ -737,6 +850,25 @@ Als Ergebnis der Methode 'handle' liefert der ExceptionHandler dem Nutzer den Li
 \newpage
 
 %----------------------------------------------------------------------Kapitel 9--------------------------------------------------------------------------------------------
-
+\section{Sicherheit}
+Dieses Kapitel baut auf dem Abschnitt 'technische Systemsicherheit' des Entwurfs auf und vertieft Sicherheitsaspekte der Anwendung.
+\subsection{Injections}
+\hypertarget{Injections}{Das} direkte Interpretieren von nutzergenerierten Eingaben wird unterbunden.\\
+\textbf{SQL:} Da unser System postgreSQL als Datenbankanfragesprache verwendet, wird in der \hyperlink{DAOs}{Datenzugriffsschicht}!!! im Java-Code mit \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html}{'PreparedStatements'} gearbeitet. Da die eigentliche Anfrage nicht zusammen mit den vom Nutzer stammenden Parametern interpretiert wird, hat das Einschleusen von SQL-Code in diese Parameter keinen Effekt auf die Datenbank.\\
+\textbf{HTML/JavaScript:} \hypertarget{XSS}{Um} das Einschleusen von HTML- (und eingebetteten JavaScript-) Code, in nutzergenerierte Inhalte der Webseite zu verhindern, verfügen die JSF-Facelet Elemente für User-Inputs über integrierte Escaping-Funktionen. Alle nutzergenerierten Anzeigen der Webseite werden so direkt am Input geschützt.
+\subsection{Insecure Direct Object References}
+Unbefugte direkte Zugriffe auf zugangsbeschränkte Teile der Anwendung werden abgefangen.\\ 
+Nutzer könnten versuchen, manuell die URL-Parameter in der Adresszeile zu verändern. In der Medienansicht könnte man so z.B. durch Ändern der ID auf die Ansicht eines anderen Mediums gelangen. Bei einer Anfrage werden erste Maßnahmen der Zugriffskontrolle nach der \texttt{RESTORE\_VIEW}-Phase im \hyperlink{PhaseListener}{Trespasslistener}!!! vorgenommen. Hier wird über die Sessionmap die Nutzerrolle und der Loginstatus mit der URL-Struktur der Anfrage abgeglichen und bei invalidem Zugriff entsprechend umgeleitet. Um denselben Zugriffsprozess wie im Mediumsansicht-Beispiel bei der Profilseite zu verhindern, wird im Backing-Bean durch Zugriff auf die URL-Parameter geprüft, ob der Nutzer berechtigt ist, andere Profile als sein eigenes anzusehen. 
+\subsection{Session Fixation}
+Wie bereits im Abschnitt 'Session-Hijacking' des Entwurfs erwähnt, tauschen wir unmittelbar nach dem Login eines Benutzers im \hyperlink{Login}{Backing-Bean}!!! den Identifikator der Nutzer-Session aus. \hyperlink{Session}{UserSession}!!!-Objekte werden nur für eingeloggte Nutzer angelegt und beim Login werden keine vorherigen Zustandsinformationen übernommen.  Zusätzlich zur Zerstörung beim Logout haben alle Sessions Tomcat-intern einen Inaktivitätstimeout von 30 Minuten, den wir beibehalten werden (andere Servlet Container verwenden denselben Timeout).
+\subsection{Userinput}
+Neben dem Vorbeugen von \hyperlink{Injections}{Injections} gibt es weitere Maßnahmen zum Absichern von Nutzereingaben.\\
+\textbf{Admins:} Ausnahmen von den \hyperlink{XSS}{XSS-Gegenmaßnahmen} bilden das Impressum, die Datenschutzerklärung und  die Kontaktinformationen, da wir Administratoren beim editieren mehr Gestaltungsmöglichkeiten geben wollen. Andere Nutzerrollen haben keinen schreibenden Zugriff auf diese Teile der Webseite.\\
+\textbf{Passwörter:} Eine Mindestlänge von 8 Zeichen in Groß- und Kleinschreibung und das enthalten einer Zahl wird durch den \hyperlink{Passwordvalidator}{PasswordValidator}!!! sichergestellt. Registrierte Passwörter werden nicht im Klartext gespeichert, sondern in der Klasse \hyperlink{Hash}{PasswordHashingModule}!!! durch eine Hashfunktion geschickt. Durch vorheriges Anhängen eines Salts\footnote{Ein kurzer, zufällig generierter String.} an das Passwort werden Kollisionen der Hashfunktion unwahrscheinlicher und gleiche Passwörter entsprechen nicht mehr demselben Hashwert.\\
+\textbf{E-Mail-Adressen:} Bei der Registrierung eines neuen Nutzerkontos oder der Änderung der Adresse wird der vom Administrator festgelegte RegEx zuerst bedient und danach wird auf Duplikate in der Datenbank geprüft. Dies geschieht im \hyperlink{Emailvalidator}{EmailValidator}!!!. Der anschließende Verifizierungsprozess stellt die Gültigkeit der Adresse sicher.
+\subsection{System Secrecy}
+Die Hintergrundprozesse und Technologien werden bestmöglich versteckt.\\
+\textbf{Rollenisolation:} Ist der Nutzer berechtigt, das unter der URL erreichbare Facelet zu sehen, werden, anhand der Nutzerrolle,vorhandene Knöpfe und Eingabefelder je nach Rollenberechtigungen gerendert oder ausgeblendet. So haben Rollen der unteren Hierarchieschichten keine Information über die Möglichkeiten der darüber liegenden.\\
+\textbf{Technologiemaskierung:} Der XML-Dialekt der Facelet-Sprache ist für den Benutzer undurchsichtig, die Sprache wird durch das Framework in HTML und JavaScript mit der Endung '.xhtml' umgewandelt. Weder das verwendete Datenbanksystem noch das JSF-Framework sind für den Benutzer ersichtlich. Im laufenden System werden bei Fehlermeldungen eigene Fehlerseiten erstellt und keine Stack-Traces ausgegeben, um die Tomcat-eigenen Fehlerseiten nicht preiszugeben. Wenn möglich wird, durch die vorgezogene Verwendung von \textit{Forwards} statt \textit{Redirects} bei der Seitennavigation die URL gleich bleiben und dadurch die interne Ordnerstruktur zumindest teilweise maskiert.
 
 \end{document}
