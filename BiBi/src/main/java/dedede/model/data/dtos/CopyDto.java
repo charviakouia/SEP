@@ -4,6 +4,9 @@ import java.util.Date;
 
 import dedede.model.logic.util.AvailabilityStatus;
 
+/**
+ * A class for aggregate and encapsulate data about a medium's copy for transfer.
+ */
 public class CopyDto {
 
 	private String location;

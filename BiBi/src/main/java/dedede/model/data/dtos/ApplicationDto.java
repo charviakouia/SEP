@@ -5,6 +5,9 @@ import java.time.Duration;
 import dedede.model.logic.util.RegisterStatus;
 import dedede.model.logic.util.Theme;
 
+/**
+ * A class for aggregate and encapsulate data about an application for transfer.
+ */
 public class ApplicationDto {
 
 	private String name;

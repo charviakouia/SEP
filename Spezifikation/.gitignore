@@ -6,3 +6,4 @@
 *.txt
 # one can always build the pdf from source
 *.pdf
+*.gz

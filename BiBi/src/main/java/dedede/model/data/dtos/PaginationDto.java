@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A class for aggregate and encapsulate data about a pagination for transfer.
+ */
 public class PaginationDto implements Serializable {
 
 	private static final long serialVersionID = 1L;
@@ -74,5 +77,4 @@ public class PaginationDto implements Serializable {
 		return sortBy;
 
 	}
-
 }

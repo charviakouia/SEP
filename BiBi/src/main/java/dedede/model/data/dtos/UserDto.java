@@ -4,6 +4,9 @@ import dedede.model.logic.util.AccountStatus;
 import dedede.model.logic.util.Role;
 import dedede.model.logic.util.Token;
 
+/**
+ * A class for aggregate and encapsulate data about an user for transfer.
+ */
 public class UserDto {
 
 	private int id;
