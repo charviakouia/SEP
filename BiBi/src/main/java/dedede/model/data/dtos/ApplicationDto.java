@@ -10,27 +10,27 @@ public class ApplicationDto {
 	private String name;
 
 	private String siteNotice;
-	
+
 	private String privacyPolicy;
 
 	private String contactInfo;
-	
+
 	private byte[] logo;
-	
+
 	private String emailRegEx;
-	
+
 	private Theme css;
-	
+
 	private String lendingStatus;
-	
+
 	private Duration warningPeriod;
-	
+
 	private Duration returnPeriod;
-	
+
 	private Duration pickupPeriod;
-	
+
 	private RegisterStatus registerStatus;
-	
+
 	public String getName() {
 		return name;
 	}
