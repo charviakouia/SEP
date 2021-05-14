@@ -1,28 +1,24 @@
 package dedede.model.persistence.util;
 
+public final class Logger {
 
-public class Logger {
-	
-	private String className;
-	
-	private LoggerLevel level;
-	
-	public Logger(String className) {
-		this.className = className;
+	private Logger() {
+		throw new IllegalStateException();
 	}
-	
-	public void info() {
-		
-	}
-	
-     public void debug() {
-		
-	}
-     public void error() {
-	
-}
 
-     private static void log() {
- }
+	public static void severe(String message) {
+		log(LogLevel.SEVERE, message);
+	}
+
+	public static void detailed(String message) {
+		log(LogLevel.DETAILED, message);
+	}
+
+	public static void development(String message) {
+		log(LogLevel.DEVELOPMENT, message);
+	}
+
+	private static void log(LogLevel level, String message) {
+	}
 
 }

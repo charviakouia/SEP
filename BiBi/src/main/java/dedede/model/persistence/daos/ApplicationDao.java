@@ -11,9 +11,11 @@ import dedede.model.data.dtos.ApplicationDto;
  * @author King Dedede
  *
  */
-public final  class ApplicationDao {
+public final class ApplicationDao {
 	
-	private ApplicationDto applicationDto;
+	private ApplicationDao() {
+		throw new IllegalStateException();
+	}
 
 	/**
 	 * Overwrites global application data in the persistent data store.

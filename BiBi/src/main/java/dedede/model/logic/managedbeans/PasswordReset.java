@@ -1,13 +1,9 @@
 package dedede.model.logic.managedbeans;
 
-import dedede.model.logic.util.TokenGenerator;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.mail.internet.HeaderTokenizer;
-
 import java.util.logging.Logger;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * Backing bean for the facelet with the same name. After the user clicked on the
@@ -23,8 +19,11 @@ public class PasswordReset {
 
 	private String token;
 
-	private String confirmPassword;
+	private String confirmedPassword;
 	
+	/**
+	 * Reset the password.
+	 */
 	public void resetPassword() {
 		
 	}

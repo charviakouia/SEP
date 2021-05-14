@@ -1,9 +1,8 @@
 package dedede.model.data.dtos;
 
-import java.util.Date;
-
 import dedede.model.logic.util.AccountStatus;
 import dedede.model.logic.util.Role;
+import dedede.model.logic.util.Token;
 
 
 public class UserDto {
@@ -14,27 +13,33 @@ public class UserDto {
 	
 	private String lastName;
 	
-	private Date returnDeadline;
-	
 	private String passwordHash;
 	
 	private String passwordLostToken;
 	
-	private String email;
+	private String emailAddress;
 	
 	private boolean isEmailVerified;
 	
-	private Role userRole;
+	private Role role;
+	
+	private int zipCode;
+	
+	private String city;
 	
 	private String street;
-	
-	private String location;
-	
-	private int plz;
 
-	private int streetNumber;
+	/**
+	 * The street number.
+	 * This is a string and not a number since we also need to be able to support more
+	 * exotic ones like "21a".
+	 */
+	private String streetNumber;
+	
+	private int lendingPeriod;
 	
 	private AccountStatus accountStatus;
 	
+	private Token token;
 
 }

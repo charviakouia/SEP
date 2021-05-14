@@ -15,8 +15,9 @@ import dedede.model.logic.managedbeans.PaginatedList;
 
 public final class CategoryDao {
 
-	private UserDao userService;
-	private CategoryDao categoryDao;
+	private CategoryDao() {
+		throw new IllegalStateException();
+	}
 
 	/**
 	 * Enters category data into the persistent data store.
