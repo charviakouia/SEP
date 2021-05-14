@@ -74,19 +74,17 @@ Zudem entsprechen die Farben, die die Pakete im Diagramm besitzen, den Farben im
 Die Ordnerstruktur des Projekts wird als Ordnerbaum dargestellt.
 Während die Paketstruktur im Ordner 'BiBi.src.main.java' abgebildet ist, enthält 'BiBi.src.main.webapp.view' die verwendeten Facelets mit entsprechender Rollenzuordnung. \vspace{0.5em}
 
-\begin{figure}[ht]
-	\centering
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\includegraphics[width = 19em]{Modeldiagramm}
-		\caption{Modeldiagramm}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\includegraphics[width = 15em]{FileStructure}
-		\caption{Ordnerstruktur}
-	\end{subfigure}
+\begin{figure}[H]
+\hypertarget{DAOs}{}
+\centering
+\includegraphics[width = 40em]{Modeldiagramm}
+\caption{Modeldiagramm}
+\end{figure}	
+	
+\begin{figure}[H]	
+\centering
+\includegraphics[width = 20em]{FileStructure}
+\caption{Ordnerstruktur}
 \end{figure}
 
 %----------------------------------------------------------------------Kapitel 3--------------------------------------------------------------------------------------------
@@ -199,7 +197,6 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \restoregeometry
 
 %----------------------------------------------------------------------Kapitel 6--------------------------------------------------------------------------------------------
-
 
 \section{View}
 \sectionauthor{León Liehr}
@@ -840,7 +837,7 @@ Als Ergebnis der Methode 'handle' liefert der ExceptionHandler dem Nutzer den Li
 Dieses Kapitel baut auf dem Abschnitt 'technische Systemsicherheit' des Entwurfs auf und vertieft Sicherheitsaspekte der Anwendung.
 \subsection{Injections}
 \hypertarget{Injections}{Das} direkte Interpretieren von nutzergenerierten Eingaben wird unterbunden.\\
-\textbf{SQL:} Da unser System postgreSQL als Datenbankanfragesprache verwendet, wird in der \hyperlink{DAOs}{Datenzugriffsschicht}!!! im Java-Code mit \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html}{'PreparedStatements'} gearbeitet. Da die eigentliche Anfrage nicht zusammen mit den vom Nutzer stammenden Parametern interpretiert wird, hat das Einschleusen von SQL-Code in diese Parameter keinen Effekt auf die Datenbank.\\
+\textbf{SQL:} Da unser System postgreSQL als Datenbankanfragesprache verwendet, wird in den \hyperlink{DAOs}{Data Access Objects} im Java-Code mit \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html}{'PreparedStatements'} gearbeitet. Da die eigentliche Anfrage nicht zusammen mit den vom Nutzer stammenden Parametern interpretiert wird, hat das Einschleusen von SQL-Code in diese Parameter keinen Effekt auf die Datenbank.\\
 \textbf{HTML/JavaScript:} \hypertarget{XSS}{Um} das Einschleusen von HTML- (und eingebetteten JavaScript-) Code, in nutzergenerierte Inhalte der Webseite zu verhindern, verfügen die JSF-Facelet Elemente für User-Inputs über integrierte Escaping-Funktionen. Alle nutzergenerierten Anzeigen der Webseite werden so direkt am Input geschützt.
 \subsection{Insecure Direct Object References}
 Unbefugte direkte Zugriffe auf zugangsbeschränkte Teile der Anwendung werden abgefangen.\\ 
