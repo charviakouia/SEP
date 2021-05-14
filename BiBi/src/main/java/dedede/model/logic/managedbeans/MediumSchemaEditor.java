@@ -7,11 +7,11 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 /**
- * Backing bean for the medium scheme editor page.
+ * Backing bean for the medium schema editor page.
  */
 @Named
 @SessionScoped
-public class MediumSchemeEditor {
+public class MediumSchemaEditor {
 
 	private Set<AttributeDto> attributes;
 	
