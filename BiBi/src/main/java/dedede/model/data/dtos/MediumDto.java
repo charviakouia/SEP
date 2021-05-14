@@ -9,6 +9,30 @@ public class MediumDto {
 	private Set<AttributeDto> attribute;
 	
 	private String category;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Set<AttributeDto> getAttribute() {
+		return attribute;
+	}
+
+	public void setAttribute(Set<AttributeDto> attribute) {
+		this.attribute = attribute;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
 	
 
 }

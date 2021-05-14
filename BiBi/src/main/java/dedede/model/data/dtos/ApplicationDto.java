@@ -1,12 +1,12 @@
 package dedede.model.data.dtos;
 
-import java.util.Date;
+import java.time.Duration;
 
 import dedede.model.logic.util.RegisterStatus;
 import dedede.model.logic.util.Theme;
 
 public class ApplicationDto {
-	
+
 	private String name;
 
 	private String siteNotice;
@@ -23,9 +23,107 @@ public class ApplicationDto {
 	
 	private String lendingStatus;
 	
-	private Date connectionDeadline;
+	private Duration warningPeriod;
 	
-	private Date returnPeriod;
+	private Duration returnPeriod;
+	
+	private Duration pickupPeriod;
 	
 	private RegisterStatus registerStatus;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSiteNotice() {
+		return siteNotice;
+	}
+
+	public void setSiteNotice(String siteNotice) {
+		this.siteNotice = siteNotice;
+	}
+
+	public String getPrivacyPolicy() {
+		return privacyPolicy;
+	}
+
+	public void setPrivacyPolicy(String privacyPolicy) {
+		this.privacyPolicy = privacyPolicy;
+	}
+
+	public String getContactInfo() {
+		return contactInfo;
+	}
+
+	public void setContactInfo(String contactInfo) {
+		this.contactInfo = contactInfo;
+	}
+
+	public byte[] getLogo() {
+		return logo;
+	}
+
+	public void setLogo(byte[] logo) {
+		this.logo = logo;
+	}
+
+	public String getEmailRegEx() {
+		return emailRegEx;
+	}
+
+	public void setEmailRegEx(String emailRegEx) {
+		this.emailRegEx = emailRegEx;
+	}
+
+	public Theme getCss() {
+		return css;
+	}
+
+	public void setCss(Theme css) {
+		this.css = css;
+	}
+
+	public String getLendingStatus() {
+		return lendingStatus;
+	}
+
+	public void setLendingStatus(String lendingStatus) {
+		this.lendingStatus = lendingStatus;
+	}
+
+	public Duration getWarningPeriod() {
+		return warningPeriod;
+	}
+
+	public void setWarningPeriod(Duration warningPeriod) {
+		this.warningPeriod = warningPeriod;
+	}
+
+	public Duration getReturnPeriod() {
+		return returnPeriod;
+	}
+
+	public void setReturnPeriod(Duration returnPeriod) {
+		this.returnPeriod = returnPeriod;
+	}
+
+	public Duration getPickupPeriod() {
+		return pickupPeriod;
+	}
+
+	public void setPickupPeriod(Duration pickupPeriod) {
+		this.pickupPeriod = pickupPeriod;
+	}
+
+	public RegisterStatus getRegisterStatus() {
+		return registerStatus;
+	}
+
+	public void setRegisterStatus(RegisterStatus registerStatus) {
+		this.registerStatus = registerStatus;
+	}
 }
