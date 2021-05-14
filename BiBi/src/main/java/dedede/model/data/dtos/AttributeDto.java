@@ -1,5 +1,9 @@
 package dedede.model.data.dtos;
 
+import dedede.model.logic.util.AttributeType;
+import dedede.model.logic.util.MediumPreviewPosition;
+import dedede.model.logic.util.Multiplicity;
+
 /**
  * A class for aggregate and encapsulate data about an medium's attribute for transfer.
  */
@@ -11,7 +15,11 @@ public class AttributeDto {
 	
 	private String value;
 	
-	private String attributeType;
+	private AttributeType type;
+	
+	private Multiplicity multiplicity;
+	
+	private MediumPreviewPosition position;
 
 	public Integer getId() {
 		return id;
@@ -37,12 +45,21 @@ public class AttributeDto {
 		this.value = value;
 	}
 
-	public String getAttributeType() {
-		return attributeType;
+	public AttributeType getType() {
+		return type;
 	}
 
-	public void setAttributeType(String attributeType) {
-		this.attributeType = attributeType;
+	public void setType(AttributeType type) {
+		this.type = type;
 	}
 
+	public Multiplicity getMultiplicity() {
+		return multiplicity;
+	}
+
+	public void setMultiplicity(Multiplicity multiplicity) {
+		this.multiplicity = multiplicity;
+	}
+
+	
 }

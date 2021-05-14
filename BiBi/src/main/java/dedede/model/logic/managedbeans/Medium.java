@@ -23,6 +23,11 @@ public class Medium extends PaginatedList {
 	private MediumDto medium;
 
 	private ArrayList<CopyDto> copies;
+	
+	/**
+	 * A copy to be created.
+	 */
+	private CopyDto copy;
 
 	@PostConstruct
 	public void init() {
@@ -32,7 +37,7 @@ public class Medium extends PaginatedList {
 	/**
 	 * Save the changes made to the set of medium attributes.
 	 */
-	public void update() {
+	public void saveAttributes() {
 
 	}
 
@@ -55,6 +60,13 @@ public class Medium extends PaginatedList {
 	 */
 	public void pickUpAnyCopy() {
 
+	}
+	
+	/**
+	 * Get the minimum return period of of the user-specific, the medium-specific and the global one.
+	 */
+	public String getReturnPeriod() {
+		return null;
 	}
 
 	/**
