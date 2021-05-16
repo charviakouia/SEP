@@ -4,6 +4,8 @@ import dedede.model.data.dtos.ApplicationDto;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * Backing bean for the administration facelet.
  * Allows an administrator to update the system settings.
@@ -12,7 +14,7 @@ import jakarta.inject.Named;
  */
 @Named
 @SessionScoped
-public class Admininstration   {
+public class Admininstration implements Serializable {
 	
 	private ApplicationDto applicationDto;
 	

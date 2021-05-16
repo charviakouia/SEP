@@ -3,6 +3,8 @@ package dedede.model.logic.managedbeans;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * Backing bean for the email confirmation page.
  * Accessing this page potentially verifies the email address of a specific user. For this, it
@@ -11,7 +13,7 @@ import jakarta.inject.Named;
  */
 @Named
 @SessionScoped
-public class EmailConfirmation {
+public class EmailConfirmation implements Serializable {
 	
 	private String token;
 

@@ -1,5 +1,6 @@
 package dedede.model.logic.managedbeans;
 
+import java.io.Serializable;
 import java.util.List;
 
 import dedede.model.data.dtos.CopyDto;
@@ -14,7 +15,7 @@ import jakarta.inject.Named;
  */
 @Named
 @SessionScoped
-public class LendingPeriodViolation extends PaginatedList {
+public class LendingPeriodViolation extends PaginatedList implements Serializable {
 	
 	private List<CopyWithUser> copiesWithUser;
 

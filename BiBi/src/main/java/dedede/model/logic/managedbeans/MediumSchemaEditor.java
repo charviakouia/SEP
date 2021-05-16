@@ -1,5 +1,6 @@
 package dedede.model.logic.managedbeans;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import dedede.model.data.dtos.AttributeDto;
@@ -11,7 +12,7 @@ import jakarta.inject.Named;
  */
 @Named
 @SessionScoped
-public class MediumSchemaEditor {
+public class MediumSchemaEditor implements Serializable {
 
 	private Set<AttributeDto> attributes;
 	

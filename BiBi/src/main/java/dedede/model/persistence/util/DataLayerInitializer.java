@@ -8,7 +8,7 @@ public class DataLayerInitializer {
 		
 	}
 	
-	public void createApplictionSettings() {
+	public void createApplicationSettings() {
 		
 	}
 	
