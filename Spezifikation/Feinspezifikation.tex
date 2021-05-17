@@ -1,3 +1,4 @@
+% !TeX spellcheck = de_DE
 
 \documentclass{article}
 
@@ -15,6 +16,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{lscape}
+\usepackage{colortbl}
 
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
@@ -78,9 +80,9 @@ Während die Paketstruktur im Ordner 'BiBi.src.main.java' abgebildet ist, enthä
 \centering
 \includegraphics[width = 40em]{Modeldiagramm}
 \caption{Modeldiagramm}
-\end{figure}	
-	
-\begin{figure}[H]	
+\end{figure}
+
+\begin{figure}[H]
 \centering
 \includegraphics[width = 20em]{FileStructure}
 \caption{Ordnerstruktur}
@@ -204,7 +206,7 @@ Dieser Abschnitt beschreibt die Konfigurationsdatei und Sprachausgabe der Anwend
 \indent Die Anwendung wird in einer Datei namens 'config' im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{{\texttt.properties}-Format} konfiguriert. Diese Datei wird dann mit Java-internen Funktionalitäten \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html}{dieser Klasse} über einen Stream eingelesen. Sie ist im Verzeichnis der Anwendung unter \texttt{/WebContent/WEB-INF/} zu finden und ist unten sowohl kurz \hyperlink{configTabelle}{beschrieben}, als auch \hyperlink{configFoto}{fotographiert} .
 \subsubsection{Inhaltsbeschreibung}
 \hypertarget{propSchema}{}
-Die mit \textcolor{green}{!} oder \textcolor{green}{\#} eingeleiteten Zeilen der Dateien enthalten Kommentare. Alle unmarkierten Zeilen halten ein Paar aus einem Schlüssel und einem mit \texttt{:} getrennten Wert. Nur die Werte dürfen verändert werden! 
+Die mit \textcolor{green}{!} oder \textcolor{green}{\#} eingeleiteten Zeilen der Dateien enthalten Kommentare. Alle unmarkierten Zeilen halten ein Paar aus einem Schlüssel und einem mit \texttt{:} getrennten Wert. Nur die Werte dürfen verändert werden!
 
 \begin{center}
 \begin{table}[H]
@@ -224,7 +226,7 @@ DB\_PASSWORD & Das Passwort des oben angegebenen Datenbankbenutzers. & Ein Strin
 \hline
 DB\_CAPACITY & Die maximale Anzahl an Verbindungen, die die Datenbank dem Server zu Verfügung stellen kann. & Eine natürliche Zahl (nicht 0). Standartwert ist 42.\\
 \hline
-MAILSERVER\_HOST & Der URI unter der der E-Mail-Server erreichbar ist. &  Ein \hyperlink{https://datatracker.ietf.org/doc/html/rfc3986}{'Uniform Ressource Identifier'}. Pflichtfeld! \\ 
+MAILSERVER\_HOST & Der URI unter der der E-Mail-Server erreichbar ist. &  Ein \hyperlink{https://datatracker.ietf.org/doc/html/rfc3986}{'Uniform Ressource Identifier'}. Pflichtfeld! \\
 \hline
 MAILSERVER\_PORT & Der Port durch den Anfragen an den Server geleitet werden. & Eine ganze Zahl von 0 bis 65535. Pflichtfeld! Standartwert ist 25. \\
 \hline
@@ -264,7 +266,7 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \caption{Englisches Sprachpaket}
 \end{figure}
 
-\begin{figure}  
+\begin{figure}
 \hypertarget{messagesde}{}
 \centering
 \includegraphics[width=60em]{messagesde}
@@ -277,21 +279,15 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \section{View}
 \sectionauthor{León Liehr}
 
-Was noch fehlt:
-
-\begin{itemize}
-    \item IDs pro Element
-    \item Korrekte Sichtbarkeiten (es fehlt konditionales read-only zB)
-    \item Composite-Component-Definitionen für paginierte Liste etc.
-    \item Manchmal fehlt repeat-Element
-    \item Manche Tabellen sind noch nicht im neuen Format (die, die „Beschreibung“ haben)
-    \item Converter und Validators sind nicht aufgezeichnnet
-\end{itemize}
-
 \newcommand{\M}[1]{\texttt{#1}} % monospaced
 \newcommand{\tag}[2]{\M{#1:#2}} % JSF tag
-\newcommand{\B}[1]{\#\{#1\}} % JSF binding
-\newcommand{\MB}[1]{\M{\B{#1}}} % monospaced JSF binding
+\newcommand{\B}[1]{\M{\RB{#1}}} % (monospaced) JSF binding
+\newcommand{\RB}[1]{\#\{#1\}} % non-monospaced ("raw") JSF binding
+\newcommand{\2}[1]{\multirow{2}{*}{#1}}
+\newcommand{\3}[1]{\multirow{3}{*}{#1}}
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+%\newcommand{\disambiguationrule}{\arrayrulecolor{lightgray}\midrule\arrayrulecolor{black}}
+\newcommand{\disambiguationrule}{\arrayrulecolor{lightgray}\cmidrule(r){3-4}\arrayrulecolor{black}}
 
 % @Beacon @Temporary
 \renewenvironment{controls}
@@ -300,7 +296,7 @@ Was noch fehlt:
         \centering
         \begin{tabular}{ p{7em} p{25em} p{7em} }
             \toprule
-            \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+            \textbf{Tag} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
             \midrule
         }
         {
@@ -313,16 +309,16 @@ Was noch fehlt:
 {
     \begin{table}[H]
         \centering
-        \begin{tabular}{ l l l l }
+        \begin{tabular}{ l l l l l }
             \toprule
-            & \multicolumn{2}{l}{\textbf{Attribut}} &\\
-            \cmidrule(r){2-3}
-            \textbf{Typ} & \textbf{Name} & \textbf{Wert} & \textbf{Sichtbarkeit}\\
+            & & \multicolumn{2}{l}{\textbf{Attribut}} &\\
+            \cmidrule(r){3-4}
+            \textbf{Tag} & \textbf{Beschreibung} & \textbf{Name} & \textbf{Bindung} & \textbf{Sichtbarkeit}\\
             \midrule
             #2
             \bottomrule
         \end{tabular}
-        \caption{\M{#1.xhtml}}
+        \caption{Bedienelemente in \M{#1.xhtml}}
     \end{table}
 }
 
@@ -330,16 +326,16 @@ Was noch fehlt:
 {
     \begin{table}[H]
         \centering
-        \begin{tabular}{ l l l l }
+        \begin{tabular}{ l l l l l }
             \toprule
-            & \multicolumn{2}{l}{\textbf{Attribut}} &\\
-            \cmidrule(r){2-3}
-            \textbf{Typ} & \textbf{Name} & \textbf{Wert} & \textbf{Sichtbarkeit}\\
+            & & \multicolumn{2}{l}{\textbf{Attribut}} &\\
+            \cmidrule(r){3-4}
+            \textbf{Tag} & \textbf{Beschreibung} & \textbf{Name} & \textbf{Bindung} & \textbf{Sichtbarkeit}\\
             \midrule
             #3
             \bottomrule
         \end{tabular}
-        \caption{#1}
+        \caption{Bedienelemente pro #1}
         \label{#2}
     \end{table}
 }
@@ -360,7 +356,42 @@ Was noch fehlt:
 \newcommand{\CHK}{\tag{h}{selectBooleanCheckbox}}
 \newcommand{\OUT}{\tag{h}{outputText}}
 \newcommand{\LST}{\tag{bibi}{paginatedList}}
+\newcommand{\TXT}{\tag{h}{inputTextarea}}
 
+Was noch fehlt:
+
+% question evtl h:link instead of h:outputLink for links with query params??
+
+\begin{itemize}
+    \item IDs pro Element
+    \item Korrekte Sichtbarkeiten (es fehlt konditionales read-only zB)
+    \item Composite-Component-Definitionen für paginierte Liste etc.
+    \item Manchmal fehlt repeat-Element
+    \item Manche Tabellen sind noch nicht im neuen Format (die, die „Beschreibung“ haben)
+    \item Converter und Validators sind nicht aufgezeichnnet
+\end{itemize}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ l l }
+        \toprule
+        \textbf{Präfix} & \textbf{URI}\\
+        \midrule
+        \M{bibi} & http://xmlns.jcp.org/jsf/composite/bibi \\
+        \M{cc} & http://xmlns.jcp.org/jsf/composite \\
+        \M{f} & http://xmlns.jcp.org/jsf/core \\
+        \M{h} & http://xmlns.jcp.org/jsf/html \\
+        \M{ui} & http://xmlns.jcp.org/jsf/facelets \\
+        \bottomrule
+    \end{tabular}
+    \caption{Verwendete XML-Namensräume}
+\end{table}
+
+Jedes \tag{f}{viewParam}-Element ist in ein \tag{f}{metadata}-Element eingebettet.
+META TASK implizit jedes Eingabefeld von Meldungsfeld begleitet.
+META NOTE Typ ist JSF-Tag.
+
+\newgeometry{left=0.5cm,right=0.5cm,top=0cm,bottom=2cm}
 \begin{landscape}
 
 \subsection{Komponenten}
@@ -372,34 +403,33 @@ JSF Composite Components.
 JSF Templates.
 
 \begincontrols[template]
-    \tag{ui}{insert} & \M{name} & \M{title} & \\
-    \tag{ui}{insert} & \M{name} & \M{content} & \\
-    \tag{ui}{include} & \M{src} & \hyperref[page_header]{\M{header.xhtml}} & \\
-    \tag{h}{messages} & \M{globalOnly} & \M{true} & \\
-    \tag{ui}{include} & \M{src} & \hyperref[page_footer]{\M{footer.xhtml}} & \\
+    \tag{ui}{insert} & Titel einer Seite & \M{name} & \M{title} & \\
+    \tag{ui}{insert} & Inhalt einer Seite & \M{name} & \M{content} & \\
+    \tag{ui}{include} & Kopfzeile jeder Seite & \M{src} & \hyperref[page_header]{\M{header.xhtml}} & \\
+    \tag{h}{messages} & allgemeine Meldungen & \M{globalOnly} & \M{true} & \\
+    \tag{ui}{include} & Fußzeile jeder Seite & \M{src} & \hyperref[page_footer]{\M{footer.xhtml}} & \\
 \endcontrols
 
 \subsubsection{Kopfzeile}\label{page_header}
 
 \begincontrols[header]
-    \multirow{2}{*}{\tag{h}{commandButton}} & \M{id} & \M{xxx} & \\
-    & \M{action} & \MB{header.displayHelpText()} & \\
-    \INP & \M{value} & \MB{header.mediumSearchTerm} & \\
-    \LNK & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}} & \\
-    \tag{h}{graphicImage} & \M{value} & \MB{header.application.logo} & \\
-    \OUT & \M{value} & \MB{header.application.name} & \\
-    \tag{h}{commandLink} & \M{action} & \MB{header.logOut()} & \\
-    \LNK & \M{value} & \hyperref[page_login]{\M{public/login.xhtml}} & \\
-    \LNK & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}} & \\
-    \LNK & \M{value} & \hyperref[page_profile]{\M{profile.xhtml?id=\B{header.user.id}}} & \\
+    \tag{h}{commandButton} & kontextsensitive Hilfe anzeigen & \M{action} & \B{header.displayHelpText()} & \\ % QUESTION can that work??
+    \INP & Mediensuchterm & \M{value} & \B{header.mediumSearchTerm} & \\ % BEACON store in sep DTO
+    \LNK & zur erweiterten Suche & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}} & \\
+    \tag{h}{graphicImage} & Logo des Systems & \M{value} & \B{header.application.logo} & \\
+    \OUT & Name des Systems & \M{value} & \B{header.application.name} & \\
+    \tag{h}{commandLink} & abmelden & \M{action} & \B{header.logOut()} & \\
+    \LNK & zur Anmeldemaske & \M{value} & \hyperref[page_login]{\M{public/login.xhtml}} & \\
+    \LNK & zur Registrierungsseite & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}} & \\
+    \LNK & zur Profilseite & \M{value} & \hyperref[page_profile]{\M{account/profile.xhtml?id=\RB{header.user.id}}} & \\
 \endcontrols
 
 \subsubsection{Fußzeile}\label{page_footer}
 
 \begincontrols[footer]
-    \LNK & \M{value} & \hyperref[page_privacy_policy]{\M{public/privacy-policy.xhtml}} & \\
-    \LNK & \M{value} & \hyperref[page_site_notice]{\M{public/site-notice.xhtml}} & \\
-    \LNK & \M{value} & \hyperref[page_contact]{\M{public/contact.xhtml}} & \\
+    \LNK & zur Datenschutzerklärung & \M{value} & \hyperref[page_privacy_policy]{\M{public/privacy-policy.xhtml}} & \\
+    \LNK & zum Impressum & \M{value} & \hyperref[page_site_notice]{\M{public/site-notice.xhtml}} & \\
+    \LNK & zur Kontaktseite & \M{value} & \hyperref[page_contact]{\M{public/contact.xhtml}} & \\
 \endcontrols
 
 \subsection{Seiten}
@@ -414,7 +444,7 @@ JSF Templates.
     \centering
     \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
         \toprule
-        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
+        \textbf{Spalte} & \textbf{Tag} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
         \midrule
         Exemplar & \LNK & die Signatur eines Exemplars; zur Direktausleihe & \BIB\\
         Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht & \BIB\\
@@ -436,7 +466,7 @@ JSF Templates.
     \centering
     \begin{tabular}{ p{6em} p{6em} p{27em} }
         \toprule
-        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \textbf{Spalte} & \textbf{Tag} & \textbf{Beschreibung}\\
         \midrule
         Exemplar & \OUT & die Signatur eines Exemplars\\
         Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
@@ -456,7 +486,7 @@ JSF Templates.
     \centering
     \begin{tabular}{ p{6em} p{6em} p{27em} }
         \toprule
-        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \textbf{Spalte} & \textbf{Tag} & \textbf{Beschreibung}\\
         \midrule
         Exemplar & \OUT & die Signatur eines Exemplars\\
         Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
@@ -469,84 +499,88 @@ JSF Templates.
 \subsubsection{Anmeldemaske}\label{page_login}
 
 \begincontrols[public/login]
-    \INP & \M{value} & \MB{login.user.email} & \ANO\\
-    \PAS & \M{value} & \MB{login.user.password} & \ANO\\
-    \BTN & \M{action} & \MB{login.logIn()} & \ANO\\
-    \tag{h}{commandLink} & \M{action} & \MB{login.resetPassword()} & \ANO\\
+    \INP & E-Mail-Adresse & \M{value} & \B{login.user.emailAddress} & \ANO\\
+    \PAS & Passwort & \M{value} & \B{login.password} & \ANO\\ % BEACON password converter to hash
+    \BTN & anmelden & \M{action} & \B{login.logIn()} & \ANO\\
+    \tag{h}{commandLink} & Passwort zurücksetzen & \M{action} & \B{login.resetPassword()} & \ANO\\
 \endcontrols
 
 \subsubsection{Datenschutzerklärung}\label{page_privacy_policy}
 
 \begincontrols[public/privacy-policy]
     % TASK do the readonly stuff!!
-    \INP & \M{value} & \MB{privacyPolicy.application.privacyPolicy} & \ADM\\
-    \BTN & \M{action} & \MB{privacyPolicy.save()} & \ADM\\
+    \TXT & Datenschutzerklärung & \M{value} & \B{privacyPolicy.application.privacyPolicy} & \ADM\\
+    \BTN & Änderungen speichern & \M{action} & \B{privacyPolicy.save()} & \ADM\\
 \endcontrols
 
 \subsubsection{Direktausleihe}\label{page_direct_lending}
 
 \begincontrols[staff/reactive-lending]
-    \tag{bibi}{reactiveInputText} & \M{value} & \MB{directLending.user.email} & \BIB\\
-    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{directLending.copies} & \multirow{2}{*}{\BIB}\\
-    & \M{var} & \hyperref[subcontrol_direct_lending_copy]{\M{copy}} & \\
-    \BTN & \M{action} & \MB{directLending.addSignatureInputField()} & \BIB\\
-    \BTN & \M{action} & \MB{directLending.lendCopies()} & \BIB\\
+    \tag{bibi}{reactiveInputText} & E-Mail-Adresse des Kunden & \M{value} & \B{directLending.user.emailAddress} & \BIB\\
+    \disambiguationrule
+    \2{\tag{ui}{repeat}} & \2{Signaturen der auszuleihenden Exemplare} & \M{value} & \B{directLending.copies} & \2{\BIB}\\
+    & & \M{var} & \hyperref[subcontrol_direct_lending_copy]{\M{copy}} & \\
+    \disambiguationrule
+    \BTN & weiteres Signatureingabefeld hinzufügen & \M{action} & \B{directLending.addSignatureInputField()} & \BIB\\
+    \BTN & Exemplare verleihen & \M{action} & \B{directLending.lendCopies()} & \BIB\\
 \endcontrols
 
-\beginsubcontrols[Bedienelemente pro Exemplar (5 bei Seitenaufruf)][subcontrol_direct_lending_copy]
-\tag{bibi}{reactiveInputText} & \M{value} & \MB{copy.signature} & \BIB\\
+\beginsubcontrols[Exemplar (5 bei Seitenaufruf)][subcontrol_direct_lending_copy]
+\tag{bibi}{reactiveInputText} & Signatur des Exemplars & \M{value} & \B{copy.signature} & \BIB\\
 \endsubcontrols
 
 \subsubsection{E-Mail-Bestätigung}\label{page_email_confirmation}
 
 \begincontrols[public/email-confirmation]
-    \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{token} & \multirow{2}{*}{\PUB}\\
-    & \M{value} & \MB{emailConfirmation.token} &\\
+    \3{\tag{f}{viewParam}} & \3{Kennzeichen der E-Mail-Bestätigung} & \M{name} & \M{token} & \3{\PUB}\\
+    & & \M{value} & \B{emailConfirmation.token} &\\
+    & & \M{required} & \M{true} &\\
 \endcontrols
 
 \subsubsection{Fehlerseite}\label{page_error}
 
 \begin{controls}
-    \OUT & für den Titel der Fehlermeldung & \PUB\\
-    \OUT & für die Beschreibung des Fehlers & \PUB\\
+%    \OUT & für den Titel der Fehlermeldung & \PUB\\
+%    \OUT & für die Beschreibung des Fehlers & \PUB\\
 \end{controls}
 
 \subsubsection{Impressum}\label{page_site_notice}
 
 \begincontrols[public/site-notice]
     % TASK readonly for users and staff
-    \INP & \M{value} & \MB{siteNotice.application.siteNotice} & \ADM\\
-    \BTN & \M{action} & \MB{siteNotice.save()} & \ADM\\
+    \TXT & Impressum & \M{value} & \B{siteNotice.application.siteNotice} & \ADM\\
+    \BTN & Änderungen speichern & \M{action} & \B{siteNotice.save()} & \ADM\\
 \endcontrols
 
+% TASK rename to Kategorienerstellung / category creator
 \subsubsection{Kategorienbearbeitung}\label{page_category_editor}
 
 \begincontrols[staff/category-editor]
-    \INP & \M{value} & \MB{categoryEditor.category.name} & \BIB\\
-    \INP & \M{value} & \MB{categoryEditor.category.description} & \BIB\\
-    \BTN & \M{action} & \MB{categoryEditor.save()} & \BIB\\
+    \INP & Kategorienname & \M{value} & \B{categoryEditor.category.name} & \BIB\\
+    \TXT & Kategorienbeschreibung & \M{value} & \B{categoryEditor.category.description} & \BIB\\
+    \BTN & Kategorie erstellen & \M{action} & \B{categoryEditor.save()} & \BIB\\ % save() -> create()
 \endcontrols
 
 \subsubsection{Kategorierenstöberer}\label{page_category_browser}
 
 \begincontrols[public/category-browser]
-    \tag{bibi}{reactiveInputField} & \M{value} & \MB{categoryBrowser.searchTerm} & \PUB\\
-    \BTN & \M{action} & \MB{categoryBroswer.searchCategory()} & \PUB\\
-    \tag{bibi}{treeView} & & & \PUB \\
-    \OUT & \M{value} & \MB{categoryBrowser.category.name} & \PUB\\
-    \OUT & \M{value} & \MB{categoryBrowser.category.description} & \PUB\\
-    \tag{h}{commandLink} & \M{action} & \hyperref[page_category_editor]{\M{staff/category-editor.xhtml}} & \BIB\\ % edit
-    \tag{h}{commandLink} & \M{action} & \hyperref[page_category_editor]{\M{staff/category-editor.xhtml}} & \BIB\\ % create
-    \BTN & \M{action} & \MB{categoryBroswer.delete()} & \BIB\\
-    \LST & & aller Medien (Medienvorschauen) in der ausgewählten Kategorie & \PUB\\
+    \tag{bibi}{reactiveInputField} & Kategoriensuchterm & \M{value} & \B{categoryBrowser.searchTerm} & \PUB\\ % BEACON sep DTO? SearchDTO
+    \BTN & Kategorien suchen & \M{action} & \B{categoryBroswer.searchCategory()} & \PUB\\
+    \tag{bibi}{treeView} & Baumansicht von Kategorien & & & \PUB \\
+    \INP & Name der ausgewählten Kategorie & \M{value} & \B{categoryBrowser.category.name} & \BIB\\ % TASK cond readonly
+    \TXT & Beschreibung der ausgewählten Kategorie & \M{value} & \B{categoryBrowser.category.description} & \BIB\\ % TASK cond readonly
+    % TASK rename category-editor to category-creator
+    \tag{h}{commandLink} & Kategorie unter der ausgewählten Kategorie erstellen & \M{action} & \hyperref[page_category_editor]{\M{staff/category-editor.xhtml}} & \BIB\\
+    \BTN & ausgewählte Kategorie löschen & \M{action} & \B{categoryBroswer.delete()} & \BIB\\ % TASK param categ id
+    \LST & Medienvorschauen in der ausgewählten Kategorie & &  & \PUB\\ % TASK sep tex-table
 \endcontrols
 
 \subsubsection{Kontakt}\label{page_contact}
 
 \begincontrols[public/contact]
     % TASK readonly for users and staff
-    \INP & \M{value} & \MB{contact.application.contactInfo} & \ADM\\
-    \BTN & \M{action} & \MB{contact.save()} & \ADM\\
+    \TXT & Kontaktinformationen & \M{value} & \B{contact.application.contactInfo} & \ADM\\
+    \BTN & Änderungen speichern & \M{action} & \B{contact.save()} & \ADM\\
 \endcontrols
 
 \subsubsection{Leihfristverstöße}\label{page_lending_period_violations}
@@ -559,7 +593,7 @@ JSF Templates.
     \centering
     \begin{tabular}{ p{6em} p{6em} p{27em} }
         \toprule
-        \textbf{Spalte} & \textbf{Typ} & \textbf{Beschreibung}\\
+        \textbf{Spalte} & \textbf{Tag} & \textbf{Beschreibung}\\
         \midrule
         Exemplar & \LNK & die Signatur eines Exemplars; zur Medienrückgabe\\
         Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
@@ -573,84 +607,91 @@ JSF Templates.
 \subsubsection{Medienerstellung}\label{page_medium_creation}
 
 \begincontrols[staff/medium-creation]
-    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{mediumCreation.medium.attributes} & \multirow{2}{*}{\BIB}\\
-    & \M{var} & \hyperref[subcontrol_medium_creation_attribute]{\M{attribute}} &\\
-    \INP & \M{value} & \MB{mediumCreation.medium.category} & \BIB\\
-    \INP & \M{value} & \MB{mediumCreation.medium.returnPeriod} & \BIB\\
-    \INP & \M{value} & \MB{mediumCreation.copy.location} & \BIB\\
-    \INP & \M{value} & \MB{mediumCreation.copy.signature} & \BIB\\
-    \BTN & \M{action} & \MB{mediumCreation.create()} & \BIB\\
+    \2{\tag{ui}{repeat}} & \2{Medienattribute} & \M{value} & \B{mediumCreation.medium.attributes} & \2{\BIB}\\
+    & & \M{var} & \hyperref[subcontrol_medium_creation_attribute]{\M{attribute}} &\\
+    \disambiguationrule
+    \INP & Medienkategorie & \M{value} & \B{mediumCreation.medium.category} & \BIB\\
+    \INP & Rückgabefrist & \M{value} & \B{mediumCreation.medium.returnPeriod} & \BIB\\
+    \INP & Standort des ersten Exemplars & \M{value} & \B{mediumCreation.copy.location} & \BIB\\
+    \INP & Signatur des ersten Exemplars & \M{value} & \B{mediumCreation.copy.signature} & \BIB\\
+    \BTN & Medium und dessen erstes Exemplar erstellen & \M{action} & \B{mediumCreation.create()} & \BIB\\
 \endcontrols
 
-\beginsubcontrols[Bedienelemente pro Attribut][subcontrol_medium_creation_attribute]
+\beginsubcontrols[Attribut][subcontrol_medium_creation_attribute]
 % QUESTION what other attributes (lavel attribut.type??)
-\INP & \M{value} & \MB{attribute.value} & \BIB\\
+\INP & Attributwert & \M{value} & \B{attribute.value} & \BIB\\
 \endsubcontrols
 
 \subsubsection{Medienrückgabe}\label{page_return_form}
 
 \begincontrols[staff/return-form]
-    \tag{bibi}{reactiveInputField} & \M{value} & \MB{returnForm.user.email} & \BIB\\
-    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{returnForm.copies} & \multirow{2}{*}{\BIB}\\
-    & \M{var} & \hyperref[subcontrol_return_form_copy]{\M{copy}} & \\
-    \BTN & \M{action} & \MB{returnForm.addSignatureInputField()} & \BIB\\
-    \BTN & \M{action} & \MB{returnForm.returnMedium()} & \BIB\\
+    \tag{bibi}{reactiveInputField} & E-Mail-Adresse des Kunden & \M{value} & \B{returnForm.user.emailAddress} & \BIB\\
+    \disambiguationrule
+    \2{\tag{ui}{repeat}} & \2{Signaturen der abzugebenden Exemplare} & \M{value} & \B{returnForm.copies} & \2{\BIB}\\
+    & & \M{var} & \hyperref[subcontrol_return_form_copy]{\M{copy}} & \\
+    \disambiguationrule
+    \BTN & weiteres Signatureingabefeld hinzufügen & \M{action} & \B{returnForm.addSignatureInputField()} & \BIB\\
+    \BTN & Exemplare abgeben & \M{action} & \B{returnForm.returnMedium()} & \BIB\\
 \endcontrols
 
-\beginsubcontrols[Bedienelemente pro Exemplare (5 bei Seitenaufruf)][subcontrol_return_form_copy]
-\tag{bibi}{reactiveInputField} & \M{value} & \MB{copy.signature} & \BIB\\
+\beginsubcontrols[Exemplar (5 bei Seitenaufruf)][subcontrol_return_form_copy]
+\tag{bibi}{reactiveInputField} & Signatur des Exemplars & \M{value} & \B{copy.signature} & \BIB\\
 \endsubcontrols
 
 \subsubsection{Mediensuche}\label{page_medium_search}
 
+% TASK MediumSearchDTO
 \begincontrols[public/medium-search]
-    \INP & \M{value} & \MB{mediumSearch.generalSearchTerm} & \PUB\\
-    \BTN & \M{action} & \MB{mediumSearch.search()} & \PUB\\
-    \tag{ui}{repeat} & \M{value} & \MB{mediumSearch.searchQueries} & \PUB\\
-    \BTN & \M{action} & \MB{mediumSearch.addNuancedSearchQuery())} & \PUB\\
+    \INP & freier Suchterm & \M{value} & \B{mediumSearch.generalSearchTerm} & \PUB\\
+    \BTN & Medien suchen & \M{action} & \B{mediumSearch.search()} & \PUB\\
+    \tag{ui}{repeat} & differenzierte Suchanfragen & \M{value} & \B{mediumSearch.nuancedSearchQueries} & \PUB\\
+    \BTN & weitere differenzierte Suchanfrage hinzufügen & \M{action} & \B{mediumSearch.addNuancedSearchQuery())} & \PUB\\
     % BEACON TEMPORARY
-    \LST & & aller Suchergebnisse (als Medienvorschauen) & \PUB\\
+    \LST & aller Suchergebnisse (als Medienvorschauen) & & & \PUB\\ % TASK separate tex-table
 \endcontrols
 
-\beginsubcontrols[Bedienelemente pro Suchabfrage (3 bei Seitenaufruf)][subcontrol_medium_search_query]
-% TASK converter
-\DRP & \M{value} & \MB{query.operator} & \PUB\\
-% TASK three times, converter, grouped
-\DRP & \M{value} & \MB{query.criterion} & \PUB\\
-% TASK three times, grouped
-\INP & \M{value} & \MB{query.term} & \PUB\\
+\beginsubcontrols[differenzierter Suchabfrage (3 bei Seitenaufruf)][subcontrol_medium_search_query]
+    \DRP & Suchoperator & \M{value} & \B{query.operator} & \PUB\\ % TASK converter
+    \DRP & Suchkriterium & \M{value} & \B{query.criterion} & \PUB\\ % TASK converter
+    \INP & Suchterm & \M{value} & \B{query.term} & \PUB\\
 \endsubcontrols
 
 \subsubsection{Mediumsansicht}\label{page_medium}
 
 \begincontrols[public/medium]
-    \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{id} & \multirow{2}{*}{\PUB}\\
-    & \M{value} & \MB{medium.medium.id} & \\
+    \3{\tag{f}{viewParam}} & \3{Kennzeichen des Mediums} & \M{name} & \M{id} & \3{\PUB}\\
+    & & \M{value} & \B{medium.medium.id} & \\
+    & & \M{required} & \M{true} & \\
+    \disambiguationrule
     % TODO nur sichtbar wenn man von der Suche kommt
-    \LNK & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}} & \PUB\\
-    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{medium.medium.attributes} & \multirow{2}{*}{\PUB}\\
-    & \M{var} & \hyperref[subcontrol_medium_attribute]{\M{attribute}} & \\
-    \BTN & \M{action} & \MB{medium.saveAttributes()} & \BIB\\
-    \BTN & \M{action} & \MB{medium.pickUpAnyCopy()} & \USR\\
-    \OUT & \M{value} & \MB{medium.returnPeriod} & \USR\\
-    \INP & \M{value} & \MB{medium.medium.returnPeriod} & \BIB\\
-    \BTN & \M{action} & \MB{medium.saveReturnPeriod()} & \BIB\\
-    \BTN & \M{action} & \MB{medium.delete()} & \BIB\\
-    \multirow{3}{*}{\tag{h}{dataTable}} & \M{value} & \MB{medium.copies} & \multirow{3}{*}{\PUB}\\
-    & \M{var} & \hyperref[data_table_medium_copies]{\M{copy}} & \\
-    & \M{varStatus} & \M{status} & \\
-    \tag{bibi}{reactiveInputField} & \M{value} & \MB{medium.copy.location} & \BIB\\
-    \INP & \M{value} & \MB{medium.copy.signature} & \BIB\\
-    \BTN & \M{action} & \MB{medium.createCopy()} & \BIB\\
+    \LNK & zurück zur Trefferliste & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}} & \PUB\\
+    \disambiguationrule
+    \2{\tag{ui}{repeat}} & \2{Medienattribute} & \M{value} & \B{medium.medium.attributes} & \2{\PUB}\\
+    & & \M{var} & \hyperref[subcontrol_medium_attribute]{\M{attribute}} & \\
+    \disambiguationrule
+    \BTN & Änderung an den Attributen speichern & \M{action} & \B{medium.saveAttributes()} & \BIB\\
+    \BTN & willkürliches Exemplar abholen & \M{action} & \B{medium.pickUpAnyCopy()} & \USR\\
+    \OUT & Rückgabefrist unter Einbeziehung der nutzerbezogenen & \M{value} & \B{medium.returnPeriod} & \USR\\
+    \INP & mediumsspezifische Rückgabefrist & \M{value} & \B{medium.medium.returnPeriod} & \BIB\\
+    \BTN & Änderungen an der Rückgabefrist speichern & \M{action} & \B{medium.saveReturnPeriod()} & \BIB\\
+    \BTN & Medium löschen & \M{action} & \B{medium.delete()} & \BIB\\
+    \disambiguationrule
+    \3{\tag{h}{dataTable}} & \3{Exemplare des Mediums} & \M{value} & \B{medium.copies} & \3{\PUB}\\
+    & & \M{var} & \hyperref[data_table_medium_copies]{\M{copy}} & \\
+    & & \M{varStatus} & \M{status} & \\
+    \disambiguationrule
+    \tag{bibi}{reactiveInputField} & Standort eines neuen Exemplars & \M{value} & \B{medium.copy.location} & \BIB\\
+    \INP & Signatur eines neuen Exemplars & \M{value} & \B{medium.copy.signature} & \BIB\\
+    \BTN & neues Exemplar erstellen & \M{action} & \B{medium.createCopy()} & \BIB\\
 \endcontrols
 
-\beginsubcontrols[Bedienelemente pro Attribut][subcontrol_medium_attribute]
+\beginsubcontrols[Attribut][subcontrol_medium_attribute]
 %    \OUT & für ein Medienattribut; existiert pro Medienattribut; mehrwertige Attribute durch Komma getrennt angezeigt & \ANO, \USR\\
 % TASK visibility
 % TASK multivalued
-\INP & \M{value} & \MB{attribute.value} & \BIB\\
+\INP & Attributwert & \M{value} & \B{attribute.value} & \BIB\\
 % TODO existiert pro Mediena
-%    \BTN & \M{action} & \MB{medium.addAttributeInputField()} zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
+%    \BTN & \M{action} & \B{medium.addAttributeInputField()} zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
 \endsubcontrols
 
 \begin{table}[H]
@@ -659,23 +700,23 @@ JSF Templates.
         \toprule
         & & \multicolumn{2}{l}{\textbf{Attribut}} &\\
         \cmidrule(r){3-4}
-        \textbf{\tag{h}{column}} & \textbf{Typ} & \textbf{Name} & \textbf{Wert} & \textbf{Sichtbarkeit}\\
+        \textbf{\tag{h}{column}} & \textbf{Tag} & \textbf{Name} & \textbf{Bindung} & \textbf{Sichtbarkeit}\\
         \midrule
 
 %        Standort & \OUT & & \PUB\\
-        Standort & \INP & \M{value} & \MB{copy.location} & \BIB\\
-        Verfügbarkeit & \OUT & \M{value} & \MB{copy.availabilityStatus} & \PUB\\
+        Standort & \INP & \M{value} & \B{copy.location} & \BIB\\
+        Verfügbarkeit & \OUT & \M{value} & \B{copy.availabilityStatus} & \PUB\\
 %        Signatur & \OUT & & \PUB\\
-        Signatur & \INP & \M{value} & \MB{copy.signature} & \BIB\\
-        Aktionen & \BTN & \M{action} & \MB{medium.saveCopy(status.index)} & \BIB\\
-        Aktionen & \BTN & \M{action} & \MB{medium.deleteCopy(status.index)} & \BIB\\
-        Aktionen & \BTN & \M{action} & \MB{medium.cancelPickup(status.index)} & \BIB\\
+        Signatur & \INP & \M{value} & \B{copy.signature} & \BIB\\
+        Aktionen & \BTN & \M{action} & \B{medium.saveCopy(status.index)} & \BIB\\
+        Aktionen & \BTN & \M{action} & \B{medium.deleteCopy(status.index)} & \BIB\\
+        Aktionen & \BTN & \M{action} & \B{medium.cancelPickup(status.index)} & \BIB\\
         % nur sichtbar falls verfügbar TODO
-        Aktionen & \tag{h}{commandLink} & \M{action} & \MB{medium.lendCopy(status.index)} & \BIB\\
+        Aktionen & \tag{h}{commandLink} & \M{action} & \B{medium.lendCopy(status.index)} & \BIB\\
         % nur falls ausgeliehen TODO
-        Aktionen & \tag{h}{commandLink} & \M{action} & \MB{medium.returnCopy(status.index)} & \BIB\\
+        Aktionen & \tag{h}{commandLink} & \M{action} & \B{medium.returnCopy(status.index)} & \BIB\\
         % nur wenn nutzer darf TODO
-        Aktionen & \BTN & \M{action} & \MB{medium.pickUpCopy(status.index)} & \USR\\
+        Aktionen & \BTN & \M{action} & \B{medium.pickUpCopy(status.index)} & \USR\\
         \bottomrule
     \end{tabular}
     \caption{Bedienelemente pro Exemplar}
@@ -685,102 +726,106 @@ JSF Templates.
 \subsubsection{Mediumschemabearbeitung}\label{page_medium_schema_editor}
 
 \begincontrols[admin/medium-schema-editor]
-    \multirow{2}{*}{\tag{ui}{repeat}} & \M{value} & \MB{mediumSchemaEditor.attributes} & \multirow{2}{*}{\ADM}\\
-    & \M{var} & \hyperref[subcontrol_schema_editor_attribute]{\M{attribute}} & \\
-    \BTN & \M{action} & \MB{mediumSchemaEditor.addAttributeInputField()} & \ADM\\
-    \BTN & \M{action} & \MB{mediumSchemaEditor.save()} & \ADM\\
+    \2{\tag{ui}{repeat}} & \2{Medienattribute} & \M{value} & \B{mediumSchemaEditor.attributes} & \2{\ADM}\\
+    & & \M{var} & \hyperref[subcontrol_schema_editor_attribute]{\M{attribute}} & \\
+    \disambiguationrule
+    \BTN & weiteres Attributeingabefeld hinzufügen & \M{action} & \B{mediumSchemaEditor.addAttributeInputField()} & \ADM\\
+    \BTN & Änderungen speichern & \M{action} & \B{mediumSchemaEditor.save()} & \ADM\\
 \endcontrols
 
-\beginsubcontrols[Bedienelemente pro Attribut][subcontrol_schema_editor_attribute]
-\INP & \M{value} & \MB{attribute.name} & \ADM\\
-\DRP & \M{value} & \MB{attribute.type} & \ADM\\
-\DRP & \M{value} & \MB{attribute.multiplicity} & \ADM\\
-\DRP & \M{value} & \MB{attribute.position} & \ADM\\
-\BTN & \M{action} & \MB{mediumSchemaEditor.deleteAttribute(attribute.id)} & \ADM\\
+\beginsubcontrols[Attribut][subcontrol_schema_editor_attribute]
+    \INP & Attributname &  \M{value} & \B{attribute.name} & \ADM\\
+    \DRP & Attributtyp & \M{value} & \B{attribute.type} & \ADM\\
+    \DRP & Multiplizität des Attributs & \M{value} & \B{attribute.multiplicity} & \ADM\\
+    \DRP & Position des Attributs in der Medienvorschau & \M{value} & \B{attribute.position} & \ADM\\
+    \BTN & Attribut löschen & \M{action} & \B{mediumSchemaEditor.deleteAttribute(attribute.id)} & \ADM\\
 \endsubcontrols
 
 \subsubsection{Nutzersuche}\label{page_user_search}
 
 \begincontrols[admin/user-search]
-    \INP & \M{value} & \MB{userSearch.searchTerm} & \ADM\\
-    \BTN & \M{action} & \MB{userSearch.searchUser()} & \ADM\\
-    \CHK & \M{value} & \MB{userSearch.accountStatus} & \ADM\\
-    %TODO beacon
-    \LST & & & \ADM\\
-    \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht & \ADM\\
+    \INP & Nutzersuchterm & \M{value} & \B{userSearch.searchTerm} & \ADM\\ % UserSearchDTO?
+    \BTN & Nutzer suchen & \M{action} & \B{userSearch.searchUser()} & \ADM\\
+    \CHK & Einschränkung auf ge-/entsperrte Nutzer & \M{value} & \B{userSearch.accountStatus} & \ADM\\
+    \LST & Suchergebnisse & & & \ADM\\ % TASK sep tex table
 \endcontrols
 
 \subsubsection{Passwortzurücksetzung}\label{page_password_reset}
 
 \begincontrols[public/password-reset]
-    \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{token} & \multirow{2}{*}{\PUB}\\
-    & \M{value} & \MB{passwordReset.token} & \\
-    \PAS & \M{value} & \MB{passwordReset.password} & \PUB\\
-    \PAS & \M{value} & \MB{passwordReset.confirmedPassword} & \PUB\\
-    \BTN & \M{action} & \MB{passwordReset.resetPassword()} & \PUB\\
+    \3{\tag{f}{viewParam}} & \3{Kennzeichen der Passwortzurücksetzung} & \M{name} & \M{token} & \3{\PUB}\\
+    & & \M{value} & \B{passwordReset.token} & \\
+    & & \M{required} & \M{true} & \\
+    \disambiguationrule
+    \PAS & neues Passwort & \M{value} & \B{passwordReset.password} & \PUB\\
+    \PAS & bestätigtes neues Passwort & \M{value} & \B{passwordReset.confirmedPassword} & \PUB\\
+    \BTN & Passwort zurücksetzen & \M{action} & \B{passwordReset.resetPassword()} & \PUB\\
 \endcontrols
 
 \subsubsection{Profilseite}\label{page_profile}
 
 \begincontrols[account/profile]
     % welche sichtbarkeit
-    \multirow{2}{*}{\tag{f}{viewParam}} & \M{name} & \M{id} & \multirow{2}{*}{\USR}\\
-    & \M{value} & \MB{profile.user.id} &\\
-    \INP & \M{value} & \MB{profile.user.firstName} & \USR\\
-    \INP & \M{value} & \MB{profile.user.lastName} & \USR\\
-    \PAS & \M{value} & \MB{profile.password} & \USR\\
-    \PAS & \M{value} & \MB{profile.confirmedPassword} & \USR\\
-    \INP & \M{value} & \MB{profile.user.emailAddress} & \USR\\
-    \INP & \M{value} & \MB{profile.user.zipCode} & \USR\\
-    \INP & \M{value} & \MB{profile.user.city} & \USR\\
-    \INP & \M{value} & \MB{profile.user.street} & \USR\\
-    \INP & \M{value} & \MB{profile.user.streetNumber} & \USR\\
-    \DRP & \M{value} & \MB{profile.user.role} & \ADM\\
-    \CHK & \M{value} & \MB{profile.user.accountStatus} & \ADM\\
-    \INP & \M{value} & \MB{profile.user.lendingPeriod} & \ADM\\
-    \BTN & \M{action} & \MB{profile.save()} & \USR\\
-    \LNK & \M{value} & \hyperref[page_my_copies_ready_for_pickup]{ \M{account/my-copies-ready-for-pickup.xhtml}} & \USR\\
-    \LNK & \M{value} & \hyperref[page_my_borrowed_copies]{ \M{account/my-borrowed-copies.xhtml}} & \USR\\
-    \BTN & \M{action} & \MB{profile.delete()} & \USR\\
+    \3{\tag{f}{viewParam}} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id} & \3{\USR}\\
+    & & \M{value} & \B{profile.user.id} &\\
+    & & \M{required} & \M{true} & \\
+    \disambiguationrule
+    \INP & Vorname & \M{value} & \B{profile.user.firstName} & \USR\\
+    \INP & Nachname & \M{value} & \B{profile.user.lastName} & \USR\\
+    \PAS & Passwort & \M{value} & \B{profile.password} & \USR\\
+    \PAS & bestätigtes Passwort & \M{value} & \B{profile.confirmedPassword} & \USR\\
+    \INP & E-Mail-Adresse & \M{value} & \B{profile.user.emailAddress} & \USR\\
+    \INP & Postleitzahl des Wohnsitzes & \M{value} & \B{profile.user.zipCode} & \USR\\
+    \INP & Stadt des Wohnsitzes & \M{value} & \B{profile.user.city} & \USR\\
+    \INP & Straße des Wohnsitzes & \M{value} & \B{profile.user.street} & \USR\\
+    \INP & Hausnummer des Wohnsitzes & \M{value} & \B{profile.user.streetNumber} & \USR\\
+    \DRP & Nutzerrolle & \M{value} & \B{profile.user.role} & \ADM\\
+    \CHK & Accountstatus (ent-/gesperrt) & \M{value} & \B{profile.user.accountStatus} & \ADM\\
+    \INP & Rückgabefrist & \M{value} & \B{profile.user.returnPeriod} & \ADM\\ % TASK UPDATE dto from lendingPeriod -> returnPeriod
+    \BTN & Änderungen am Profil speichern & \M{action} & \B{profile.save()} & \USR\\
+    \LNK & zur den abzuholenden Exemplaren & \M{value} & \hyperref[page_my_copies_ready_for_pickup]{ \M{account/my-copies-ready-for-pickup.xhtml}} & \USR\\
+    \LNK & zu den ausgeliehenen Exemplaren & \M{value} & \hyperref[page_my_borrowed_copies]{ \M{account/my-borrowed-copies.xhtml}} & \USR\\
+    \BTN & Account schließen & \M{action} & \B{profile.delete()} & \USR\\ % slash admin...
 \endcontrols
 
 \subsubsection{Registrierungsseite}\label{page_registration}
 
 \begincontrols[public/registration]
-    \INP & \M{value} & \MB{registration.user.firstName} & \ANO/\ADM\\
-    \INP & \M{value} & \MB{registration.user.lastName} & \ANO/\ADM\\
-    \PAS & \M{value} & \MB{registration.password} & \ANO/\ADM\\
-    \PAS & \M{value} & \MB{registration.confirmedPassword} & \ANO/\ADM\\
-    \INP & \M{value} & \MB{registration.user.emailAddress} & \ANO/\ADM\\
-    \INP & \M{value} & \MB{registration.user.zipCode} & \ANO/\ADM\\
-    \INP & \M{value} & \MB{registration.user.city} & \ANO/\ADM\\
-    \INP & \M{value} & \MB{registration.user.street} & \ANO/\ADM\\
-    \INP & \M{value} & \MB{registration.user.streetNumber} & \ANO/\ADM\\
-    \DRP & \M{value} & \MB{registration.user.role} & \ADM\\
-    \BTN & \M{action} & \MB{registration.register()} & \ANO/\ADM\\
+    \INP & Vorname & \M{value} & \B{registration.user.firstName} & \ANO/\ADM\\
+    \INP & Nachname & \M{value} & \B{registration.user.lastName} & \ANO/\ADM\\
+    \PAS & Passwort & \M{value} & \B{registration.password} & \ANO/\ADM\\
+    \PAS & bestätigtes Passwort & \M{value} & \B{registration.confirmedPassword} & \ANO/\ADM\\
+    \INP & E-Mail-Adresse & \M{value} & \B{registration.user.emailAddress} & \ANO/\ADM\\
+    \INP & Postleitzahl des Wohnsitzes & \M{value} & \B{registration.user.zipCode} & \ANO/\ADM\\
+    \INP & Stadt des Wohnsitzes & \M{value} & \B{registration.user.city} & \ANO/\ADM\\
+    \INP & Straße des Wohnsitzes & \M{value} & \B{registration.user.street} & \ANO/\ADM\\
+    \INP & Hausnummer des Wohnsitzes & \M{value} & \B{registration.user.streetNumber} & \ANO/\ADM\\
+    \DRP & Nutzerrolle & \M{value} & \B{registration.user.role} & \ADM\\
+    \BTN & Account registrieren & \M{action} & \B{registration.register()} & \ANO/\ADM\\
 \endcontrols
 
 \subsubsection{Verwaltungsseite}\label{page_administration}
 
 \begincontrols[admin/administration]
-    \INP & \M{value} & \MB{administration.application.returnPeriod} & \ADM\\
-    \INP & \M{value} & \MB{administration.application.warningPeriod} & \ADM\\
-    \INP & \M{value} & \MB{administration.application.pickupPeriod} & \ADM\\
-    \INP & \M{value} & \MB{administration.application.name} & \ADM\\
-    \CHK & \M{value} & \MB{administration.application.registerStatus} & \ADM\\
-    \INP & \M{value} & \MB{administration.application.emailAddressSuffixRegEx} & \ADM\\
-    \DRP & \M{value} & \MB{administration.application.theme} & \ADM\\
-    \tag{h}{inputFile} & \M{value} & \MB{administration.application.logo} & \ADM\\
-    \BTN & \M{action} & \MB{administration.save()} & \ADM\\
-    \LNK & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}} & \ADM\\
-    \LNK & \M{value} & \hyperref[page_medium_schema_editor]{\M{admin/medium-schema-editor.xhtml}} & \ADM\\
-    \LNK & \M{value} & \hyperref[page_lending_period_violations]{\M{admin/lending-period-violations.xhtml}} & \ADM\\
-    \LNK & \M{value} & \hyperref[page_user_search]{\M{admin/user-search.xhtml}}& \ADM\\
-    \INP & \M{value} & \MB{administration.userSearchTerm} & \ADM\\
-    \BTN & \M{action} & \MB{administration.searchUser()} & \ADM\\
+    \INP & systemweite Rückgabefrist & \M{value} & \B{administration.application.returnPeriod} & \ADM\\
+    \INP & Mahnungsfrist & \M{value} & \B{administration.application.warningPeriod} & \ADM\\
+    \INP & Abholungsfrist & \M{value} & \B{administration.application.pickupPeriod} & \ADM\\
+    \INP & Name des Systems & \M{value} & \B{administration.application.name} & \ADM\\
+    \tag{h}{inputFile} & Logo des Systems & \M{value} & \B{administration.application.logo} & \ADM\\
+    \CHK & Registrierungsstatus (offen/geschlossen) & \M{value} & \B{administration.application.registerStatus} & \ADM\\
+    \INP & erlaubte E-Mail-Adressen-Suffixe & \M{value} & \B{administration.application.emailAddressSuffixRegEx} & \ADM\\
+    \DRP & Farbschema & \M{value} & \B{administration.application.theme} & \ADM\\
+    \BTN & Änderungen speichern & \M{action} & \B{administration.save()} & \ADM\\
+    \LNK & zur Registrierungsseite zur Nutzererstellung & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}} & \ADM\\
+    \LNK & zum Mediumsschema-Editor & \M{value} & \hyperref[page_medium_schema_editor]{\M{admin/medium-schema-editor.xhtml}} & \ADM\\
+    \LNK & zu den Leihfristverstößen & \M{value} & \hyperref[page_lending_period_violations]{\M{admin/lending-period-violations.xhtml}} & \ADM\\
+    \LNK & zu der Nutzersuche & \M{value} & \hyperref[page_user_search]{\M{admin/user-search.xhtml}}& \ADM\\
+    \INP & Nutzersuchterm & \M{value} & \B{administration.userSearchTerm} & \ADM\\
+    \BTN & Nutzer suchen & \M{action} & \B{administration.searchUser()} & \ADM\\
 \endcontrols
 
 \end{landscape}
+\restoregeometry
 
 %----------------------------------------------------------------------Kapitel 7--------------------------------------------------------------------------------------------
 \section{Datenbankschema}
@@ -791,7 +836,7 @@ In diesem Abschnitt wird die Umwandlung des ER-Diagramms (Siehe Entwurf Kapitel 
 \textbf{Relationen:} Alle hat-ein-Relationen verschwinden. Da sich die Relationen 'markiert' und 'ausgeliehen' gegenseitig ausschließen, werden sie in der \hyperlink{Copy}{'Exemplar'-Tabelle} in einen einzigen Fremdschlüssel umgewandelt, der zusammen mit dem Verfügbarkeitsstatus die gleichen Funktionalitäten der Originalrelationen abbilden kann. Aus der Relation 'ist Kind von' entsteht ebenfalls eine eigene Spalte \textit{parent} in der \hyperlink{Category}{'Kategorie'-Tabelle}. Da der oberste Knoten der Hierarchie keinen Elternknoten besitzt, ist hier ebenfalls \texttt{NULL} erlaubt. Bei Löschung der Elternkategorie wird eine kaskadierende Löschung der Kinder vorgenommen. Die Relation 'eingeordnet unter' wird in einen Fremdschlüssel in der \hyperlink{Medium}{'Medium'-Tabelle} umgewandelt, der auch \texttt{NULL} als Wert erlaubt. Hier wird von den im ER-Diagramm spezifizierten Kardinalitäten abgewichen und Medien, die nicht manuell in eine Kategorie eingeordnet wurden, nehmen nicht an der Relation Teil (\texttt{NULL} repräsentiert den Top-Knoten). \\
 \subsection{Konventionen und eigene Datentypen}
 \textbf{Namenskonventionen:} Eigens definierte Datentypen und Attribute normaler Entitätstabellen werden in Camel-Case, aber klein geschrieben. Werte der \texttt{ENUM}s werden klein geschrieben. Tabellennamen sind in normalem Camel-Case. \\
-\textbf{Eigene Datentypen:} Statt dem Einlesen von Strings werden im Java-Code des Systems Enums verwendet, um Zustände zu speichern. Diese werden auch in der Datenbank in Form von eigenen \hyperlink{ENUMs}{Enumerationstypen} gespeichert. 
+\textbf{Eigene Datentypen:} Statt dem Einlesen von Strings werden im Java-Code des Systems Enums verwendet, um Zustände zu speichern. Diese werden auch in der Datenbank in Form von eigenen \hyperlink{ENUMs}{Enumerationstypen} gespeichert.
 \newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
 \begin{figure}
 \hypertarget{ENUMs}{}
@@ -803,7 +848,7 @@ In diesem Abschnitt wird die Umwandlung des ER-Diagramms (Siehe Entwurf Kapitel 
 \begin{figure}
 \centering
 \includegraphics[width=9cm]{SQLENUMs2}
-\caption{Weitere \texttt{ENUM}-Typen}	
+\caption{Weitere \texttt{ENUM}-Typen}
 \end{figure}
 
 \begin{figure}
@@ -932,8 +977,8 @@ Dieses Kapitel baut auf dem Abschnitt 'technische Systemsicherheit' des Entwurfs
 \textbf{SQL:} Da unser System postgreSQL als Datenbankanfragesprache verwendet, wird in den \hyperlink{DAOs}{Data Access Objects} im Java-Code mit \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html}{'PreparedStatements'} gearbeitet. Da die eigentliche Anfrage nicht zusammen mit den vom Nutzer stammenden Parametern interpretiert wird, hat das Einschleusen von SQL-Code in diese Parameter keinen Effekt auf die Datenbank.\\
 \textbf{HTML/JavaScript:} \hypertarget{XSS}{Um} das Einschleusen von HTML- (und eingebetteten JavaScript-) Code, in nutzergenerierte Inhalte der Webseite zu verhindern, verfügen die JSF-Facelet Elemente für User-Inputs über integrierte Escaping-Funktionen. Alle nutzergenerierten Anzeigen der Webseite werden so direkt am Input geschützt.
 \subsection{Insecure Direct Object References}
-Unbefugte direkte Zugriffe auf zugangsbeschränkte Teile der Anwendung werden abgefangen.\\ 
-Nutzer könnten versuchen, manuell die URL-Parameter in der Adresszeile zu verändern. In der Medienansicht könnte man so z.B. durch Ändern der ID auf die Ansicht eines anderen Mediums gelangen. Bei einer Anfrage werden erste Maßnahmen der Zugriffskontrolle nach der \texttt{RESTORE\_VIEW}-Phase im \hyperlink{PhaseListener}{Trespasslistener} vorgenommen. Hier wird über die Sessionmap die Nutzerrolle und der Loginstatus mit der URL-Struktur der Anfrage abgeglichen und bei invalidem Zugriff entsprechend umgeleitet. Um denselben Zugriffsprozess wie im Mediumsansicht-Beispiel bei der Profilseite zu verhindern, wird im Backing-Bean durch Zugriff auf die URL-Parameter geprüft, ob der Nutzer berechtigt ist, andere Profile als sein eigenes anzusehen. 
+Unbefugte direkte Zugriffe auf zugangsbeschränkte Teile der Anwendung werden abgefangen.\\
+Nutzer könnten versuchen, manuell die URL-Parameter in der Adresszeile zu verändern. In der Medienansicht könnte man so z.B. durch Ändern der ID auf die Ansicht eines anderen Mediums gelangen. Bei einer Anfrage werden erste Maßnahmen der Zugriffskontrolle nach der \texttt{RESTORE\_VIEW}-Phase im \hyperlink{PhaseListener}{Trespasslistener} vorgenommen. Hier wird über die Sessionmap die Nutzerrolle und der Loginstatus mit der URL-Struktur der Anfrage abgeglichen und bei invalidem Zugriff entsprechend umgeleitet. Um denselben Zugriffsprozess wie im Mediumsansicht-Beispiel bei der Profilseite zu verhindern, wird im Backing-Bean durch Zugriff auf die URL-Parameter geprüft, ob der Nutzer berechtigt ist, andere Profile als sein eigenes anzusehen.
 \subsection{Session Fixation}
 Wie bereits im Abschnitt 'Session-Hijacking' des Entwurfs erwähnt, tauschen wir unmittelbar nach dem Login eines Benutzers im \hyperlink{Login}{Backing-Bean} den Identifikator der Nutzer-Session aus. \hyperlink{Session}{UserSession}-Objekte werden nur für eingeloggte Nutzer angelegt und beim Login werden keine vorherigen Zustandsinformationen übernommen.  Zusätzlich zur Zerstörung beim Logout haben alle Sessions Tomcat-intern einen Inaktivitätstimeout von 30 Minuten, den wir beibehalten werden (andere Servlet Container verwenden denselben Timeout).
 \subsection{Userinput}
