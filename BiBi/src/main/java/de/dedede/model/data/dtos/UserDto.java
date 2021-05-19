@@ -1,8 +1,15 @@
-package de.dedede.model.data.dtos;
+package dedede.model.data.dtos;
 
-import de.dedede.model.logic.util.UserLendStatus;
-import de.dedede.model.logic.util.UserRole;
-import de.dedede.model.logic.util.Token;
+import dedede.model.logic.util.UserLendStatus;
+import dedede.model.logic.util.UserRole;
+import dedede.model.logic.util.Token;
+
+
+
+
+
+import java.time.Duration;
+import java.util.Date;
 
 /**
  * A class for aggregate and encapsulate data about an user for transfer.
@@ -17,7 +24,8 @@ public class UserDto {
 
 	private String passwordHash;
 
-	private String passwordLostToken;
+	//
+	private String passwordSalt;
 
 	private String emailAddress;
 
@@ -37,11 +45,18 @@ public class UserDto {
 	 */
 	private String streetNumber;
 
-	private int lendingPeriod;
+
+	private Duration lendingPeriod;
 
 	private UserLendStatus userLendStatus;
 
+	//enum fehlt
+	private UserLendStatus lendingStatus;
+
 	private Token token;
+
+	//neu
+	private Date tokenCreation;
 
 	public int getId() {
 		return id;
@@ -73,14 +88,6 @@ public class UserDto {
 
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
-	}
-
-	public String getPasswordLostToken() {
-		return passwordLostToken;
-	}
-
-	public void setPasswordLostToken(String passwordLostToken) {
-		this.passwordLostToken = passwordLostToken;
 	}
 
 	public String getEmailAddress() {
@@ -139,11 +146,11 @@ public class UserDto {
 		this.streetNumber = streetNumber;
 	}
 
-	public int getLendingPeriod() {
+	public Duration getLendingPeriod() {
 		return lendingPeriod;
 	}
 
-	public void setLendingPeriod(int lendingPeriod) {
+	public void setLendingPeriod(Duration lendingPeriod) {
 		this.lendingPeriod = lendingPeriod;
 	}
 
@@ -163,4 +170,19 @@ public class UserDto {
 		this.token = token;
 	}
 
+	public UserLendStatus getLendingStatus() {
+		return lendingStatus;
+	}
+
+	public void setLendingStatus(UserLendStatus lendingStatus) {
+		this.lendingStatus = lendingStatus;
+	}
+
+	public Date getTokenCreation() {
+		return tokenCreation;
+	}
+
+	public void setTokenCreation(Date tokenCreation) {
+		this.tokenCreation = tokenCreation;
+	}
 }

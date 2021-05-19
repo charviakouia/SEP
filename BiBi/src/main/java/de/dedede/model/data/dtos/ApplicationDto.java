@@ -6,126 +6,273 @@ import de.dedede.model.logic.util.Theme;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 
 /**
- * A class for aggregate and encapsulate data about an application for transfer.
+ * This DTO (data transfer object) is responsible for aggregating and
+ * encapsulating data about the application for transfer.
+ * <p>
+ * See the {@link dedede.model.persistence.daos.ApplicationDao} class to which this DTO is passed.
+ *
+ * @author Sergei Pravdin
  */
 public class ApplicationDto {
 
-	private String name;
+    private String name;
 
-	private String siteNotice;
+    private String siteNotice;
 
-	private String privacyPolicy;
+    private String privacyPolicy;
 
-	private String contactInfo;
+    private String contactInfo;
 
-	private byte[] logo;
+    private byte[] logo;
 
-	private String emailAddressSuffixRegEx;
+    private String emailAddressSuffixRegEx;
 
-	private Theme theme;
+    private Theme theme;
 
-	private String lendingStatus;
+    private String lendingStatus;
 
-	private Duration warningPeriod;
+    private Duration warningPeriod;
 
-	private Duration returnPeriod;
+    private Duration returnPeriod;
 
-	private Duration pickupPeriod;
+    private Duration pickupPeriod;
 
 	private SystemRegistrationStatus systemRegistrationStatus;
 
-	public String getName() {
-		return name;
-	}
+    /**
+     * Fetches the name of the application.
+     *
+     * @return A name of the application.
+     */
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Sets the name of the application.
+     *
+     * @param name A name of the application.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getSiteNotice() {
-		return siteNotice;
-	}
+    //Was ist das? - Impressum
+    public String getSiteNotice() {
+        return siteNotice;
+    }
 
-	public void setSiteNotice(String siteNotice) {
-		this.siteNotice = siteNotice;
-	}
+    //Was ist das? - Impressum
+    public void setSiteNotice(String siteNotice) {
+        this.siteNotice = siteNotice;
+    }
 
-	public String getPrivacyPolicy() {
-		return privacyPolicy;
-	}
+    /**
+     * Fetches the privacy policy of the application.
+     *
+     * @return A privacy policy of the application.
+     */
+    public String getPrivacyPolicy() {
+        return privacyPolicy;
+    }
 
-	public void setPrivacyPolicy(String privacyPolicy) {
-		this.privacyPolicy = privacyPolicy;
-	}
+    /**
+     * Sets the privacy policy of the application.
+     *
+     * @param privacyPolicy A privacy policy of the application.
+     */
+    public void setPrivacyPolicy(String privacyPolicy) {
+        this.privacyPolicy = privacyPolicy;
+    }
 
-	public String getContactInfo() {
-		return contactInfo;
-	}
+    /**
+     * Fetches the contact information of the application.
+     *
+     * @return An information to communicate with the contact person of the library.
+     */
+    public String getContactInfo() {
+        return contactInfo;
+    }
 
-	public void setContactInfo(String contactInfo) {
-		this.contactInfo = contactInfo;
-	}
+    /**
+     * Sets the contact information of the application.
+     *
+     * @param contactInfo An information to communicate with the contact person of the library.
+     */
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
+    }
 
-	public byte[] getLogo() {
-		return logo;
-	}
+    /**
+     * Fetches the logo of the application.
+     *
+     * @return the logo of the application.
+     */
+    public byte[] getLogo() {
+        return logo;
+    }
 
-	public void setLogo(byte[] logo) {
-		this.logo = logo;
-	}
+    /**
+     * Sets the logo of the application.
+     *
+     * @param logo the logo of the application.
+     */
+    public void setLogo(byte[] logo) {
+        this.logo = logo;
+    }
 
-	public String getEmailAddressSuffixRegEx() {
-		return emailAddressSuffixRegEx;
-	}
+    /**
+     * Fetches a regular expression for the email address, allowing only the user with this
+     * regex in suffix their email address to sign up to the application.
+     *
+     * @return regex of email suffix
+     */
+    public String getEmailAddressSuffixRegEx() {
+        return emailAddressSuffixRegEx;
+    }
 
-	public void setEmailAddressSuffixRegEx(String emailAddressSuffixRegEx) {
-		this.emailAddressSuffixRegEx = emailAddressSuffixRegEx;
-	}
+    /**
+     * Sets a regular expression for the email address, allowing only the user with this
+     * regex in suffix their email address to sign up to the application.
+     * Already registered users should not be restricted in their rights to use the app.
+     *
+     * @param emailAddressSuffixRegEx regex of email suffix
+     */
+    public void setEmailAddressSuffixRegEx(String emailAddressSuffixRegEx) {
+        this.emailAddressSuffixRegEx = emailAddressSuffixRegEx;
+    }
 
-	public Theme getTheme() {
-		return theme;
-	}
+    /**
+     * Fetches the visual design theme of the application.
+     *
+     * @return the visual design theme
+     * @see Theme
+     */
+    public Theme getTheme() {
+        return theme;
+    }
 
-	public void setTheme(Theme theme) {
-		this.theme = theme;
-	}
+    /**
+     * Sets the visual theme for the application from a enumeration of available themes.
+     *
+     * @param theme the visual design theme
+     * @see Theme
+     */
+    public void setTheme(Theme theme) {
+        this.theme = theme;
+    }
 
-	public String getLendingStatus() {
-		return lendingStatus;
-	}
+    /**
+     * Fetches the global lending status in the application.
+     * The status indicates whether users are allowed to lend copies of the medium.
+     *
+     * @return the global lending status in the application.
+     */
+    public String getLendingStatus() {
+        return lendingStatus;
+    }
 
-	public void setLendingStatus(String lendingStatus) {
-		this.lendingStatus = lendingStatus;
-	}
+    /**
+     * Sets the global lending status in the application.
+     * The status indicates whether users are allowed to lend copies of the medium.
+     *
+     * @param lendingStatus the global lending status in the application.
+     */
+    public void setLendingStatus(String lendingStatus) {
+        this.lendingStatus = lendingStatus;
+    }
 
-	public Duration getWarningPeriod() {
-		return warningPeriod;
-	}
+    /**
+     * Fetches a global warning period for all mediums that are available to a user.
+     * The users are warned after this period has expired if they still have not returned a copy of the medium.
+     *
+     * @return A medium's global warning period.
+     * @see Duration
+     */
+    public Duration getWarningPeriod() {
+        return warningPeriod;
+    }
 
-	public void setWarningPeriod(Duration warningPeriod) {
-		this.warningPeriod = warningPeriod;
-	}
+    /**
+     * Sets a global warning period for all mediums that are available to a user.
+     * The users are warned after this period has expired if they still have not returned a copy of the medium.
+     *
+     * @param warningPeriod A medium's global warning period.
+     * @see Duration
+     */
+    public void setWarningPeriod(Duration warningPeriod) {
+        this.warningPeriod = warningPeriod;
+    }
 
-	public Duration getReturnPeriod() {
-		return returnPeriod;
-	}
+    /**
+     * Fetches a global return period for all mediums that are available to a user.
+     * The global period for medium return does not override the return period set in MediumDTO or in UserDTO.
+     *
+     * @return A medium's global return period.
+     * @see MediumDto
+     * @see UserDto
+     */
+    public Duration getReturnPeriod() {
+        return returnPeriod;
+    }
 
-	public void setReturnPeriod(Duration returnPeriod) {
-		this.returnPeriod = returnPeriod;
-	}
+    /**
+     * Sets a global return period for all mediums that are available to a user.
+     * The global period for medium return does not override the return period set in MediumDTO or in UserDTO.
+     *
+     * @param returnPeriod A medium's global return period.
+     * @see MediumDto
+     * @see UserDto
+     */
+    public void setReturnPeriod(Duration returnPeriod) {
+        this.returnPeriod = returnPeriod;
+    }
 
-	public Duration getPickupPeriod() {
-		return pickupPeriod;
-	}
+    /**
+     * Fetches a global medium's period for pick up any copy of this medium.
+     * After this period has expired, the copy becomes available to all users again.
+     *
+     * @return A medium's global pick up period.
+     * @see Duration
+     */
+    public Duration getPickupPeriod() {
+        return pickupPeriod;
+    }
 
-	public void setPickupPeriod(Duration pickupPeriod) {
-		this.pickupPeriod = pickupPeriod;
-	}
+    /**
+     * Sets a global medium's period for pick up any copy of this medium.
+     * After this period has expired, the copy becomes available to all users again.
+     *
+     * @param pickupPeriod A medium's global pick up period.
+     * @see Duration
+     */
+    public void setPickupPeriod(Duration pickupPeriod) {
+        this.pickupPeriod = pickupPeriod;
+    }
 
 	public SystemRegistrationStatus getRegisterStatus() {
 		return systemRegistrationStatus;
 	}
+    /**
+     * Fetches the register status of the application indicating whether registration is available for new users.
+     *
+     * @return The register status of the applicationю
+     * @see SystemRegistrationStatus
+     */
+    public SystemRegistrationStatus getRegisterStatus() {
+        return SystemRegistrationStatus;
+    }
 
+	public void setRegisterStatus(SystemRegistrationStatus systemRegistrationStatus) {
+		this.systemRegistrationStatus = systemRegistrationStatus;
+	}
+    /**
+     * Sets the register status of the application indicating whether registration is available for new users.
+     * No action is required with already registered users when the status is changed.
+     *
+     * @param  systemRegistrationStatus register status of the application.
+     * @see SystemRegistrationStatus
+     */
 	public void setRegisterStatus(SystemRegistrationStatus systemRegistrationStatus) {
 		this.systemRegistrationStatus = systemRegistrationStatus;
 	}

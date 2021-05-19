@@ -10,13 +10,20 @@ import de.dedede.model.logic.util.CopyStatus;
  */
 public class CopyDto {
 
+	private int id;
+
 	private String location;
 
 	private String signature;
 
+	//Was ist das? Das modelliert eine Abhängigkeit zw. availabilityStatus und einem Copy
 	private Date deadline;
 
 	private CopyStatus copyStatus;
+	//Wer hat das Copy entliehen / bemerkt hat
+	private int actor;
+
+	private CopyStatus availabilityStatus;
 
 	public String getLocation() {
 		return location;
