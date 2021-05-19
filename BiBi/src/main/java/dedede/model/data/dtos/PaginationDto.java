@@ -45,6 +45,7 @@ public class PaginationDto implements Serializable {
 		return filterCriteria;
 	}
 
+	//Was ist das?
 	public int getPage() {
 		return page;
 	}

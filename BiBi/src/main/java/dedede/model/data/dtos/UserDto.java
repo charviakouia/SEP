@@ -1,8 +1,12 @@
 package dedede.model.data.dtos;
 
 import dedede.model.logic.util.AccountStatus;
+import dedede.model.logic.util.LendingStatus;
 import dedede.model.logic.util.Role;
 import dedede.model.logic.util.Token;
+
+import java.time.Duration;
+import java.util.Date;
 
 /**
  * A class for aggregate and encapsulate data about an user for transfer.
@@ -17,7 +21,8 @@ public class UserDto {
 
 	private String passwordHash;
 
-	private String passwordLostToken;
+	//
+	private String passwordSalt;
 
 	private String emailAddress;
 
@@ -37,11 +42,18 @@ public class UserDto {
 	 */
 	private String streetNumber;
 
-	private int lendingPeriod;
+	//Muss es vllt. Duration sein?
+	private Duration lendingPeriod;
 
 	private AccountStatus accountStatus;
 
+	//enum fehlt
+	private LendingStatus lendingStatus;
+
 	private Token token;
+
+	//neu
+	private Date tokenCreation;
 
 	public int getId() {
 		return id;
@@ -73,14 +85,6 @@ public class UserDto {
 
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
-	}
-
-	public String getPasswordLostToken() {
-		return passwordLostToken;
-	}
-
-	public void setPasswordLostToken(String passwordLostToken) {
-		this.passwordLostToken = passwordLostToken;
 	}
 
 	public String getEmailAddress() {
@@ -139,11 +143,11 @@ public class UserDto {
 		this.streetNumber = streetNumber;
 	}
 
-	public int getLendingPeriod() {
+	public Duration getLendingPeriod() {
 		return lendingPeriod;
 	}
 
-	public void setLendingPeriod(int lendingPeriod) {
+	public void setLendingPeriod(Duration lendingPeriod) {
 		this.lendingPeriod = lendingPeriod;
 	}
 
@@ -163,4 +167,19 @@ public class UserDto {
 		this.token = token;
 	}
 
+	public LendingStatus getLendingStatus() {
+		return lendingStatus;
+	}
+
+	public void setLendingStatus(LendingStatus lendingStatus) {
+		this.lendingStatus = lendingStatus;
+	}
+
+	public Date getTokenCreation() {
+		return tokenCreation;
+	}
+
+	public void setTokenCreation(Date tokenCreation) {
+		this.tokenCreation = tokenCreation;
+	}
 }
