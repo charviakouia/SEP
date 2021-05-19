@@ -9,7 +9,7 @@ import de.dedede.model.logic.util.RegisterStatus;
  * This DTO (data transfer object) is responsible for aggregating and
  * encapsulating data about the application for transfer.
  * <p>
- * See the {@link dedede.model.persistence.daos.ApplicationDao} class to which this DTO is passed.
+ * See the {@link de.dedede.model.persistence.daos.ApplicationDao} class to which this DTO is passed.
  *
  * @author Sergei Pravdin
  */
@@ -57,12 +57,20 @@ public class ApplicationDto {
         this.name = name;
     }
 
-    //Was ist das? - Impressum
+    /**
+     * Fetches the impressum of the application.
+     *
+     * @return An impressum of the application.
+     */
     public String getSiteNotice() {
         return siteNotice;
     }
 
-    //Was ist das? - Impressum
+    /**
+     * Sets the impressum of the application.
+     *
+     * @param siteNotice An impressum of the application.
+     */
     public void setSiteNotice(String siteNotice) {
         this.siteNotice = siteNotice;
     }

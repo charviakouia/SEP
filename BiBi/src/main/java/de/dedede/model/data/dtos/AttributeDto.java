@@ -4,62 +4,199 @@ import de.dedede.model.logic.util.AttributeType;
 import de.dedede.model.logic.util.MediumPreviewPosition;
 import de.dedede.model.logic.util.Multiplicity;
 
+import java.awt.*;
+import java.net.URL;
+import java.util.LinkedList;
+
 /**
- * A class for aggregate and encapsulate data about an medium's attribute for
- * transfer.
+ * This DTO (data transfer object) is responsible for aggregating and
+ * encapsulating data about the attribute of the medium for transfer.
+ * <p>
+ * See the {@link de.dedede.model.persistence.daos.ApplicationDao} class to which this DTO is passed.
+ *
+ * @author Sergei Pravdin
  */
 public class AttributeDto {
 
-	private Integer id;
+    private Integer id;
 
-	private String name;
+    private String name;
 
-	private String value;
+    private LinkedList<String> textValue;
 
-	private AttributeType type;
+    private LinkedList<Image> imageValue;
 
-	private Multiplicity multiplicity;
+    private LinkedList<URL> urlValue;
 
-	private MediumPreviewPosition position;
+    private AttributeType type;
 
-	public Integer getId() {
-		return id;
-	}
+    private Multiplicity multiplicity;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    private MediumPreviewPosition position;
 
-	public String getName() {
-		return name;
-	}
+    /**
+     * Fetches the id of the attribute.
+     *
+     * @return An unique ID of the attribute.
+     */
+    public Integer getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Sets an ID to a attribute.
+     * ID is a unique attribute's key used to identify the attribute from the database.
+     *
+     * @param id An ID to the necessary attribute.
+     * @see de.dedede.model.persistence.daos.MediumDao
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    /**
+     * Fetches the name of the attribute.
+     *
+     * @return A name of the attribute.
+     */
+    public String getName() {
+        return name;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    /**
+     * Sets the name of the attribute.
+     *
+     * @param name A name of the attribute.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public AttributeType getType() {
-		return type;
-	}
+    /**
+     * Fetches the typ of the attribute.
+     *
+     * @return A typ of the attribute.
+     * @see AttributeType
+     */
+    public AttributeType getType() {
+        return type;
+    }
 
-	public void setType(AttributeType type) {
-		this.type = type;
-	}
+    /**
+     * Sets the typ of the attribute.
+     *
+     * @param type A typ of the attribute.
+     * @see AttributeType
+     */
+    public void setType(AttributeType type) {
+        this.type = type;
+    }
 
-	public Multiplicity getMultiplicity() {
-		return multiplicity;
-	}
+    /**
+     * Fetches the multiplicity status of the attribute.
+     *
+     * @return A multiplicity status of the attribute.
+     * @see Multiplicity
+     */
+    public Multiplicity getMultiplicity() {
+        return multiplicity;
+    }
 
-	public void setMultiplicity(Multiplicity multiplicity) {
-		this.multiplicity = multiplicity;
-	}
+    /**
+     * Sets the multiplicity status of the attribute.
+     *
+     * @param multiplicity A multiplicity status of the attribute.
+     * @see Multiplicity
+     */
+    public void setMultiplicity(Multiplicity multiplicity) {
+        this.multiplicity = multiplicity;
+    }
 
+    /**
+     * Fetches a list of text values for the attribute.
+     * The list contains more than one value if the attribute is multi-valued.
+     *
+     * @return A list of text values for the attribute.
+     * @see Multiplicity
+     */
+    public LinkedList<String> getTextValue() {
+        return textValue;
+    }
+
+    /**
+     * Sets a list of text values for the attribute.
+     * The list contains more than one value if the attribute is multi-valued.
+     *
+     * @param textValue A list of text values for the attribute.
+     * @see Multiplicity
+     */
+    public void setTextValue(LinkedList<String> textValue) {
+        this.textValue = textValue;
+    }
+
+    /**
+     * Fetches a list of image values for the attribute.
+     * The list contains more than one value if the attribute is multi-valued.
+     *
+     * @return A list of image values for the attribute.
+     * @see Multiplicity
+     */
+    public LinkedList<Image> getImageValue() {
+        return imageValue;
+    }
+
+    /**
+     * Sets a list of image values for the attribute.
+     * The list contains more than one value if the attribute is multi-valued.
+     *
+     * @param imageValue A list of image values for the attribute.
+     * @see Multiplicity
+     */
+    public void setImageValue(LinkedList<Image> imageValue) {
+        this.imageValue = imageValue;
+    }
+
+    /**
+     * Fetches a list of URL values for the attribute.
+     * The list contains more than one value if the attribute is multi-valued.
+     *
+     * @return A list of URL values for the attribute.
+     * @see Multiplicity
+     */
+    public LinkedList<URL> getUrlValue() {
+        return urlValue;
+    }
+
+    /**
+     * Sets a list of URL values for the attribute.
+     * The list contains more than one value if the attribute is multi-valued.
+     *
+     * @param urlValue A list of URL values for the attribute.
+     * @see Multiplicity
+     */
+    public void setUrl(LinkedList<URL> urlValue) {
+        this.urlValue = urlValue;
+    }
+
+    /**
+     * Fetches the position of the attribute where it will be displayed on the page
+     * of the medium to which it belongs.
+     *
+     * @return A position of the attribute.
+     * @see MediumPreviewPosition
+     */
+    public MediumPreviewPosition getPosition() {
+        return position;
+    }
+
+    /**
+     * Sets the position of the attribute where it will be displayed on the page
+     * of the medium to which it belongs.
+     *
+     * @param position A position of the attribute.
+     * @see MediumPreviewPosition
+     */
+    public void setPosition(MediumPreviewPosition position) {
+        this.position = position;
+    }
 }

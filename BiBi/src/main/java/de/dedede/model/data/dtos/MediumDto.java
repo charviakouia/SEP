@@ -1,20 +1,14 @@
-package dedede.model.data.dtos;
+package de.dedede.model.data.dtos;
 
-import com.sun.mail.iap.ByteArray;
-import dedede.model.logic.util.AttributeType;
-
-import java.awt.*;
-import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * This DTO (data transfer object) is responsible for aggregating and
  * encapsulating data about a medium for transfer.
  * <p>
- * See the {@link CopyDto} and {@link AttributeDto} classes for the used DTOs as attributes.
+ * See the {@link CopyDto}, {@link CategoryDto} and {@link AttributeDto} classes for the used DTOs as attributes.
  *
  * @author Sergei Pravdin
  */
@@ -22,15 +16,9 @@ public class MediumDto {
 
     private Integer id;
 
-    private final Map<Integer, String> textAttributes = new HashMap<Integer, String>();
+    private final Map<Integer, AttributeDto> attributes = new HashMap<Integer, AttributeDto>();
 
-    private final Map<Integer, Image> imagesAttributes = new HashMap<Integer, java.awt.Image>();
-
-    private final Map<Integer, java.net.URL> linkAttributes = new HashMap<Integer, java.net.URL>();
-
-    private Set<AttributeDto> attributes;
-
-    private Set<CopyDto> copies;
+    private final Map<Integer, CopyDto> copies = new HashMap<Integer, CopyDto>();
 
     private CategoryDto category;
 
@@ -47,42 +35,13 @@ public class MediumDto {
 
     /**
      * Sets an ID to a medium.
-     * ID is a unique medium key used to identify the medium from the database.
+     * ID is a unique medium's key used to identify the medium from the database.
      *
      * @param id An ID to the necessary medium.
-     * @see dedede.model.persistence.daos.MediumDao
+     * @see de.dedede.model.persistence.daos.MediumDao
      */
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Set<AttributeDto> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Set<AttributeDto> attributes) {
-        this.attributes = attributes;
-    }
-
-    /**
-     * Fetches a set of DTO containers with the data of the copies that belong to this medium.
-     * The order of the data and concurrent behaviour is unspecified.
-     *
-     * @return A set of DTO containers with the data of the copies.
-     * @see CopyDto
-     */
-    public Set<CopyDto> getCopies() {
-        return copies;
-    }
-
-    /**
-     * Sets a set of DTO containers with the data of the copies that belong to this medium.
-     *
-     * @param copies A set of DTO containers with the data of the copies.
-     * @see CopyDto
-     */
-    public void setCopies(Set<CopyDto> copies) {
-        this.copies = copies;
     }
 
     /**
@@ -122,27 +81,47 @@ public class MediumDto {
         this.returnPeriod = returnPeriod;
     }
 
-    public String getTextAttributes(int key) {
-        return textAttributes.get(key);
+    /**
+     * Fetches an attributeDto with the data of the attribute that belongs to this medium.
+     *
+     * @param key Unique attribute ID, which corresponds to the ID in the database.
+     * @return An attributeDto with the data of the attribute.
+     * @see AttributeDto
+     */
+    public AttributeDto getAttribute(Integer key) {
+        return attributes.get(key);
     }
 
-    public void setTextAttributes(int key, String value) {
-        textAttributes.put(key, value);
+    /**
+     * Sets an attributeDto with the data of the attribute that belongs to this medium.
+     *
+     * @param key Unique attribute ID, which corresponds to the ID in the database.
+     * @param value An attributeDto with the data of the attribute which should be assigned to this medium.
+     * @see AttributeDto
+     */
+    public void setAttribute(Integer key, AttributeDto value) {
+        attributes.put(key, value);
     }
 
-    public Image getImagesAttributes(int key) {
-        return imagesAttributes.get(key);
+    /**
+     * Fetches a CopyDto with the data of the copy that belongs to this medium.
+     *
+     * @param key Unique copy ID, which corresponds to the ID in the database.
+     * @return A CopyDto with the data of the copy.
+     * @see CopyDto
+     */
+    public CopyDto getCopy(Integer key) {
+        return copies.get(key);
     }
 
-    public void setImageAttributes(int key, Image value) {
-        imagesAttributes.put(key, value);
-    }
-
-    public URL getLinkAttributes(int key) {
-        return linkAttributes.get(key);
-    }
-
-    public void setLinkAttributes(int key, URL value) {
-        linkAttributes.put(key, value);
+    /**
+     * Sets a CopyDto with the data of the copy that belongs to this medium.
+     *
+     * @param key Unique copy ID, which corresponds to the ID in the database.
+     * @param value A CopyDto with the data of the copy which should be assigned to this medium.
+     * @see CopyDto
+     */
+    public void setCopy(Integer key, CopyDto value) {
+        copies.put(key, value);
     }
 }

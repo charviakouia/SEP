@@ -1,185 +1,389 @@
-package dedede.model.data.dtos;
+package de.dedede.model.data.dtos;
 
-import dedede.model.logic.util.AccountStatus;
-import dedede.model.logic.util.LendingStatus;
-import dedede.model.logic.util.Role;
-import dedede.model.logic.util.Token;
+import de.dedede.model.logic.util.AccountStatus;
+import de.dedede.model.logic.util.LendingStatus;
+import de.dedede.model.logic.util.Role;
+import de.dedede.model.logic.util.Token;
 
 import java.time.Duration;
 import java.util.Date;
 
 /**
- * A class for aggregate and encapsulate data about an user for transfer.
+ * This DTO (data transfer object) is responsible for aggregating and
+ * encapsulating data about a user for transfer.
+ * <p>
+ * See the {@link de.dedede.model.persistence.daos.UserDao} class to which this DTO is passed.
+ *
+ * @author Sergei Pravdin
  */
 public class UserDto {
 
-	private int id;
+    private int id;
 
-	private String firstName;
+    private String firstName;
 
-	private String lastName;
+    private String lastName;
 
-	private String passwordHash;
+    private String passwordHash;
 
-	//
-	private String passwordSalt;
+    private String passwordSalt;
 
-	private String emailAddress;
+    private String emailAddress;
 
-	private boolean isEmailVerified;
+    private boolean isEmailVerified;
 
-	private Role role;
+    private Role role;
 
-	private int zipCode;
+    private int zipCode;
 
-	private String city;
+    private String city;
 
-	private String street;
+    private String street;
 
-	/**
-	 * The street number. This is a string and not a number since we also need to be
-	 * able to support more exotic ones like "21a".
-	 */
-	private String streetNumber;
+    private String streetNumber;
 
-	//Muss es vllt. Duration sein?
-	private Duration lendingPeriod;
+    private Duration lendingPeriod;
 
-	private AccountStatus accountStatus;
+    private AccountStatus accountStatus;
 
-	//enum fehlt
-	private LendingStatus lendingStatus;
+    private LendingStatus lendingStatus;
 
-	private Token token;
+    private Token token;
 
-	//neu
-	private Date tokenCreation;
+    private Date tokenCreation;
 
-	public int getId() {
-		return id;
-	}
+    /**
+     * Fetches the id of the user.
+     *
+     * @return An unique ID of the user.
+     */
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    /**
+     * Sets the id of the user.
+     *
+     * @param id An unique ID of the user.
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    /**
+     * Fetches a first name of the user.
+     *
+     * @return A first name of the user.
+     */
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    /**
+     * Sets a first name of the user.
+     *
+     * @param firstName A first name of the user.
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    /**
+     * Fetches a last name of the user.
+     *
+     * @return A last name of the user.
+     */
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    /**
+     * Sets a last name of the user.
+     *
+     * @param lastName A last name of the user.
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public String getPasswordHash() {
-		return passwordHash;
-	}
+    /**
+     * Fetches a hashed password of the user.
+     *
+     * @return A hashed password of the user.
+     */
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
-	public void setPasswordHash(String passwordHash) {
-		this.passwordHash = passwordHash;
-	}
+    /**
+     * Sets a hashed password of the user.
+     *
+     * @param passwordHash A hashed password of the user.
+     */
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
 
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+    /**
+     * Fetches a email address of the user.
+     *
+     * @return A email address of the user.
+     */
+    public String getEmailAddress() {
+        return emailAddress;
+    }
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
+    /**
+     * Sets a email address of the user.
+     * A email address must be valid for verification.
+     *
+     * @param emailAddress A email address of the user.
+     */
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
 
-	public boolean isEmailVerified() {
-		return isEmailVerified;
-	}
+    /**
+     * Fetches whether the email address is verified or not.
+     *
+     * @return true, if the email address of the user is verified, otherwise false.
+     */
+    public boolean isEmailVerified() {
+        return isEmailVerified;
+    }
 
-	public void setEmailVerified(boolean isEmailVerified) {
-		this.isEmailVerified = isEmailVerified;
-	}
+    /**
+     * Sets whether the email address is verified or not.
+     *
+     * @param isEmailVerified true, if the email address of the user is verified, otherwise false.
+     */
+    public void setEmailVerified(boolean isEmailVerified) {
+        this.isEmailVerified = isEmailVerified;
+    }
 
-	public Role getRole() {
-		return role;
-	}
+    /**
+     * Fetches a role of the user.
+     *
+     * @return A role of the user.
+     * @see Role
+     */
+    public Role getRole() {
+        return role;
+    }
 
-	public void setRole(Role role) {
-		this.role = role;
-	}
+    /**
+     * Sets a role of the user.
+     *
+     * @param role A role of the user.
+     * @see Role
+     */
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
-	public int getZipCode() {
-		return zipCode;
-	}
+    /**
+     * Fetches a zip code of the user.
+     * The zip code is part of the user's physical address.
+     *
+     * @return A zip code of the user.
+     */
+    public int getZipCode() {
+        return zipCode;
+    }
 
-	public void setZipCode(int zipCode) {
-		this.zipCode = zipCode;
-	}
+    /**
+     * Sets a zip code of the user.
+     * The zip code is part of the user's physical address.
+     *
+     * @param zipCode A zip code of the user.
+     */
+    public void setZipCode(int zipCode) {
+        this.zipCode = zipCode;
+    }
 
-	public String getCity() {
-		return city;
-	}
+    /**
+     * Fetches a city of the user.
+     * The city is part of the user's physical address.
+     *
+     * @return A city of the user.
+     */
+    public String getCity() {
+        return city;
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    /**
+     * Sets a city of the user.
+     * The city is part of the user's physical address.
+     *
+     * @param city A city of the user.
+     */
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public String getStreet() {
-		return street;
-	}
+    /**
+     * Fetches a street of the user.
+     * The street is part of the user's physical address.
+     *
+     * @return A street of the user.
+     */
+    public String getStreet() {
+        return street;
+    }
 
-	public void setStreet(String street) {
-		this.street = street;
-	}
+    /**
+     * Sets a street of the user.
+     * The street is part of the user's physical address.
+     *
+     * @param street A street of the user.
+     */
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
-	public String getStreetNumber() {
-		return streetNumber;
-	}
+    /**
+     * Fetches a street number of the user. The street number is part of the user's physical address.
+     * This is a string and not a number since we also need to be able to support more exotic ones like "21a".
+     *
+     * @return A street number of the user.
+     */
+    public String getStreetNumber() {
+        return streetNumber;
+    }
 
-	public void setStreetNumber(String streetNumber) {
-		this.streetNumber = streetNumber;
-	}
+    /**
+     * Sets a street number of the user. The street number is part of the user's physical address.
+     * This is a string and not a number since we also need to be able to support more exotic ones like "21a".
+     *
+     * @param streetNumber A street number of the user.
+     */
+    public void setStreetNumber(String streetNumber) {
+        this.streetNumber = streetNumber;
+    }
 
-	public Duration getLendingPeriod() {
-		return lendingPeriod;
-	}
+    /**
+     * Fetches a lending period that the administrator has privately set for the user.
+     * This lending period overrides the global lending period in the application,
+     * but does not override the private lending period of the medium.
+     *
+     * @return A lending period for the user.
+     */
+    public Duration getLendingPeriod() {
+        return lendingPeriod;
+    }
 
-	public void setLendingPeriod(Duration lendingPeriod) {
-		this.lendingPeriod = lendingPeriod;
-	}
+    /**
+     * Sets a lending period for the user.
+     * This lending period overrides the global lending period in the application,
+     * but does not override the private lending period of the medium.
+     *
+     * @param lendingPeriod A lending period for the user.
+     */
+    public void setLendingPeriod(Duration lendingPeriod) {
+        this.lendingPeriod = lendingPeriod;
+    }
 
-	public AccountStatus getAccountStatus() {
-		return accountStatus;
-	}
+    /**
+     * Fetches a account status of the user.
+     *
+     * @return A account status for the user.
+     * @see AccountStatus
+     */
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
 
-	public void setAccountStatus(AccountStatus accountStatus) {
-		this.accountStatus = accountStatus;
-	}
+    /**
+     * Sets a account status of the user.
+     *
+     * @param accountStatus A account status for the user.
+     * @see AccountStatus
+     */
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
+    }
 
-	public Token getToken() {
-		return token;
-	}
+    /**
+     * Fetches a token for the user.
+     * This is necessary, for example, to verify your e-mail address or recover a password.
+     *
+     * @return A token for the user.
+     * @see Token
+     */
+    public Token getToken() {
+        return token;
+    }
 
-	public void setToken(Token token) {
-		this.token = token;
-	}
+    /**
+     * Sets a token for the user.
+     * This is necessary, for example, to verify your e-mail address or recover a password.
+     *
+     * @param token A token for the user.
+     * @see Token
+     */
+    public void setToken(Token token) {
+        this.token = token;
+    }
 
-	public LendingStatus getLendingStatus() {
-		return lendingStatus;
-	}
+    /**
+     * Fetches a lending status of the user.
+     * This affects whether the user can lend out instances of the medium.
+     *
+     * @return A account status for the user.
+     * @see LendingStatus
+     */
+    public LendingStatus getLendingStatus() {
+        return lendingStatus;
+    }
 
-	public void setLendingStatus(LendingStatus lendingStatus) {
-		this.lendingStatus = lendingStatus;
-	}
+    /**
+     * Sets a lending status of the user.
+     * This affects whether the user can lend out instances of the medium.
+     *
+     * @param lendingStatus  A account status for the user.
+     * @see LendingStatus
+     */
+    public void setLendingStatus(LendingStatus lendingStatus) {
+        this.lendingStatus = lendingStatus;
+    }
 
-	public Date getTokenCreation() {
-		return tokenCreation;
-	}
+    /**
+     * Fetches the date the token was created.
+     *
+     * @return the date the token was created.
+     * @see Token
+     */
+    public Date getTokenCreation() {
+        return tokenCreation;
+    }
 
-	public void setTokenCreation(Date tokenCreation) {
-		this.tokenCreation = tokenCreation;
-	}
+    /**
+     * Sets the date the token was created.
+     *
+     * @param tokenCreation the date the token was created.
+     * @see Token
+     */
+    public void setTokenCreation(Date tokenCreation) {
+        this.tokenCreation = tokenCreation;
+    }
+
+    /**
+     * Fetches the salted passwords.
+     * This is necessary to avoid a collision when hashing the password.
+     *
+     * @return salted passwords.
+     */
+    public String getPasswordSalt() {
+        return passwordSalt;
+    }
+
+    /**
+     * Sets the salted passwords.
+     * This is necessary to avoid a collision when hashing the password.
+     *
+     * @param passwordSalt A salted passwords.
+     */
+    public void setPasswordSalt(String passwordSalt) {
+        this.passwordSalt = passwordSalt;
+    }
 }
