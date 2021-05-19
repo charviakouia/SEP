@@ -9,7 +9,7 @@ import de.dedede.model.logic.util.SystemRegistrationStatus;
  * This DTO (data transfer object) is responsible for aggregating and
  * encapsulating data about the application for transfer.
  * <p>
- * See the {@link dedede.model.persistence.daos.ApplicationDao} class to which this DTO is passed.
+ * See the {@link de.dedede.model.persistence.daos.ApplicationDao} class to which this DTO is passed.
  *
  * @author Sergei Pravdin
  */
@@ -250,9 +250,7 @@ public class ApplicationDto {
         this.pickupPeriod = pickupPeriod;
     }
 
-	public SystemRegistrationStatus getRegisterStatus() {
-		return systemRegistrationStatus;
-	}
+
     /**
      * Fetches the register status of the application indicating whether registration is available for new users.
      *
@@ -260,12 +258,10 @@ public class ApplicationDto {
      * @see SystemRegistrationStatus
      */
     public SystemRegistrationStatus getRegisterStatus() {
-        return SystemRegistrationStatus;
+        return systemRegistrationStatus;
     }
 
-	public void setRegisterStatus(SystemRegistrationStatus systemRegistrationStatus) {
-		this.systemRegistrationStatus = systemRegistrationStatus;
-	}
+
     /**
      * Sets the register status of the application indicating whether registration is available for new users.
      * No action is required with already registered users when the status is changed.

@@ -1,7 +1,7 @@
-package dedede.model.data.dtos;
+package de.dedede.model.data.dtos;
 
 import com.sun.mail.iap.ByteArray;
-import dedede.model.logic.util.AttributeType;
+import de.dedede.model.logic.util.AttributeType;
 
 import java.awt.*;
 import java.net.URL;
@@ -50,7 +50,7 @@ public class MediumDto {
      * ID is a unique medium key used to identify the medium from the database.
      *
      * @param id An ID to the necessary medium.
-     * @see dedede.model.persistence.daos.MediumDao
+     * @see de.dedede.model.persistence.daos.MediumDao
      */
     public void setId(Integer id) {
         this.id = id;

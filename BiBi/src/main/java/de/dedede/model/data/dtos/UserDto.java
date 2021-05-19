@@ -1,8 +1,8 @@
-package dedede.model.data.dtos;
+package de.dedede.model.data.dtos;
 
-import dedede.model.logic.util.UserLendStatus;
-import dedede.model.logic.util.UserRole;
-import dedede.model.logic.util.Token;
+import de.dedede.model.logic.util.UserLendStatus;
+import de.dedede.model.logic.util.UserRole;
+import de.dedede.model.logic.util.Token;
 
 
 
