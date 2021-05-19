@@ -23,4 +23,5 @@ public class BorrowedCopies extends PaginatedList implements Serializable {
 
 	private List<CopyDto> listDto;
 
+
 }
