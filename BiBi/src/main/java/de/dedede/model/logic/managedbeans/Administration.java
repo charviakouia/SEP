@@ -8,6 +8,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -20,7 +21,10 @@ import java.io.Serializable;
 @ViewScoped
 public class Administration implements Serializable {
 
-	private ApplicationDto applicationDto;
+	@Serial
+	private static  final long serialVersionUID = 1L;
+
+	private ApplicationDto application;
 
 
 	@PostConstruct
@@ -42,4 +46,11 @@ public class Administration implements Serializable {
 
 	}
 
+	public ApplicationDto getApplication() {
+		return application;
+	}
+
+	public void setApplication(ApplicationDto application) {
+		this.application = application;
+	}
 }

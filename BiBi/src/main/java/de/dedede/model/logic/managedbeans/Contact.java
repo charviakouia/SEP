@@ -16,7 +16,7 @@ import jakarta.inject.Named;
 @ViewScoped
 public class Contact {
 
-	@Inject
+
 	private ApplicationDto application;
 
 
@@ -38,5 +38,7 @@ public class Contact {
 	public void save() {
 
 	}
+
+
 
 }

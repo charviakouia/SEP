@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -14,6 +15,9 @@ import jakarta.inject.Named;
 @Named
 @ViewScoped
 public class ReturnForm implements Serializable {
+
+	@Serial
+	private static  final long serialVersionUID = 1L;
 
 	private UserDto user;
 
@@ -34,4 +38,19 @@ public class ReturnForm implements Serializable {
 
 	}
 
+	public UserDto getUser() {
+		return user;
+	}
+
+	public void setUser(UserDto user) {
+		this.user = user;
+	}
+
+	public ArrayList<CopyDto> getCopies() {
+		return copies;
+	}
+
+	public void setCopies(ArrayList<CopyDto> copies) {
+		this.copies = copies;
+	}
 }

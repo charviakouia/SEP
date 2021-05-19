@@ -9,9 +9,17 @@ import jakarta.inject.Named;
 @RequestScoped
 public class CategoryCreator {
 
-    private CategoryDto categoryDto;
+    private CategoryDto category;
 
     public void createCategory(){
 
+    }
+
+    public CategoryDto getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryDto category) {
+        this.category = category;
     }
 }

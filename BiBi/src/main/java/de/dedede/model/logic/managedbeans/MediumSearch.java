@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -19,6 +20,9 @@ import jakarta.inject.Named;
 @Named
 @ViewScoped
 public class MediumSearch extends PaginatedList implements Serializable {
+
+	@Serial
+	private static  final long serialVersionUID = 1L;
 
 	private String generalSearchTerm;
 
@@ -73,6 +77,13 @@ public class MediumSearch extends PaginatedList implements Serializable {
 
 	}
 
+	public String getGeneralSearchTerm() {
+		return generalSearchTerm;
+	}
+
+	public void setGeneralSearchTerm(String generalSearchTerm) {
+		this.generalSearchTerm = generalSearchTerm;
+	}
 }
 
 

@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -13,6 +14,9 @@ import jakarta.inject.Named;
 @Named
 @SessionScoped
 public class MediumSchemaEditor implements Serializable {
+
+	@Serial
+	private static  final long serialVersionUID = 1L;
 
 	private Set<AttributeDto> attributes;
 

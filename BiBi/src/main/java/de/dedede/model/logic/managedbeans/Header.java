@@ -14,7 +14,7 @@ import jakarta.inject.Named;
 
 @Named
 @Dependent
-public class HeaderData {
+public class Header {
 
 	@Inject
 	private LocaleBundle localeBundle;
@@ -34,7 +34,9 @@ public class HeaderData {
 	}
 
 
-
+	/**
+	 *
+	 */
 	public void displayHelpText(){
 
 	}

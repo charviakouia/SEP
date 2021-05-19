@@ -1,23 +1,26 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CopyDto;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.view.ViewScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 /**
- * Backing bean for the facelet containing the list of copies ready for pickup.
- * This page is used by library staff to be up to speed regarding which copies
- * are ready to be picked up and whether they can expect someone to soon enter
- * the library and arrive at their counter.
- *
+ * Backing bean for the facelet containg a list of copies ready for pickup for
+ * the current user. On this page a user gets to know which copies they want to
+ * pick up from the library and borrow thereafter and how much time they have
+ * left to do so until they exceed the lending period.
  */
 @Named
-@RequestScoped
-public class CopiesReadyForPickup extends PaginatedList  {
+@SessionScoped
+public class CopiesReadyForPickup extends PaginatedList implements Serializable {
 
-	private List<CopyDto> listCopies;
+	@Serial
+	private static  final long serialVersionUID = 1L;
+
+	private List<CopyDto> listDto;
+
 }

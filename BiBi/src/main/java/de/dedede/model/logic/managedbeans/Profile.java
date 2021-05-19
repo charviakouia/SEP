@@ -5,6 +5,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,9 @@ import java.io.Serializable;
 @Named
 @ViewScoped
 public class Profile implements Serializable {
+
+	@Serial
+	private static  final long serialVersionUID = 1L;
 
 	private UserDto user;
 
@@ -40,5 +44,29 @@ public class Profile implements Serializable {
 	 */
 	public void save() {
 
+	}
+
+	public UserDto getUser() {
+		return user;
+	}
+
+	public void setUser(UserDto user) {
+		this.user = user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getConfirmedPassword() {
+		return confirmedPassword;
+	}
+
+	public void setConfirmedPassword(String confirmedPassword) {
+		this.confirmedPassword = confirmedPassword;
 	}
 }

@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.daos.ApplicationDao;
 import jakarta.annotation.PostConstruct;
@@ -15,11 +16,10 @@ import jakarta.inject.Named;
 @RequestScoped
 public class Registration {
 
-	private ApplicationDao applicationDao;
+	private ApplicationDto application;
 
-	private UserDto userDto;
+	private UserDto user;
 
-	private String emailRegex;
 
 	@PostConstruct
 	public void init() {
@@ -31,5 +31,21 @@ public class Registration {
 	 */
 	public void register() {
 
+	}
+
+	public ApplicationDto getApplication() {
+		return application;
+	}
+
+	public void setApplication(ApplicationDto application) {
+		this.application = application;
+	}
+
+	public UserDto getUser() {
+		return user;
+	}
+
+	public void setUser(UserDto user) {
+		this.user = user;
 	}
 }
