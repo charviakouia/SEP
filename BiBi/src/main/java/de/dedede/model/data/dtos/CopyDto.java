@@ -2,7 +2,7 @@ package de.dedede.model.data.dtos;
 
 import java.util.Date;
 
-import de.dedede.model.logic.util.AvailabilityStatus;
+import de.dedede.model.logic.util.CopyStatus;
 
 /**
  * A class for aggregate and encapsulate data about a medium's copy for
@@ -16,7 +16,7 @@ public class CopyDto {
 
 	private Date deadline;
 
-	private AvailabilityStatus availabilityStatus;
+	private CopyStatus copyStatus;
 
 	public String getLocation() {
 		return location;
@@ -42,12 +42,12 @@ public class CopyDto {
 		this.deadline = deadline;
 	}
 
-	public AvailabilityStatus getAvailabilityStatus() {
-		return availabilityStatus;
+	public CopyStatus getAvailabilityStatus() {
+		return copyStatus;
 	}
 
-	public void setAvailabilityStatus(AvailabilityStatus availabilityStatus) {
-		this.availabilityStatus = availabilityStatus;
+	public void setAvailabilityStatus(CopyStatus copyStatus) {
+		this.copyStatus = copyStatus;
 	}
 
 }

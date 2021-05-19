@@ -1,6 +1,6 @@
 package de.dedede.model.logic.converters;
 
-import de.dedede.model.logic.util.Role;
+import de.dedede.model.logic.util.UserRole;
 import jakarta.faces.convert.EnumConverter;
 
 /**
@@ -10,6 +10,6 @@ import jakarta.faces.convert.EnumConverter;
 public class RoleConverter extends EnumConverter {
 
 	public RoleConverter() {
-		super(Role.class);
+		super(UserRole.class);
 	}
 }

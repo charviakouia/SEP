@@ -19,7 +19,7 @@ public class MediumSchemaEditor implements Serializable {
 	/**
 	 * Delete a medium attribute.
 	 * 
-	 * @param id The identifier of the attributte to be deleted.
+	 * @param id The identifier of the attribute to be deleted.
 	 * @throws IllegalArgumentException If the identifier is invalid.
 	 */
 	public void deleteAttribute(int id) throws IllegalArgumentException {

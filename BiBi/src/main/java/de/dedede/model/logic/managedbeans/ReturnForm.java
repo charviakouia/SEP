@@ -23,14 +23,14 @@ public class ReturnForm implements Serializable {
 	 * As library staff let the system know that the given copies were returned by
 	 * the user.
 	 */
-	public void returnCopies() {
+	public void returnMedium() {
 
 	}
 
 	/**
 	 * Add a signature input field.
 	 */
-	public void addSignaturInputField() {
+	public void addSignatureInputField() {
 
 	}
 

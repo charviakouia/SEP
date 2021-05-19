@@ -1,6 +1,7 @@
 package de.dedede.model.logic.managedbeans;
 
 import de.dedede.model.logic.util.LocaleBundle;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
@@ -12,7 +13,7 @@ import jakarta.inject.Named;
  */
 
 @Named
-@RequestScoped
+@Dependent
 public class HeaderData {
 
 	@Inject
@@ -28,16 +29,13 @@ public class HeaderData {
 	 * 
 	 * @return the String to the login and Register Page.
 	 */
-	public String logout() {
+	public String logOut() {
 		return "";
 	}
 
-	/**
-	 * Sets the language of this program
-	 * 
-	 * @param language the language you would set
-	 */
-	public void setLanguage(String language) {
+
+
+	public void displayHelpText(){
 
 	}
 }

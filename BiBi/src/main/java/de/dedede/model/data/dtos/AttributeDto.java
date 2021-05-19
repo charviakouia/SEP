@@ -1,8 +1,9 @@
 package de.dedede.model.data.dtos;
 
+import de.dedede.model.logic.util.AttributeModifiability;
 import de.dedede.model.logic.util.AttributeType;
 import de.dedede.model.logic.util.MediumPreviewPosition;
-import de.dedede.model.logic.util.Multiplicity;
+import de.dedede.model.logic.util.AttributeMultiplicity;
 
 /**
  * A class for aggregate and encapsulate data about an medium's attribute for
@@ -16,9 +17,11 @@ public class AttributeDto {
 
 	private String value;
 
+	private AttributeModifiability attributeModifiability;
+
 	private AttributeType type;
 
-	private Multiplicity multiplicity;
+	private AttributeMultiplicity attributeMultiplicity;
 
 	private MediumPreviewPosition position;
 
@@ -54,12 +57,19 @@ public class AttributeDto {
 		this.type = type;
 	}
 
-	public Multiplicity getMultiplicity() {
-		return multiplicity;
+	public AttributeMultiplicity getMultiplicity() {
+		return attributeMultiplicity;
 	}
 
-	public void setMultiplicity(Multiplicity multiplicity) {
-		this.multiplicity = multiplicity;
+	public void setMultiplicity(AttributeMultiplicity attributeMultiplicity) {
+		this.attributeMultiplicity = attributeMultiplicity;
+	}
+	public AttributeModifiability getAttributeModifiability() {
+		return attributeModifiability;
+	}
+
+	public void setAttributeModifiability(AttributeModifiability attributeModifiability) {
+		this.attributeModifiability = attributeModifiability;
 	}
 
 }

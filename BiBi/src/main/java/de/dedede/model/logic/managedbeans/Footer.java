@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -10,19 +11,10 @@ import jakarta.inject.Named;
  */
 
 @Named
-@RequestScoped
+@Dependent
 public class Footer {
 
 	@Inject
 	private UserSession userSession;
 
-	/**
-	 * A text is displayed as which user you are signed in.
-	 *
-	 * @return an empty String if you are not signed in, the text with your name
-	 *         otherwise.
-	 */
-	public String getNAmeSignedInUser() {
-		return null;
-	}
 }

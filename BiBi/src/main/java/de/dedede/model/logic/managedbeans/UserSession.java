@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import de.dedede.model.data.dtos.UserDto;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -12,6 +13,7 @@ import jakarta.inject.Named;
 @Named
 @SessionScoped
 public class UserSession implements Serializable {
+
 
 	private UserDto loggedInUser;
 

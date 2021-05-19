@@ -41,14 +41,14 @@ public class Login {
 	 * @throws MaxConnectionsException If there are no more available database
 	 *                                 connections.
 	 */
-	public String login() throws MaxConnectionsException {
+	public String logIn() throws MaxConnectionsException {
 		return null;
 	}
 
 	/**
 	 * Send an email to the user with a reset link inside.
 	 */
-	public void forgotPassword() {
+	public void resetPassword() {
 
 	}
 

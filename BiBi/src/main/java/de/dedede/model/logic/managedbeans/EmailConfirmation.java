@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
@@ -12,7 +13,7 @@ import java.io.Serializable;
  * secures against certain attacks.
  */
 @Named
-@SessionScoped
+@RequestScoped
 public class EmailConfirmation implements Serializable {
 
 	private String token;

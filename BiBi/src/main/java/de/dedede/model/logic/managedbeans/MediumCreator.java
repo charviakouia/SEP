@@ -9,11 +9,11 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 
 /**
- * Backing bean for the medium creation facelet.
+ * Backing bean for the medium creator facelet.
  */
 @Named
 @ViewScoped
-public class MediumCreation implements Serializable {
+public class MediumCreator implements Serializable {
 
 	private MediumDto medium;
 

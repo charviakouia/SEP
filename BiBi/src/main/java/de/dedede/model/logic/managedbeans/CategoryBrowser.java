@@ -1,6 +1,8 @@
 package de.dedede.model.logic.managedbeans;
 
 import de.dedede.model.data.dtos.CategoryDto;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -13,24 +15,35 @@ import java.io.Serializable;
  *
  */
 @Named
-@ViewScoped
+@RequestScoped
 public class CategoryBrowser extends PaginatedList implements Serializable {
 
-	private String searchTerm;
 
 	private CategoryDto category;
 
-	public void createCategory() {
+	private String searchTerm;
+
+	public String getSearchTerm() {
+		return searchTerm;
+	}
+
+	public void setSearchTerm(String searchTerm) {
+		this.searchTerm = searchTerm;
+	}
+
+
+	@PostConstruct
+	public void init(){
+
 
 	}
+
+
 
 	public void deleteCategory() {
 
 	}
 
-	public void editCategory() {
-
-	}
 
 	public void searchCategory() {
 

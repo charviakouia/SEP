@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CopyDto;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -15,9 +16,8 @@ import jakarta.inject.Named;
  *
  */
 @Named
-@ViewScoped
-public class CopiesReadyForPickup extends PaginatedList implements Serializable {
+@RequestScoped
+public class CopiesReadyForPickup extends PaginatedList  {
 
 	private List<CopyDto> listCopies;
-
 }

@@ -1,7 +1,7 @@
 package de.dedede.model.data.dtos;
 
-import de.dedede.model.logic.util.AccountStatus;
-import de.dedede.model.logic.util.Role;
+import de.dedede.model.logic.util.UserLendStatus;
+import de.dedede.model.logic.util.UserRole;
 import de.dedede.model.logic.util.Token;
 
 /**
@@ -23,7 +23,7 @@ public class UserDto {
 
 	private boolean isEmailVerified;
 
-	private Role role;
+	private UserRole userRole;
 
 	private int zipCode;
 
@@ -39,7 +39,7 @@ public class UserDto {
 
 	private int lendingPeriod;
 
-	private AccountStatus accountStatus;
+	private UserLendStatus userLendStatus;
 
 	private Token token;
 
@@ -99,12 +99,12 @@ public class UserDto {
 		this.isEmailVerified = isEmailVerified;
 	}
 
-	public Role getRole() {
-		return role;
+	public UserRole getRole() {
+		return userRole;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setRole(UserRole userRole) {
+		this.userRole = userRole;
 	}
 
 	public int getZipCode() {
@@ -147,12 +147,12 @@ public class UserDto {
 		this.lendingPeriod = lendingPeriod;
 	}
 
-	public AccountStatus getAccountStatus() {
-		return accountStatus;
+	public UserLendStatus getAccountStatus() {
+		return userLendStatus;
 	}
 
-	public void setAccountStatus(AccountStatus accountStatus) {
-		this.accountStatus = accountStatus;
+	public void setAccountStatus(UserLendStatus userLendStatus) {
+		this.userLendStatus = userLendStatus;
 	}
 
 	public Token getToken() {

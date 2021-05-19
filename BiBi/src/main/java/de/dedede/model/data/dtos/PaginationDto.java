@@ -37,7 +37,7 @@ public class PaginationDto implements Serializable {
 		this.totalAmountOfRows = totalAmountOfRows;
 	}
 
-	public static long getSerialversionid() {
+	public static long getSerialVersionid() {
 		return serialVersionID;
 	}
 

@@ -1,7 +1,11 @@
 package de.dedede.model.logic.managedbeans;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
@@ -13,11 +17,16 @@ import java.io.Serializable;
  *
  */
 @Named
-@SessionScoped
-public class Admininstration implements Serializable {
+@ViewScoped
+public class Administration implements Serializable {
 
 	private ApplicationDto applicationDto;
 
+
+	@PostConstruct
+	public void init(){
+
+	}
 	/**
 	 * Save the changes made to the system settings.
 	 */
@@ -28,7 +37,8 @@ public class Admininstration implements Serializable {
 	/**
 	 * Search for a user inside of the system.
 	 */
-	public void searchUser() {
+	public String searchUser() {
+		return "";
 
 	}
 

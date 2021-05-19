@@ -3,7 +3,7 @@ package de.dedede.model.data.dtos;
 import java.time.Duration;
 
 import de.dedede.model.logic.util.Theme;
-import de.dedede.model.logic.util.RegisterStatus;
+import de.dedede.model.logic.util.SystemRegistrationStatus;
 
 /**
  * A class for aggregate and encapsulate data about an application for transfer.
@@ -32,7 +32,7 @@ public class ApplicationDto {
 
 	private Duration pickupPeriod;
 
-	private RegisterStatus registerStatus;
+	private SystemRegistrationStatus systemRegistrationStatus;
 
 	public String getName() {
 		return name;
@@ -122,11 +122,11 @@ public class ApplicationDto {
 		this.pickupPeriod = pickupPeriod;
 	}
 
-	public RegisterStatus getRegisterStatus() {
-		return registerStatus;
+	public SystemRegistrationStatus getRegisterStatus() {
+		return systemRegistrationStatus;
 	}
 
-	public void setRegisterStatus(RegisterStatus registerStatus) {
-		this.registerStatus = registerStatus;
+	public void setRegisterStatus(SystemRegistrationStatus systemRegistrationStatus) {
+		this.systemRegistrationStatus = systemRegistrationStatus;
 	}
 }
