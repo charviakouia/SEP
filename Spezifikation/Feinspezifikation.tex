@@ -286,24 +286,7 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \newcommand{\2}[1]{\multirow{2}{*}{#1}}
 \newcommand{\3}[1]{\multirow{3}{*}{#1}}
 \definecolor{lightgray}{rgb}{0.9,0.9,0.9}
-%\newcommand{\disambiguationrule}{\arrayrulecolor{lightgray}\midrule\arrayrulecolor{black}}
 \newcommand{\disambiguationrule}{\arrayrulecolor{lightgray}\cmidrule(r){3-4}\arrayrulecolor{black}}
-
-% @Beacon @Temporary
-\renewenvironment{controls}
-{
-    \begin{table}[H]
-        \centering
-        \begin{tabular}{ p{7em} p{25em} p{7em} }
-            \toprule
-            \textbf{Tag} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
-            \midrule
-        }
-        {
-            \bottomrule
-        \end{tabular}
-    \end{table}
-}
 
 \long\def\begincontrols [#1] #2\endcontrols
 {
@@ -340,6 +323,7 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
     \end{table}
 }
 
+% TASK remove at some point
 \newcommand{\PUB}{jeder}
 \newcommand{\ANO}{Anon.}
 \newcommand{\USR}{Nutzer}
@@ -357,6 +341,7 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \newcommand{\OUT}{\tag{h}{outputText}}
 \newcommand{\LST}{\tag{bibi}{paginatedList}}
 \newcommand{\TXT}{\tag{h}{inputTextarea}}
+\newcommand{\PRM}{\tag{f}{viewParam}}
 
 Was noch fehlt:
 
@@ -387,9 +372,11 @@ Was noch fehlt:
     \caption{Verwendete XML-Namensräume}
 \end{table}
 
-Jedes \tag{f}{viewParam}-Element ist in ein \tag{f}{metadata}-Element eingebettet.
+Jedes \PRM-Element ist in ein \tag{f}{metadata}-Element eingebettet.
 META TASK implizit jedes Eingabefeld von Meldungsfeld begleitet.
 META NOTE Typ ist JSF-Tag.
+
+% TASK forms
 
 \newgeometry{left=0.5cm,right=0.5cm,top=0cm,bottom=2cm}
 \begin{landscape}
@@ -413,7 +400,9 @@ JSF Templates.
 \subsubsection{Kopfzeile}\label{page_header}
 
 \begincontrols[header]
-    \tag{h}{commandButton} & kontextsensitive Hilfe anzeigen & \M{action} & \B{header.displayHelpText()} & \\ % QUESTION can that work??
+    \BTN & kontextsensitive Hilfe anzeigen & \M{action} & \B{header.displayHelpText()} & \\
+    % BEACON TASK + rendered=$
+    \OUT & kontextsensitive Hilfe & \M{value} & BUNDLE-HELP & \\
     \INP & Mediensuchterm & \M{value} & \B{header.mediumSearchTerm} & \\ % BEACON store in sep DTO
     \LNK & zur erweiterten Suche & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}} & \\
     \tag{h}{graphicImage} & Logo des Systems & \M{value} & \B{header.application.logo} & \\
@@ -422,6 +411,10 @@ JSF Templates.
     \LNK & zur Anmeldemaske & \M{value} & \hyperref[page_login]{\M{public/login.xhtml}} & \\
     \LNK & zur Registrierungsseite & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}} & \\
     \LNK & zur Profilseite & \M{value} & \hyperref[page_profile]{\M{account/profile.xhtml?id=\RB{header.user.id}}} & \\
+    \LNK & zur Direktausleihe & \M{value} & \hyperref[page_direct_lending]{\M{staff/direct-lending.xhtml}} & \BIB\\
+    \LNK & zur Medienrückgabe & \M{value} & \hyperref[page_return_form]{\M{staff/return-form.xhtml}} & \BIB\\
+    \LNK & zu den abzuholenden Exemplaren aller Nutzer & \M{value} & \hyperref[page_copies_ready_for_pickup_all_users]{\M{staff/copies-ready-for-pickup-all-users.xhtml}} & \BIB\\
+    \LNK & zur Medienerstellung & \M{value} & \hyperref[page_medium_creator]{\M{staff/medium-creator.xhtml}} & \BIB\\
 \endcontrols
 
 \subsubsection{Fußzeile}\label{page_footer}
@@ -434,12 +427,14 @@ JSF Templates.
 
 \subsection{Seiten}
 
-\subsubsection{Abzuholende Exemplare}\label{page_copies_ready_for_pickup}
+% QUESTION can we replace this???
+\subsubsection{Abzuholende Exemplare aller Nutzer}\label{page_copies_ready_for_pickup_all_users}
 
-\begin{controls}
-    \LST & aller abzuholenden Exemplare & \BIB\\
-\end{controls}
+\begincontrols[staff/copies-ready-for-pickup-all-users]
+    \LST & abzuholende Exemplare & & & \BIB\\
+\endcontrols
 
+% TASK USE SUBCONTROLS
 \begin{table}[H]
     \centering
     \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
@@ -456,12 +451,17 @@ JSF Templates.
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
 \end{table}
 
-\subsubsection{Eigene abzuholende Exemplare}\label{page_my_copies_ready_for_pickup}
+\subsubsection{Abzuholende Exemplare}\label{page_copies_ready_for_pickup}
 
-\begin{controls}
-    \LST & aller abzuholenden Exemplare & \USR\\
-\end{controls}
+\begincontrols[account/copies-ready-for-pickup]
+    \3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id} & \3{\PUB}\\
+    & & \M{value} & \B{copiesReadForPickup.user} &\\
+    & & \M{required} & \M{true} &\\ % QUESTION ooor show for all users if missing??
+    \disambiguationrule
+    \LST & aller abzuholenden Exemplare & & & \USR\\
+\endcontrols
 
+% TASK USE SUBCONTROLS
 \begin{table}[H]
     \centering
     \begin{tabular}{ p{6em} p{6em} p{27em} }
@@ -476,12 +476,17 @@ JSF Templates.
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar}
 \end{table}
 
-\subsubsection{Eigene ausgeliehene Exemplare}\label{page_my_borrowed_copies}
+\subsubsection{Ausgeliehene Exemplare}\label{page_borrowed_copies}
 
-\begin{controls}
-    \LST & aller ausgeliehenen Exemplare & \USR\\
-\end{controls}
+\begincontrols[account/borrowed-copies]
+    \3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id} & \3{\PUB}\\
+    & & \M{value} & \B{myBorrowedCopies.user} &\\
+    & & \M{required} & \M{true} &\\ % QUESTION ooor show for all users if missing??
+    \disambiguationrule
+    \LST & aller ausgeliehenen Exemplare & & & \USR\\
+\endcontrols
 
+% TASK USE SUBCONTROLS
 \begin{table}[H]
     \centering
     \begin{tabular}{ p{6em} p{6em} p{27em} }
@@ -515,7 +520,7 @@ JSF Templates.
 
 \subsubsection{Direktausleihe}\label{page_direct_lending}
 
-\begincontrols[staff/reactive-lending]
+\begincontrols[staff/direct-lending]
     \tag{bibi}{reactiveInputText} & E-Mail-Adresse des Kunden & \M{value} & \B{directLending.user.emailAddress} & \BIB\\
     \disambiguationrule
     \2{\tag{ui}{repeat}} & \2{Signaturen der auszuleihenden Exemplare} & \M{value} & \B{directLending.copies} & \2{\BIB}\\
@@ -532,17 +537,18 @@ JSF Templates.
 \subsubsection{E-Mail-Bestätigung}\label{page_email_confirmation}
 
 \begincontrols[public/email-confirmation]
-    \3{\tag{f}{viewParam}} & \3{Kennzeichen der E-Mail-Bestätigung} & \M{name} & \M{token} & \3{\PUB}\\
+    \3{\PRM} & \3{Kennzeichen der E-Mail-Bestätigung} & \M{name} & \M{token} & \3{\PUB}\\
     & & \M{value} & \B{emailConfirmation.token} &\\
     & & \M{required} & \M{true} &\\
 \endcontrols
 
 \subsubsection{Fehlerseite}\label{page_error}
 
-\begin{controls}
-%    \OUT & für den Titel der Fehlermeldung & \PUB\\
-%    \OUT & für die Beschreibung des Fehlers & \PUB\\
-\end{controls}
+% BEACON TASK from where do we get the information?
+
+\begincontrols[public/error]
+    \OUT & ?? & & & \\
+\endcontrols
 
 \subsubsection{Impressum}\label{page_site_notice}
 
@@ -552,13 +558,12 @@ JSF Templates.
     \BTN & Änderungen speichern & \M{action} & \B{siteNotice.save()} & \ADM\\
 \endcontrols
 
-% TASK rename to Kategorienerstellung / category creator
-\subsubsection{Kategorienbearbeitung}\label{page_category_editor}
+\subsubsection{Kategorienerstellung}\label{page_category_creator}
 
-\begincontrols[staff/category-editor]
-    \INP & Kategorienname & \M{value} & \B{categoryEditor.category.name} & \BIB\\
-    \TXT & Kategorienbeschreibung & \M{value} & \B{categoryEditor.category.description} & \BIB\\
-    \BTN & Kategorie erstellen & \M{action} & \B{categoryEditor.save()} & \BIB\\ % save() -> create()
+\begincontrols[staff/category-creator]
+    \INP & Kategorienname & \M{value} & \B{categoryCreator.category.name} & \BIB\\
+    \TXT & Kategorienbeschreibung & \M{value} & \B{categoryCreator.category.description} & \BIB\\
+    \BTN & Kategorie erstellen & \M{action} & \B{categoryCreator.createCategory()} & \BIB\\
 \endcontrols
 
 \subsubsection{Kategorierenstöberer}\label{page_category_browser}
@@ -569,10 +574,9 @@ JSF Templates.
     \tag{bibi}{treeView} & Baumansicht von Kategorien & & & \PUB \\
     \INP & Name der ausgewählten Kategorie & \M{value} & \B{categoryBrowser.category.name} & \BIB\\ % TASK cond readonly
     \TXT & Beschreibung der ausgewählten Kategorie & \M{value} & \B{categoryBrowser.category.description} & \BIB\\ % TASK cond readonly
-    % TASK rename category-editor to category-creator
-    \tag{h}{commandLink} & Kategorie unter der ausgewählten Kategorie erstellen & \M{action} & \hyperref[page_category_editor]{\M{staff/category-editor.xhtml}} & \BIB\\
-    \BTN & ausgewählte Kategorie löschen & \M{action} & \B{categoryBroswer.delete()} & \BIB\\ % TASK param categ id
-    \LST & Medienvorschauen in der ausgewählten Kategorie & &  & \PUB\\ % TASK sep tex-table
+    \tag{h}{commandLink} & Kategorie unter der ausgewählten Kategorie erstellen & \M{action} & \hyperref[page_category_creator]{\M{staff/category-creator.xhtml}} & \BIB\\
+    \BTN & ausgewählte Kategorie löschen & \M{action} & \B{categoryBroswer.deleteCategory()} & \BIB\\ % TASK param categ id
+    \LST & Medienvorschauen in der ausgewählten Kategorie & & & \PUB\\ % TASK sep tex-table
 \endcontrols
 
 \subsubsection{Kontakt}\label{page_contact}
@@ -585,10 +589,11 @@ JSF Templates.
 
 \subsubsection{Leihfristverstöße}\label{page_lending_period_violations}
 
-\begin{controls}
-    \LST & von Exemplaren und Nutzern & \ADM\\
-\end{controls}
+\begincontrols[admin/lending-period-violations]
+    \LST & Exemplare und Nutzer & & & \ADM\\
+\endcontrols
 
+% TASK USE SUBCONTROLS
 \begin{table}[H]
     \centering
     \begin{tabular}{ p{6em} p{6em} p{27em} }
@@ -604,20 +609,20 @@ JSF Templates.
     \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
 \end{table}
 
-\subsubsection{Medienerstellung}\label{page_medium_creation}
+\subsubsection{Medienerstellung}\label{page_medium_creator}
 
-\begincontrols[staff/medium-creation]
-    \2{\tag{ui}{repeat}} & \2{Medienattribute} & \M{value} & \B{mediumCreation.medium.attributes} & \2{\BIB}\\
-    & & \M{var} & \hyperref[subcontrol_medium_creation_attribute]{\M{attribute}} &\\
+\begincontrols[staff/medium-creator]
+    \2{\tag{ui}{repeat}} & \2{Medienattribute} & \M{value} & \B{mediumCreator.medium.attributes} & \2{\BIB}\\
+    & & \M{var} & \hyperref[subcontrol_medium_creator_attribute]{\M{attribute}} &\\
     \disambiguationrule
-    \INP & Medienkategorie & \M{value} & \B{mediumCreation.medium.category} & \BIB\\
-    \INP & Rückgabefrist & \M{value} & \B{mediumCreation.medium.returnPeriod} & \BIB\\
-    \INP & Standort des ersten Exemplars & \M{value} & \B{mediumCreation.copy.location} & \BIB\\
-    \INP & Signatur des ersten Exemplars & \M{value} & \B{mediumCreation.copy.signature} & \BIB\\
-    \BTN & Medium und dessen erstes Exemplar erstellen & \M{action} & \B{mediumCreation.create()} & \BIB\\
+    \INP & Medienkategorie & \M{value} & \B{mediumCreator.medium.category} & \BIB\\
+    \INP & Rückgabefrist & \M{value} & \B{mediumCreator.medium.returnPeriod} & \BIB\\
+    \INP & Standort des ersten Exemplars & \M{value} & \B{mediumCreator.copy.location} & \BIB\\
+    \INP & Signatur des ersten Exemplars & \M{value} & \B{mediumCreator.copy.signature} & \BIB\\
+    \BTN & Medium und dessen erstes Exemplar erstellen & \M{action} & \B{mediumCreator.createMediumAndFirstCopy()} & \BIB\\
 \endcontrols
 
-\beginsubcontrols[Attribut][subcontrol_medium_creation_attribute]
+\beginsubcontrols[Attribut][subcontrol_medium_creator_attribute]
 % QUESTION what other attributes (lavel attribut.type??)
 \INP & Attributwert & \M{value} & \B{attribute.value} & \BIB\\
 \endsubcontrols
@@ -659,7 +664,7 @@ JSF Templates.
 \subsubsection{Mediumsansicht}\label{page_medium}
 
 \begincontrols[public/medium]
-    \3{\tag{f}{viewParam}} & \3{Kennzeichen des Mediums} & \M{name} & \M{id} & \3{\PUB}\\
+    \3{\PRM} & \3{Kennzeichen des Mediums} & \M{name} & \M{id} & \3{\PUB}\\
     & & \M{value} & \B{medium.medium.id} & \\
     & & \M{required} & \M{true} & \\
     \disambiguationrule
@@ -690,7 +695,7 @@ JSF Templates.
 % TASK visibility
 % TASK multivalued
 \INP & Attributwert & \M{value} & \B{attribute.value} & \BIB\\
-% TODO existiert pro Mediena
+% TODO existiert pro Mediena (bei mehrwertigen)
 %    \BTN & \M{action} & \B{medium.addAttributeInputField()} zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
 \endsubcontrols
 
@@ -753,7 +758,7 @@ JSF Templates.
 \subsubsection{Passwortzurücksetzung}\label{page_password_reset}
 
 \begincontrols[public/password-reset]
-    \3{\tag{f}{viewParam}} & \3{Kennzeichen der Passwortzurücksetzung} & \M{name} & \M{token} & \3{\PUB}\\
+    \3{\PRM} & \3{Kennzeichen der Passwortzurücksetzung} & \M{name} & \M{token} & \3{\PUB}\\
     & & \M{value} & \B{passwordReset.token} & \\
     & & \M{required} & \M{true} & \\
     \disambiguationrule
@@ -766,7 +771,7 @@ JSF Templates.
 
 \begincontrols[account/profile]
     % welche sichtbarkeit
-    \3{\tag{f}{viewParam}} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id} & \3{\USR}\\
+    \3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id} & \3{\USR}\\
     & & \M{value} & \B{profile.user.id} &\\
     & & \M{required} & \M{true} & \\
     \disambiguationrule
@@ -783,8 +788,8 @@ JSF Templates.
     \CHK & Accountstatus (ent-/gesperrt) & \M{value} & \B{profile.user.accountStatus} & \ADM\\
     \INP & Rückgabefrist & \M{value} & \B{profile.user.returnPeriod} & \ADM\\ % TASK UPDATE dto from lendingPeriod -> returnPeriod
     \BTN & Änderungen am Profil speichern & \M{action} & \B{profile.save()} & \USR\\
-    \LNK & zur den abzuholenden Exemplaren & \M{value} & \hyperref[page_my_copies_ready_for_pickup]{ \M{account/my-copies-ready-for-pickup.xhtml}} & \USR\\
-    \LNK & zu den ausgeliehenen Exemplaren & \M{value} & \hyperref[page_my_borrowed_copies]{ \M{account/my-borrowed-copies.xhtml}} & \USR\\
+    \LNK & zur den abzuholenden Exemplaren & \M{value} & \hyperref[page_copies_ready_for_pickup]{ \M{account/my-copies-ready-for-pickup.xhtml?id=\RB{profile.user.id}}} & \USR\\
+    \LNK & zu den ausgeliehenen Exemplaren & \M{value} & \hyperref[page_borrowed_copies]{ \M{account/my-borrowed-copies.xhtml?id=\RB{profile.user.id}}} & \USR\\
     \BTN & Account schließen & \M{action} & \B{profile.delete()} & \USR\\ % slash admin...
 \endcontrols
 
