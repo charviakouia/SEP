@@ -93,5 +93,4 @@ public class PaginationDto implements Serializable {
 	public int getPage() {
 		return page;
 	}
-
 }

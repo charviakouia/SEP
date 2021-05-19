@@ -13,7 +13,6 @@ import jakarta.inject.Named;
 @Named
 @RequestScoped
 public class PasswordReset {
-	private final Logger logger = null;
 
 	private String password;
 
@@ -26,5 +25,29 @@ public class PasswordReset {
 	 */
 	public void resetPassword() {
 
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getConfirmedPassword() {
+		return confirmedPassword;
+	}
+
+	public void setConfirmedPassword(String confirmedPassword) {
+		this.confirmedPassword = confirmedPassword;
 	}
 }

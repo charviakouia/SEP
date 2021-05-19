@@ -1,8 +1,9 @@
 package de.dedede.model.data.dtos;
 
+import de.dedede.model.logic.util.AttributeModifiability;
 import de.dedede.model.logic.util.AttributeType;
 import de.dedede.model.logic.util.MediumPreviewPosition;
-import de.dedede.model.logic.util.Multiplicity;
+import de.dedede.model.logic.util.AttributeMultiplicity;
 
 import java.awt.*;
 import java.net.URL;
@@ -28,9 +29,11 @@ public class AttributeDto {
 
     private LinkedList<URL> urlValue;
 
-    private AttributeType type;
+	private AttributeModifiability attributeModifiability;
 
-    private Multiplicity multiplicity;
+	private AttributeType type;
+
+	private AttributeMultiplicity attributeMultiplicity;
 
     private MediumPreviewPosition position;
 
@@ -96,28 +99,48 @@ public class AttributeDto {
      * Fetches the multiplicity status of the attribute.
      *
      * @return A multiplicity status of the attribute.
-     * @see Multiplicity
+     * @see AttributeMultiplicity
      */
-    public Multiplicity getMultiplicity() {
-        return multiplicity;
+    public AttributeMultiplicity getAttributeMultiplicity() {
+        return attributeMultiplicity;
     }
 
     /**
      * Sets the multiplicity status of the attribute.
      *
-     * @param multiplicity A multiplicity status of the attribute.
-     * @see Multiplicity
+     * @param attributeMultiplicity A multiplicity status of the attribute.
+     * @see AttributeMultiplicity
      */
-    public void setMultiplicity(Multiplicity multiplicity) {
-        this.multiplicity = multiplicity;
-    }
+	public void setAttributeMultiplicity(AttributeMultiplicity attributeMultiplicity) {
+		this.attributeMultiplicity = attributeMultiplicity;
+	}
+
+    /**
+     * Fetches the modifiability status of the attribute.
+     *
+     * @return A modifiability status of the attribute.
+     * @see AttributeModifiability
+     */
+	public AttributeModifiability getAttributeModifiability() {
+		return attributeModifiability;
+	}
+
+    /**
+     * Sets the modifiability status of the attribute.
+     *
+     * @param attributeModifiability A modifiability status of the attribute.
+     * @see AttributeModifiability
+     */
+	public void setAttributeModifiability(AttributeModifiability attributeModifiability) {
+		this.attributeModifiability = attributeModifiability;
+	}
 
     /**
      * Fetches a list of text values for the attribute.
      * The list contains more than one value if the attribute is multi-valued.
      *
      * @return A list of text values for the attribute.
-     * @see Multiplicity
+     * @see AttributeMultiplicity
      */
     public LinkedList<String> getTextValue() {
         return textValue;
@@ -128,7 +151,7 @@ public class AttributeDto {
      * The list contains more than one value if the attribute is multi-valued.
      *
      * @param textValue A list of text values for the attribute.
-     * @see Multiplicity
+     * @see AttributeMultiplicity
      */
     public void setTextValue(LinkedList<String> textValue) {
         this.textValue = textValue;
@@ -139,7 +162,7 @@ public class AttributeDto {
      * The list contains more than one value if the attribute is multi-valued.
      *
      * @return A list of image values for the attribute.
-     * @see Multiplicity
+     * @see AttributeMultiplicity
      */
     public LinkedList<Image> getImageValue() {
         return imageValue;
@@ -150,7 +173,7 @@ public class AttributeDto {
      * The list contains more than one value if the attribute is multi-valued.
      *
      * @param imageValue A list of image values for the attribute.
-     * @see Multiplicity
+     * @see AttributeMultiplicity
      */
     public void setImageValue(LinkedList<Image> imageValue) {
         this.imageValue = imageValue;
@@ -161,7 +184,7 @@ public class AttributeDto {
      * The list contains more than one value if the attribute is multi-valued.
      *
      * @return A list of URL values for the attribute.
-     * @see Multiplicity
+     * @see AttributeMultiplicity
      */
     public LinkedList<URL> getUrlValue() {
         return urlValue;
@@ -172,7 +195,7 @@ public class AttributeDto {
      * The list contains more than one value if the attribute is multi-valued.
      *
      * @param urlValue A list of URL values for the attribute.
-     * @see Multiplicity
+     * @see AttributeMultiplicity
      */
     public void setUrl(LinkedList<URL> urlValue) {
         this.urlValue = urlValue;

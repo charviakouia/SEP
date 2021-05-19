@@ -664,7 +664,7 @@ JSF Templates.
 
 %        Standort & \OUT & & \PUB\\
         Standort & \INP & \M{value} & \MB{copy.location} & \BIB\\
-        Verfügbarkeit & \OUT & \M{value} & \MB{copy.availabilityStatus} & \PUB\\
+        Verfügbarkeit & \OUT & \M{value} & \MB{copy.copyStatus} & \PUB\\
 %        Signatur & \OUT & & \PUB\\
         Signatur & \INP & \M{value} & \MB{copy.signature} & \BIB\\
         Aktionen & \BTN & \M{action} & \MB{medium.saveCopy(status.index)} & \BIB\\
@@ -694,7 +694,7 @@ JSF Templates.
 \beginsubcontrols[Bedienelemente pro Attribut][subcontrol_schema_editor_attribute]
 \INP & \M{value} & \MB{attribute.name} & \ADM\\
 \DRP & \M{value} & \MB{attribute.type} & \ADM\\
-\DRP & \M{value} & \MB{attribute.multiplicity} & \ADM\\
+\DRP & \M{value} & \MB{attribute.attributeMultiplicity} & \ADM\\
 \DRP & \M{value} & \MB{attribute.position} & \ADM\\
 \BTN & \M{action} & \MB{mediumSchemaEditor.deleteAttribute(attribute.id)} & \ADM\\
 \endsubcontrols
@@ -704,7 +704,7 @@ JSF Templates.
 \begincontrols[admin/user-search]
     \INP & \M{value} & \MB{userSearch.searchTerm} & \ADM\\
     \BTN & \M{action} & \MB{userSearch.searchUser()} & \ADM\\
-    \CHK & \M{value} & \MB{userSearch.accountStatus} & \ADM\\
+    \CHK & \M{value} & \MB{userSearch.userLendStatus} & \ADM\\
     %TODO beacon
     \LST & & & \ADM\\
     \LST & aller Suchergebnisse (als Medienvorschauen); je ein \LNK zur Medienansicht & \ADM\\
@@ -735,8 +735,8 @@ JSF Templates.
     \INP & \M{value} & \MB{profile.user.city} & \USR\\
     \INP & \M{value} & \MB{profile.user.street} & \USR\\
     \INP & \M{value} & \MB{profile.user.streetNumber} & \USR\\
-    \DRP & \M{value} & \MB{profile.user.role} & \ADM\\
-    \CHK & \M{value} & \MB{profile.user.accountStatus} & \ADM\\
+    \DRP & \M{value} & \MB{profile.user.userRole} & \ADM\\
+    \CHK & \M{value} & \MB{profile.user.userLendStatus} & \ADM\\
     \INP & \M{value} & \MB{profile.user.lendingPeriod} & \ADM\\
     \BTN & \M{action} & \MB{profile.save()} & \USR\\
     \LNK & \M{value} & \hyperref[page_my_copies_ready_for_pickup]{ \M{account/my-copies-ready-for-pickup.xhtml}} & \USR\\
@@ -756,7 +756,7 @@ JSF Templates.
     \INP & \M{value} & \MB{registration.user.city} & \ANO/\ADM\\
     \INP & \M{value} & \MB{registration.user.street} & \ANO/\ADM\\
     \INP & \M{value} & \MB{registration.user.streetNumber} & \ANO/\ADM\\
-    \DRP & \M{value} & \MB{registration.user.role} & \ADM\\
+    \DRP & \M{value} & \MB{registration.user.userRole} & \ADM\\
     \BTN & \M{action} & \MB{registration.register()} & \ANO/\ADM\\
 \endcontrols
 
@@ -767,7 +767,7 @@ JSF Templates.
     \INP & \M{value} & \MB{administration.application.warningPeriod} & \ADM\\
     \INP & \M{value} & \MB{administration.application.pickupPeriod} & \ADM\\
     \INP & \M{value} & \MB{administration.application.name} & \ADM\\
-    \CHK & \M{value} & \MB{administration.application.registerStatus} & \ADM\\
+    \CHK & \M{value} & \MB{administration.application.systemRegistrationStatus} & \ADM\\
     \INP & \M{value} & \MB{administration.application.emailAddressSuffixRegEx} & \ADM\\
     \DRP & \M{value} & \MB{administration.application.theme} & \ADM\\
     \tag{h}{inputFile} & \M{value} & \MB{administration.application.logo} & \ADM\\
@@ -864,7 +864,7 @@ Zunächst werden die erstellten Tabellen in klassischer Notation für Relationen
 \textbf{Application}:\{ \textit{one, bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, lookAndFeel, anonRights,\\ userLendStatus} \}\\
 \textbf{Category}:\{ \textit{categoryID, title, description, parent} \}\\
 \textbf{CustomAttribute}:\{ \textit{attributeID, fromMedium, attributeName, attributeValue} \}\\
-\textbf{AttributeType}:\{ \textit{typeID, fromAttribute, previewPosition, multiplicity, modifiability, dataType} \}\\
+\textbf{AttributeType}:\{ \textit{typeID, fromAttribute, previewPosition, attributeMultiplicity, modifiability, dataType} \}\\
 \textbf{Copy}:\{ \textit{copyID, fromMedium, signature, bibPosition, status, deadline, actor} \}\\
 \\
 Aus den funktionalen Abhängigkeiten zwischen den Attributen ergeben sich verschiedene Superschlüssel für die Relationen. Die Superschlüsselmöglichkeiten sind eingeklammert.\\
@@ -875,7 +875,7 @@ Es gibt sowohl Städte mit mehreren Postleitzahlen, als auch Postleitzahlen, die
 \textbf{Application}:\{ (\texttt{one}),\textit{ bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, lookAndFeel, anonRights,\\ userLendStatus} \}\\
 \textbf{Category}:\{ (\texttt{categoryID}), \textit{title, description, parent} \}\\
 \textbf{CustomAttribute}:\{ (\texttt{fromMedium, attributeID}),  \textit{attributeValue, attributeName} \}\\
-\textbf{AttributeType}:\{ (\texttt{fromAttribute, typeID}), \textit{previewPosition, multiplicity, modifiability, dataType} \}\\
+\textbf{AttributeType}:\{ (\texttt{fromAttribute, typeID}), \textit{previewPosition, attributeMultiplicity, modifiability, dataType} \}\\
 \textbf{Copy}:\{ (\texttt{fromMedium, copyID}), (\texttt{fromMedium, signature}), (\texttt{fromMedium, signature, copyID}), \textit{bibPosition, status, deadline, actor} \}
 Die Attribute \textit{status, deadline, actor} beeinflussen sich gegenseitig, \textit{deadline} hängt jedoch noch von anderen Limits außerhalb dieser Relation ab und wird somit nicht eindeutig durch Änderungen von \textit{actor} oder \textit{status} festgelegt. Da nur der Status 'available' den Wert \texttt{NULL} im Attribut \textit{actor} impliziert und alle anderen Werte keine eindeutige Zuordnung festlegen, gibt es hier keine schlüsselunabhängigen Abhängigkeiten.\\
 \\
@@ -892,7 +892,7 @@ Die Kommunikation zwischen den Klassen und die Interaktionen des Systems werden 
 \subsubsection{Initialisierung der Mediumsseite}
 Beim Laden der Mediumsseite wird zuerst die Methode 'init' als @PostConstruct aufgerufen. Die 'init'-Methode erzeugt ein Medium-DTO, das Medium-DTO hat eine Kollektion der CopyDTOs und eine Kollektion der AttributeDTOs, folglich werden sie vom Medium-DTO erstellt. Der Nutzer bekommt das MediumDTO und setzt eine Medium-ID, die aus dem 'viewParam' zur Verfügung gestellt wird. Danach wird die 'viewAction()' durchgeführt, welche die Mediumsseite durch die statische Methode aus dem Medium-DAO liefern muss. Das Medium-DAO bekommt auf der Persistence-Schicht eine Verbindung von der Singleton-ConnectionPool-Klasse durch die Methoden 'getInstance()' und 'getConnection()'. Im Körper der Methode 'loadMedium' wird eine SELECT-Anfrage durchgeführt, danach gibt das Medium-DAO die Verbindung durch die Methode 'releaseConnection' frei. Das Medium-DAO befüllt mit den von der Datenbank erhaltenen Attributen das Medium-DTO (inkl. CopyDTOs und AttributeDTOs) und gibt es dem Medium-BB zurück. Die Mediumsseite ist nun durch die Methode 'getAttributes' des Medium-DTOs vollständig geladen.
 \subsubsection{Buchen eines Exemplars}
-Durch die Methode 'getCopies' des Medium-DTOs ist das gewünschte Exemplar für den Nutzer sichtbar. Der Nutzer klickt auf den Buchen-Button des Exemplars. Beim Klicken ruft der Nutzer die Methode 'pickUpAnyCopy' des Medium-BBs auf. Im Körper dieser Methode wird die Methode 'checkAccountStatus()' aus dem UserSession-BB aufgerufen, um zu prüfen, ob der Nutzer Zugriff auf die Funktion Buchen hat. Das UserSession-Bean meldet dem Medium-BB ein positives Ergebnis (OPENED-Status) zurück. Das Medium-BB ruft die statische Methode 'MediumDAO.pickUpAnyCopy(mediumDTO)' auf. Das Medium-DAO bekommt durch die Methoden 'getInstance()' und 'getConnection()' auf der Persistence-Schicht eine Verbindung von der Singleton-ConnectionPool-Klasse. Falls ein availabilityStatus des Exemplars immer noch 'AVAILABLE' ist, wird wird eine UPDATE-Anfrage im Körper der Methode 'loadMedium'  durchgeführt. Im Anschluss gibt das Medium-DAO die Verbindung durch die Methode 'releaseConnection' frei. Als Ergebnis der Methode 'pickUpAnyCopy' bekommt das Medium-BB 'true'. Das Medium-BB vergibt den neuen Status 'MARKEDTOCOLLECT' an das Exemplar. Der Nutzer bekommt eine Nachricht durch die statische Methode 'RessourceBandleHandler.getValue()' und die Buchung ist erfolgreich abgeschlossen. Vom Ressource-Bandle-Handler wird der Nutzer entsprechend benachrichtigt.
+Durch die Methode 'getCopies' des Medium-DTOs ist das gewünschte Exemplar für den Nutzer sichtbar. Der Nutzer klickt auf den Buchen-Button des Exemplars. Beim Klicken ruft der Nutzer die Methode 'pickUpAnyCopy' des Medium-BBs auf. Im Körper dieser Methode wird die Methode 'checkAccountStatus()' aus dem UserSession-BB aufgerufen, um zu prüfen, ob der Nutzer Zugriff auf die Funktion Buchen hat. Das UserSession-Bean meldet dem Medium-BB ein positives Ergebnis (OPENED-Status) zurück. Das Medium-BB ruft die statische Methode 'MediumDAO.pickUpAnyCopy(mediumDTO)' auf. Das Medium-DAO bekommt durch die Methoden 'getInstance()' und 'getConnection()' auf der Persistence-Schicht eine Verbindung von der Singleton-ConnectionPool-Klasse. Falls ein copyStatus des Exemplars immer noch 'AVAILABLE' ist, wird wird eine UPDATE-Anfrage im Körper der Methode 'loadMedium'  durchgeführt. Im Anschluss gibt das Medium-DAO die Verbindung durch die Methode 'releaseConnection' frei. Als Ergebnis der Methode 'pickUpAnyCopy' bekommt das Medium-BB 'true'. Das Medium-BB vergibt den neuen Status 'MARKEDTOCOLLECT' an das Exemplar. Der Nutzer bekommt eine Nachricht durch die statische Methode 'RessourceBandleHandler.getValue()' und die Buchung ist erfolgreich abgeschlossen. Vom Ressource-Bandle-Handler wird der Nutzer entsprechend benachrichtigt.
 \newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
 \newpage
 \begin{figure}[h]

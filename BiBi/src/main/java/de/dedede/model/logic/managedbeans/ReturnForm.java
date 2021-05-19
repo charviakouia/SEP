@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -15,6 +16,9 @@ import jakarta.inject.Named;
 @ViewScoped
 public class ReturnForm implements Serializable {
 
+	@Serial
+	private static  final long serialVersionUID = 1L;
+
 	private UserDto user;
 
 	private ArrayList<CopyDto> copies;
@@ -23,15 +27,30 @@ public class ReturnForm implements Serializable {
 	 * As library staff let the system know that the given copies were returned by
 	 * the user.
 	 */
-	public void returnCopies() {
+	public void returnMedium() {
 
 	}
 
 	/**
 	 * Add a signature input field.
 	 */
-	public void addSignaturInputField() {
+	public void addSignatureInputField() {
 
 	}
 
+	public UserDto getUser() {
+		return user;
+	}
+
+	public void setUser(UserDto user) {
+		this.user = user;
+	}
+
+	public ArrayList<CopyDto> getCopies() {
+		return copies;
+	}
+
+	public void setCopies(ArrayList<CopyDto> copies) {
+		this.copies = copies;
+	}
 }

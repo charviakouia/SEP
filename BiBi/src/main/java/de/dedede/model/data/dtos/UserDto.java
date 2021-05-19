@@ -1,8 +1,7 @@
 package de.dedede.model.data.dtos;
 
-import de.dedede.model.logic.util.AccountStatus;
-import de.dedede.model.logic.util.LendingStatus;
-import de.dedede.model.logic.util.Role;
+import de.dedede.model.logic.util.UserLendStatus;
+import de.dedede.model.logic.util.UserRole;
 import de.dedede.model.logic.util.Token;
 
 import java.time.Duration;
@@ -32,7 +31,7 @@ public class UserDto {
 
     private boolean isEmailVerified;
 
-    private Role role;
+    private UserRole userRole;
 
     private int zipCode;
 
@@ -44,9 +43,7 @@ public class UserDto {
 
     private Duration lendingPeriod;
 
-    private AccountStatus accountStatus;
-
-    private LendingStatus lendingStatus;
+    private UserLendStatus userLendStatus;
 
     private Token token;
 
@@ -165,20 +162,20 @@ public class UserDto {
      * Fetches a role of the user.
      *
      * @return A role of the user.
-     * @see Role
+     * @see UserRole
      */
-    public Role getRole() {
-        return role;
+    public UserRole getRole() {
+        return userRole;
     }
 
     /**
      * Sets a role of the user.
      *
-     * @param role A role of the user.
-     * @see Role
+     * @param userRole A role of the user.
+     * @see UserRole
      */
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 
     /**
@@ -285,22 +282,24 @@ public class UserDto {
 
     /**
      * Fetches a account status of the user.
+     * This affects whether the user can lend out instances of the medium.
      *
      * @return A account status for the user.
-     * @see AccountStatus
+     * @see UserLendStatus
      */
-    public AccountStatus getAccountStatus() {
-        return accountStatus;
+    public UserLendStatus getUserLendStatus() {
+        return userLendStatus;
     }
 
     /**
      * Sets a account status of the user.
+     * This affects whether the user can lend out instances of the medium.
      *
-     * @param accountStatus A account status for the user.
-     * @see AccountStatus
+     * @param userLendStatus A account status for the user.
+     * @see UserLendStatus
      */
-    public void setAccountStatus(AccountStatus accountStatus) {
-        this.accountStatus = accountStatus;
+    public void setUserLendStatus(UserLendStatus userLendStatus) {
+        this.userLendStatus = userLendStatus;
     }
 
     /**
@@ -323,28 +322,6 @@ public class UserDto {
      */
     public void setToken(Token token) {
         this.token = token;
-    }
-
-    /**
-     * Fetches a lending status of the user.
-     * This affects whether the user can lend out instances of the medium.
-     *
-     * @return A account status for the user.
-     * @see LendingStatus
-     */
-    public LendingStatus getLendingStatus() {
-        return lendingStatus;
-    }
-
-    /**
-     * Sets a lending status of the user.
-     * This affects whether the user can lend out instances of the medium.
-     *
-     * @param lendingStatus  A account status for the user.
-     * @see LendingStatus
-     */
-    public void setLendingStatus(LendingStatus lendingStatus) {
-        this.lendingStatus = lendingStatus;
     }
 
     /**

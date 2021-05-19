@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -20,9 +21,46 @@ import jakarta.inject.Named;
 @ViewScoped
 public class MediumSearch extends PaginatedList implements Serializable {
 
+	@Serial
+	private static  final long serialVersionUID = 1L;
+
 	private String generalSearchTerm;
 
+
 	private ArrayList<NuancedSearchQuery> nuancedSearchQueries;
+
+	public static class NuancedSearchQuery {
+
+		private SearchOperator operator;
+
+		private AttributeOrCategory criterion;
+
+		private String searchTerm;
+
+		public SearchOperator getOperator() {
+			return operator;
+		}
+
+		public void setOperator(SearchOperator operator) {
+			this.operator = operator;
+		}
+
+		public AttributeOrCategory getCriterion() {
+			return criterion;
+		}
+
+		public void setCriterion(AttributeOrCategory criterion) {
+			this.criterion = criterion;
+		}
+
+		public String getSearchTerm() {
+			return searchTerm;
+		}
+
+		public void setSearchTerm(String searchTerm) {
+			this.searchTerm = searchTerm;
+		}
+	}
 
 	/**
 	 * Search for the corresp. mediums.
@@ -32,20 +70,20 @@ public class MediumSearch extends PaginatedList implements Serializable {
 	}
 
 	/**
-	 * Add a nuanced seatch query which is the grouping of an operator, a criterion
+	 * Add a nuanced search query which is the grouping of an operator, a criterion
 	 * and a search term.
 	 */
 	public void addNuancedSearchQuery() {
 
 	}
 
+	public String getGeneralSearchTerm() {
+		return generalSearchTerm;
+	}
+
+	public void setGeneralSearchTerm(String generalSearchTerm) {
+		this.generalSearchTerm = generalSearchTerm;
+	}
 }
 
-class NuancedSearchQuery {
 
-	private SearchOperator operator;
-
-	private AttributeOrCategory criterion;
-
-	private String searchTerm;
-}

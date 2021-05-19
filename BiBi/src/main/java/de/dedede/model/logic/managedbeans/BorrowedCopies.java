@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,8 +16,12 @@ import jakarta.inject.Named;
  */
 @Named
 @SessionScoped
-public class MyBorrwedCopies extends PaginatedList implements Serializable {
+public class BorrowedCopies extends PaginatedList implements Serializable {
+
+	@Serial
+	private static  final long serialVersionUID = 1L;
 
 	private List<CopyDto> listDto;
+
 
 }

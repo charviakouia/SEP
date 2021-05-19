@@ -1,6 +1,6 @@
 package de.dedede.model.logic.converters;
 
-import de.dedede.model.logic.util.AvailabilityStatus;
+import de.dedede.model.logic.util.CopyStatus;
 import jakarta.faces.convert.EnumConverter;
 
 /**
@@ -9,7 +9,7 @@ import jakarta.faces.convert.EnumConverter;
 public class AvailabilityStatusConverter extends EnumConverter {
 
 	public AvailabilityStatusConverter() {
-		super(AvailabilityStatus.class);
+		super(CopyStatus.class);
 	}
 
 }

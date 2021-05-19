@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -14,12 +15,15 @@ import jakarta.inject.Named;
 @SessionScoped
 public class MediumSchemaEditor implements Serializable {
 
+	@Serial
+	private static  final long serialVersionUID = 1L;
+
 	private Set<AttributeDto> attributes;
 
 	/**
 	 * Delete a medium attribute.
 	 * 
-	 * @param id The identifier of the attributte to be deleted.
+	 * @param id The identifier of the attribute to be deleted.
 	 * @throws IllegalArgumentException If the identifier is invalid.
 	 */
 	public void deleteAttribute(int id) throws IllegalArgumentException {

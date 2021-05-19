@@ -6,7 +6,7 @@ import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
 
 /**
- * Checks user requests based on loginstatus, {@link Role} and the requested
+ * Checks user requests based on loginstatus, {@link UserRole} and the requested
  * page of the application. It denies access to pages where the {@link UserDto}
  * has no rights for. Uses the session map to check the loginstatus of the user.
  * Checks the user role by checking the actual class of the user

@@ -3,7 +3,7 @@ package de.dedede.model.data.dtos;
 import java.time.Duration;
 
 import de.dedede.model.logic.util.Theme;
-import de.dedede.model.logic.util.RegisterStatus;
+import de.dedede.model.logic.util.SystemRegistrationStatus;
 
 /**
  * This DTO (data transfer object) is responsible for aggregating and
@@ -37,7 +37,7 @@ public class ApplicationDto {
 
     private Duration pickupPeriod;
 
-    private RegisterStatus registerStatus;
+	private SystemRegistrationStatus systemRegistrationStatus;
 
     /**
      * Fetches the name of the application.
@@ -258,24 +258,26 @@ public class ApplicationDto {
         this.pickupPeriod = pickupPeriod;
     }
 
+
     /**
      * Fetches the register status of the application indicating whether registration is available for new users.
      *
      * @return The register status of the applicationю
-     * @see RegisterStatus
+     * @see SystemRegistrationStatus
      */
-    public RegisterStatus getRegisterStatus() {
-        return registerStatus;
+    public SystemRegistrationStatus getRegisterStatus() {
+        return systemRegistrationStatus;
     }
+
 
     /**
      * Sets the register status of the application indicating whether registration is available for new users.
      * No action is required with already registered users when the status is changed.
      *
-     * @param registerStatus The register status of the application.
-     * @see RegisterStatus
+     * @param  systemRegistrationStatus register status of the application.
+     * @see SystemRegistrationStatus
      */
-    public void setRegisterStatus(RegisterStatus registerStatus) {
-        this.registerStatus = registerStatus;
-    }
+	public void setRegisterStatus(SystemRegistrationStatus systemRegistrationStatus) {
+		this.systemRegistrationStatus = systemRegistrationStatus;
+	}
 }

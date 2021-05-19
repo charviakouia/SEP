@@ -20,4 +20,12 @@ public class SiteNotice {
 
 	}
 
+
+	public ApplicationDto getApplication() {
+		return application;
+	}
+
+	public void setApplication(ApplicationDto application) {
+		this.application = application;
+	}
 }

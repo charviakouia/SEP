@@ -2,7 +2,7 @@ package de.dedede.model.data.dtos;
 
 import java.util.Date;
 
-import de.dedede.model.logic.util.AvailabilityStatus;
+import de.dedede.model.logic.util.CopyStatus;
 
 /**
  * This DTO (data transfer object) is responsible for aggregating and
@@ -22,10 +22,9 @@ public class CopyDto {
 
 	private Date deadline;
 
-	//Wer hat das Copy entliehen / bemerkt hat
-	private int actor;
+	private CopyStatus copyStatus;
 
-	private AvailabilityStatus availabilityStatus;
+	private int actor;
 
 	/**
 	 * Fetches a physical location of the copy in a library.
@@ -87,20 +86,20 @@ public class CopyDto {
 	 * Fetches an availability status of the copy in a library.
 	 *
 	 * @return A availability status of the copy.
-	 * @see AvailabilityStatus
+	 * @see CopyStatus
 	 */
-	public AvailabilityStatus getAvailabilityStatus() {
-		return availabilityStatus;
+	public CopyStatus getCopyStatus() {
+		return copyStatus;
 	}
 
 	/**
 	 * Sets an availability status of the copy in a library.
 	 *
-	 * @param availabilityStatus A availability status of the copy.
-	 * @see AvailabilityStatus
+	 * @param copyStatus A availability status of the copy.
+	 * @see CopyStatus
 	 */
-	public void setAvailabilityStatus(AvailabilityStatus availabilityStatus) {
-		this.availabilityStatus = availabilityStatus;
+	public void setCopyStatus(CopyStatus copyStatus) {
+		this.copyStatus = copyStatus;
 	}
 
 	/**

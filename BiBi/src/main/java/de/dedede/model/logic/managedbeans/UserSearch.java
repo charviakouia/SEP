@@ -1,8 +1,9 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-import de.dedede.model.logic.util.AccountStatus;
+import de.dedede.model.logic.util.UserLendStatus;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
@@ -13,9 +14,11 @@ import jakarta.inject.Named;
 @RequestScoped
 public class UserSearch extends PaginatedList implements Serializable {
 
+	@Serial
+	private static  final long serialVersionUID = 1L;
 	private String searchTerm;
 
-	private AccountStatus accountStatus;
+	private UserLendStatus userLendStatus;
 
 	/**
 	 * Search for a user inside of the system.
@@ -24,4 +27,19 @@ public class UserSearch extends PaginatedList implements Serializable {
 
 	}
 
+	public String getSearchTerm() {
+		return searchTerm;
+	}
+
+	public void setSearchTerm(String searchTerm) {
+		this.searchTerm = searchTerm;
+	}
+
+	public UserLendStatus getUserLendStatus() {
+		return userLendStatus;
+	}
+
+	public void setUserLendStatus(UserLendStatus userLendStatus) {
+		this.userLendStatus = userLendStatus;
+	}
 }
