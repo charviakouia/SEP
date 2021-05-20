@@ -21,7 +21,7 @@ public class PasswordReset {
 	private String confirmedPassword;
 
 	/**
-	 * Reset the password.
+	 * Reset the password when it is necessary to reset it.
 	 */
 	public void resetPassword() {
 
