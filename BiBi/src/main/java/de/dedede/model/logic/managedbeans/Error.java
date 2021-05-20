@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
+import de.dedede.model.data.dtos.ErrorDto;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
@@ -22,8 +23,13 @@ public class Error implements Serializable {
     @Serial
     private static  final long serialVersionUID = 1L;
 
-	// mit dem ganzen Team
+	private ErrorDto errorDto;
 
+    public ErrorDto getErrorDto() {
+        return errorDto;
+    }
 
-
+    public void setErrorDto(ErrorDto errorDto) {
+        this.errorDto = errorDto;
+    }
 }
