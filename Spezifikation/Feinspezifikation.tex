@@ -39,7 +39,7 @@
 \makeatother
 
 \title{Bibliotheksanwendung - Feinspezifikation}
-\date{\today\\v1.0}
+\date{\today\\v1.1}
 \author{
 	Ivan Charviakou\\
 	León Liehr\\
@@ -409,6 +409,7 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \newcommand{\RB}[1]{\#\{#1\}} % non-monospaced ("raw") JSF binding
 \newcommand{\2}[1]{\multirow{2}{*}{#1}}
 \newcommand{\3}[1]{\multirow{3}{*}{#1}}
+\newcommand{\4}[1]{\multirow{4}{*}{#1}}
 \definecolor{lightgray}{rgb}{0.9,0.9,0.9}
 \newcommand{\disambiguationrule}{\arrayrulecolor{lightgray}\cmidrule(r){3-4}\arrayrulecolor{black}}
 \newcommand{\INDENT}{\hspace{0.3cm}}
@@ -417,7 +418,7 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 {
     \begin{table}[H]
         \centering
-        \begin{tabular}{ l l l l }
+        \begin{tabular}{ l l l p{7cm} }
             \toprule
             & & \multicolumn{2}{l}{\textbf{Attribut}}\\
             \cmidrule(r){3-4}
@@ -462,21 +463,14 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \newcommand{\PRM}{\tag{f}{viewParam}}
 \newcommand{\FRM}{\tag{h}{form}}
 
-Was noch fehlt:
-
-% question evtl h:link instead of h:outputLink for links with query params??
-
-\begin{itemize}
-    \item (IDs pro Element)
-    \item Composite-Component-Definition von paginierten Listen
-    \item Composite-Component-Definition von paginierten Baumansichten
-    \item Composite-Component-Definition von reaktiven Eingabefeldern
-    \item Drop-Down-Listen werden noch nicht befüllt (mit Strings aus dem LocaleBundle)
-    \tag{ui}{repeat} \tag{f}{selectItem}
-    \item Converters und Validators sind nicht aufgezeichnnet
-    \item Verifiziert, dass alle input-felder form-felder haben
-    \item \M{MediumSearchDTO} etc
-\end{itemize}
+Alle Seiten nehmen die einzige Seitenvorlage (\ref{template}) als Vorlage.
+Jede Seite wird vom einer entsprechenden Backing Bean angetrieben, welche sich namentlich lediglich durch die Schreibweise unterscheidet. So wird bspw. die Seite \texttt{privacy-policy.xhtml} (in \textit{dash case}) mit der Bean \texttt{PrivacyPolicy} (in \textit{upper camel case}) assoziiert.
+Sofern nicht anders ausgewiesen folgt jedem Eingabefeld und \PAS ein Ausgabefeld für Meldungen, eine \tag{h}{message}.
+Zudem existiert für generell jedes Eingabefeld o.ä. ein Ausgabefeld für dessen Bezeichnung, ein \tag{h}{outputLabel}, dessen Bindung
+auf das i18n resource bundle zugreift, welches unten mit \M{bundle} referenziert wird.
+Konverter sind nicht explizit ausgezeichnet, da ausschließlich globale verwendet werden.
+Verwendete Validatoren sind implizit im Paket \M{de.dedede.model.logic.validators}.
+Die Elemente-ID ergibt sich aus dem Typen des Elements und dem Namen des assoziierten Getter/Setters bzw Methode.
 
 \begin{table}[H]
     \centering
@@ -494,12 +488,6 @@ Was noch fehlt:
     \caption{Verwendete XML-Namensräume}
 \end{table}
 
-Jedes \PRM-Element ist in ein \tag{f}{metadata}-Element eingebettet.
-META TASK implizit jedes Eingabefeld von Meldungsfeld begleitet.
-META NOTE Typ ist JSF-Tag.
-
-% TASK forms
-
 \newgeometry{left=0.5cm,right=0.5cm,top=0cm,bottom=2cm}
 \begin{landscape}
 
@@ -507,52 +495,113 @@ META NOTE Typ ist JSF-Tag.
 
 JSF Composite Components.
 
+\subsubsection{Paginierte Liste}
+
+\begincontrols[paginated-list]
+    \tag{cc}{interface} & & & \\
+    \INDENT\tag{cc}{attribute} & & \M{name} & \M{items} \\
+    \tag{cc}{implementation} & & & \\
+
+    \INDENT\FRM & & &\\
+    % disable if
+    \disambiguationrule
+    \2{\INDENT\INDENT\BTN} & \2{vorige Seite laden} & \M{action} & \B{paginatedList.goBack()} \\ % hmm, wie kann man ref'en?
+    & & \M{disabled} & \B{paginatedList.canGoBack} \\
+    \disambiguationrule
+    \2{\INDENT\INDENT\BTN} & \2{nächste Seite laden} & \M{action} & \B{paginatedList.goForward()} \\
+    & & \M{disabled} & \B{paginatedList.canGoForward} \\
+    \disambiguationrule
+    \INDENT\OUT & aktuelle Seitenzahl & \M{value} & \B{paginatedList.currentPageNumber} \\
+    \INDENT\OUT & Seitenanzahl & \M{value} & \B{paginatedList.totalNumberPages} \\
+    \disambiguationrule
+    \INDENT\3{\tag{h}{dataTable}} & & \M{value} & \B{cc.attrs.items}\\
+    & & \M{var} & \M{item}\\
+    & & \M{varStatus} & \M{status}\\
+    \disambiguationrule
+    \INDENT\INDENT\tag{cc}{insertChildren} & & &\\
+\endcontrols
+
+\subsubsection{Spalte einer paginierten Liste}
+
+\begincontrols[paginated-list-column]
+\tag{cc}{interface} & & & \\
+\2{\INDENT\tag{cc}{attribute}} & & \M{name} & \M{name} \\
+& & \M{type} & \M{java.lang.String}\\
+\tag{cc}{implementation} & & & \\
+\INDENT\tag{h}{column} & & &\\
+\INDENT\INDENT\tag{f}{facet} & & \M{name} & \M{header} \\
+& & & \M{cc.attrs.name}\\
+% missing form i know
+\INDENT\INDENT\BTN& auf-/absteigend sortieren & \M{action} & \B{paginatedListColumn.sort()}\\
+\INDENT\INDENT\tag{cc}{insertChildren} & & &\\
+\endcontrols
+
+\subsubsection{Baumansicht}
+
+\begincontrols[tree-view]
+%\tag{cc}{interface} & & & \\
+%\INDENT\tag{cc}{attribute} & & \M{name} & \\
+%\tag{cc}{implementation} & & & \\
+\endcontrols
+
+\subsubsection{Reaktives Eingabefeld}
+
+\begincontrols[reactive-input-field]
+%\tag{cc}{interface} & & & \\
+%\INDENT\tag{cc}{attribute} & & \M{name} & \\
+%\tag{cc}{implementation} & & & \\
+%\INDENT\INP & & &\\
+\endcontrols
+
 \subsection{Seitenvorlage}\label{page_template}
 
 JSF Templates.
 
 \begincontrols[template]
     \tag{ui}{insert} & Titel einer Seite & \M{name} & \M{title}\\
-    \tag{ui}{insert} & Inhalt einer Seite & \M{name} & \M{content}\\
+    \tag{h}{outputStylesheet} & Formatvorlage jeder Seite & \M{name} & \M{css/style.css} \\
     \tag{ui}{include} & Kopfzeile jeder Seite & \M{src} & \hyperref[page_header]{\M{header.xhtml}}\\
     \tag{h}{messages} & allgemeine Meldungen & \M{globalOnly} & \M{true}\\
+     \tag{ui}{insert} & Inhalt einer Seite & \M{name} & \M{content}\\
     \tag{ui}{include} & Fußzeile jeder Seite & \M{src} & \hyperref[page_footer]{\M{footer.xhtml}}\\
 \endcontrols
 
 \subsubsection{Kopfzeile}\label{page_header}
 
 \begincontrols[header]
-    \BTN & kontextsensitive Hilfe anzeigen & \M{action} & \B{header.displayHelpText()}\\
-    % BEACON TASK + rendered=header.shouldShowHelpText
-    \OUT & kontextsensitive Hilfe & \M{value} & BUNDLE-HELP\\
+    \FRM & & & \\
+    \INDENT\BTN & kontextsensitive Hilfe anzeigen & \M{action} & \B{header.displayHelpText()}\\
+    \FRM & & \M{rendered} & \B{header.shouldDisplayHelpText}\\
+    \INDENT\OUT & kontextsensitive Hilfe & \M{value} & \B{bundle[header.name]}\\ % TEMPORARY (wont work) "header.name"
+    \INDENT\BTN & Hilfe schließen & \M{action} & \B{header.hideHelpText()}\\
     \FRM & & &\\
     \INDENT\INP & Mediensuchterm & \M{value} & \B{header.mediumSearchTerm} \\ % BEACON store in sep DTO
     \LNK & zur erweiterten Suche & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}}\\
     \tag{h}{graphicImage} & Logo des Systems & \M{value} & \B{header.application.logo}\\
     \OUT & Name des Systems & \M{value} & \B{header.application.name}\\
-    \FRM & & \M{rendered} & \B{session.user != null}\\
+    \FRM & & \M{rendered} & \B{userSession.user != null}\\
     \INDENT\tag{h}{commandLink} & abmelden & \M{action} & \B{header.logOut()}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Anmeldemaske} & \M{value} & \hyperref[page_login]{\M{public/login.xhtml}}\\
-    & & \M{rendered} & \B{session.user == null}\\
+    & & \M{rendered} & \B{userSession.user == null}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Registrierungsseite} & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}}\\
-    & & \M{rendered} & \B{session.user == null}\\
+    & & \M{rendered} & \B{userSession.user == null}\\
     \disambiguationrule
-    \2{\LNK} & \2{zur Profilseite} & \M{value} & \hyperref[page_profile]{\M{account/profile.xhtml?id=\RB{session.user.id}}}\\
-    & & \M{rendered} & \B{session.user != null}\\
+    \2{\LNK} & \2{zur Profilseite} & \M{value} & \hyperref[page_profile]{\M{account/profile.xhtml?id=\RB{userSession.user.id}}}\\
+    & & \M{rendered} & \B{userSession.user != null}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Direktausleihe} & \M{value} & \hyperref[page_direct_lending]{\M{staff/direct-lending.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Medienrückgabe} & \M{value} & \hyperref[page_return_form]{\M{staff/return-form.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\LNK} & \2{zu den abzuholenden Exemplaren aller Nutzer} & \M{value} & \hyperref[page_copies_ready_for_pickup_all_users]{\M{staff/copies-ready-for-pickup-all-users.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Medienerstellung} & \M{value} & \hyperref[page_medium_creator]{\M{staff/medium-creator.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
 \endcontrols
 
 \subsubsection{Fußzeile}\label{page_footer}
@@ -573,29 +622,32 @@ JSF Templates.
 \endcontrols
 
 % !!!!!!!!!! TASK USE SUBCONTROLS
-%\begin{table}[H]
-%    \centering
-%    \begin{tabular}{ p{6em} p{6em} p{19em} p{7em} }
-%        \toprule
-%        \textbf{Spalte} & \textbf{Tag} & \textbf{Beschreibung} & \textbf{Sichtbarkeit}\\
-%        \midrule
-%        Exemplar & \LNK & die Signatur eines Exemplars; zur Direktausleihe & \BIB\\
-%        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht & \BIB\\
-%        Nutzer & \OUT & E-Mail-Adresse & Nicht-\ADM\\
-%        Nutzer & \LNK & E-Mail-Adresse; zum Profil & \ADM\\
-%        Zeit & \OUT & Dauer bis zum Zeitpunkt der Fristüberschreitung & \BIB\\
-%        \bottomrule
-%    \end{tabular}
-%    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
-%\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ l l l }
+        \toprule
+        \textbf{Spalte} & \textbf{Tag} & \textbf{Beschreibung}\\
+        \midrule
+        Exemplar & \LNK & die Signatur eines Exemplars; zur Direktausleihe\\
+        Medium & \LNK & Medienattribut mit der Medienvorschauposition Titel; zur Mediensansicht\\
+        Nutzer & \OUT & E-Mail-Adresse \\ % TODO rendered nur nicht-admin
+        Nutzer & \LNK & E-Mail-Adresse; zum Profil \\ % TODO rendered nur admin
+        Zeit & \OUT & Dauer bis zum Zeitpunkt der Fristüberschreitung \\
+        \bottomrule
+    \end{tabular}
+    \caption{Inhalt der paginierten Liste. Jede Zeile existiert pro Exemplar und Nutzer}
+\end{table}
 
 \subsubsection{Abzuholende Exemplare}\label{page_copies_ready_for_pickup}
 
 \begincontrols[account/copies-ready-for-pickup]
-    \3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id}\\
+    \tag{f}{metadata} & & \\
+    \disambiguationrule
+    \INDENT\3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id}\\
     & & \M{value} & \B{copiesReadForPickup.user}\\
     & & \M{required} & \M{true}\\ % QUESTION ooor show for all users if missing??
     \disambiguationrule
+    \INDENT\INDENT \tag{f}{validator} & & \M{validatorId} & \M{UserValidator}\\
     \LST & aller abzuholenden Exemplare & &\\
 \endcontrols
 
@@ -617,10 +669,13 @@ JSF Templates.
 \subsubsection{Ausgeliehene Exemplare}\label{page_borrowed_copies}
 
 \begincontrols[account/borrowed-copies]
-    \3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id}\\
-    & & \M{value} & \B{myBorrowedCopies.user}\\
+    \tag{f}{metadata} & & \\
+    \disambiguationrule
+    \INDENT\3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id}\\
+    & & \M{value} & \B{borrowedCopies.user}\\
     & & \M{required} & \M{true}\\ % QUESTION ooor show for all users if missing??
     \disambiguationrule
+    \INDENT\INDENT \tag{f}{validator} & & \M{validatorId} & \M{UserValidator}\\
     \LST & aller ausgeliehenen Exemplare & &\\
 \endcontrols
 
@@ -642,10 +697,16 @@ JSF Templates.
 \subsubsection{Anmeldemaske}\label{page_login}
 
 \begincontrols[public/login]
-    \OUT & & \M{rendered} & \B{session.user != null} \\ % TASK note that you are already logged in
-    \FRM & & \M{rendered} & \B{session.user == null}\\
+    % German grammar???
+    \2{\OUT} & \2{Meldung für bereits Angemeldete} & \M{value} & \M{bundle['login.already\_logged\_in']} \\
+    & & \M{rendered} & \B{userSession.user != null} \\
+    \disambiguationrule
+    \FRM & & \M{rendered} & \B{userSession.user == null}\\
     \INDENT\INP & E-Mail-Adresse & \M{value} & \B{login.user.emailAddress}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{EmailValidator} \\
     \INDENT\PAS & Passwort & \M{value} & \B{login.password} \\ % BEACON password converter to hash
+    % BEACON should probably be a converter
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{PasswordValidator} \\
     \INDENT\BTN & anmelden & \M{action} & \B{login.logIn()}\\
     \INDENT\tag{h}{commandLink} & Passwort zurücksetzen & \M{action} & \B{login.resetPassword()}\\
 \endcontrols
@@ -656,16 +717,17 @@ JSF Templates.
     \FRM & & &\\
     \disambiguationrule
     \INDENT\2{\TXT} & \2{Datenschutzerklärung} & \M{value} & \B{privacyPolicy.application.privacyPolicy}\\
-    & & \M{readonly} & \B{session.user.role < 'ADMIN'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'ADMIN'}\\
     \disambiguationrule
     \INDENT\2{\BTN} & \2{Änderungen speichern} & \M{action} & \B{privacyPolicy.save()}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
 \endcontrols
 
 \subsubsection{Direktausleihe}\label{page_direct_lending}
 
 \begincontrols[staff/direct-lending]
     \tag{bibi}{reactiveInputText} & E-Mail-Adresse des Kunden & \M{value} & \B{directLending.user.emailAddress}\\
+    \INDENT\tag{f}{validator} & & \M{validatorId} & \M{EmailValidator} \\
     \disambiguationrule
     \2{\tag{ui}{repeat}} & \2{Signaturen der auszuleihenden Exemplare} & \M{value} & \B{directLending.copies}\\
     & & \M{var} & \hyperref[subcontrol_direct_lending_copy]{\M{copy}}\\
@@ -675,23 +737,25 @@ JSF Templates.
 \endcontrols
 
 \beginsubcontrols[Exemplar (5 bei Seitenaufruf)][subcontrol_direct_lending_copy]
-\tag{bibi}{reactiveInputText} & Signatur des Exemplars & \M{value} & \B{copy.signature}\\
+    \tag{bibi}{reactiveInputField} & Signatur des Exemplars & \M{value} & \B{copy.signature}\\
 \endsubcontrols
 
-\subsubsection{E-Mail-Bestätigung}\label{page_email_confirmation}
+\subsubsection{E-Mail-Adressen-Bestätigung}\label{page_email_confirmation}
 
 \begincontrols[public/email-confirmation]
-    \3{\PRM} & \3{Kennzeichen der E-Mail-Bestätigung} & \M{name} & \M{token}\\
-    & & \M{value} & \B{emailConfirmation.token}\\
+    \tag{f}{metadata} & & \\
+    \disambiguationrule
+    \INDENT\3{\PRM} & \3{Kennzeichen der E-Mail-Adressen-Bestätigung} & \M{name} & \M{token}\\
+    & & \M{value} & \B{emailConfirmation.token.token}\\ % BEACON TASK add TokenDTO (kinda red but hey)
     & & \M{required} & \M{true}\\
+    \disambiguationrule
+    \INDENT\tag{f}{viewAction} & & \M{action} & \B{emailConfirmation.confirmEmailAddress()}\\
 \endcontrols
 
 \subsubsection{Fehlerseite}\label{page_error}
 
-% BEACON TASK from where do we get the information?
-
 \begincontrols[public/error]
-    \OUT & ?? & &\\
+    \OUT & Fehlermeldung & \M{value} & \B{error.error.errorMessage}\\ % errorDto
 \endcontrols
 
 \subsubsection{Impressum}\label{page_site_notice}
@@ -700,10 +764,10 @@ JSF Templates.
     \FRM & & &\\
     \disambiguationrule
     \INDENT \2{\TXT} & \2{Impressum} & \M{value} & \B{siteNotice.application.siteNotice}\\
-    & & \M{readonly} & \B{session.user.role < 'ADMIN'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'ADMIN'}\\
     \disambiguationrule
     \INDENT\2{\BTN} & Änderungen speichern & \M{action} & \B{siteNotice.save()}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
 \endcontrols
 
 \subsubsection{Kategorienerstellung}\label{page_category_creator}
@@ -714,28 +778,31 @@ JSF Templates.
     \BTN & Kategorie erstellen & \M{action} & \B{categoryCreator.createCategory()}\\
 \endcontrols
 
-\subsubsection{Kategorierenstöberer}\label{page_category_browser}
+\subsubsection{Kategorienstöberer}\label{page_category_browser}
 
 % BEACON QUESTION DOES THIS WORK with the dynamically set current category "categoryBrowser.category"???
 \begincontrols[public/category-browser]
-    \tag{bibi}{reactiveInputField} & Kategoriensuchterm & \M{value} & \B{categoryBrowser.searchTerm} \\ % BEACON sep DTO? SearchDTO
+    \tag{bibi}{reactiveInputField} & Kategoriensuchterm & \M{value} & \B{categoryBrowser.categorySearch.searchTerm} \\ % TASK create CategorySearchDTO
     \BTN & Kategorien suchen & \M{action} & \B{categoryBroswer.searchCategory()}\\
     \tag{bibi}{treeView} & Baumansicht von Kategorien & &\\
     \disambiguationrule
-    \2{\INP} & \2{Name der ausgewählten Kategorie} & \M{value} & \B{categoryBrowser.category.name}\\
-    & & \M{readonly} & \B{session.user.role < 'STAFF'}\\
+    \2{\INP} & \2{Titel der ausgewählten Kategorie} & \M{value} & \B{categoryBrowser.category.title}\\ % rename name -> title in dto
+    & & \M{readonly} & \B{userSession.user.role < 'STAFF'}\\
+    \disambiguationrule
+    \2{\INDENT\INDENT\tag{f}{validateLength}} & & \M{minimum} & \M{1} \\
+    & & \M{maximum} & \M{100} \\
     \disambiguationrule
     \2{\TXT} & \2{Beschreibung der ausgewählten Kategorie} & \M{value} & \B{categoryBrowser.category.description}\\
-    & & \M{readonly} & \B{session.user.role < 'STAFF'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'STAFF'}\\
     \disambiguationrule
     \2{\BTN} & \2{Änderungen an der Kategorie speichern} & \M{action} & \B{categoryBrowser.saveCategory()} \\ % TASK TASK (missing in the class diagram!!!)
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\tag{h}{commandLink}} & \2{Kategorie unter der ausgewählten Kategorie erstellen} & \M{action} & \hyperref[page_category_creator]{\M{staff/category-creator.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\BTN} & \2{ausgewählte Kategorie löschen} & \M{action} & \B{categoryBroswer.deleteCategory()}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \LST & Medienvorschauen in der ausgewählten Kategorie & & \\ % TASK sep tex-table
 \endcontrols
@@ -746,10 +813,10 @@ JSF Templates.
     \FRM & & &\\
     \disambiguationrule
     \INDENT\2{\TXT} & \2{Kontaktinformationen} & \M{value} & \B{contact.application.contactInfo}\\
-    & & \M{readonly} & \B{session.user.role < 'ADMIN'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'ADMIN'}\\
     \disambiguationrule
     \INDENT\2{\BTN} & \2{Änderungen speichern} & \M{action} & \B{contact.save()}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
 \endcontrols
 
 \subsubsection{Leihfristverstöße}\label{page_lending_period_violations}
@@ -780,22 +847,34 @@ JSF Templates.
     \2{\tag{ui}{repeat}} & \2{Medienattribute} & \M{value} & \B{mediumCreator.medium.attributes}\\
     & & \M{var} & \hyperref[subcontrol_medium_creator_attribute]{\M{attribute}}\\
     \disambiguationrule
-    \INP & Medienkategorie & \M{value} & \B{mediumCreator.medium.category}\\
-    \INP & Rückgabefrist & \M{value} & \B{mediumCreator.medium.returnPeriod}\\
-    \INP & Standort des ersten Exemplars & \M{value} & \B{mediumCreator.copy.location}\\
+    \tag{bibi}{reactiveInputField} & Medienkategorie & \M{value} & \B{mediumCreator.medium.category}\\
+    \INP & Rückgabefrist & \M{value} & \B{mediumCreator.medium.returnPeriod}\\ % hmm, no converter/validator
+    \tag{bibi}{reactiveInputField} & Standort des ersten Exemplars & \M{value} & \B{mediumCreator.copy.location}\\
     \INP & Signatur des ersten Exemplars & \M{value} & \B{mediumCreator.copy.signature}\\
+    \disambiguationrule
+    \2{\INDENT\INDENT\tag{f}{validateLength}} & & \M{minimum} & \M{1} \\
+    & & \M{maximum} & \M{100} \\
+    \disambiguationrule
     \BTN & Medium und dessen erstes Exemplar erstellen & \M{action} & \B{mediumCreator.createMediumAndFirstCopy()}\\
 \endcontrols
 
 \beginsubcontrols[Attribut][subcontrol_medium_creator_attribute]
-% QUESTION what other attributes (label attribut.type??)
-\INP & Attributwert & \M{value} & \B{attribute.value}\\
+    \OUT & Attributname & \M{value} & \B{attribute.name}\\
+    \DRP & Attributtyp & \M{value} & \B{attribute.type}\\
+    \disambiguationrule
+    \4{\INDENT\tag{f}{selectItems}} & & \M{value} & \B{mediumSchemaEditor.allAttributeTypes} \\
+    & & \M{var} & \M{type} \\
+    & & \M{itemValue} & \B{type} \\
+    & & \M{itemLabel} & \B{bundle[type.toString()]} \\
+    \disambiguationrule
+    \tag{bibi}{reactiveInputField} & Attributwert & \M{value} & \B{attribute.value}\\
 \endsubcontrols
 
 \subsubsection{Medienrückgabe}\label{page_return_form}
 
 \begincontrols[staff/return-form]
     \tag{bibi}{reactiveInputField} & E-Mail-Adresse des Kunden & \M{value} & \B{returnForm.user.emailAddress}\\
+    \INDENT\tag{f}{validator} & & \M{validatorId} & \M{EmailValidator} \\
     \disambiguationrule
     \2{\tag{ui}{repeat}} & \2{Signaturen der abzugebenden Exemplare} & \M{value} & \B{returnForm.copies}\\
     & & \M{var} & \hyperref[subcontrol_return_form_copy]{\M{copy}}\\
@@ -810,55 +889,73 @@ JSF Templates.
 
 \subsubsection{Mediensuche}\label{page_medium_search}
 
-% TASK MediumSearchDTO
 \begincontrols[public/medium-search]
-    \INP & freier Suchterm & \M{value} & \B{mediumSearch.generalSearchTerm}\\
+    \INP & freier Suchterm & \M{value} & \B{mediumSearch.mediumSearch.generalSearchTerm}\\ % TASK create MediumSearchDto
     \BTN & Medien suchen & \M{action} & \B{mediumSearch.search()}\\
-    \tag{ui}{repeat} & differenzierte Suchanfragen & \M{value} & \B{mediumSearch.nuancedSearchQueries}\\
+    \tag{ui}{repeat} & differenzierte Suchanfragen & \M{value} & \B{mediumSearch.mediumSearch.nuancedSearchQueries}\\
     \BTN & weitere differenzierte Suchanfrage hinzufügen & \M{action} & \B{mediumSearch.addNuancedSearchQuery())}\\
-    % BEACON TEMPORARY
-    \LST & aller Suchergebnisse (als Medienvorschauen) & & \\ % TASK separate tex-table
+    \LST & \hyperref[subcontrol_medium_search_list]{Suchergebnisse} & & \\ % TASK conditionally render (search term existing?)
 \endcontrols
 
 \beginsubcontrols[differenzierter Suchabfrage (3 bei Seitenaufruf)][subcontrol_medium_search_query]
-    \DRP & Suchoperator & \M{value} & \B{query.operator} \\ % TASK converter
-    \DRP & Suchkriterium & \M{value} & \B{query.criterion} \\ % TASK converter
+    \DRP & Suchoperator & \M{value} & \B{query.operator} \\
+    \disambiguationrule
+    \4{\INDENT\tag{f}{selectItems}} & & \M{value} & \B{mediumSearch.allSearchOperators} \\
+    & & \M{var} & \M{operator} \\
+    & & \M{itemValue} & \B{operator} \\
+    & & \M{itemLabel} & \B{bundle[operator.toString()]} \\
+    \disambiguationrule
+    \DRP & Suchkriterium & \M{value} & \B{query.criterion} \\
+    \disambiguationrule
+    \4{\INDENT\tag{f}{selectItems}} & & \M{value} & \B{mediumSearch.allSearchCriteria} \\
+    & & \M{var} & \M{criterion} \\
+    & & \M{itemValue} & \B{criterion} \\
+    & & \M{itemLabel} & \B{bundle[criterion.toString()]} \\
+    \disambiguationrule
     \INP & Suchterm & \M{value} & \B{query.term}\\
+\endsubcontrols
+
+\beginsubcontrols[Medium][subcontrol_medium_search_list]
 \endsubcontrols
 
 \subsubsection{Mediumsansicht}\label{page_medium}
 
 \begincontrols[public/medium]
-    \3{\PRM} & \3{Kennzeichen des Mediums} & \M{name} & \M{id}\\
+    \tag{f}{metadata} & & \\
+    \disambiguationrule
+    \INDENT\3{\PRM} & \3{Kennzeichen des Mediums} & \M{name} & \M{id}\\
     & & \M{value} & \B{medium.medium.id}\\
     & & \M{required} & \M{true}\\
     \disambiguationrule
-    % TODO nur sichtbar wenn man von der Suche kommt
-    \LNK & zurück zur Trefferliste & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}}\\
+    \INDENT\INDENT \tag{f}{validator} & & \M{validatorId} & \M{MediumValidator}\\ % BEACON DOES NOT EXIST!!
+%    \disambiguationrule
+%    \2{\LNK} & \2{zurück zur Trefferliste} & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}}\\
+%    & & \M{rendered} & \B{medium.arrivedFromMediumSearch()} \\
+%    \disambiguationrule
     \FRM & & &\\
     \disambiguationrule
     \INDENT\2{\tag{ui}{repeat}} & \2{Medienattribute} & \M{value} & \B{medium.medium.attributes}\\
     & & \M{var} & \hyperref[subcontrol_medium_attribute]{\M{attribute}}\\
     \disambiguationrule
     \INDENT\2{\BTN} & \2{Änderung an den Attributen speichern} & \M{action} & \B{medium.saveAttributes()}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
-    \FRM & & \M{rendered} & \B{session.user != null}\\
+    \FRM & & \M{rendered} & \B{userSession.user != null}\\
     \INDENT\BTN & willkürliches Exemplar abholen & \M{action} & \B{medium.pickUpAnyCopy()}\\
     \INDENT\OUT & Rückgabefrist unter Einbeziehung der nutzerbezogenen & \M{value} & \B{medium.returnPeriod}\\
-    \FRM & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    \FRM & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \INDENT\INP & mediumsspezifische Rückgabefrist & \M{value} & \B{medium.medium.returnPeriod}\\
     \INDENT\BTN & Änderungen an der Rückgabefrist speichern & \M{action} & \B{medium.saveReturnPeriod()}\\
     \INDENT\BTN & Medium löschen & \M{action} & \B{medium.delete()}\\
     % BEACON TASK document online ansehen
     %\2{\LNK} & XXX & \M{value} & ???\\
-    %& & \M{rendered} & \textit{if it's available online}\\
+    % & & \M{rendered} & \textit{if it's available online}\\
     \disambiguationrule
     \3{\tag{h}{dataTable}} & \3{Exemplare des Mediums} & \M{value} & \B{medium.copies}\\
     & & \M{var} & \hyperref[data_table_medium_copies]{\M{copy}}\\
     & & \M{varStatus} & \M{status}\\
     \disambiguationrule
-    \FRM & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    \FRM & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \INDENT\tag{bibi}{reactiveInputField} & Standort eines neuen Exemplars & \M{value} & \B{medium.copy.location}\\
     \INDENT\INP & Signatur eines neuen Exemplars & \M{value} & \B{medium.copy.signature}\\
     \INDENT\BTN & neues Exemplar erstellen & \M{action} & \B{medium.createCopy()}\\
@@ -869,7 +966,7 @@ JSF Templates.
 % TASK visibility
 % TASK multivalued
 \2{\INP} & \2{Attributwert} & \M{value} & \B{attribute.value}\\
-& & \M{readonly} & \B{session.user.role < 'STAFF'}\\
+& & \M{readonly} & \B{userSession.user.role < 'STAFF'}\\
 % TODO existiert pro Mediena (bei mehrwertigen)
 %    \BTN & \M{action} & \B{medium.addAttributeInputField()} zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
 \endsubcontrols
@@ -886,14 +983,14 @@ JSF Templates.
         \textbf{\tag{h}{column}} & \textbf{Tag} & \textbf{Name} & \textbf{Bindung}\\
         \midrule
         \2{Standort} & \2{\INP} & \M{value} & \B{copy.location} \\
-        & & \M{readonly} & \B{session.user.role < 'STAFF'} \\
+        & & \M{readonly} & \B{userSession.user.role < 'STAFF'} \\
         \xdisambiguationrule
         Verfügbarkeit & \OUT & \M{value} & \B{copy.availabilityStatus} \\
         \xdisambiguationrule
         \2{Signatur} & \2{\INP} & \M{value} & \B{copy.signature} \\
-        & & \M{readonly} & \B{session.user.role < 'STAFF'} \\
+        & & \M{readonly} & \B{userSession.user.role < 'STAFF'} \\
         \xdisambiguationrule
-        Aktionen & \FRM & \M{rendered} & \B{session.user.role >= 'STAFF'} \\
+        Aktionen & \FRM & \M{rendered} & \B{userSession.user.role >= 'STAFF'} \\
         % QUESTION still show if currently lent??
         Aktionen & \INDENT\BTN & \M{action} & \B{medium.saveCopy(status.index)} \\
         Aktionen & \INDENT\BTN & \M{action} & \B{medium.deleteCopy(status.index)} \\
@@ -909,7 +1006,7 @@ JSF Templates.
         & & \M{rendered} & \B{copy.status == 'BORROWED'} \\
         \xdisambiguationrule
         % BEACON TASK CLASSES rename userLendStatus -> lendStatus, copy.copyStatus -> copy.status
-        Aktionen & \FRM & \M{rendered} & \B{session.user != null \&\& session.user.lendStatus == 'ENABLED' \&\& copy.status == 'AVAILABLE'} \\
+        Aktionen & \FRM & \M{rendered} & \B{userSession.user != null \&\& userSession.user.lendStatus == 'ENABLED' \&\& copy.status == 'AVAILABLE'} \\
         \xdisambiguationrule % since prev is so long and breaks
         Aktionen & \INDENT\BTN & \M{action} & \B{medium.pickUpCopy(status.index)} \\
         \bottomrule
@@ -931,29 +1028,54 @@ JSF Templates.
 \beginsubcontrols[Attribut][subcontrol_schema_editor_attribute]
     \INP & Attributname &  \M{value} & \B{attribute.name}\\
     \DRP & Attributtyp & \M{value} & \B{attribute.type}\\
+    \disambiguationrule
+    \4{\INDENT\tag{f}{selectItems}} & & \M{value} & \B{mediumSchemaEditor.allAttributeTypes} \\
+    & & \M{var} & \M{type} \\
+    & & \M{itemValue} & \B{type} \\
+    & & \M{itemLabel} & \B{bundle[type.toString()]} \\
+    \disambiguationrule
     \DRP & Multiplizität des Attributs & \M{value} & \B{attribute.multiplicity}\\
-    \DRP & Position des Attributs in der Medienvorschau & \M{value} & \B{attribute.position}\\
+    \disambiguationrule
+    \4{\INDENT\tag{f}{selectItems}} & & \M{value} & \B{mediumSchemaEditor.allMultiplicities} \\
+    & & \M{var} & \M{multiplicity} \\
+    & & \M{itemValue} & \B{multiplicity} \\
+    & & \M{itemLabel} & \B{bundle[multiplicity.toString()]} \\
+    \disambiguationrule
+    \DRP & Spalte des Attributs in paginierten Listen & \M{value} & \B{attribute.position}\\
+    \disambiguationrule
+    \4{\INDENT\tag{f}{selectItems}} & & \M{value} & \B{mediumSchemaEditor.allPositions} \\
+    & & \M{var} & \M{position} \\
+    & & \M{itemValue} & \B{position} \\
+    & & \M{itemLabel} & \B{bundle[position.toString()]} \\
+    \disambiguationrule
     \BTN & Attribut löschen & \M{action} & \B{mediumSchemaEditor.deleteAttribute(attribute.id)}\\
 \endsubcontrols
 
 \subsubsection{Nutzersuche}\label{page_user_search}
 
 \begincontrols[admin/user-search]
-    \INP & Nutzersuchterm & \M{value} & \B{userSearch.searchTerm}\\ % UserSearchDTO?
+    \INP & Nutzersuchterm & \M{value} & \B{userSearch.userSearchsearchTerm}\\ % TASK UserSearchDTO
     \BTN & Nutzer suchen & \M{action} & \B{userSearch.searchUser()}\\
-    \CHK & Einschränkung auf ge-/entsperrte Nutzer & \M{value} & \B{userSearch.accountStatus}\\
-    \LST & Suchergebnisse & &\\ % TASK sep tex table
+    \CHK & Einschränkung auf ge-/entsperrte Nutzer & \M{value} & \B{userSearch.userSearch.accountStatus}\\
+    \LST & \hyperref[subcontrols_user_search_list]{Suchergebnisse} & &\\ % TASK conditionally render (does search term exist?)
 \endcontrols
+
+\beginsubcontrols[Nutzer][subcontrols_user_search_list]
+\endsubcontrols
 
 \subsubsection{Passwortzurücksetzung}\label{page_password_reset}
 
 \begincontrols[public/password-reset]
-    \3{\PRM} & \3{Kennzeichen der Passwortzurücksetzung} & \M{name} & \M{token}\\
-    & & \M{value} & \B{passwordReset.token}\\
+    \tag{f}{metadata} & & \\
+    \disambiguationrule
+    \INDENT\3{\PRM} & \3{Kennzeichen der Passwortzurücksetzung} & \M{name} & \M{token}\\
+    & & \M{value} & \B{passwordReset.token.token}\\
     & & \M{required} & \M{true}\\
     \disambiguationrule
     \PAS & neues Passwort & \M{value} & \B{passwordReset.password}\\
+    \INDENT\tag{f}{validator} & & \M{validatorId} & \M{PasswordValidator} \\
     \PAS & bestätigtes neues Passwort & \M{value} & \B{passwordReset.confirmedPassword}\\
+    \INDENT\tag{f}{validator} & & \M{validatorId} & \M{ConfirmPasswordValidator} \\
     \BTN & Passwort zurücksetzen & \M{action} & \B{passwordReset.resetPassword()}\\
 \endcontrols
 
@@ -961,34 +1083,46 @@ JSF Templates.
 
 % BEACON TASK add way to set the language (only if this is one's own profile)
 \begincontrols[account/profile]
-    \3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id}\\
+    \tag{f}{metadata} & & \\
+    \disambiguationrule
+    \INDENT\3{\PRM} & \3{Kennzeichen des Nutzers} & \M{name} & \M{id}\\
     & & \M{value} & \B{profile.user.id}\\
     & & \M{required} & \M{true}\\
     \disambiguationrule
+    \INDENT\INDENT \tag{f}{validator} & & \M{validatorId} & \M{UserValidator}\\
     \FRM & & &\\
     \INDENT\INP & Vorname & \M{value} & \B{profile.user.firstName}\\
     \INDENT\INP & Nachname & \M{value} & \B{profile.user.lastName}\\
     \INDENT\PAS & Passwort & \M{value} & \B{profile.password}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{PasswordValidator} \\
     \INDENT\PAS & bestätigtes Passwort & \M{value} & \B{profile.confirmedPassword}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{ConfirmPasswordValidator} \\
     \INDENT\INP & E-Mail-Adresse & \M{value} & \B{profile.user.emailAddress}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{EmailValidator} \\
     \INDENT\INP & Postleitzahl des Wohnsitzes & \M{value} & \B{profile.user.zipCode}\\
     \INDENT\INP & Stadt des Wohnsitzes & \M{value} & \B{profile.user.city}\\
     \INDENT\INP & Straße des Wohnsitzes & \M{value} & \B{profile.user.street}\\
     \INDENT\INP & Hausnummer des Wohnsitzes & \M{value} & \B{profile.user.streetNumber}\\
     \disambiguationrule
     \2{\INDENT\DRP} & \2{Nutzerrolle} & \M{value} & \B{profile.user.role}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN' \&\& profile.user.id != session.user.id}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN' \&\& profile.user.id != userSession.user.id}\\
+    \disambiguationrule
+    \4{\INDENT\INDENT\tag{f}{selectItems}} & & \M{value} & \B{profile.allUserRoles} \\
+    & & \M{var} & \M{role} \\
+    & & \M{itemValue} & \B{role} \\
+    & & \M{itemLabel} & \B{bundle[role.toString()]} \\
     \disambiguationrule
     \2{\INDENT\CHK} & \2{Accountstatus (ent-/gesperrt)} & \M{value} & \B{profile.user.accountStatus}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
     \disambiguationrule
      % !!!! TASK UPDATE dto from lendingPeriod -> returnPeriod´
     \2{\INDENT\INP} & \2{Rückgabefrist} & \M{value} & \B{profile.user.returnPeriod}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
     \disambiguationrule
     \INDENT\BTN & Änderungen am Profil speichern & \M{action} & \B{profile.save()}\\
-    \LNK & zur den abzuholenden Exemplaren & \M{value} & \hyperref[page_copies_ready_for_pickup]{ \M{account/my-copies-ready-for-pickup.xhtml?id=\RB{profile.user.id}}}\\
-    \LNK & zu den ausgeliehenen Exemplaren & \M{value} & \hyperref[page_borrowed_copies]{ \M{account/my-borrowed-copies.xhtml?id=\RB{profile.user.id}}}\\
+    % BEACON NOTE spaces just because of latex line break mechanisms!!
+    \LNK & zur den abzuholenden Exemplaren & \M{value} & \hyperref[page_copies_ready_for_pickup]{ \M{account/my-copies-ready-for-pickup.xhtml ?id=\RB{profile.user.id}}}\\
+    \LNK & zu den ausgeliehenen Exemplaren & \M{value} & \hyperref[page_borrowed_copies]{ \M{account/my-borrowed-copies.xhtml ?id=\RB{profile.user.id}}}\\
     \FRM & & &\\
     % dont show if it's the last admin??
     \INDENT\BTN & Account schließen & \M{action} & \B{profile.delete()}\\
@@ -1001,38 +1135,59 @@ JSF Templates.
     \INDENT\INP & Vorname & \M{value} & \B{registration.user.firstName}\\
     \INDENT\INP & Nachname & \M{value} & \B{registration.user.lastName}\\
     \INDENT\PAS & Passwort & \M{value} & \B{registration.password}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{PasswordValidator} \\
     \INDENT\PAS & bestätigtes Passwort & \M{value} & \B{registration.confirmedPassword}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{ConfirmPasswordValidator} \\
     \INDENT\INP & E-Mail-Adresse & \M{value} & \B{registration.user.emailAddress}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{EmailValidator} \\
     \INDENT\INP & Postleitzahl des Wohnsitzes & \M{value} & \B{registration.user.zipCode}\\
     \INDENT\INP & Stadt des Wohnsitzes & \M{value} & \B{registration.user.city}\\
     \INDENT\INP & Straße des Wohnsitzes & \M{value} & \B{registration.user.street}\\
     \INDENT\INP & Hausnummer des Wohnsitzes & \M{value} & \B{registration.user.streetNumber}\\
     \disambiguationrule
     \2{\INDENT\DRP} & \2{Nutzerrolle} & \M{value} & \B{registration.user.role}\\
-    & & \M{rendered} & \B{session.user.id == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.id == 'ADMIN'}\\
+    \disambiguationrule
+    \4{\INDENT\INDENT\tag{f}{selectItems}} & & \M{value} & \B{registration.allUserRoles} \\
+    & & \M{var} & \M{role} \\
+    & & \M{itemValue} & \B{role} \\
+    & & \M{itemLabel} & \B{bundle[role.toString()]} \\
     \disambiguationrule
     \INDENT\BTN & Account registrieren & \M{action} & \B{registration.register()}\\
 \endcontrols
 
 \subsubsection{Verwaltungsseite}\label{page_administration}
 
-% task form!!!!
 \begincontrols[admin/administration]
-    \INP & systemweite Rückgabefrist & \M{value} & \B{administration.application.returnPeriod}\\
-    \INP & Mahnungsfrist & \M{value} & \B{administration.application.warningPeriod}\\
-    \INP & Abholungsfrist & \M{value} & \B{administration.application.pickupPeriod}\\
-    \INP & Name des Systems & \M{value} & \B{administration.application.name}\\
-    \tag{h}{inputFile} & Logo des Systems & \M{value} & \B{administration.application.logo}\\
-    \CHK & Registrierungsstatus (offen/geschlossen) & \M{value} & \B{administration.application.registerStatus}\\
-    \INP & erlaubte E-Mail-Adressen-Suffixe & \M{value} & \B{administration.application.emailAddressSuffixRegEx}\\
-    \DRP & Farbschema & \M{value} & \B{administration.application.theme}\\
-    \BTN & Änderungen speichern & \M{action} & \B{administration.save()}\\
+    \FRM & & & \\
+    \INDENT\INP & systemweite Rückgabefrist & \M{value} & \B{administration.application.returnPeriod}\\
+    \INDENT\INP & Mahnungsfrist & \M{value} & \B{administration.application.warningPeriod}\\
+    \INDENT\INP & Abholungsfrist & \M{value} & \B{administration.application.pickupPeriod}\\
+    \INDENT\INP & Name des Systems & \M{value} & \B{administration.application.name}\\
+    \disambiguationrule
+    \2{\INDENT\INDENT\tag{f}{validateLength}} & & \M{minimum} & \M{1} \\
+    & & \M{maximum} & \M{100} \\
+    \disambiguationrule
+    \INDENT\tag{h}{inputFile} & Logo des Systems & \M{value} & \B{administration.application.logo}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{LogoValidator} \\
+    \INDENT\CHK & Registrierungsstatus (offen/geschlossen) & \M{value} & \B{administration.application.registerStatus}\\
+    \INDENT\INP & erlaubte E-Mail-Adressen-Suffixe & \M{value} & \B{administration.application. emailAddressSuffixRegEx}\\
+    \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{RegexValidator} \\ % BEACON DOES NOT EXIST YET!!!
+    \INDENT\DRP & Farbschema & \M{value} & \B{administration.application.theme}\\
+    \disambiguationrule
+    \4{\INDENT\INDENT\tag{f}{selectItems}} & & \M{value} & \B{administration.allThemes} \\
+    & & \M{var} & \M{theme} \\
+    & & \M{itemValue} & \B{theme} \\
+    & & \M{itemLabel} & \B{theme} \\
+    \disambiguationrule
+    \INDENT\BTN & Änderungen speichern & \M{action} & \B{administration.save()}\\
     \LNK & zur Registrierungsseite zur Nutzererstellung & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}}\\
     \LNK & zum Mediumsschema-Editor & \M{value} & \hyperref[page_medium_schema_editor]{\M{admin/medium-schema-editor.xhtml}}\\
     \LNK & zu den Leihfristverstößen & \M{value} & \hyperref[page_lending_period_violations]{\M{admin/lending-period-violations.xhtml}}\\
     \LNK & zu der Nutzersuche & \M{value} & \hyperref[page_user_search]{\M{admin/user-search.xhtml}}\\
-    \INP & Nutzersuchterm & \M{value} & \B{administration.userSearchTerm}\\
-    \BTN & Nutzer suchen & \M{action} & \B{administration.searchUser()}\\
+    \FRM & & &\\
+    \INDENT\INP & Nutzersuchterm & \M{value} & \B{administration.userSearchTerm}\\
+    \INDENT\BTN & Nutzer suchen & \M{action} & \B{administration.searchUser()}\\
 \endcontrols
 
 \end{landscape}
