@@ -115,7 +115,6 @@ Die Aufteilung der Verantwortlichkeiten für das Java-Doc verteilen sich wie fol
 
 \begin{center}
     \begin{figure}[H]
-	\hypertarget{invalidaccess}{}
         \includegraphics[scale=0.18]{KlassendiagrammBB.pdf}
         \caption{Klassendiagramm der managed/backing beans   }
         \label{fig:BB Klassendiagramm}
@@ -141,9 +140,9 @@ Die Aufteilung der Verantwortlichkeiten für das Java-Doc verteilen sich wie fol
             \hline
             PasswordReset & Backing Bean für die Änderung des Passwortes.\\
             \hline
-            Error & Backing Bean der Seite die Fehlermeldungen anzeigt.\\
+            \hypertarget{invalidaccess}{Error} & Backing Bean der Seite die Fehlermeldungen anzeigt.\\
             \hline
-            PaginatedList & Abstracte Klasse für die Backingbeans mit Listen.\\
+            PaginatedList & Abstrakte Superklasse für die Backingbeans mit Listen.\\
             \hline
             Profile & Backing Bean für das Anzeigen und Bearbeiten des Profils eines Benutzers. \\
             \hline
@@ -169,7 +168,7 @@ Die Aufteilung der Verantwortlichkeiten für das Java-Doc verteilen sich wie fol
             \hline
             ReturnForm & Backing Bean für die Seite der Rückgabe.\\
             \hline
-            UserSession & Backing Bean für Userlists.\\
+            \hypertarget{Session}{UserSession} & SessionScoped managed Bean für Nutzersitzungen.\\
             \hline
             MediumCreation & Backing Bean für das Erstellen eines  Mediumeds.\\
             \hline
@@ -251,7 +250,7 @@ Die Aufteilung der Verantwortlichkeiten für das Java-Doc verteilen sich wie fol
 \begin{center}
     \begin{figure}[H]
 	\hypertarget{ExceptionHandler}{}
-        \includegraphics[scale=0.7]{KlassendiagrammExceptionObere.pdf}
+        \includegraphics[scale=0.7]{LogikExceptions.png}
         \caption{Klassendiagramm der Exception der Logikschicht }
         \label{fig:Exceptions- Klassendiagramm}
     \end{figure}
@@ -390,6 +389,8 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 
 \subsection{Sprachressourcen}
 \indent Obwohl die Anwendung primär in Deutsch ausgeliefert wird, bietet die modulare Bauweise eine Erweiterungsmöglichkeit um andere Sprachausgaben. Dazu werden alle angezeigten Strings einer Sprache zentral im Ordner \hyperlink{Paketstruktur}{\texttt{BiBi/src/de/dedede/model/logic/i18n/}} des Applikationsverzeichnisses im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{\texttt{.properties}-Format} gespeichert. Die Namenskonvention für diese Dateien ist \texttt{messages\_xxXX.properties}, wobei \texttt{xx} durch das jeweilige \hyperlink{https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes}{Sprachenkürzel} ersetzt wird, welches durch \texttt{XX} ebenfalls im Dialekt spezifiziert werden kann. Sprachübergreifende Begriffe werden in die \hyperlink{messages}{\texttt{messages.properties}}-Datei geschrieben, und sprachspezifische Übersetzungen werden wie oben beschrieben gespeichert. Die Pakete sind durch Eintrag in die \texttt{faces-config.xml} im JSF-Framework registriert. Damit sind die Schlüssel mittels EL in den Facelets referenzierbar und die Nachrichten werden dann automatisch mit dem ausgewählten \texttt{locale} befüllt.  So kann die Sprache, entweder auf der Profilseite manuell oder auch automatisch durch die Browserpräferenz, pro Nutzer-Session dynamisch eingestellt werden. Standartsprache ist Deutsch. Die Sprachdateien selbst folgen obigen \hyperlink{propSchema}{Schema}, mit Präfixen an den Schlüsseln um die Zugehörigkeit zum jeweiligen Facelet anzuzeigen ('lp' = 'login page', 'sb' = 'sidebar' etc.). Die Schlüssel können einfach kopiert, mit Werten ergänzt und die richtig benannte Dateien dann in den \hyperlink{Paketstruktur}{\texttt{BiBi/src/de/dedede/model/logic/i18n/}}-Ordner gelegt werden. Ein Beispiel für die \hyperlink{messages}{sprachübergreifende} \hyperlink{messagesde}{deutsche} und \hyperlink{messagesen}{englische} Datei ist anbei.\\
+\newpage
+\newgeometry{left=0cm,right=0cm,top=1cm,bottom=2cm}
 \begin{figure}[H]
 \hypertarget{messages}{}
 \centering
@@ -410,7 +411,7 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \includegraphics[width=50em]{messagesde}
 \caption{Deutsches Sprachpaket}
 \end{figure}
-
+\restoregeometry
 
 %----------------------------------------------------------------------Kapitel 6--------------------------------------------------------------------------------------------
 
