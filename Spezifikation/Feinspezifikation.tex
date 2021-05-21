@@ -99,7 +99,7 @@ Das Klassendiagram ist im Anhang zu finden.
 \begin{figure}[H]
     \hypertarget{UML-Klassendiagramm}{}
     \centering
-    \includegraphics[width = 45em]{KlassendiagrammVollst}
+    \includegraphics[width = 45em]{Klassendi}
     \caption{UML-Klassendiagramm}
 \end{figure}
 
@@ -112,77 +112,140 @@ Die Aufteilung der Verantwortlichkeiten für das Java-Doc verteilen sich wie fol
 \end{itemize}
 
 
-\begin{figure}[H]
-\hypertarget{DAOs}{}
-		\centering
-		\includegraphics[width = 45em]{KlassendiagrammDaos}
-		\caption{Klassendiagramm der Daos}
-	\end{figure}
+Im Folgenden wird die Struktur des Bibliothekssytem dargestellt.
+\subsection{UML-Klassendiagramm}
+Das Klassendiagram ist im Anhang zu finden.
+
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.09]{KlassendiagrammVollst.pdf}
+        \caption{UML-Klassendiagramm }
+        \label{fig:UML-Klassendiagramm}
+    \end{figure}
+\end{center}
+
+\subsection{Verwendete Java-Klassen}
+Die Aufteilung der Verantwortlichkeiten für das Java-Doc verteilen sich wie folgendes:
+\begin{itemize}
+    \item Mohamad Najjar: de.dedede.model.logic.
+    \item Sergei Pravdin: de.dedede.model.data.dtos.
+    \item Ivan Charviakou: de.dedede.model.persitence.
+\end{itemize}
+
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.18]{KlassendiagrammBB.pdf}
+        \caption{Klassendiagramm der managed/backing beans   }
+        \label{fig:Managedbeans Klassendiagramm}
+    \end{figure}
+\end{center}
+
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.6]{KlassendiagrammDaos.pdf}
+        \caption{Klassendiagramm der Daos  }
+        \label{fig:Managedbeans Klassendiagramm}
+    \end{figure}
+\end{center}
 
 \begin{center}
     \begin{table}
-        \begin{tabular}{}
+        \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
+            \hline
+            Java-Klasse & Beschreibung \\
+            \hline\hline
+            MediumDao & Kontrolliert den Zugriff auf Mediumdaten in der Datenbank. \\
+            \hline
+            ApplicationDao & Kontrolliert den Zugriff auf die Einstellungen der Anwendung, die in der Datenbank gespeichert sind. \\
+            \hline
+            UserDao & Kontrolliert den Zugriff auf Benutzerdaten in der Datenbank. \\
+            \hline
+            CategoryDao & Kontrolliert den Zugriff auf Kategoriedaten in der Datenbank. \\
+            \hline
         \end{tabular}
     \end{table}
 \end{center}
 
-\begin{figure}[H]
-\hypertarget{Usersession}{}
-		\centering
-		\includegraphics[angle=270, width=24em]{Klassendiagramm-Backingbeans}
-		\caption{Klassendiagramm-Backingbeans}
-	\end{figure}
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.4]{KlassendiagrammDtos.pdf}
+        \caption{Klassendiagramm der Dtos  }
+        \label{fig:Dtos- Klassendiagramm}
+    \end{figure}
+\end{center}
 
+\begin{center}
+    \begin{table}
+        \begin{tabular} { |p{3,5cm}|p{7,5cm}| }
+            \hline
+            Java-Klasse & Beschreibung  \\
+            \hline\hline
+            UserDto & Enthält alle Daten des Profils eines Benutzers. \\
+            \hline
+            ApplicationDto & Enthält die Daten der Anwendung. \\
+            \hline
+            PaginationDto & Enthält die Daten der Paginierung. \\
+            \hline
+            MediumDto & Enthält die Daten eines Mediums. \\
+            \hline
+            AttributeDto & Enthält die Daten wie den Namen, ID und den Wert eines Attribut.\\
+            \hline
+            ErrorDto & Enthält Daten der Fehlerseite. \\
+            \hline
+            CopyDto & Enthält die   Daten eines Exemplar. \\
+            \hline
+            CategoryDto & Enthält die Daten einer Kategorie. \\
+            \hline
+        \end{tabular}
+    \end{table}
+\end{center}
 
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.7]{KlassendiagrammExceptionObere.pdf}
+        \caption{Klassendiagramm der Exception der Logikschicht }
+        \label{fig:Dtos- Klassendiagramm}
+    \end{figure}
+\end{center}
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.7]{KlassendiagrammExceptionUntere.pdf}
+        \caption{Klassendiagramm der Exception der Datenschicht }
+        \label{fig:Dtos- Klassendiagramm}
+    \end{figure}
+\end{center}
 
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.7]{KlassendiagrammConverters.pdf}
+        \caption{Klassendiagramm der Exception der Converters }
+        \label{fig:Dtos- Klassendiagramm}
+    \end{figure}
+\end{center}
 
-\begin{figure}[H]
-		\centering
-		\includegraphics[width = 52em]{Klassendiagramm-Convertors}
-		\caption{Klassendiagramm der Konverter}
-	\end{figure}
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.4]{KlassendiagrammUtilObere.pdf}
+        \caption{Klassendiagramm der Util der Logikschicht }
+        \label{fig:Util-logik Klassendiagramm}
+    \end{figure}
+\end{center}
 
-\begin{figure}[H]
-\hypertarget{Validator}{}
-		\centering
-		\includegraphics[width = 52em]{KlassendiagrammValidators}
-		\caption{Klassendiagramm der Validatoren}
-	\end{figure}
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.6]{KlassendiagrammUtilUntere.pdf}
+        \caption{Klassendiagramm der Util der Datenschicht }
+        \label{fig:Util-data Klassendiagramm}
+    \end{figure}
+\end{center}
 
-
-\begin{figure}[H]
-		\centering
-		\includegraphics[angle=270, width = 52em]{Klassendiagramm-Dtoss_1}
-		\caption{Klassendiagramm der Dtos}
-	\end{figure}
-
-\begin{figure}[H]
-		\centering
-		\includegraphics[width = 52em]{Klassendiagramm-ExceptionsObere}
-		\caption{Klassendiagramm der logic.exceptions}
-	\end{figure}
-
-\begin{figure}[H]
-\hypertarget{PhaseListener}{}
-\hypertarget{Hash}{}
-		\centering
-		\includegraphics[width = 52em]{KlassendiagrammUtilObere}
-		\caption{Klassendiagramm der logic.util}
-	\end{figure}
-
-
-\begin{figure}[H]
-		\centering
-		\includegraphics[width = 52em]{KlassendiagrammUtilunten}
-		\caption{Klassendiagramm der persistence.util}
-	\end{figure}
-
-
-\begin{figure}[H]
-		\centering
-		\includegraphics[width = 52em]{Klassendiagramm-ExceptionUnten}
-		\caption{Klassendiagramm der persistence.exceptions}
-\end{figure}
+\begin{center}
+    \begin{figure}[H]
+        \includegraphics[scale=0.6]{KlassendiagrammValidators.pdf}
+        \caption{Klassendiagramm der Validatoren }
+        \label{fig:Util-data Klassendiagramm}
+    \end{figure}
+\end{center}
 \restoregeometry
 %----------------------------------------------------------------------Kapitel 4--------------------------------------------------------------------------------------------
 \newpage
