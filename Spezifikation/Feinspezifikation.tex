@@ -15,6 +15,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{lscape}
+\usepackage{listings}
 
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
@@ -199,30 +200,39 @@ Folgende Bibliotheken bzw. Frameworks werden für die Entwicklung unseres Biblio
 
 %----------------------------------------------------------------------Kapitel 5--------------------------------------------------------------------------------------------
 \section{Systemkonfiguration}
+\sectionauthor{Jonas Picker}
 Dieser Abschnitt beschreibt die Konfigurationsdatei und Sprachausgabe der Anwendung.
 \subsection{Konfigurationsdatei}
-\indent Die Anwendung wird in einer Datei namens 'config' im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{{\texttt.properties}-Format} konfiguriert. Diese Datei wird dann mit Java-internen Funktionalitäten \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html}{dieser Klasse} über einen Stream eingelesen. Sie ist im Verzeichnis der Anwendung unter \texttt{/WebContent/WEB-INF/} zu finden und ist unten sowohl kurz \hyperlink{configTabelle}{beschrieben}, als auch \hyperlink{configFoto}{fotographiert} .
+\indent Die Anwendung wird in einer Datei namens 'config.properties' im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{{\texttt.properties}-Format} konfiguriert. Diese Datei wird dann mit Java-internen Funktionalitäten \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html}{dieser Klasse} über einen Stream im \hyperlink{ConfigReader}{ConfigReader} eingelesen. Sie ist im Verzeichnis der Anwendung unter \hyperlink{Paketstruktur}{\texttt{/WebContent/WEB-INF/}} zu finden.
 \subsubsection{Inhaltsbeschreibung}
 \hypertarget{propSchema}{}
-Die mit \textcolor{green}{!} oder \textcolor{green}{\#} eingeleiteten Zeilen der Dateien enthalten Kommentare. Alle unmarkierten Zeilen halten ein Paar aus einem Schlüssel und einem mit \texttt{:} getrennten Wert. Nur die Werte dürfen verändert werden! 
+Es folgt eine \hyperlink{tabelle}{Tabelle} mit einer deutschen Beschreibung der im Anhang beigefügten \texttt{config.properties}-Datei. Die mit \textcolor{green}{!} oder \textcolor{green}{\#} eingeleiteten Zeilen der Dateien enthalten Kommentare. Alle unmarkierten Zeilen halten ein Paar aus einem Schlüssel und einem mit \texttt{:} getrennten Wert. Nur die Werte dürfen verändert werden! \\
+\textbf{Logs:} Die Klasse \hyperlink{Logger}{Logger}!!! schreibt ihre Einträge im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{\texttt{.properties}-Format} in eine Datei unter \hyperlink{Paketstruktur}{\texttt{!!!}}!!!, wie der \hyperlink{ConfigReader}{ConfigReader} benutzt auch der \hyperlink{Logger}{Logger}!! die Methoden der Java-Klasse \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html}{Properties}.\\
+\textbf{Datenbankverbindung:} Durch setzen der \hyperlink{DBSSL}{entsprechenden Variablen} unterstützt unser System sowohl die Anbindung der Datenbank über JDBC, als auch über JDBCS. So können auch lokale Speicher am selben Server oder im Netzwerk ohne eigenes SSL-Zertifikat verwendet werden. \\
+- config.properties in den Anhang\\
+- Ordnerstruktur konsistenzcheck!\\
+- Links eintragen!!!\\
 
 \begin{center}
 \begin{table}[H]
+\hypertarget{tabelle}{}
 \begin{tabular} {| m{4cm} | m{6cm} | m{5cm} |}
 \hline
-\hypertarget{configTabelle}{Schlüsselname} & Wertebeschreibung & Wertebereich \\
+Schlüsselname & Wertebeschreibung & Wertebereich \\
 \hline
-DB\_HOST & Die URL (bzw. URI) unter der der Datenbankserver erreichbar ist.& Ein \hyperlink{https://datatracker.ietf.org/doc/html/rfc3986}{'Uniform Ressource Identifier'}. Pflichtfeld!\\
+DB\_HOST & Die URL (bzw. URI) unter der der Datenbankserver erreichbar ist.& Ein \hyperlink{https://datatracker.ietf.org/doc/html/rfc3986}{'Uniform Ressource Identifier'}. Der Standartwert ist 'localhost'.\\
 \hline
-DB\_PORT & Der Port unter dem der Server Anfragen entgegennimmt. & Eine ganze Zahl von 0 bis 65535. Pflichtfeld!\\
+DB\_PORT & Der Port unter dem der Server Anfragen entgegennimmt. & Eine ganze Zahl von 0 bis 65535. Der Standartport für Postgreserver ist 5432.\\
 \hline
-DB\_NAME & Der Name der Datenbank auf dem Server. & Ein String. Pflichtfeld!\\
+DB\_NAME & Der Name der Datenbank auf dem Server. & Ein String. Wenn kein Name spezifiziert wird, ist der eingetragene Benutzername Standartwert.\\
 \hline
 DB\_USER & Der Name eines in der Datenbank registrierten Benutzers. & Ein String. Pflichtfeld!\\
 \hline
 DB\_PASSWORD & Das Passwort des oben angegebenen Datenbankbenutzers. & Ein String. Pflichtfeld!\\
 \hline
-DB\_CAPACITY & Die maximale Anzahl an Verbindungen, die die Datenbank dem Server zu Verfügung stellen kann. & Eine natürliche Zahl (nicht 0). Standartwert ist 42.\\
+DB\_TLS &  \hypertarget{DBSSL}{Diese Option} legt das zur Kommunikation mit der Datenbank verwendete Protokoll fest (der Server muss dies unterstützen!). & Ein Boolean. 'TRUE' für das SSL-verschlüsselte Verbindung, 'FALSE' ohne SSL-Verschlüsselung. Die verwendete SSL-Factory ist \hyperlink{https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/ssl/DefaultJavaSSLFactory.html}{hier} zu finden.\\ 
+\hline
+DB\_CAPACITY & Die maximale Anzahl an Verbindungen, die die Datenbank dem Server zu Verfügung stellen kann. & Eine natürliche Zahl (nicht 0). Standartwert ist 5.\\
 \hline
 MAILSERVER\_HOST & Der URI unter der der E-Mail-Server erreichbar ist. &  Ein \hyperlink{https://datatracker.ietf.org/doc/html/rfc3986}{'Uniform Ressource Identifier'}. Pflichtfeld! \\ 
 \hline
@@ -230,11 +240,15 @@ MAILSERVER\_PORT & Der Port durch den Anfragen an den Server geleitet werden. & 
 \hline
 MAIL\_SOURCE & Die Absenderadresse für E-Mails des Bibliothekssystems. & Gültige E-Mail-Adressen folgen \hyperlink{https://datatracker.ietf.org/doc/html/rfc5322}{diesem Schema}. Pflichtfeld!\\
 \hline
+MAIL\_TLS & Diese Option legt das zur Kommunikation mit dem Mail-Server verwendete Protokoll fest (der Server muss dies unterstützen!). & Ein Boolean. 'TRUE' für das SMTPS Protokoll, 'FALSE' für SMTP ohne SSL-Verschlüsselung.\\ 
+\hline
+MAIL\_USER & Der Benutzername des Accounts am Mail-Server & Ein String. Pflichtfeld, wenn die MAIL\_TLS Option auf TRUE gesetzt wurde!\\
+\hline
+MAIL \_PASSWORD & Das Passwort zu obigem Benutzeraccount & Ein String. Pflichtfeld, wenn die MAIL\_TLS Option auf TRUE gesetzt wurde!\\
+\hline
 SCAN\_INTERVAL & Der Wartungsthread des Systems führt in diesem Interval automatische Aufgaben durch. & Eine natürliche Zahl (nicht 0) die Minuten repräsentiert. Standartwert ist 20. \\
 \hline
-DEFAULT\_ADMIN\_MAIL & Diese Zeichenkette wird ohne Verifizierung als E-Mail des ersten Administratoraccounts eingetragen, falls es noch keinen gibt (im System auch änderbar).  & Gültige E-Mail-Adressen folgen \hyperlink{https://datatracker.ietf.org/doc/html/rfc5322}{diesem Schema}, andernfalls kommen versendete Mails nicht an. Schlüssel ist auch Standartwert.\\
-\hline
-DEFAULT\_PASSWORD & Das Passwort des obigen Admin-Accounts. Sollte umgehend geändert werden. & Eine (möglichst zufällige) Zeichenkette. Standartwert ist 'bibadmin', dieser sollte sofort geändert werden!. \\
+DEFAULT\_ADMIN\_MAIL & Diese Zeichenkette wird ohne Verifizierung als E-Mail des ersten Administratoraccounts (PW: 'bibadmin') eingetragen, falls es noch keinen gibt (Daten im laufenden System änderbar).  & Gültige E-Mail-Adressen folgen \hyperlink{https://datatracker.ietf.org/doc/html/rfc5322}{diesem Schema}, andernfalls kommen versendete Mails nicht an. Schlüssel ist auch Standartwert.\\
 \hline
 LOG\_LEVEL & Eine Granularitätsoption für die Protokollierung der Fehler und Systemabläufe. & Im Detailgrad aufsteigend: 'SEVERE', 'DETAILED', 'DEVELOPMENT'. Standart ist 'SEVERE', andere Werte werden ignoriert. \\
 \hline
@@ -244,33 +258,29 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \end{table}
 \end{center}
 
-\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
-\begin{figure}
-\hypertarget{configFoto}{}
-\centering
-\includegraphics[angle = 270, width = 53em]{configProperties}
-\caption{Die \texttt{config.properties} Datei}
-\end{figure}
-\restoregeometry
-
 \subsection{Sprachressourcen}
-\indent Obwohl die Anwendung primär in Deutsch ausgeliefert wird, bietet die modulare Bauweise eine Erweiterungsmöglichkeit um andere Sprachausgaben. Dazu werden alle angezeigten Strings einer Sprache zentral im Ordner \texttt{/src/ressources/} des Applikationsverzeichnisses im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{\texttt{.properties}-Format} gespeichert. Die Namenskonvention für diese Dateien ist \texttt{messages\_xx.properties}, wobei \texttt{xx} durch das jeweilige \hyperlink{https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes}{Sprachenkürzel} ersetzt wird. Die Pakete sind durch Eintrag in die \texttt{faces-config.xml} im JSF-Framework registriert. Damit sind die Schlüssel mittels EL in den Facelets referenzierbar. So kann die Sprache, entweder auf der Profilseite manuell oder auch automatisch durch die Browserpräferenz, pro Nutzer-Session dynamisch eingestellt werden. Standartsprache ist Deutsch. Die Dateien selbst folgen obigen \hyperlink{propSchema}{Schema}. Die Schlüssel können einfach kopiert, mit Werten ergänzt und in den \texttt{/ressources}-Ordner gelegt werden. Ein Beispiel für die \hyperlink{messagesde}{deutsche} und \hyperlink{messagesen}{englische} Datei ist anbei.
+\indent Obwohl die Anwendung primär in Deutsch ausgeliefert wird, bietet die modulare Bauweise eine Erweiterungsmöglichkeit um andere Sprachausgaben. Dazu werden alle angezeigten Strings einer Sprache zentral im Ordner hyperlink{Paketstruktur}{\texttt{src/de/dedede/model/logic/}} des Applikationsverzeichnisses im \hyperlink{https://de.wikipedia.org/wiki/Java-Properties-Datei}{\texttt{.properties}-Format} gespeichert. Die Namenskonvention für diese Dateien ist \texttt{messages\_xxXX.properties}, wobei \texttt{xx} durch das jeweilige \hyperlink{https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes}{Sprachenkürzel} ersetzt wird, welches durch \texttt{XX} ebenfalls im Dialekt spezifiziert werden kann. Sprachübergreifende Begriffe werden in die \hyperlink{messages}{\texttt{messages.properties}}-Datei geschrieben, und sprachspezifische Übersetzungen werden wie oben beschrieben  Die Pakete sind durch Eintrag in die \texttt{faces-config.xml} im JSF-Framework registriert. Damit sind die Schlüssel mittels EL in den Facelets referenzierbar und die Nachrichten werden dann automatisch mit dem ausgewählten \texttt{locale} befüllt.  So kann die Sprache, entweder auf der Profilseite manuell oder auch automatisch durch die Browserpräferenz, pro Nutzer-Session dynamisch eingestellt werden. Standartsprache ist Deutsch. Die Sprachdateien selbst folgen obigen \hyperlink{propSchema}{Schema}, mit Präfixen an den Schlüsseln um die Zugehörigkeit zum jeweiligen Facelet anzuzeigen ('lp' = 'login page', 'sb' = 'sidebar' etc.). Die Schlüssel können einfach kopiert, mit Werten ergänzt und in den \hyperlink{Paketstruktur}{\texttt{entsprechenden}}!!!-Ordner gelegt werden. Ein Beispiel für die \hyperlink{messages}{sprachübergreifende} \hyperlink{messagesde}{deutsche} und \hyperlink{messagesen}{englische} Datei ist anbei.\\
+\begin{figure}[H]
+\hypertarget{messages}{}
+\centering
+\includegraphics[width=50em]{messagesen}
+\caption{Sprachübergreifende Begriffe}
+\end{figure}
 
-\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
-\begin{figure}
+\begin{figure}[H]
 \hypertarget{messagesen}{}
 \centering
-\includegraphics[width=60em]{messagesen}
+\includegraphics[width=50em]{messagesen}
 \caption{Englisches Sprachpaket}
 \end{figure}
 
-\begin{figure}  
+\begin{figure}[H]
 \hypertarget{messagesde}{}
 \centering
-\includegraphics[width=60em]{messagesde}
+\includegraphics[width=50em]{messagesde}
 \caption{Deutsches Sprachpaket}
 \end{figure}
-\restoregeometry
+
 
 %----------------------------------------------------------------------Kapitel 6--------------------------------------------------------------------------------------------
 
@@ -783,77 +793,248 @@ JSF Templates.
 \end{landscape}
 
 %----------------------------------------------------------------------Kapitel 7--------------------------------------------------------------------------------------------
+
 \section{Datenbankschema}
-In diesem Abschnitt wird die Umwandlung des ER-Diagramms (Siehe Entwurf Kapitel 7) in ein relationales Datenbankschema behandelt und untersucht.
+\sectionauthor{Jonas Picker}
+In diesem Abschnitt wird die Umwandlung des ER-Diagramms (Siehe Entwurf Kapitel 7) in ein relationales Datenbankschema behandelt und untersucht. Der verwendete SQL-Dialekt ist \hyperlink{https://www.postgresql.org/}{PostgreSQL}. Der Code zum erstellen des Datenbankschemas ist \hyperlink{SQLCode}{anbei}.
 \subsection{Umwandlungsentscheidungen}
-\textbf{Starke Entitäten:} Die starken Entitäten \hyperlink{Medium}{'Medium'},\hyperlink{Category}{'Kategorie'} und \hyperlink{User}{'Benutzer'} werden klassisch in eigene Tabellen mit den markierten Primärschlüsseln umgewandelt. \hyperlink{Application}{'Anwendung'} wird als einzeilige Tabelle mit konstantem Primärschlüssel umgesetzt. Die Spezialisierungen der Entität 'Benutzer' werden, aus Mangel an eigenen Attributen, in die Benutzertabelle mittels des neuen Attributs 'userRole' integriert. \\
-\textbf{Schwache Entitäten:} Die zum Benutzer gehörige Entität 'Adresse' wird mit der \hyperlink{User}{Benutzertabelle} fusioniert, da wir die Adresse in unserem System nicht weiterverarbeiten und die Anzahl zusammenwohnender Nutzer verschwindend gering sein wird. Da es sich bei den Attributen 'Signatur' und 'Bibliotheksstandort' um nutzergenerierte Werte handelt, wird die vom Medium abhängige 'Exemplar'-Entität in eine \hyperlink{Copy}{Tabelle} mit dem Kompositschlüssel (\textit{mediumID, copyID}) transformiert. Mit den Entitäten \hyperlink{CustomAttribute}{'Attribut'} und \hyperlink{AttributeType}{'Attributtyp'} wird ebenso verfahren, die jeweiligen Kompositschlüssel sind (\textit{mediumID, attributeID}) und (\textit{attributeID, typeID}). \\
+\textbf{Starke Entitäten:} Die starken Entitäten \hyperlink{Medium}{'Medium'}, \hyperlink{Category}{'Kategorie'} und \hyperlink{User}{'Benutzer'} werden klassisch in eigene Tabellen mit den markierten Primärschlüsseln umgewandelt. \hyperlink{Application}{'Anwendung'} wird als einzeilige Tabelle mit konstantem Primärschlüssel umgesetzt. Die Spezialisierungen der Entität 'Benutzer' werden, aus Mangel an eigenen Attributen, in die Benutzertabelle mittels des neuen Attributs 'userRole' integriert. \\
+\textbf{Schwache Entitäten:} Die zum Benutzer gehörige Entität 'Adresse' wird mit der \hyperlink{User}{Benutzertabelle} fusioniert, da wir die Adresse in unserem System nicht weiterverarbeiten und die Anzahl zusammenwohnender Nutzer verschwindend gering sein wird. Da es sich bei den Attributen 'Signatur' und 'Bibliotheksstandort' um nutzergenerierte Werte handelt, wird die vom Medium abhängige 'Exemplar'-Entität in eine \hyperlink{Copy}{Tabelle} mit dem Kompositschlüssel (\textit{mediumID, copyID}) transformiert. Mit den Entitäten \hyperlink{CustomAttribute}{'Attribut'} und \hyperlink{AttributeType}{'Attributtyp'} wird ebenso verfahren, die jeweiligen Kompositschlüssel sind (\textit{mediumID, attributeID}) und (\textit{attributeID, attributeTypeID}). \\
 \textbf{Relationen:} Alle hat-ein-Relationen verschwinden. Da sich die Relationen 'markiert' und 'ausgeliehen' gegenseitig ausschließen, werden sie in der \hyperlink{Copy}{'Exemplar'-Tabelle} in einen einzigen Fremdschlüssel umgewandelt, der zusammen mit dem Verfügbarkeitsstatus die gleichen Funktionalitäten der Originalrelationen abbilden kann. Aus der Relation 'ist Kind von' entsteht ebenfalls eine eigene Spalte \textit{parent} in der \hyperlink{Category}{'Kategorie'-Tabelle}. Da der oberste Knoten der Hierarchie keinen Elternknoten besitzt, ist hier ebenfalls \texttt{NULL} erlaubt. Bei Löschung der Elternkategorie wird eine kaskadierende Löschung der Kinder vorgenommen. Die Relation 'eingeordnet unter' wird in einen Fremdschlüssel in der \hyperlink{Medium}{'Medium'-Tabelle} umgewandelt, der auch \texttt{NULL} als Wert erlaubt. Hier wird von den im ER-Diagramm spezifizierten Kardinalitäten abgewichen und Medien, die nicht manuell in eine Kategorie eingeordnet wurden, nehmen nicht an der Relation Teil (\texttt{NULL} repräsentiert den Top-Knoten). \\
 \subsection{Konventionen und eigene Datentypen}
-\textbf{Namenskonventionen:} Eigens definierte Datentypen und Attribute normaler Entitätstabellen werden in Camel-Case, aber klein geschrieben. Werte der \texttt{ENUM}s werden klein geschrieben. Tabellennamen sind in normalem Camel-Case. \\
-\textbf{Eigene Datentypen:} Statt dem Einlesen von Strings werden im Java-Code des Systems Enums verwendet, um Zustände zu speichern. Diese werden auch in der Datenbank in Form von eigenen \hyperlink{ENUMs}{Enumerationstypen} gespeichert. 
-\newgeometry{left=0cm,right=0cm,top=0cm,bottom=0cm}
-\begin{figure}
-\hypertarget{ENUMs}{}
-\centering
-\includegraphics[width=9cm]{SQLENUMs1}
-\caption{Die systemeigenen \texttt{ENUM}-Typen}
-\end{figure}
+\textbf{Namenskonventionen:} Eigens definierte Datentypen und Attribute normaler Entitätstabellen werden in Camel-Case, aber klein geschrieben. Werte der \texttt{ENUM}s werden klein geschrieben. Tabellennamen sind in normalem Camel-Case.\\
+\textbf{Eigene Datentypen:} Statt dem Einlesen von Strings werden im Java-Code des Systems Enums verwendet, um Zustände zu speichern. Diese werden auch in der Datenbank in Form von eigenen \hyperlink{SQLCode}{Enumerationstypen} gespeichert.\\
 
-\begin{figure}
-\centering
-\includegraphics[width=9cm]{SQLENUMs2}
-\caption{Weitere \texttt{ENUM}-Typen}	
-\end{figure}
+\newgeometry{left=1cm,right=0cm,top=0cm,bottom=0cm}
+\hypertarget{SQLCode}{}
+\begin{lstlisting}
+CREATE TYPE userLendStatus AS ENUM (
+	'DISABLED',
+	'ENABLED'
+);
 
-\begin{figure}
+CREATE TYPE userVerificationStatus AS ENUM (
+	'VERIFIED',
+	'UNVERIFIED'
+);
+
+CREATE TYPE userRole AS ENUM (
+	'ADMIN',
+	'STAFF',
+	'REGISTERED'
+);
+
+CREATE TYPE systemRegistrationStatus AS ENUM (
+	'OPEN',
+	'CLOSED'
+);
+
+CREATE TYPE systemAnonAccess AS ENUM (
+	'REGISTRATION',
+	'OPAC'
+);
+
+CREATE TYPE registeredUserLendStatus AS ENUM (
+	'MANUAL',
+	'UNLOCKED'
+);
+
+CREATE TYPE copyStatus AS ENUM (
+	'BORROWED',
+	'READY_FOR_PICKUP',
+	'AVAILABLE'
+);
+
+CREATE TYPE attributeType AS ENUM (
+	'TEXT',
+	'IMAGE',
+	'LINK'
+);
+
+CREATE TYPE attributeMultiplicity AS ENUM (
+	'SINGLE_VALUED',
+	'MULTI_VALUED'
+);
+
+CREATE TYPE mediumPreviewPosition AS ENUM (
+	'FIRST',
+	'SECOND',
+	'THIRD',
+	'FOURTH',
+	'HIDDEN'
+);
+
+CREATE TYPE attributeModifiability AS ENUM (
+	'MODIFIABLE',
+	'STATIC'
+);
+\end{lstlisting} 
 \hypertarget{User}{}
-\flushleft
-\includegraphics[width=50em]{SQLUSER}
-\caption{SQL-Anweisung zum Erstellen der Nutzertabelle, mit automatischem Setzen der Tokenerstellzeit.}
-\end{figure}
-
-\begin{figure}
-\hypertarget{Medium}{}
-\flushleft
-\includegraphics[width=60em]{SQLMEDIUM}
-\caption{SQL-Anweisung zum Erstellen der 'Medium'-Tabelle.}
-\end{figure}
-
-\begin{figure}
+\begin{lstlisting}
+CREATE TABLE Users (
+	userID SERIAL,
+	emailAddress VARCHAR(100) NOT NULL UNIQUE,
+	passwordHashSalt VARCHAR(40) NOT NULL,
+	passwordHash VARCHAR(64) NOT NULL,
+	name VARCHAR(100),
+	surname VARCHAR(100),
+	postalCode VARCHAR(20),
+	city VARCHAR(100),
+	street VARCHAR(100),
+	houseNumber VARCHAR(20),
+	token CHAR(20) UNIQUE,
+	tokenCreation TIMESTAMP,
+	userLendPeriod INTERVAL,
+	lendStatus USERLENDSTATUS NOT NULL DEFAULT 'DISABLED',
+	verificationStatus USERVERIFICATIONSTATUS NOT NULL DEFAULT 'UNVERIFIED',
+	userRole USERROLE NOT NULL DEFAULT 'REGISTERED',
+	
+	PRIMARY KEY(userID),
+	CONSTRAINT positive_tokenCreation CHECK (tokenCreation >= NOW())
+);
+\end{lstlisting} 
 \hypertarget{Application}{}
-\flushleft
-\includegraphics[width=45em]{SQLAPPLICATION}
-\caption{SQL-Anweisung zum Erstellen der 'Applikations'-Tabelle. Hier werden Anwendungseinstellungen gespeichert.}
-\end{figure}
-
-\begin{figure}
+\begin{lstlisting}
+CREATE TABLE Application (
+	one SERIAL,
+	bibName VARCHAR(100),
+	emailRegEx VARCHAR(200),
+	contactInfo TEXT,
+	imprintInfo TEXT,
+	privacyPolicy TEXT,
+	bibLogo BYTEA,
+	globalLendLimit INTERVAL,
+	globalMarkingLimit INTERVAL,
+	reminderOffset INTERVAL,	
+	registrationStatus SYSTEMREGISTRATIONSTATUS NOT NULL DEFAULT 'OPEN',
+	lookAndFeel VARCHAR(40) NOT NULL,
+	anonRights SYSTEMANONACCESS NOT NULL DEFAULT 'OPAC',
+	userLendStatus REGISTEREDUSERLENDSTATUS NOT NULL DEFAULT 'UNLOCKED'	
+);
+\end{lstlisting}
+\hypertarget{Medium}{}
+\begin{lstlisting}
+CREATE TABLE Medium ( 
+	mediumID SERIAL,
+	hasCategory INTEGER,
+	
+	PRIMARY KEY(mediumID),
+	CONSTRAINT fk_Category 
+		FOREIGN KEY(hasCategory) 
+			REFERENCES Category(categoryID) 
+				ON DELETE SET NULL
+);
+\end{lstlisting} 
 \hypertarget{Category}{}
-\flushleft
-\includegraphics[width=60em]{SQLCATEGORY}
-\caption{SQL-Anweisung zum Erstellen der 'Kategorie'-Tabelle.}
-\end{figure}
-
-\begin{figure}
-\hypertarget{CustomAttribut}{}
-\flushleft
-\includegraphics[width=60em]{SQLCUSTOMATTRIBUTE}
-\caption{SQL-Anweisung zum Erstellen der 'Attribute'-Tabelle.}
-\end{figure}
-
-\begin{figure}
+\begin{lstlisting}
+CREATE TABLE Category (
+	categoryID SERIAL,
+	title VARCHAR(100) NOT NULL,
+	description TEXT,
+	parentCategoryID INTEGER,
+	
+	PRIMARY KEY(categoryID),
+	CONSTRAINT fk_Category
+		FOREIGN KEY(parentCategoryID)
+			REFERENCES Category(categoryID) 
+				ON DELETE CASCADE
+);
+\end{lstlisting} 
+\hypertarget{CustomAttribute}{}
+\begin{lstlisting}
+CREATE TABLE CustomAttribute (
+	attributeID SERIAL,
+	mediumID INTEGER NOT NULL,
+	attributeName VARCHAR(40) NOT NULL,
+	attributeValue BYTEA,
+	
+	PRIMARY KEY(mediumID, attributeID),
+	CONSTRAINT fk_Medium 
+		FOREIGN KEY(mediumID) 
+			REFERENCES Medium(mediumID) 
+				ON DELETE CASCADE
+);
+\end{lstlisting} 
 \hypertarget{AttributeType}{}
-\flushleft
-\includegraphics[width=60em]{SQLATTRIBUTETYPE}
-\caption{SQL-Anweisung zum Erstellen der Tabelle für Attributtypen.}
-\end{figure}
-
-\begin{figure}
+\begin{lstlisting}
+CREATE TABLE AttributeType (
+	typeID SERIAL,
+	attributeID INTEGER NOT NULL,
+	previewPosition ATTRIBUTEPREVIEWPOSITION NOT NULL DEFAULT 'HIDDEN',
+	multiplicity ATTRIBUTEMULTIPLICITY NOT NULL DEFAULT 'SINGLE_VALUED',
+	modifiability ATTRIBUTEMODIFIABILITY NOT NULL DEFAULT 'MODIFIABLE',
+	dataType ATTRIBUTEDATATYPE NOT NULL DEFAULT 'TEXT',
+	
+	PRIMARY KEY(attributeID, typeID),
+	CONSTRAINT fk_CustomAttribute 
+		FOREIGN KEY(attributeID) 
+			REFERENCES CustomAttribute(attributeID) 
+				ON DELETE CASCADE
+);
+\end{lstlisting}
 \hypertarget{Copy}{}
-\centering
-\includegraphics[width=60em]{SQLCOPY}
-\caption{SQL-Anweisung zum Erstellen der 'Exemplar'-Tabelle mit Integritätschecks für die 'ausgeliehen'- und  'markiert'-Relationen.}
-\end{figure}
+\begin{lstlisting}
+CREATE TABLE Copy ( 
+	copyID SERIAL,
+	mediumID INTEGER NOT NULL,
+	signature VARCHAR(100) UNIQUE,
+	bibPosition VARCHAR(100),
+	status COPYSTATUS NOT NULL DEFAULT 'AVAILABLE',
+	deadline TIMESTAMP,
+	actor INTEGER,
+	
+	PRIMARY KEY(fromMedium, copyID),
+	CONSTRAINT fk_Medium 
+		FOREIGN KEY(mediumID) 
+			REFERENCES Medium(mediumID) 
+				ON DELETE CASCADE,
+	CONSTRAINT fk_User 
+		FOREIGN KEY(actor) 
+			REFERENCES User(userID) 
+				ON DELETE RESTRICT,
+	CONSTRAINT positive_deadline CHECK ((deadline IS NULL) OR (deadline > NOW()),
+	CONSTRAINT available_constraint CHECK (status != 'available' OR actor IS NULL)
+);
+
+CREATE FUNCTION check_status_validity() RETURNS TRIGGER AS 
+$$
+	BEGIN
+			--forbidden: marking lent copy
+		IF (OLD.status == 'lent') AND (NEW.status == 'marked') THEN 
+		RAISE EXCEPTION 'Cannot mark a lent copy';
+				--forbidden: lending lent copy
+		ELSE IF (OLD.status == 'lent') AND (NEW.status == 'lent') THEN 
+		RAISE EXCEPTION 'Copy is already lent';
+				--forbidden: marking marked copy
+		ELSE IF (OLD.status == 'marked') AND (NEW.status == 'marked') THEN 
+		RAISE EXCEPTION 'Copy is already marked';
+				--forbidden: an available copy has no actor
+		ELSE IF (NEW.status == 'available') AND (NEW.actor IS NOT NULL) THEN 
+		RAISE EXCEPTION 'An available copys actor must be NULL';
+					--negated allowed transition: user picks up his marked copy
+		ELSE IF NOT ((OLD.status == 'marked' AND NEW.status == 'lent') AND (OLD.actor == NEW.actor)) THEN
+		RAISE EXCEPTION 'A marked copy can only be lent by the marking user!';	
+						--negated allowed transition: direct lend
+		ELSE IF NOT (	   ((OLD.status == 'available') AND (NEW.status == 'lent')) 
+						--negated allowed transition: marking period expired
+						OR ((OLD.status == 'marked') AND (NEW.status == 'available'))  
+						--negated allowed transition: makes no sense but doesn't hurt
+						OR ((OLD.status == 'available') AND (NEW.status == 'available'))
+					) 
+		THEN 
+		RAISE EXCEPTION 'Invalid operation';
+		RETURN NEW;
+	END IF;
+	END;
+$$
+LANGUAGE plpgsql;
+   
+CREATE TRIGGER 
+	BEFORE UPDATE OF status ON Copy
+	FOR EACH ROW 
+	EXECUTE PROCEDURE check_validity();
+
+\end{lstlisting}
 \restoregeometry
 
 \subsection{Normalformanalyse}
@@ -880,8 +1061,6 @@ Es gibt sowohl Städte mit mehreren Postleitzahlen, als auch Postleitzahlen, die
 Die Attribute \textit{status, deadline, actor} beeinflussen sich gegenseitig, \textit{deadline} hängt jedoch noch von anderen Limits außerhalb dieser Relation ab und wird somit nicht eindeutig durch Änderungen von \textit{actor} oder \textit{status} festgelegt. Da nur der Status 'available' den Wert \texttt{NULL} im Attribut \textit{actor} impliziert und alle anderen Werte keine eindeutige Zuordnung festlegen, gibt es hier keine schlüsselunabhängigen Abhängigkeiten.\\
 \\
 Aus den minimalen Superschlüssel ergeben sich die Kandidatenschlüsselmöglichkeiten. Da alle Attributewerte nur atomare Werte annehmen können, ist das Schema in erster Normalform. Da es ebenfalls kein nichtprimes\footnote{Ein Attribut, welches nicht Teil eines Kandidatenschlüssels ist.} Attribut gibt, welches von einer echten Teilmenge eines Schlüssel funktional abhängig ist, gilt für das Schema die zweite Normalform. Für jede funktionale Abhängigkeit \textit{X $\rightarrow$ A} gilt außerdem: Entweder ist \textit{A} prim oder\textit{X} ist ein Superschlüssel der Relation. Damit folgt die dritte Normalform. Ohne schlüsselunabhängige Abhängigkeiten bleiben zur Untersuchung nur noch Attribute der überlappenden Kandidatenschlüssel übrig. In keine Richtung bestehen weder zwischen \textit{userID $\leftrightarrow$ token}, \textit{emailAddress $\leftrightarrow$ token} oder \textit{emailAddress $\leftrightarrow$ userID} noch zwischen \textit{signature $\leftrightarrow$ copyID} funktionale Zusammenhänge. Das Relationenschema ist somit in Boyce-Codd-Normalform, da alle Abhängigkeiten von Superschlüsseln ausgehen.
-
-
 
 %----------------------------------------------------------------------Kapitel 8--------------------------------------------------------------------------------------------
 \newpage
@@ -926,24 +1105,25 @@ Als Ergebnis der Methode 'handle' liefert der ExceptionHandler dem Nutzer den Li
 
 %----------------------------------------------------------------------Kapitel 9--------------------------------------------------------------------------------------------
 \section{Sicherheit}
+\sectionauthor{Jonas Picker}
 Dieses Kapitel baut auf dem Abschnitt 'technische Systemsicherheit' des Entwurfs auf und vertieft Sicherheitsaspekte der Anwendung.
 \subsection{Injections}
 \hypertarget{Injections}{Das} direkte Interpretieren von nutzergenerierten Eingaben wird unterbunden.\\
-\textbf{SQL:} Da unser System postgreSQL als Datenbankanfragesprache verwendet, wird in den \hyperlink{DAOs}{Data Access Objects} im Java-Code mit \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html}{'PreparedStatements'} gearbeitet. Da die eigentliche Anfrage nicht zusammen mit den vom Nutzer stammenden Parametern interpretiert wird, hat das Einschleusen von SQL-Code in diese Parameter keinen Effekt auf die Datenbank.\\
-\textbf{HTML/JavaScript:} \hypertarget{XSS}{Um} das Einschleusen von HTML- (und eingebetteten JavaScript-) Code, in nutzergenerierte Inhalte der Webseite zu verhindern, verfügen die JSF-Facelet Elemente für User-Inputs über integrierte Escaping-Funktionen. Alle nutzergenerierten Anzeigen der Webseite werden so direkt am Input geschützt.
+\textbf{SQL:} Da unser System postgreSQL als Datenbankanfragesprache verwendet, wird in den \hyperlink{DAOs}{Data Access Objects}!!! im Java-Code mit \hyperlink{https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html}{'PreparedStatements'} gearbeitet. Da die eigentliche Anfrage nicht zusammen mit den vom Nutzer stammenden Parametern interpretiert wird, hat das Einschleusen von SQL-Code in diese Parameter keinen Effekt auf die Datenbank.\\
+\textbf{HTML/JavaScript:} \hypertarget{XSS}{Um} das Einschleusen von HTML- (und eingebetteten JavaScript-) Code, in nutzergenerierte Inhalte der Webseite zu verhindern, verfügen die JSF-Facelet Elemente zum Anzeigen nutzergenerierter Inhalte über integrierte Escaping-Funktionen. Konkret: Der implizite Attributwert \texttt{'escape'} des Facelet-Element \hyperlink{https://docs.oracle.com/javaee/7/javaserver-faces-2-2/vdldocs-facelets/h/outputText.html}{\texttt{<h:outputText>}} ist \texttt{'true'}, sensitive \texttt{XML} und \texttt{HTML} Sonderzeichen werden somit automatisch escapet und damit wird verhindert, dass eingeschleuste Code-Snippets von Browsern anderer Nutzer interpretiert oder ausgeführt werden.
 \subsection{Insecure Direct Object References}
 Unbefugte direkte Zugriffe auf zugangsbeschränkte Teile der Anwendung werden abgefangen.\\ 
-Nutzer könnten versuchen, manuell die URL-Parameter in der Adresszeile zu verändern. In der Medienansicht könnte man so z.B. durch Ändern der ID auf die Ansicht eines anderen Mediums gelangen. Bei einer Anfrage werden erste Maßnahmen der Zugriffskontrolle nach der \texttt{RESTORE\_VIEW}-Phase im \hyperlink{PhaseListener}{Trespasslistener} vorgenommen. Hier wird über die Sessionmap die Nutzerrolle und der Loginstatus mit der URL-Struktur der Anfrage abgeglichen und bei invalidem Zugriff entsprechend umgeleitet. Um denselben Zugriffsprozess wie im Mediumsansicht-Beispiel bei der Profilseite zu verhindern, wird im Backing-Bean durch Zugriff auf die URL-Parameter geprüft, ob der Nutzer berechtigt ist, andere Profile als sein eigenes anzusehen. 
+Nutzer könnten versuchen, manuell die URL-Parameter in der Adresszeile zu verändern. In der Medienansicht könnte man so z.B. durch Ändern der ID auf die Ansicht eines anderen Mediums gelangen, dies ist jedoch nicht bei allen Facelets so unproblematisch. Bei einer Anfrage werden erste Maßnahmen der Zugriffskontrolle nach der \texttt{RESTORE\_VIEW}-Phase im \hyperlink{PhaseListener}{Trespaslistener}!!! vorgenommen. Hier wird über die Sessionmap die Nutzerrolle und der Loginstatus mit der URL-Struktur der Anfrage abgeglichen und bei invalidem Zugriff auf eine \hyperlink{invalidaccess}{Fehlerseite}!!! umgeleitet. Um denselben Zugriffsprozess wie im Mediumsansicht-Beispiel bei der Profilseite zu verhindern, wird im jeweiligen Backing-Bean mittels \hyperlink{https://docs.oracle.com/javaee/7/api/javax/annotation/PostConstruct.html}{\texttt{@PostConstruct}} sofort nach Instanzierung auf die URL-Parameter zugegriffen und geprüft, ob der Nutzer berechtigt ist, andere Profile als sein eigenes anzusehen. 
 \subsection{Session Fixation}
-Wie bereits im Abschnitt 'Session-Hijacking' des Entwurfs erwähnt, tauschen wir unmittelbar nach dem Login eines Benutzers im \hyperlink{Login}{Backing-Bean} den Identifikator der Nutzer-Session aus. \hyperlink{Session}{UserSession}-Objekte werden nur für eingeloggte Nutzer angelegt und beim Login werden keine vorherigen Zustandsinformationen übernommen.  Zusätzlich zur Zerstörung beim Logout haben alle Sessions Tomcat-intern einen Inaktivitätstimeout von 30 Minuten, den wir beibehalten werden (andere Servlet Container verwenden denselben Timeout).
+Wie bereits im Abschnitt 'Session-Hijacking' des Entwurfs erwähnt, tauschen wir unmittelbar nach dem Login eines Benutzers im \hyperlink{Login}{Backing-Bean}!! den Identifikator der internen \texttt{HttpSession} mittels \texttt{HttpServletRequest.changeSessionID()}  aus. Hauseigene \hyperlink{Session}{Session}!!!-\hypertarget{safetyfirst}{Objekte} werden nur für eingeloggte Nutzer angelegt und beim Login werden auch sonst keine vorherigen Zustandsinformationen übernommen. Zusätzlich zur Zerstörung beim Logout haben alle Sessions Tomcat-intern einen Inaktivitätstimeout von 30 Minuten, den wir beibehalten werden (andere Servlet Container verwenden denselben Timeout).
 \subsection{Userinput}
 Neben dem Vorbeugen von \hyperlink{Injections}{Injections} gibt es weitere Maßnahmen zum Absichern von Nutzereingaben.\\
-\textbf{Admins:} Ausnahmen von den \hyperlink{XSS}{XSS-Gegenmaßnahmen} bilden das Impressum, die Datenschutzerklärung und  die Kontaktinformationen, da wir Administratoren beim editieren mehr Gestaltungsmöglichkeiten geben wollen. Andere Nutzerrollen haben keinen schreibenden Zugriff auf diese Teile der Webseite.\\
-\textbf{Passwörter:} Eine Mindestlänge von 8 Zeichen in Groß- und Kleinschreibung und das enthalten einer Zahl wird durch den \hyperlink{Validator}{PasswordValidator} sichergestellt. Registrierte Passwörter werden nicht im Klartext gespeichert, sondern in der Klasse \hyperlink{Hash}{PasswordHashingModule} durch eine Hashfunktion geschickt. Durch vorheriges Anhängen eines Salts\footnote{Ein kurzer, zufällig generierter String.} an das Passwort werden Kollisionen der Hashfunktion unwahrscheinlicher und gleiche Passwörter entsprechen nicht mehr demselben Hashwert.\\
-\textbf{E-Mail-Adressen:} Bei der Registrierung eines neuen Nutzerkontos oder der Änderung der Adresse wird der vom Administrator festgelegte RegEx zuerst bedient und danach wird auf Duplikate in der Datenbank geprüft. Dies geschieht im \hyperlink{Validator}{EmailValidator}. Der anschließende Verifizierungsprozess stellt die Gültigkeit der Adresse sicher.
+\textbf{Admins:} Ausnahmen von den \hyperlink{XSS}{XSS-Gegenmaßnahmen} bilden das Impressum, die Datenschutzerklärung und  die Kontaktinformationen, da wir Administratoren beim editieren mehr Gestaltungsmöglichkeiten geben wollen. Hier würder der Browser \texttt{HTML}-Zeichen interpretieren, da dies explizit mit \texttt{<h:outputText\hspace{2mm}escape=\dq false\dq\hspace{2mm}value=\dq\#\{\textit{backingbean.dto.value}\}\dq/>} erlaubt wird. Andere Nutzerrollen haben keinen schreibenden Zugriff auf diese Teile der Webseite.\\
+\textbf{Passwörter:} Eine Mindestlänge von 8 Zeichen in Groß- und Kleinschreibung und das enthalten einer Zahl wird durch den \hyperlink{Validator}{PasswordValidator}!!! sichergestellt. Registrierte Passwörter werden nicht im Klartext gespeichert, sondern in der Klasse \hyperlink{Hash}{PasswordHashingModule}!!! mittels \hyperlink{}{\texttt{!!!}}!!! verarbeitet. Diese benutzt die Java-interne SHA3-256 Hashingfunktion der Klasse \hyperlink{https://docs.oracle.com/javase/9/docs/api/java/security/MessageDigest.html}{MessageDigest} (\texttt{.pdf} Downloadlink mit Spezifikation \hyperlink{https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf}{hier}). Das Ergebnis wird als 64 Buchstaben lange Hexadezimalzahl in der \hyperlink{User}{User-Tabelle} gespeichert. Durch vorheriges Anhängen eines Salts\footnote{Ein 40 Zeichen langer, zufällig generierter String.} an das Passwort werden Kollisionen der Hashfunktion noch unwahrscheinlicher und gleiche Passwörter entsprechen nicht mehr demselben Hashwert.\\
+\textbf{E-Mail-Adressen:} Bei der Registrierung eines neuen Nutzerkontos oder der Änderung der Adresse wird der vom Administrator festgelegte RegEx zuerst bedient und danach wird auf Duplikate in der Datenbank geprüft. Dies geschieht im \hyperlink{Validator}{EmailValidator}!!!. Der anschließende Verifizierungsprozess stellt die Gültigkeit der Adresse sicher.
 \subsection{System Secrecy}
 Die Hintergrundprozesse und Technologien werden bestmöglich versteckt.\\
-\textbf{Rollenisolation:} Ist der Nutzer berechtigt, das unter der URL erreichbare Facelet zu sehen, werden, anhand der Nutzerrolle,vorhandene Knöpfe und Eingabefelder je nach Rollenberechtigungen gerendert oder ausgeblendet. So haben Rollen der unteren Hierarchieschichten keine Information über die Möglichkeiten der darüber liegenden.\\
-\textbf{Technologiemaskierung:} Der XML-Dialekt der Facelet-Sprache ist für den Benutzer undurchsichtig, die Sprache wird durch das Framework in HTML und JavaScript mit der Endung '.xhtml' umgewandelt. Weder das verwendete Datenbanksystem noch das JSF-Framework sind für den Benutzer ersichtlich. Im laufenden System werden bei Fehlermeldungen eigene Fehlerseiten erstellt und keine Stack-Traces ausgegeben, um die Tomcat-eigenen Fehlerseiten nicht preiszugeben. Wenn möglich wird, durch die vorgezogene Verwendung von \textit{Forwards} statt \textit{Redirects} bei der Seitennavigation die URL gleich bleiben und dadurch die interne Ordnerstruktur zumindest teilweise maskiert.
+\textbf{Rollenisolation:} Ist der Nutzer berechtigt, das unter der URL erreichbare Facelet zu sehen, werden, anhand der Nutzerrolle,vorhandene Knöpfe und Eingabefelder je nach Rollenberechtigungen gerendert oder ausgeblendet. Dies wird durch einen Bedingungscheck in den Facelet-Elementen gesteuert (z.B. Komponente exklusiv für registrierte Nutzer und höher:\\ \texttt{<ui:component\hspace{2mm}rendered=\dq\#\{not empty userrole\}\dq>\textit{example}</ui:component>} mittels des Sessionattributes 'userrole'). So haben Rollen der unteren Hierarchieschichten keine Information über die Möglichkeiten der darüber liegenden.\\
+\textbf{Technologiemaskierung:} Der XML-Dialekt der Facelet-Sprache ist für den Benutzer undurchsichtig, die Sprache wird durch das Framework in HTML und JavaScript mit der Endung '.xhtml' umgewandelt. Weder das verwendete Datenbanksystem noch das JSF-Framework sind für den Benutzer ersichtlich. Im laufenden System werden bei Fehlermeldungen eigene Fehlerseiten erstellt und keine Stack-Traces ausgegeben, um die Tomcat-eigenen Fehlerseiten nicht preiszugeben. Hierzu gibt es, zusätzlich zu einer Standartfehlerseite, für die typischen \texttt{HTTP}-Fehlercodes (bzw. auftretende unchecked-Exceptions die  das Anzeigen einer internen Fehlerseite zur Folge hätten) eigene statische Fehlerseiten, die über \texttt{<error-page><error-code>}/\texttt{<error-page><exception-type>}-Mappings in der \texttt{web.xml} registriert sind. Problematische checked-Exceptions werden über den \hyperlink{ExceptionHandler}{ExceptionHandler}!!! zu einer dynamisch befüllten \hyperlink{dynamicerror}{Fehlerseite}!!! geleitet. Der \hyperlink{ExceptionHandler}{ExceptionHandler}!!! selbst wird mittels des Factory-Patterns \hyperlink{ExceptionHandlerFactory}{hier} erzeugt.
 
 \end{document}
