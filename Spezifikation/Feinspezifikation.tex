@@ -419,29 +419,29 @@ JSF Templates.
     \LNK & zur erweiterten Suche & \M{value} & \hyperref[page_medium_search]{\M{public/medium-search.xhtml}}\\
     \tag{h}{graphicImage} & Logo des Systems & \M{value} & \B{header.application.logo}\\
     \OUT & Name des Systems & \M{value} & \B{header.application.name}\\
-    \FRM & & \M{rendered} & \B{session.user != null}\\
+    \FRM & & \M{rendered} & \B{userSession.user != null}\\
     \INDENT\tag{h}{commandLink} & abmelden & \M{action} & \B{header.logOut()}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Anmeldemaske} & \M{value} & \hyperref[page_login]{\M{public/login.xhtml}}\\
-    & & \M{rendered} & \B{session.user == null}\\
+    & & \M{rendered} & \B{userSession.user == null}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Registrierungsseite} & \M{value} & \hyperref[page_registration]{\M{public/registration.xhtml}}\\
-    & & \M{rendered} & \B{session.user == null}\\
+    & & \M{rendered} & \B{userSession.user == null}\\
     \disambiguationrule
-    \2{\LNK} & \2{zur Profilseite} & \M{value} & \hyperref[page_profile]{\M{account/profile.xhtml?id=\RB{session.user.id}}}\\
-    & & \M{rendered} & \B{session.user != null}\\
+    \2{\LNK} & \2{zur Profilseite} & \M{value} & \hyperref[page_profile]{\M{account/profile.xhtml?id=\RB{userSession.user.id}}}\\
+    & & \M{rendered} & \B{userSession.user != null}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Direktausleihe} & \M{value} & \hyperref[page_direct_lending]{\M{staff/direct-lending.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Medienrückgabe} & \M{value} & \hyperref[page_return_form]{\M{staff/return-form.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\LNK} & \2{zu den abzuholenden Exemplaren aller Nutzer} & \M{value} & \hyperref[page_copies_ready_for_pickup_all_users]{\M{staff/copies-ready-for-pickup-all-users.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\LNK} & \2{zur Medienerstellung} & \M{value} & \hyperref[page_medium_creator]{\M{staff/medium-creator.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
 \endcontrols
 
 \subsubsection{Fußzeile}\label{page_footer}
@@ -539,9 +539,9 @@ JSF Templates.
 \begincontrols[public/login]
     % German grammar???
     \2{\OUT} & \2{Meldung für bereits Angemeldete} & \M{value} & \M{bundle['login.already\_logged\_in']} \\
-    & & \M{rendered} & \B{session.user != null} \\
+    & & \M{rendered} & \B{userSession.user != null} \\
     \disambiguationrule
-    \FRM & & \M{rendered} & \B{session.user == null}\\
+    \FRM & & \M{rendered} & \B{userSession.user == null}\\
     \INDENT\INP & E-Mail-Adresse & \M{value} & \B{login.user.emailAddress}\\
     \INDENT\INDENT\tag{f}{validator} & & \M{validatorId} & \M{EmailValidator} \\
     \INDENT\PAS & Passwort & \M{value} & \B{login.password} \\ % BEACON password converter to hash
@@ -557,10 +557,10 @@ JSF Templates.
     \FRM & & &\\
     \disambiguationrule
     \INDENT\2{\TXT} & \2{Datenschutzerklärung} & \M{value} & \B{privacyPolicy.application.privacyPolicy}\\
-    & & \M{readonly} & \B{session.user.role < 'ADMIN'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'ADMIN'}\\
     \disambiguationrule
     \INDENT\2{\BTN} & \2{Änderungen speichern} & \M{action} & \B{privacyPolicy.save()}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
 \endcontrols
 
 \subsubsection{Direktausleihe}\label{page_direct_lending}
@@ -604,10 +604,10 @@ JSF Templates.
     \FRM & & &\\
     \disambiguationrule
     \INDENT \2{\TXT} & \2{Impressum} & \M{value} & \B{siteNotice.application.siteNotice}\\
-    & & \M{readonly} & \B{session.user.role < 'ADMIN'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'ADMIN'}\\
     \disambiguationrule
     \INDENT\2{\BTN} & Änderungen speichern & \M{action} & \B{siteNotice.save()}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
 \endcontrols
 
 \subsubsection{Kategorienerstellung}\label{page_category_creator}
@@ -627,22 +627,22 @@ JSF Templates.
     \tag{bibi}{treeView} & Baumansicht von Kategorien & &\\
     \disambiguationrule
     \2{\INP} & \2{Titel der ausgewählten Kategorie} & \M{value} & \B{categoryBrowser.category.title}\\ % rename name -> title in dto
-    & & \M{readonly} & \B{session.user.role < 'STAFF'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'STAFF'}\\
     \disambiguationrule
     \2{\INDENT\INDENT\tag{f}{validateLength}} & & \M{minimum} & \M{1} \\
     & & \M{maximum} & \M{100} \\
     \disambiguationrule
     \2{\TXT} & \2{Beschreibung der ausgewählten Kategorie} & \M{value} & \B{categoryBrowser.category.description}\\
-    & & \M{readonly} & \B{session.user.role < 'STAFF'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'STAFF'}\\
     \disambiguationrule
     \2{\BTN} & \2{Änderungen an der Kategorie speichern} & \M{action} & \B{categoryBrowser.saveCategory()} \\ % TASK TASK (missing in the class diagram!!!)
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\tag{h}{commandLink}} & \2{Kategorie unter der ausgewählten Kategorie erstellen} & \M{action} & \hyperref[page_category_creator]{\M{staff/category-creator.xhtml}}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \2{\BTN} & \2{ausgewählte Kategorie löschen} & \M{action} & \B{categoryBroswer.deleteCategory()}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
     \LST & Medienvorschauen in der ausgewählten Kategorie & & \\ % TASK sep tex-table
 \endcontrols
@@ -653,10 +653,10 @@ JSF Templates.
     \FRM & & &\\
     \disambiguationrule
     \INDENT\2{\TXT} & \2{Kontaktinformationen} & \M{value} & \B{contact.application.contactInfo}\\
-    & & \M{readonly} & \B{session.user.role < 'ADMIN'}\\
+    & & \M{readonly} & \B{userSession.user.role < 'ADMIN'}\\
     \disambiguationrule
     \INDENT\2{\BTN} & \2{Änderungen speichern} & \M{action} & \B{contact.save()}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
 \endcontrols
 
 \subsubsection{Leihfristverstöße}\label{page_lending_period_violations}
@@ -778,12 +778,12 @@ JSF Templates.
     & & \M{var} & \hyperref[subcontrol_medium_attribute]{\M{attribute}}\\
     \disambiguationrule
     \INDENT\2{\BTN} & \2{Änderung an den Attributen speichern} & \M{action} & \B{medium.saveAttributes()}\\
-    & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \disambiguationrule
-    \FRM & & \M{rendered} & \B{session.user != null}\\
+    \FRM & & \M{rendered} & \B{userSession.user != null}\\
     \INDENT\BTN & willkürliches Exemplar abholen & \M{action} & \B{medium.pickUpAnyCopy()}\\
     \INDENT\OUT & Rückgabefrist unter Einbeziehung der nutzerbezogenen & \M{value} & \B{medium.returnPeriod}\\
-    \FRM & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    \FRM & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \INDENT\INP & mediumsspezifische Rückgabefrist & \M{value} & \B{medium.medium.returnPeriod}\\
     \INDENT\BTN & Änderungen an der Rückgabefrist speichern & \M{action} & \B{medium.saveReturnPeriod()}\\
     \INDENT\BTN & Medium löschen & \M{action} & \B{medium.delete()}\\
@@ -795,7 +795,7 @@ JSF Templates.
     & & \M{var} & \hyperref[data_table_medium_copies]{\M{copy}}\\
     & & \M{varStatus} & \M{status}\\
     \disambiguationrule
-    \FRM & & \M{rendered} & \B{session.user.role >= 'STAFF'}\\
+    \FRM & & \M{rendered} & \B{userSession.user.role >= 'STAFF'}\\
     \INDENT\tag{bibi}{reactiveInputField} & Standort eines neuen Exemplars & \M{value} & \B{medium.copy.location}\\
     \INDENT\INP & Signatur eines neuen Exemplars & \M{value} & \B{medium.copy.signature}\\
     \INDENT\BTN & neues Exemplar erstellen & \M{action} & \B{medium.createCopy()}\\
@@ -806,7 +806,7 @@ JSF Templates.
 % TASK visibility
 % TASK multivalued
 \2{\INP} & \2{Attributwert} & \M{value} & \B{attribute.value}\\
-& & \M{readonly} & \B{session.user.role < 'STAFF'}\\
+& & \M{readonly} & \B{userSession.user.role < 'STAFF'}\\
 % TODO existiert pro Mediena (bei mehrwertigen)
 %    \BTN & \M{action} & \B{medium.addAttributeInputField()} zum Hinzufügen eines weiteren Attributeingabefelds; existiert pro Medienattribut & \BIB\\
 \endsubcontrols
@@ -823,14 +823,14 @@ JSF Templates.
         \textbf{\tag{h}{column}} & \textbf{Tag} & \textbf{Name} & \textbf{Bindung}\\
         \midrule
         \2{Standort} & \2{\INP} & \M{value} & \B{copy.location} \\
-        & & \M{readonly} & \B{session.user.role < 'STAFF'} \\
+        & & \M{readonly} & \B{userSession.user.role < 'STAFF'} \\
         \xdisambiguationrule
         Verfügbarkeit & \OUT & \M{value} & \B{copy.availabilityStatus} \\
         \xdisambiguationrule
         \2{Signatur} & \2{\INP} & \M{value} & \B{copy.signature} \\
-        & & \M{readonly} & \B{session.user.role < 'STAFF'} \\
+        & & \M{readonly} & \B{userSession.user.role < 'STAFF'} \\
         \xdisambiguationrule
-        Aktionen & \FRM & \M{rendered} & \B{session.user.role >= 'STAFF'} \\
+        Aktionen & \FRM & \M{rendered} & \B{userSession.user.role >= 'STAFF'} \\
         % QUESTION still show if currently lent??
         Aktionen & \INDENT\BTN & \M{action} & \B{medium.saveCopy(status.index)} \\
         Aktionen & \INDENT\BTN & \M{action} & \B{medium.deleteCopy(status.index)} \\
@@ -846,7 +846,7 @@ JSF Templates.
         & & \M{rendered} & \B{copy.status == 'BORROWED'} \\
         \xdisambiguationrule
         % BEACON TASK CLASSES rename userLendStatus -> lendStatus, copy.copyStatus -> copy.status
-        Aktionen & \FRM & \M{rendered} & \B{session.user != null \&\& session.user.lendStatus == 'ENABLED' \&\& copy.status == 'AVAILABLE'} \\
+        Aktionen & \FRM & \M{rendered} & \B{userSession.user != null \&\& userSession.user.lendStatus == 'ENABLED' \&\& copy.status == 'AVAILABLE'} \\
         \xdisambiguationrule % since prev is so long and breaks
         Aktionen & \INDENT\BTN & \M{action} & \B{medium.pickUpCopy(status.index)} \\
         \bottomrule
@@ -945,7 +945,7 @@ JSF Templates.
     \INDENT\INP & Hausnummer des Wohnsitzes & \M{value} & \B{profile.user.streetNumber}\\
     \disambiguationrule
     \2{\INDENT\DRP} & \2{Nutzerrolle} & \M{value} & \B{profile.user.role}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN' \&\& profile.user.id != session.user.id}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN' \&\& profile.user.id != userSession.user.id}\\
     \disambiguationrule
     \4{\INDENT\INDENT\tag{f}{selectItems}} & & \M{value} & \B{profile.allUserRoles} \\
     & & \M{var} & \M{role} \\
@@ -953,11 +953,11 @@ JSF Templates.
     & & \M{itemLabel} & \B{bundle[role.toString()]} \\
     \disambiguationrule
     \2{\INDENT\CHK} & \2{Accountstatus (ent-/gesperrt)} & \M{value} & \B{profile.user.accountStatus}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
     \disambiguationrule
      % !!!! TASK UPDATE dto from lendingPeriod -> returnPeriod´
     \2{\INDENT\INP} & \2{Rückgabefrist} & \M{value} & \B{profile.user.returnPeriod}\\
-    & & \M{rendered} & \B{session.user.role == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.role == 'ADMIN'}\\
     \disambiguationrule
     \INDENT\BTN & Änderungen am Profil speichern & \M{action} & \B{profile.save()}\\
     % BEACON NOTE spaces just because of latex line break mechanisms!!
@@ -986,7 +986,7 @@ JSF Templates.
     \INDENT\INP & Hausnummer des Wohnsitzes & \M{value} & \B{registration.user.streetNumber}\\
     \disambiguationrule
     \2{\INDENT\DRP} & \2{Nutzerrolle} & \M{value} & \B{registration.user.role}\\
-    & & \M{rendered} & \B{session.user.id == 'ADMIN'}\\
+    & & \M{rendered} & \B{userSession.user.id == 'ADMIN'}\\
     \disambiguationrule
     \4{\INDENT\INDENT\tag{f}{selectItems}} & & \M{value} & \B{registration.allUserRoles} \\
     & & \M{var} & \M{role} \\
