@@ -418,18 +418,8 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 \newcommand{\PRM}{\tag{f}{viewParam}}
 \newcommand{\FRM}{\tag{h}{form}}
 
-%\begin{itemize}
-%    \item (IDs pro Element)
-%    \item Composite-Component-Definition von paginierten Listen
-%    \item Composite-Component-Definition von paginierten Baumansichten
-%    \item Composite-Component-Definition von reaktiven Eingabefeldern
-%    \item Drop-Down-Listen werden noch nicht befüllt (mit Strings aus dem LocaleBundle)
-%    \tag{ui}{repeat} \tag{f}{selectItem}
-%    \item Converters und Validators sind nicht aufgezeichnnet
-%    \item Verifiziert, dass alle input-felder form-felder haben
-%    \item \M{MediumSearchDTO} etc
-%\end{itemize}
-
+Alle Seiten nehmen die einzige Seitenvorlage (\ref{template}) als Vorlage.
+Jede Seite wird vom einer entsprechenden Backing Bean angetrieben, welche sich namentlich lediglich durch die Schreibweise unterscheidet. So wird bspw. die Seite \texttt{privacy-policy.xhtml} (in \textit{dash case}) mit der Bean \texttt{PrivacyPolicy} (in \textit{upper camel case}) assoziiert.
 Sofern nicht anders ausgewiesen folgt jedem Eingabefeld und \PAS ein Ausgabefeld für Meldungen, eine \tag{h}{message}.
 Zudem existiert für generell jedes Eingabefeld o.ä. ein Ausgabefeld für dessen Bezeichnung, ein \tag{h}{outputLabel}, dessen Bindung
 auf das i18n resource bundle zugreift, welches unten mit \M{bundle} referenziert wird.
@@ -463,16 +453,59 @@ JSF Composite Components.
 \subsubsection{Paginierte Liste}
 
 \begincontrols[paginated-list]
+    \tag{cc}{interface} & & & \\
+    \INDENT\tag{cc}{attribute} & & \M{name} & \M{items} \\
+    \tag{cc}{implementation} & & & \\
+
+    \INDENT\FRM & & &\\
+    % disable if
+    \disambiguationrule
+    \2{\INDENT\INDENT\BTN} & \2{vorige Seite laden} & \M{action} & \B{paginatedList.goBack()} \\ % hmm, wie kann man ref'en?
+    & & \M{disabled} & \B{paginatedList.canGoBack} \\
+    \disambiguationrule
+    \2{\INDENT\INDENT\BTN} & \2{nächste Seite laden} & \M{action} & \B{paginatedList.goForward()} \\
+    & & \M{disabled} & \B{paginatedList.canGoForward} \\
+    \disambiguationrule
+    \INDENT\OUT & aktuelle Seitenzahl & \M{value} & \B{paginatedList.currentPageNumber} \\
+    \INDENT\OUT & Seitenanzahl & \M{value} & \B{paginatedList.totalNumberPages} \\
+    \disambiguationrule
+    \INDENT\3{\tag{h}{dataTable}} & & \M{value} & \B{cc.attrs.items}\\
+    & & \M{var} & \M{item}\\
+    & & \M{varStatus} & \M{status}\\
+    \disambiguationrule
+    \INDENT\INDENT\tag{cc}{insertChildren} & & &\\
+\endcontrols
+
+\subsubsection{Spalte einer paginierten Liste}
+
+\begincontrols[paginated-list-column]
+\tag{cc}{interface} & & & \\
+\2{\INDENT\tag{cc}{attribute}} & & \M{name} & \M{name} \\
+& & \M{type} & \M{java.lang.String}\\
+\tag{cc}{implementation} & & & \\
+\INDENT\tag{h}{column} & & &\\
+\INDENT\INDENT\tag{f}{facet} & & \M{name} & \M{header} \\
+& & & \M{cc.attrs.name}\\
+% missing form i know
+\INDENT\INDENT\BTN& auf-/absteigend sortieren & \M{action} & \B{paginatedListColumn.sort()}\\
+\INDENT\INDENT\tag{cc}{insertChildren} & & &\\
 \endcontrols
 
 \subsubsection{Baumansicht}
 
 \begincontrols[tree-view]
+%\tag{cc}{interface} & & & \\
+%\INDENT\tag{cc}{attribute} & & \M{name} & \\
+%\tag{cc}{implementation} & & & \\
 \endcontrols
 
 \subsubsection{Reaktives Eingabefeld}
 
 \begincontrols[reactive-input-field]
+%\tag{cc}{interface} & & & \\
+%\INDENT\tag{cc}{attribute} & & \M{name} & \\
+%\tag{cc}{implementation} & & & \\
+%\INDENT\INP & & &\\
 \endcontrols
 
 \subsection{Seitenvorlage}\label{page_template}
