@@ -23,7 +23,9 @@ public class MediumSearch extends PaginatedList implements Serializable {
 
 	@Serial
 	private static  final long serialVersionUID = 1L;
-
+	/**
+	 * The term of search.
+	 */
 	private String generalSearchTerm;
 
 

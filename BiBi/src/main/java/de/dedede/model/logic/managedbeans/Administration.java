@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * Backing bean for the administration facelet. Allows an administrator to
  * update the system settings. Further, they can search for any user inside of
- * the system from here.
+ * the system from here. This Backing Bean for system settings too.
  *
  */
 @Named
@@ -23,7 +23,9 @@ public class Administration implements Serializable {
 
 	@Serial
 	private static  final long serialVersionUID = 1L;
-
+	/**
+	 * The settings for the application.
+	 */
 	private ApplicationDto application;
 
 

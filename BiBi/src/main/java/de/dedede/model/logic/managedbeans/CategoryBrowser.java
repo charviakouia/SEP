@@ -57,6 +57,10 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		return category;
 	}
 
+	/**
+	 *
+	 * @param category
+	 */
 	public void setCategory(CategoryDto category) {
 		this.category = category;
 	}
