@@ -430,6 +430,13 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
 %    \item \M{MediumSearchDTO} etc
 %\end{itemize}
 
+Sofern nicht anders ausgewiesen folgt jedem Eingabefeld und \PAS ein Ausgabefeld für Meldungen, eine \tag{h}{message}.
+Zudem existiert für generell jedes Eingabefeld o.ä. ein Ausgabefeld für dessen Bezeichnung, ein \tag{h}{outputLabel}, dessen Bindung
+auf das i18n resource bundle zugreift, welches unten mit \M{bundle} referenziert wird.
+Konverter sind nicht explizit ausgezeichnet, da ausschließlich globale verwendet werden.
+Verwendete Validatoren sind implizit im Paket \M{de.dedede.model.logic.validators}.
+Die Elemente-ID ergibt sich aus dem Typen des Elements und dem Namen des assoziierten Getter/Setters bzw Methode.
+
 \begin{table}[H]
     \centering
     \begin{tabular}{ l l }
@@ -445,10 +452,6 @@ LOG\_CONSOLE & Gibt an, ob die Systemprotokolle auch auf der Konsole ausgegeben 
     \end{tabular}
     \caption{Verwendete XML-Namensräume}
 \end{table}
-
-META TASK implizit jedes Eingabefeld von Meldungsfeld begleitet.
-META NOTE Typ ist JSF-Tag.
-Referenzierte Validatoren sind implizit im Paket \M{de.dedede.model.logic.validators}.
 
 \newgeometry{left=0.5cm,right=0.5cm,top=0cm,bottom=2cm}
 \begin{landscape}
