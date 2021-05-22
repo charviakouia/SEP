@@ -1332,6 +1332,7 @@ CREATE TABLE Application (
 \begin{lstlisting}
 CREATE TABLE Medium ( 
 	mediumID SERIAL,
+	mediumLendPeriod INTERVAL,
 	hasCategory INTEGER,
 	
 	PRIMARY KEY(mediumID),
