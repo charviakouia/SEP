@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -20,7 +20,7 @@ import java.io.Serializable;
 @RequestScoped
 public class Error implements Serializable {
 
-    @Serial
+    //@Serial
     private static  final long serialVersionUID = 1L;
 
 	private ErrorDto errorDto;
