@@ -49,4 +49,12 @@ public final class MaintenanceProcess implements Runnable {
 		
 	}
 	
+	/**
+	 * Instructs the thread to execute any urgent tasks and shut 
+	 * down in a graceful manner. After calling this method once,
+	 * it has no effect.
+	 * 
+	 */
+	public void shutdown() {}
+	
 }

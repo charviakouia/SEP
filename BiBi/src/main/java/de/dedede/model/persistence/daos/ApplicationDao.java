@@ -35,14 +35,15 @@ public final class ApplicationDao {
 	 * The enclosed ID must be present in the data store. Otherwise, an
 	 * exception is thrown.
 	 *
-	 * @param id The ID of the global application data to be read.
+	 * @param appDTO A DTO container with the ID of the global application 
+	 * 		data to be read.
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the supplied
 	 * 		ID does not identify a data entry in the data store.
 	 * @return A DTO container with global application data identified
 	 * 		by the passed ID.
 	 * @see ApplicationDto
 	 */
-	public static ApplicationDto readCustomization(long id) 
+	public static ApplicationDto readCustomization(ApplicationDto appDTO) 
 			throws EntityInstanceDoesNotExistException {
 		return null;
 	}
@@ -65,13 +66,14 @@ public final class ApplicationDao {
 	 * Deletes global application data from the persistent data store that
 	 * corresponds to a given ID.
 	 *
-	 * @param id The ID of the global application data to be deleted.
+	 * @param appDTO A DTO container with the ID of the global application 
+	 * 		data to be deleted.
 	 * @return A DTO container with the deleted data store entry.
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the supplied
 	 * 		ID does not identify a data entry in the data store.
 	 * @see ApplicationDto
 	 */
-	public static ApplicationDto deleteCustomization(long id) {
+	public static ApplicationDto deleteCustomization(ApplicationDto appDTO) {
 		return null;
 	}
 

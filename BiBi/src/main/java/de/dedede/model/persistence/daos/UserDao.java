@@ -34,12 +34,13 @@ public final class UserDao {
 	 * must be associated with a user in the data store. Otherwise,
 	 * an exception is thrown.
 	 * 
-	 * @param email An email address that identifies the user to be fetched.
+	 * @param email A DTO container with the email address that identifies the 
+	 * 		user to be fetched.
 	 * @return A DTO container with the fetched user.
 	 * @throws EntityInstanceDoesNotExistException Is thrown when the enclosed
 	 * 		email address isn't associated with an existing data entry.
 	 */
-	public static UserDto readUserByEmail(String email) 
+	public static UserDto readUserByEmail(UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
 		return null;
 	}
@@ -62,12 +63,13 @@ public final class UserDao {
 	 * address must be associated with a user in the data store. Otherwise,
 	 * an exception is thrown.
 	 * 
-	 * @param email An email address identifying the user to be deleted.
+	 * @param email A DTO container with an email address identifying the user 
+	 * 		to be deleted.
 	 * @throws EntityInstanceDoesNotExistException Is thrown when the enclosed
 	 * 		email address isn't associated with an existing data entry.
 	 * @return A DTO container with data from the deleted user.
 	 */
-	public static UserDto deleteUser(String email) 
+	public static UserDto deleteUser(UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
 		return null;
 	}
