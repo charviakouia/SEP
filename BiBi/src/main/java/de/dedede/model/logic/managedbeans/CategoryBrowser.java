@@ -6,7 +6,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -19,7 +19,7 @@ import java.io.Serializable;
 @RequestScoped
 public class CategoryBrowser extends PaginatedList implements Serializable {
 
-	@Serial
+	//@Serial
 	private static  final long serialVersionUID = 1L;
 
 
@@ -57,6 +57,10 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		return category;
 	}
 
+	/**
+	 *
+	 * @param category
+	 */
 	public void setCategory(CategoryDto category) {
 		this.category = category;
 	}

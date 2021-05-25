@@ -1,7 +1,7 @@
 package de.dedede.model.logic.managedbeans;
 
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import jakarta.inject.Named;
 @SessionScoped
 public class DirectLending implements Serializable {
 
-	@Serial
+	//@Serial
 	private static final long serialVersionUID = 1;
 
 	private UserDto user;

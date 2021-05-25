@@ -14,7 +14,10 @@ import jakarta.inject.Named;
 @Dependent
 public class Footer {
 
-	@Inject
-	private UserSession userSession;
+    @Inject
+    private UserSession currentUser;
+
+
+
 
 }

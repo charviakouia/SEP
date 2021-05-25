@@ -1,9 +1,0 @@
-de.dedede.model.data.dtos
-de.dedede.model.logic.converters
-de.dedede.model.logic.exceptions
-de.dedede.model.logic.managedbeans
-de.dedede.model.logic.util
-de.dedede.model.logic.validators
-de.dedede.model.persistence.daos
-de.dedede.model.persistence.exceptions
-de.dedede.model.persistence.util

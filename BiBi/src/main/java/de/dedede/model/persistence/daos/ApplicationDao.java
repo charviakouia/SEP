@@ -21,7 +21,7 @@ public final class ApplicationDao {
 	 * as represented by an ApplicationDto object. The enclosed ID must not
 	 * be in use. Otherwise, an exception is thrown.
 	 *
-	 * @param A DTO container with global application data to be written.
+	 * @param appDTO A DTO container with global application data to be written.
 	 * @throws EntityInstanceNotUniqueException Is thrown if the supplied 
 	 * 		ID is already in use in the data store.
 	 * @see ApplicationDto

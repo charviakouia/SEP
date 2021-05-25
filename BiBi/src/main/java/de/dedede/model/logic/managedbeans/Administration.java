@@ -8,22 +8,24 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 /**
  * Backing bean for the administration facelet. Allows an administrator to
  * update the system settings. Further, they can search for any user inside of
- * the system from here.
+ * the system from here. This Backing Bean for system settings too.
  *
  */
 @Named
 @ViewScoped
 public class Administration implements Serializable {
 
-	@Serial
+	//@Serial
 	private static  final long serialVersionUID = 1L;
-
+	/**
+	 * The settings for the application.
+	 */
 	private ApplicationDto application;
 
 

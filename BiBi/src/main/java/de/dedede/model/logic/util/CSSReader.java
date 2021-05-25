@@ -4,6 +4,9 @@ import de.dedede.model.persistence.util.ConnectionPool;
 
 import java.util.ArrayList;
 
+/**
+ * Helps to read the CSS-file.
+ */
 public class CSSReader {
 
     private static volatile CSSReader INSTANCE = null;

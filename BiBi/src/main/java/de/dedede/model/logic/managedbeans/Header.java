@@ -35,7 +35,7 @@ public class Header {
 
 
 	/**
-	 *
+	 *Displays the Help text when user click on it.
 	 */
 	public void displayHelpText(){
 

@@ -6,7 +6,7 @@ import de.dedede.model.data.dtos.MediumDto;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @ViewScoped
 public class MediumCreator implements Serializable {
 
-	@Serial
+	//@Serial
 	private static  final long serialVersionUID = 1L;
 
 	private MediumDto medium;
