@@ -1,9 +1,12 @@
 package de.dedede.model.logic.managedbeans;
 
-//import java.io.Serial;
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
-import de.dedede.model.logic.util.UserLendStatus;
+import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserSearchDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
@@ -14,32 +17,36 @@ import jakarta.inject.Named;
 @RequestScoped
 public class UserSearch extends PaginatedList implements Serializable {
 
-	//@Serial
-	private static  final long serialVersionUID = 1L;
-	private String searchTerm;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
-	private UserLendStatus userLendStatus;
+	private UserSearchDto userSearch;
 
+	private List<UserDto> users;
+
+	@PostConstruct
+	public void init() {
+
+	}
+	
+	public UserSearchDto getUserSearch() {
+		return userSearch;
+	}
+
+	public void setUserSearch(UserSearchDto userSearch) {
+		this.userSearch = userSearch;
+	}
+	
 	/**
 	 * Search for a user inside of the system.
 	 */
-	public void userSearch() {
+	public void searchUser() {
 
 	}
 
-	public String getSearchTerm() {
-		return searchTerm;
+	@Override
+	public List<UserDto> getItems() {
+		return users;
 	}
 
-	public void setSearchTerm(String searchTerm) {
-		this.searchTerm = searchTerm;
-	}
-
-	public UserLendStatus getUserLendStatus() {
-		return userLendStatus;
-	}
-
-	public void setUserLendStatus(UserLendStatus userLendStatus) {
-		this.userLendStatus = userLendStatus;
-	}
 }

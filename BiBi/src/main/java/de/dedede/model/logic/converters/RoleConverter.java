@@ -1,6 +1,6 @@
 package de.dedede.model.logic.converters;
 
-import de.dedede.model.logic.util.UserRole;
+import de.dedede.model.data.dtos.UserRole;
 import jakarta.faces.convert.EnumConverter;
 import jakarta.faces.convert.FacesConverter;
 

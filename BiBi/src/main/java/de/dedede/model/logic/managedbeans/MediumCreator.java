@@ -1,13 +1,13 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.MediumDto;
+import de.dedede.model.data.dtos.UserDto;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
-
-//import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * Backing bean for the medium creator facelet.
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @ViewScoped
 public class MediumCreator implements Serializable {
 
-	//@Serial
+	@Serial
 	private static  final long serialVersionUID = 1L;
 
 	private MediumDto medium;

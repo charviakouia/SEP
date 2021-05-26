@@ -1,11 +1,11 @@
 package de.dedede.model.logic.managedbeans;
 
-//import java.io.Serial;
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
-import de.dedede.model.logic.util.AttributeOrCategory;
-import de.dedede.model.logic.util.SearchOperator;
+import de.dedede.model.data.dtos.MediumDto;
+import de.dedede.model.data.dtos.MediumSearchDto;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -21,53 +21,25 @@ import jakarta.inject.Named;
 @ViewScoped
 public class MediumSearch extends PaginatedList implements Serializable {
 
-	//@Serial
-	private static  final long serialVersionUID = 1L;
-	/**
-	 * The term of search.
-	 */
-	private String generalSearchTerm;
+	@Serial
+	private static final long serialVersionUID = 1L;
+	
+	private MediumSearchDto mediumSearch;
+	
+	private List<MediumDto> mediums;
+	
+	public MediumSearchDto getMediumSearch() {
+		return mediumSearch;
+	}
 
-
-	private ArrayList<NuancedSearchQuery> nuancedSearchQueries;
-
-	public static class NuancedSearchQuery {
-
-		private SearchOperator operator;
-
-		private AttributeOrCategory criterion;
-
-		private String searchTerm;
-
-		public SearchOperator getOperator() {
-			return operator;
-		}
-
-		public void setOperator(SearchOperator operator) {
-			this.operator = operator;
-		}
-
-		public AttributeOrCategory getCriterion() {
-			return criterion;
-		}
-
-		public void setCriterion(AttributeOrCategory criterion) {
-			this.criterion = criterion;
-		}
-
-		public String getSearchTerm() {
-			return searchTerm;
-		}
-
-		public void setSearchTerm(String searchTerm) {
-			this.searchTerm = searchTerm;
-		}
+	public void setMediumSearch(MediumSearchDto mediumSearch) {
+		this.mediumSearch = mediumSearch;
 	}
 
 	/**
 	 * Search for the corresp. mediums.
 	 */
-	public void search() {
+	public void searchMedium() {
 
 	}
 
@@ -79,13 +51,11 @@ public class MediumSearch extends PaginatedList implements Serializable {
 
 	}
 
-	public String getGeneralSearchTerm() {
-		return generalSearchTerm;
+	@Override
+	public List<MediumDto> getItems() {
+		return mediums;
 	}
 
-	public void setGeneralSearchTerm(String generalSearchTerm) {
-		this.generalSearchTerm = generalSearchTerm;
-	}
 }
 
 

@@ -1,15 +1,12 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import de.dedede.model.data.dtos.ApplicationDto;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
-
-//import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * Backing bean for the administration facelet. Allows an administrator to
@@ -21,18 +18,27 @@ import java.io.Serializable;
 @ViewScoped
 public class Administration implements Serializable {
 
-	//@Serial
-	private static  final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * The settings for the application.
 	 */
 	private ApplicationDto application;
 
-
 	@PostConstruct
-	public void init(){
+	public void init() {
 
 	}
+
+	public ApplicationDto getApplication() {
+		return application;
+	}
+
+	public void setApplication(ApplicationDto application) {
+		this.application = application;
+	}
+
 	/**
 	 * Save the changes made to the system settings.
 	 */
@@ -46,13 +52,5 @@ public class Administration implements Serializable {
 	public String searchUser() {
 		return "";
 
-	}
-
-	public ApplicationDto getApplication() {
-		return application;
-	}
-
-	public void setApplication(ApplicationDto application) {
-		this.application = application;
 	}
 }

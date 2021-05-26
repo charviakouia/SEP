@@ -2,9 +2,7 @@ package de.dedede.model.logic.managedbeans;
 
 import de.dedede.model.data.dtos.ApplicationDto;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -16,20 +14,16 @@ import jakarta.inject.Named;
 @ViewScoped
 public class Contact {
 
-
 	private ApplicationDto application;
 
-
-
 	@PostConstruct
-	public  void init(){
+	public void init() {
 
 	}
+
 	public ApplicationDto getApplication() {
 		return application;
 	}
-
-
 
 	public void setApplication(ApplicationDto application) {
 		this.application = application;
@@ -38,7 +32,5 @@ public class Contact {
 	public void save() {
 
 	}
-
-
 
 }

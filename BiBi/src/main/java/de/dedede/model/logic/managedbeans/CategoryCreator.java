@@ -2,6 +2,7 @@ package de.dedede.model.logic.managedbeans;
 
 
 import de.dedede.model.data.dtos.CategoryDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
@@ -14,12 +15,10 @@ public class CategoryCreator {
 
     private CategoryDto category;
 
-    /**
-     * creating this category.
-     */
-    public void createCategory(){
+    @PostConstruct
+	public void init() {
 
-    }
+	}
 
     /**
      * fetching this category.
@@ -31,5 +30,12 @@ public class CategoryCreator {
 
     public void setCategory(CategoryDto category) {
         this.category = category;
+    }
+    
+    /**
+     * creating this category.
+     */
+    public void createCategory(){
+
     }
 }

@@ -1,11 +1,12 @@
 package de.dedede.model.logic.managedbeans;
 
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Named;
-
-//import java.io.Serial;
+import java.io.Serial;
 import java.io.Serializable;
+
+import de.dedede.model.data.dtos.TokenDto;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * Backing bean for the email confirmation page. Accessing this page potentially
@@ -17,18 +18,22 @@ import java.io.Serializable;
 @RequestScoped
 public class EmailConfirmation implements Serializable {
 
-	//@Serial
-	private static  final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
-	private String token;
+	private TokenDto token;
 
-	public String getToken() {
+	@PostConstruct
+	public void init() {
+
+	}
+
+	public TokenDto getToken() {
 		return token;
 	}
 
-	public void setToken(String token) {
+	public void setToken(TokenDto token) {
 		this.token = token;
 	}
-
 
 }

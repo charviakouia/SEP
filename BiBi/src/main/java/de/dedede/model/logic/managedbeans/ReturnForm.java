@@ -1,11 +1,12 @@
 package de.dedede.model.logic.managedbeans;
 
-//import java.io.Serial;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -16,25 +17,15 @@ import jakarta.inject.Named;
 @ViewScoped
 public class ReturnForm implements Serializable {
 
-	//@Serial
+	@Serial
 	private static  final long serialVersionUID = 1L;
 
 	private UserDto user;
 
 	private ArrayList<CopyDto> copies;
 
-	/**
-	 * As library staff let the system know that the given copies were returned by
-	 * the user.
-	 */
-	public void returnMedium() {
-
-	}
-
-	/**
-	 * Add a signature input field.
-	 */
-	public void addSignatureInputField() {
+	@PostConstruct
+	public void init() {
 
 	}
 
@@ -52,5 +43,20 @@ public class ReturnForm implements Serializable {
 
 	public void setCopies(ArrayList<CopyDto> copies) {
 		this.copies = copies;
+	}
+	
+	/**
+	 * As library staff let the system know that the given copies were returned by
+	 * the user.
+	 */
+	public void returnMedium() {
+
+	}
+
+	/**
+	 * Add a signature input field.
+	 */
+	public void addSignatureInputField() {
+
 	}
 }

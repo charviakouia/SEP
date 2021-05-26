@@ -25,7 +25,7 @@ public class MaxConnectionsException extends Exception {
 	 * Creates a new MaxConnectionsException instance with a
 	 * display message identifying the specific cause.
 	 * 
-	 * @param msg
+	 * @param msg The message indicating the exception's cause.
 	 */
 	public MaxConnectionsException(String msg) {
 		super(msg);

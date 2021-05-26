@@ -1,8 +1,7 @@
 package de.dedede.model.logic.managedbeans;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -14,10 +13,9 @@ import jakarta.inject.Named;
 @Dependent
 public class Footer {
 
-    @Inject
-    private UserSession currentUser;
+    @PostConstruct
+	public void init() {
 
-
-
+	}
 
 }
