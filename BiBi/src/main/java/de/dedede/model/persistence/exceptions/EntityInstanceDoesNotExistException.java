@@ -22,7 +22,7 @@ public class EntityInstanceDoesNotExistException extends Exception {
 	 * Creates a new EntityInstanceDoesNotExistException instance with a
 	 * display message identifying the specific cause.
 	 * 
-	 * @param msg
+	 * @param msg The message indicating the exception's cause.
 	 */
 	public EntityInstanceDoesNotExistException(String msg) {
 		super(msg);

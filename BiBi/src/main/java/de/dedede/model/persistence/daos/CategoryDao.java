@@ -1,8 +1,9 @@
 package de.dedede.model.persistence.daos;
 
+import java.util.List;
+
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.PaginationDto;
-import de.dedede.model.logic.managedbeans.PaginatedList;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 
@@ -36,12 +37,12 @@ public final class CategoryDao {
 	 * Fetches category data from the persistent data store. The enclosed ID must
 	 * be associated with an existing data entry. Otherwise, an exception is thrown.
 	 *
-	 * @param id The ID of the category data to be fetched.
+	 * @param categoryDto A DTO container with the ID of the category data to be fetched.
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the passed ID is not
 	 * 		associated with a data entry.
 	 * @see CategoryDto
 	 */
-	public static CategoryDto readCategory(long id) 
+	public static CategoryDto readCategory(CategoryDto categoryDto) 
 			throws EntityInstanceDoesNotExistException {
 		return null;
 	}
@@ -52,11 +53,11 @@ public final class CategoryDao {
 	 * concurrent read/write behavior in the underlying data store is unspecified.
 	 *
 	 * @param paginationDetails A container for the search term, page size, and page number.
-	 * @return A paginated list of DTO containers with the category data that conforms
+	 * @return A list of DTO containers with the category data that conforms
 	 * 		to the specified search term and pagination details.
 	 * @see CategoryDto
 	 */
-	public static PaginatedList readCategoriesByName(PaginationDto paginationDetails) {
+	public static List<PaginationDto> readCategoriesByName(PaginationDto paginationDetails) {
 		return null;
 	}
 
@@ -79,13 +80,14 @@ public final class CategoryDao {
 	 * ID must be present in the data store and is used to identify and remove the 
 	 * referenced data entry. Otherwise, an exception is thrown.
 	 *
-	 * @param id The ID of the category data entry to be deleted
+	 * @param categoryDto A DTO container with the ID of the category data entry to 
+	 * 		be deleted
 	 * @return A DTO container with the deleted category data entry.
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the passed ID isn't
 	 * 		associated with any data entry.
 	 * @see CategoryDto
 	 */
-	public static CategoryDto deleteCategory(long id) {
+	public static CategoryDto deleteCategory(CategoryDto categoryDto) {
 		return null;
 	}
 

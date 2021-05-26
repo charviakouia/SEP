@@ -1,11 +1,13 @@
 package de.dedede.model.persistence.daos;
 
+import java.util.List;
+
 import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.logic.managedbeans.PaginatedList;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.PaginationDto;
+import de.dedede.model.data.dtos.UserDto;
 
 /**
  * This DAO (data access object) manages data pertaining to a medium or a copy.
@@ -40,12 +42,12 @@ public final class MediumDao {
 	 * The ID must be associated with an existing data entry.
 	 * Otherwise, an exception is thrown.
 	 * 
-	 * @param id
+	 * @param mediumDto A DTO container with the ID of the medium data to be fetched
 	 * @throws EntityInstanceDoesNotExistException Is thrown when the passed ID
 	 * 		is not associated with any existing data entry.
 	 * @return A DTO container with the medium data referenced by the ID.
 	 */
-	public static MediumDto readMedium(long id) 
+	public static MediumDto readMedium(MediumDto mediumDto) 
 			throws EntityInstanceDoesNotExistException {
 		return null;
 	}
@@ -58,10 +60,10 @@ public final class MediumDao {
 	 *
 	 * @param paginationDetails A container for the search terms, page size, 
 	 * 		and page number.
-	 * @return A paginated list of DTO containers with the medium data.
+	 * @return A list of DTO containers with the medium data.
 	 * @see MediumDto
 	 */
-	public static PaginatedList readMediaBySearchCriteria(PaginationDto paginationDetails) {
+	public static List<PaginationDto> readMediaBySearchCriteria(PaginationDto paginationDetails) {
 		return null;
 	}
 	
@@ -84,13 +86,13 @@ public final class MediumDao {
 	 * This ID must be present in the data store and is used to remove existing data.
 	 * Otherwise, an exception is thrown
 	 *
-	 * @param id An ID that refers to the medium to be deleted.
+	 * @param mediumDto A DTO container with an ID that refers to the medium to be deleted.
 	 * @return A DTO container with the deleted medium data.
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the passed ID isn't 
 	 * 		associated with any data entry.
 	 * @see MediumDto
 	 */
-	public static MediumDto deleteMedium(long id) 
+	public static MediumDto deleteMedium(MediumDto mediumDto) 
 			throws EntityInstanceDoesNotExistException {
 		return null;
 	}
@@ -114,14 +116,14 @@ public final class MediumDao {
 	 * data store. The passed signature must be associated with an existing data entry 
 	 * in the data store. Otherwise, an exception is thrown.
 	 *
-	 * @param signature The medium-copy signature, which identifies the 
-	 * 		specific medium-copy.
+	 * @param copyDto A DTO container with the medium-copy signature, which identifies 
+	 * 		the specific medium-copy.
 	 * @return A DTO container with the medium-copy data for the given signature.
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the passed signature
 	 * 		isn't associated with any data entry.
 	 * @see CopyDto
 	 */
-	public static CopyDto readCopy(String signature) {
+	public static CopyDto readCopy(CopyDto copyDto) {
 		return null;
 	}
 	
@@ -130,10 +132,10 @@ public final class MediumDao {
 	 * data store. The list contains overdue material from all users, globally.
 	 *
 	 * @param paginationDetails A container for the page size and number.
-	 * @return A paginated list of DTO containers with the medium-copy data.
+	 * @return A list of DTO containers with the medium-copy data.
 	 * @see CopyDto
 	 */
-	public static PaginatedList readAllOverdueCopies(PaginationDto paginationDetails) {
+	public static List<CopyDto> readAllOverdueCopies(PaginationDto paginationDetails) {
 		return null;
 	}
 	
@@ -141,12 +143,13 @@ public final class MediumDao {
 	 * Fetches a paginated list of all medium-copies belonging to a specific medium from the
 	 * persistent data store.
 	 *
-	 * @param mediumId An identifier for a medium, for which the copies are being queried.
+	 * @param mediumDto A DTO container with the medium-ID, for which the copies are being 
+	 * 		queried.
 	 * @param paginationDetails A container for the page size and number.
-	 * @return A list of DTO containers with the medium-copy data for the given medium-id.
+	 * @return A list of DTO containers with the medium-copy data for the given medium-ID.
 	 * @see CopyDto
 	 */
-	public static PaginatedList readAllCopiesFromMedium(long mediumId, 
+	public static List<CopyDto> readAllCopiesFromMedium(MediumDto mediumDto, 
 			PaginationDto paginationDetails) {
 		return null;
 	}
@@ -170,13 +173,14 @@ public final class MediumDao {
 	 * signature must be associated with an existing entry and is used to identify 
 	 * and remove data. Otherwise, an exception is thrown.
 	 *
-	 * @param signature A signature that identifies the medium-copy to be deleted
+	 * @param copyDto A DTO container with a signature that identifies the medium-copy 
+	 * 		to be deleted
 	 * @return A DTO container with the deleted medium-copy data.
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the signature isn't
 	 * 		associated with any data entry.
 	 * @see CopyDto
 	 */
-	public static CopyDto deleteCopy(String signature) {
+	public static CopyDto deleteCopy(CopyDto copyDto) {
 		return null;
 	}
 
@@ -184,14 +188,14 @@ public final class MediumDao {
 	 * Registers that a specific medium-copy has been checked out by a specific
 	 * user. Until it is returned, it is unavailable to other users.
 	 *
-	 * @param copySignature A signature that refers to the medium-copy.
-	 * @param userId An ID that refers to the user.
+	 * @param copyDto A DTO container with a signature that refers to the medium-copy.
+	 * @param userDto A DTO container with an ID that refers to the user.
 	 * @throws EntityInstanceDoesNotExistException Is thrown when the either
 	 * 		the medium-copy is currently checked out or when either entity
 	 * 		doesn't exist in the data store.
 	 * @see CopyDto
 	 */
-	public static void lendCopy(String copySignature, long userId) 
+	public static void lendCopy(CopyDto copyDto, UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
 	}
 
@@ -199,14 +203,14 @@ public final class MediumDao {
 	 * Registers that a specific medium-copy has been returned by a specific user.
 	 * It is then available to other users for check-out.
 	 *
-	 * @param copySignature A signature that refers to the medium-copy.
-	 * @param userId An ID that refers to the user.
+	 * @param copyDto A DTO container with a signature that refers to the medium-copy.
+	 * @param userDto A DTO container with an ID that refers to the user.
 	 * @throws EntityInstanceDoesNotExistException Is thrown when either
 	 * 		the medium-copy hasn't been checked out by the given user or
 	 * 		either entity doesn't exist in the data store.
 	 * @see CopyDto
 	 */
-	public static void returnCopy(String copySignature, long userId) 
+	public static void returnCopy(CopyDto copyDto, UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
 	}
 

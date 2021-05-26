@@ -21,7 +21,7 @@ public class InvalidSchemaException extends RuntimeException {
 	 * Creates a new InvalidSchemaException instance with a
 	 * display message identifying the specific cause.
 	 * 
-	 * @param msg
+	 * @param msg The message indicating the exception's cause.
 	 */
 	public InvalidSchemaException(String msg) {
 		super(msg);

@@ -25,7 +25,7 @@ public class LostConnectionException extends Exception {
 	 * Creates a new LostConnectionException instance with a
 	 * display message identifying the specific cause.
 	 * 
-	 * @param msg
+	 * @param msg The message indicating the exception's cause.
 	 */
 	public LostConnectionException(String msg) {
 		super(msg);
