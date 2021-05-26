@@ -1,13 +1,15 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+
 import de.dedede.model.data.dtos.CategoryDto;
+import de.dedede.model.data.dtos.CategorySearchDto;
+import de.dedede.model.data.dtos.MediumDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
-
-//import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * Backing bean for the category browser facelet. This page offers users to
@@ -19,49 +21,46 @@ import java.io.Serializable;
 @RequestScoped
 public class CategoryBrowser extends PaginatedList implements Serializable {
 
-	//@Serial
-	private static  final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
+	private CategoryDto currentCategory;
+	
+	private List<MediumDto> mediums;
 
-	private CategoryDto category;
-
-	private String searchTerm;
-
-	public String getSearchTerm() {
-		return searchTerm;
-	}
-
-	public void setSearchTerm(String searchTerm) {
-		this.searchTerm = searchTerm;
-	}
-
+	private CategorySearchDto categorySearch;
 
 	@PostConstruct
-	public void init(){
-
+	public void init() {
 
 	}
 
+	public CategorySearchDto getCategorySearch() {
+		return categorySearch;
+	}
 
+	public void setCategorySearch(CategorySearchDto categorySearch) {
+		this.categorySearch = categorySearch;
+	}
+
+	public CategoryDto getCurrentCategory() {
+		return currentCategory;
+	}
+
+	public void setCurrentCategory(CategoryDto currentCategory) {
+		this.currentCategory = currentCategory;
+	}
 
 	public void deleteCategory() {
 
 	}
 
-
 	public void searchCategory() {
 
 	}
 
-	public CategoryDto getCategory() {
-		return category;
-	}
-
-	/**
-	 *
-	 * @param category
-	 */
-	public void setCategory(CategoryDto category) {
-		this.category = category;
+	@Override
+	public List<MediumDto> getItems() {
+		return mediums;
 	}
 }

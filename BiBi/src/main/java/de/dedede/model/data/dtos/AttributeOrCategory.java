@@ -1,4 +1,4 @@
-package de.dedede.model.logic.util;
+package de.dedede.model.data.dtos;
 
 // temporary definition
 public enum AttributeOrCategory {

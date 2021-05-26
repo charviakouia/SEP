@@ -1,8 +1,8 @@
 package de.dedede.model.logic.managedbeans;
 
-//import java.io.Serial;
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumDto;
@@ -21,14 +21,14 @@ import jakarta.inject.Named;
  */
 @Named
 @ViewScoped
-public class Medium extends PaginatedList implements Serializable {
+public class Medium implements Serializable {
 
-	//@Serial
+	@Serial
 	private static  final long serialVersionUID = 1L;
 
 	private MediumDto medium;
 
-	private ArrayList<CopyDto> copies;
+	private List<CopyDto> copies;
 
 	/**
 	 * A copy to be created.

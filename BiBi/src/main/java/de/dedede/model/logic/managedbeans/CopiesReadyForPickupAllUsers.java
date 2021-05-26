@@ -1,13 +1,10 @@
 package de.dedede.model.logic.managedbeans;
 
-import java.io.Serializable;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.data.dtos.MediumDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.component.UIOutput;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 /**
@@ -19,12 +16,18 @@ import jakarta.inject.Named;
  */
 @Named
 @RequestScoped
-public class CopiesReadyForPickupAllUsers extends PaginatedList  {
+public class CopiesReadyForPickupAllUsers extends PaginatedList {
 
 	private List<CopyDto> copies;
 
-	private List<MediumDto> list;
+	@PostConstruct
+	public void init() {
 
+	}
 
+	@Override
+	public List<CopyDto> getItems() {
+		return copies;
+	}
 
 }

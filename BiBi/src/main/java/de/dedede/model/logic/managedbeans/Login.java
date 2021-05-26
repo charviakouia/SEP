@@ -1,7 +1,6 @@
 package de.dedede.model.logic.managedbeans;
 
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.FacesContext;
@@ -34,6 +33,22 @@ public class Login {
 
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 	/**
 	 * Log into the system.
 	 * 
@@ -49,21 +64,5 @@ public class Login {
 	 */
 	public void resetPassword() {
 
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 }

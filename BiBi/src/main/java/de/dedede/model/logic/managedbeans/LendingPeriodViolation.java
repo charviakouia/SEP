@@ -1,11 +1,11 @@
 package de.dedede.model.logic.managedbeans;
 
-//import java.io.Serial;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.data.dtos.CopyDto;
+import de.dedede.model.data.dtos.CopyMediumUser;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
@@ -18,33 +18,20 @@ import jakarta.inject.Named;
 @SessionScoped
 public class LendingPeriodViolation extends PaginatedList implements Serializable {
 
-	//@Serial
+	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private List<CopyWithUser> copiesWithUser;
+	private List<CopyMediumUser> items;
 
-	public static class CopyWithUser {
-		private CopyDto copy;
-		private UserDto user;
+	@PostConstruct
+	public void init() {
 
-		public CopyDto getCopy() {
-			return copy;
-		}
-
-		public void setCopy(CopyDto copy) {
-			this.copy = copy;
-		}
-
-		public UserDto getUser() {
-			return user;
-		}
-
-		public void setUser(UserDto user) {
-			this.user = user;
-		}
 	}
-	//muss man noch gucken
-
+	
+	@Override
+	public List<CopyMediumUser> getItems() {
+		return items;
+	}
 }
 
 

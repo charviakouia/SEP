@@ -1,6 +1,7 @@
 package de.dedede.model.logic.managedbeans;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
@@ -13,19 +14,23 @@ public class SiteNotice {
 
 	private ApplicationDto application;
 
-	/**
-	 * Save the changes made to the site notice by an admin.
-	 */
-	public void save() {
+	@PostConstruct
+	public void init() {
 
 	}
-
-
+	
 	public ApplicationDto getApplication() {
 		return application;
 	}
 
 	public void setApplication(ApplicationDto application) {
 		this.application = application;
+	}
+	
+	/**
+	 * Save the changes made to the site notice by an admin.
+	 */
+	public void save() {
+
 	}
 }

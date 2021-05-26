@@ -1,4 +1,4 @@
-package de.dedede.model.logic.util;
+package de.dedede.model.data.dtos;
 
 /**
  * Represents the the status of a copy.

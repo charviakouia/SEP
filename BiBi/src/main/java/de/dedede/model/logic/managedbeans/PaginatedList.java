@@ -1,20 +1,19 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.util.List;
+
 import de.dedede.model.data.dtos.PaginationDto;
 
 /**
  * An abstraction over paginated lists for multiple backing beans.
  */
 
+// @Temporary design
 public abstract class PaginatedList {
 
-	private int entries;
-
-	private int page;
-
-	private String sortBy;
-
-	private PaginationDto select;
+	protected PaginationDto select;
+	
+	public abstract List<?> getItems();
 
 	public void setPage(int page) {
 
@@ -30,26 +29,5 @@ public abstract class PaginatedList {
 
 	public void backward() {
 
-	}
-
-	public int getCurrentPage() {
-		return page;
-	}
-
-	public void setSortBy(String sortBy) {
-
-	}
-
-	public String getSortBy() {
-		return sortBy;
-
-	}
-
-	public void setEntries(int entries) {
-		this.entries = entries;
-	}
-
-	public int getEntries() {
-		return entries;
 	}
 }

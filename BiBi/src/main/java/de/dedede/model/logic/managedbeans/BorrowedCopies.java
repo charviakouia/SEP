@@ -1,12 +1,12 @@
 package de.dedede.model.logic.managedbeans;
 
-//import java.io.Serial;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CopyDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -19,15 +19,19 @@ import jakarta.inject.Named;
 @SessionScoped
 public class BorrowedCopies extends PaginatedList implements Serializable {
 
-	//@Serial
-	private static  final long serialVersionUID = 1L;
-
-	private List<CopyDto> data;
+	@Serial
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * The list of borrowed copies.
 	 */
-	private List<CopyDto> listDto;
+	private List<CopyDto> copies;
 
+	@PostConstruct
+	public void init() {
+
+	}
+	
 	/**
 	 * Loads the copies for the view
 	 */
@@ -35,22 +39,8 @@ public class BorrowedCopies extends PaginatedList implements Serializable {
 
 	}
 
-	public List<CopyDto> getData(){
-		return data;
+	@Override
+	public List<CopyDto> getItems() {
+		return copies;
 	}
-
-	/**
-	 * Sorts the borrowed copies as the user wants.
-	 * @param value the value which user wants to sort.
-	 */
-	public void sortBy(String value){
-
-	}
-
-	/**
-	 * The user session.
-	 */
-	@Inject
-    private UserSession userSession;
-
 }

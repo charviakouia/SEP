@@ -1,7 +1,7 @@
 package de.dedede.model.logic.managedbeans;
 
-import java.util.logging.Logger;
-
+import de.dedede.model.data.dtos.TokenDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
@@ -16,14 +16,12 @@ public class PasswordReset {
 
 	private String password;
 
-	private String token;
+	private TokenDto token;
 
 	private String confirmedPassword;
 
-	/**
-	 * Reset the password when it is necessary to reset it.
-	 */
-	public void resetPassword() {
+	@PostConstruct
+	public void init() {
 
 	}
 
@@ -35,13 +33,6 @@ public class PasswordReset {
 		this.password = password;
 	}
 
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
 
 	public String getConfirmedPassword() {
 		return confirmedPassword;
@@ -49,5 +40,22 @@ public class PasswordReset {
 
 	public void setConfirmedPassword(String confirmedPassword) {
 		this.confirmedPassword = confirmedPassword;
+	}
+	
+	
+	
+	public TokenDto getToken() {
+		return token;
+	}
+
+	public void setToken(TokenDto token) {
+		this.token = token;
+	}
+
+	/**
+	 * Reset the password when it is necessary to reset it.
+	 */
+	public void resetPassword() {
+
 	}
 }

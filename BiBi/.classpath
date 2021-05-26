@@ -7,8 +7,8 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/ivancharviakou/Documents/Education/BSc computer science - Passau/SS 21/SEP/Main proj/bibliothekssystem/BiBi/src/main/webapp/WEB-INF/lib/jakarta.faces-3.0.0.jar"/>
-	<classpathentry kind="lib" path="/Users/ivancharviakou/Documents/Education/BSc computer science - Passau/SS 21/SEP/Main proj/bibliothekssystem/BiBi/src/main/webapp/WEB-INF/lib/jakarta.mail-2.0.0.jar"/>
-	<classpathentry kind="lib" path="/Users/ivancharviakou/Documents/Education/BSc computer science - Passau/SS 21/SEP/Main proj/bibliothekssystem/BiBi/src/main/webapp/WEB-INF/lib/weld-servlet-shaded-4.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jakarta.faces-3.0.0.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jakarta.mail-2.0.0.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/weld-servlet-shaded-4.0.0.Final.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

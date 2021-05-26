@@ -2,7 +2,6 @@ package de.dedede.model.logic.managedbeans;
 
 import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.persistence.daos.ApplicationDao;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
@@ -26,13 +25,6 @@ public class Registration {
 
 	}
 
-	/**
-	 * As an anonymous user register to the system.
-	 */
-	public void register() {
-
-	}
-
 	public ApplicationDto getApplication() {
 		return application;
 	}
@@ -47,5 +39,12 @@ public class Registration {
 
 	public void setUser(UserDto user) {
 		this.user = user;
+	}
+	
+	/**
+	 * As an anonymous user register to the system.
+	 */
+	public void register() {
+
 	}
 }

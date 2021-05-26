@@ -1,4 +1,4 @@
-package de.dedede.model.logic.util;
+package de.dedede.model.data.dtos;
 
 /**
  * Represents the permission roles users have in the system.

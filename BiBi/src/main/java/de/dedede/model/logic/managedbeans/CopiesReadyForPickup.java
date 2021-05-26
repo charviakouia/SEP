@@ -1,10 +1,11 @@
 package de.dedede.model.logic.managedbeans;
 
-//import java.io.Serial;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import de.dedede.model.data.dtos.CopyDto;
+import de.dedede.model.data.dtos.CopyMediumUser;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
@@ -18,9 +19,19 @@ import jakarta.inject.Named;
 @SessionScoped
 public class CopiesReadyForPickup extends PaginatedList implements Serializable {
 
-	//@Serial
+	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private List<CopyDto> listDto;
+	private List<CopyMediumUser> items;
+
+	@PostConstruct
+	public void init() {
+
+	}
+	
+	@Override
+	public List<CopyMediumUser> getItems() {
+		return items;
+	}
 
 }

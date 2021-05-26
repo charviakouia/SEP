@@ -1,12 +1,13 @@
 package de.dedede.model.logic.managedbeans;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import de.dedede.model.data.dtos.UserDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-
-//import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * Backing bean for the profile page. This page is either the profile page of
@@ -19,8 +20,8 @@ import java.io.Serializable;
 @ViewScoped
 public class Profile implements Serializable {
 
-	//@Serial
-	private static  final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	private UserDto user;
 
@@ -31,21 +32,11 @@ public class Profile implements Serializable {
 	@Inject
 	private UserSession userSession;
 
-	/**
-	 * Close one's own account if this is the profile of the current user or delete
-	 * a user as an admin.
-	 */
-	public void delete() {
+	@PostConstruct
+	public void init() {
 
 	}
-
-	/**
-	 * Save the changes made to the profile.
-	 */
-	public void save() {
-
-	}
-
+	
 	public UserDto getUser() {
 		return user;
 	}
@@ -68,5 +59,20 @@ public class Profile implements Serializable {
 
 	public void setConfirmedPassword(String confirmedPassword) {
 		this.confirmedPassword = confirmedPassword;
+	}
+	
+	/**
+	 * Close one's own account if this is the profile of the current user or delete
+	 * a user as an admin.
+	 */
+	public void delete() {
+
+	}
+
+	/**
+	 * Save the changes made to the profile.
+	 */
+	public void save() {
+
 	}
 }

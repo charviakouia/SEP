@@ -1,10 +1,7 @@
 package de.dedede.model.logic.managedbeans;
 
-import de.dedede.model.logic.util.LocaleBundle;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -16,12 +13,11 @@ import jakarta.inject.Named;
 @Dependent
 public class Header {
 
-	@Inject
-	private LocaleBundle localeBundle;
+	@PostConstruct
+	public void init() {
 
-	@Inject
-	private FacesContext facesContext;
-
+	}
+	
 	/**
 	 * It will be called when the user clicks on the logout button. The current
 	 * session of the user is invalidated and the user is lead back to the

@@ -1,9 +1,6 @@
 package de.dedede.model.data.dtos;
 
 import de.dedede.model.logic.util.AttributeModifiability;
-import de.dedede.model.logic.util.AttributeType;
-import de.dedede.model.logic.util.MediumPreviewPosition;
-import de.dedede.model.logic.util.AttributeMultiplicity;
 
 import java.awt.*;
 import java.net.URL;
