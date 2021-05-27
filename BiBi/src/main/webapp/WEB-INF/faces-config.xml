@@ -7,7 +7,7 @@
 
 	<application>
 		<locale-config>
-			<default-locale>de</default-locale>
+			<default-locale>de_DE</default-locale>
 		</locale-config>
 		<resource-bundle>
 			<base-name>de.dedede.model.i18n.messages</base-name>

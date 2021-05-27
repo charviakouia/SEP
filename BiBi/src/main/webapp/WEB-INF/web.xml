@@ -27,7 +27,7 @@
 		</web-resource-collection>
 		<auth-constraint />
 	</security-constraint>
-	
+
 	<!-- TEMPORARY! -->
 	<security-constraint>
 		<display-name>Restrict direct access to the components folder.</display-name>
