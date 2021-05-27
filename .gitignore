@@ -10,7 +10,7 @@
 
 # log files
 *.log
-
+/.metadata/*
 # macOS specific meta data file
 .DS_STORE
 
