@@ -1,18 +1,16 @@
-package de.dedede.model.logic.managedbeans;
+package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.ApplicationDto;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
 /**
- * Backing bean for the contact information facelet. The contact page allows any
- * user to get to know how to contact the site owners.
- *
+ * Backing bean for the site notice.
  */
 @Named
-@ViewScoped
-public class Contact {
+@RequestScoped
+public class SiteNotice {
 
 	private ApplicationDto application;
 
@@ -20,7 +18,7 @@ public class Contact {
 	public void init() {
 
 	}
-
+	
 	public ApplicationDto getApplication() {
 		return application;
 	}
@@ -28,9 +26,11 @@ public class Contact {
 	public void setApplication(ApplicationDto application) {
 		this.application = application;
 	}
-
+	
+	/**
+	 * Save the changes made to the site notice by an admin.
+	 */
 	public void save() {
 
 	}
-
 }

@@ -1,4 +1,4 @@
-package de.dedede.model.logic.managedbeans;
+package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;

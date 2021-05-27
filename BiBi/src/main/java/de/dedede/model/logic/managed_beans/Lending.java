@@ -1,4 +1,4 @@
-package de.dedede.model.logic.managedbeans;
+package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -7,18 +7,20 @@ import java.util.ArrayList;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 /**
- * Backing bean for the return form.
+ * Backing bean for the direct landing page. Here, library staff or higher can
+ * lend copies to user.
+ *
  */
 @Named
-@ViewScoped
-public class ReturnForm implements Serializable {
+@SessionScoped
+public class Lending implements Serializable {
 
 	@Serial
-	private static  final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1;
 
 	private UserDto user;
 
@@ -44,12 +46,11 @@ public class ReturnForm implements Serializable {
 	public void setCopies(ArrayList<CopyDto> copies) {
 		this.copies = copies;
 	}
-	
+
 	/**
-	 * As library staff let the system know that the given copies were returned by
-	 * the user.
+	 * Lend the selected list of copies to the given user.
 	 */
-	public void returnMedium() {
+	public void lendCopies() {
 
 	}
 
@@ -59,4 +60,5 @@ public class ReturnForm implements Serializable {
 	public void addSignatureInputField() {
 
 	}
+
 }

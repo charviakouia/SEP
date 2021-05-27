@@ -1,4 +1,4 @@
-package de.dedede.model.logic.managedbeans;
+package de.dedede.model.logic.managed_beans;
 
 import java.util.List;
 

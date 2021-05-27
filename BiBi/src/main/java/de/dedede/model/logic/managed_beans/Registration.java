@@ -1,4 +1,4 @@
-package de.dedede.model.logic.managedbeans;
+package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.UserDto;
