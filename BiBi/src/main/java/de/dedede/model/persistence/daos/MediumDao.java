@@ -63,7 +63,7 @@ public final class MediumDao {
 	 * @return A list of DTO containers with the medium data.
 	 * @see MediumDto
 	 */
-	public static List<PaginationDto> readMediaBySearchCriteria(PaginationDto paginationDetails) {
+	public static List<MediumDto> readMediaBySearchCriteria(PaginationDto paginationDetails) {
 		return null;
 	}
 	
