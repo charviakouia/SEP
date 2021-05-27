@@ -17,7 +17,7 @@ import jakarta.inject.Named;
  */
 @Named
 @SessionScoped
-public class DirectLending implements Serializable {
+public class Lending implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
