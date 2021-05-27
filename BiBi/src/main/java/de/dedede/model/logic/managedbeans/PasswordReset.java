@@ -1,6 +1,7 @@
 package de.dedede.model.logic.managedbeans;
 
 import de.dedede.model.data.dtos.TokenDto;
+import de.dedede.model.data.dtos.UserDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
@@ -19,6 +20,8 @@ public class PasswordReset {
 	private TokenDto token;
 
 	private String confirmedPassword;
+
+	private UserDto userDto;
 
 	@PostConstruct
 	public void init() {
@@ -55,7 +58,7 @@ public class PasswordReset {
 	/**
 	 * Reset the password when it is necessary to reset it.
 	 */
-	public void resetPassword() {
+	public void resetPassword(UserDto userDto) {
 
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumDto;
+import de.dedede.model.data.dtos.UserDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
@@ -35,6 +36,8 @@ public class Medium implements Serializable {
 	 */
 	private CopyDto copy;
 
+	private UserDto user;
+
 	@PostConstruct
 	public void init() {
 
@@ -44,7 +47,6 @@ public class Medium implements Serializable {
 	 * Save the changes made to the set of medium attributes.
 	 */
 	public void saveAttributes() {
-
 	}
 
 	/**
@@ -132,8 +134,7 @@ public class Medium implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String pickUpCopy(int index) throws IllegalStateException {
-		return null;
+	public void pickUpCopy(int index, UserDto user) throws IllegalStateException {
 	}
 
 	public MediumDto getMedium() {
