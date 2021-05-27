@@ -1,6 +1,7 @@
 package de.dedede.model.logic.util;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserRole;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;

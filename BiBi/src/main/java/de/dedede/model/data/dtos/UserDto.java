@@ -1,9 +1,5 @@
 package de.dedede.model.data.dtos;
 
-import de.dedede.model.logic.util.UserLendStatus;
-import de.dedede.model.logic.util.UserRole;
-import de.dedede.model.logic.util.Token;
-
 import java.time.Duration;
 import java.util.Date;
 
@@ -45,7 +41,7 @@ public class UserDto {
 
     private UserLendStatus userLendStatus;
 
-    private Token token;
+    private TokenDto tokenDto;
 
     private Date tokenCreation;
 
@@ -307,28 +303,28 @@ public class UserDto {
      * This is necessary, for example, to verify your e-mail address or recover a password.
      *
      * @return A token for the user.
-     * @see Token
+     * @see TokenDto
      */
-    public Token getToken() {
-        return token;
+    public TokenDto getToken() {
+        return tokenDto;
     }
 
     /**
      * Sets a token for the user.
      * This is necessary, for example, to verify your e-mail address or recover a password.
      *
-     * @param token A token for the user.
-     * @see Token
+     * @param tokenDto A token for the user.
+     * @see TokenDto
      */
-    public void setToken(Token token) {
-        this.token = token;
+    public void setToken(TokenDto tokenDto) {
+        this.tokenDto = tokenDto;
     }
 
     /**
      * Fetches the date the token was created.
      *
      * @return the date the token was created.
-     * @see Token
+     * @see TokenDto
      */
     public Date getTokenCreation() {
         return tokenCreation;
@@ -338,7 +334,7 @@ public class UserDto {
      * Sets the date the token was created.
      *
      * @param tokenCreation the date the token was created.
-     * @see Token
+     * @see TokenDto
      */
     public void setTokenCreation(Date tokenCreation) {
         this.tokenCreation = tokenCreation;

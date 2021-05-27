@@ -2,8 +2,6 @@ package de.dedede.model.data.dtos;
 
 import java.util.Date;
 
-import de.dedede.model.logic.util.CopyStatus;
-
 /**
  * This DTO (data transfer object) is responsible for aggregating and
  * encapsulating data about a copy of the medium for transfer.

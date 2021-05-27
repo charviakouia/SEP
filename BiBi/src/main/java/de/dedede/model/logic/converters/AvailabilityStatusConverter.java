@@ -1,6 +1,6 @@
 package de.dedede.model.logic.converters;
 
-import de.dedede.model.logic.util.CopyStatus;
+import de.dedede.model.data.dtos.CopyStatus;
 import jakarta.faces.convert.EnumConverter;
 import jakarta.faces.convert.FacesConverter;
 
