@@ -2,6 +2,8 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import de.dedede.model.data.dtos.AttributeDto;
@@ -18,7 +20,7 @@ public class MediumSchemaEditor implements Serializable {
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private Set<AttributeDto> attributes;
+	private final Map<Integer, AttributeDto> attributes = new HashMap<Integer, AttributeDto>();
 
 	/**
 	 * Delete a medium attribute.
@@ -27,7 +29,6 @@ public class MediumSchemaEditor implements Serializable {
 	 * @throws IllegalArgumentException If the identifier is invalid.
 	 */
 	public void deleteAttribute(int id) throws IllegalArgumentException {
-
 	}
 
 	/**
