@@ -17,6 +17,14 @@ public class UserSession implements Serializable {
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private UserDto loggedInUser;
+	private UserDto user;
+
+	public UserDto getUser() {
+		return user;
+	}
+
+	public void setUser(UserDto user) {
+		this.user = user;
+	}
 
 }
