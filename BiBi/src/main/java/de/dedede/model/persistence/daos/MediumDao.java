@@ -1,7 +1,9 @@
 package de.dedede.model.persistence.daos;
 
+import java.util.Collection;
 import java.util.List;
 
+import de.dedede.model.data.dtos.AttributeDto;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
@@ -212,6 +214,16 @@ public final class MediumDao {
 	 */
 	public static void returnCopy(CopyDto copyDto, UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
+	}
+	
+	public static void updateGlobalAttributes(Collection<AttributeDto> attributes) {
+	}
+	
+	public static void readGlobalAttributes() {
+	}
+	
+	public static void updateMediumAttributes(MediumDto mediumDto, 
+			Collection<AttributeDto> attributes) {
 	}
 
 }

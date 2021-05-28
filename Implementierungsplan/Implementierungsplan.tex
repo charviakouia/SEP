@@ -19,6 +19,8 @@
 \usepackage{lscape}
 \usepackage{colortbl}
 \usepackage{listings}
+\usepackage[normalem]{ulem}
+\usepackage{longtable}
 
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
@@ -34,9 +36,6 @@
 \newcommand{\sectionauthor}[1]{
 	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{1em}}
 	\@afterheading
-}
-\newcommand{\specification}[3]{
-	{\parindent 0.5em \hangindent 3em \hypertarget{spec:#1:#2}{\textbf{/#1#2/}} #3 \par \nobreak \vspace*{0.5em}}
 }
 \makeatother
 
@@ -60,9 +59,13 @@
 \tableofcontents
 \newpage
 
-%----------------------------------------------------------------------Kapitel 1--------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------Kapitel 0--------------------------------------------------------------------------------------------
+
 \section{Einleitung}
+
 In diesem Dokument ist der Implementierungsplan der Webanwendung \textbf{BiBi} dokumentiert. Dabei  erfolgt die Gliederung der Implementierung in Milestones, welche wiederum in Arbeitspakete aufgeteilt werden. Außerdem sind das \textbf{PERT-Diagramm},   die \textbf{Spezialgebiete}-Tabelle und die \textbf{Whitebox-Tests} zu sehen.
+
+%----------------------------------------------------------------------Kapitel 1--------------------------------------------------------------------------------------------
 
 \section{Meilensteine}
 \sectionauthor{Jonas Picker}
@@ -76,22 +79,22 @@ Der Hauptteil der essentiellen Systemfunktionen sollen im zweiten Abschnitt als 
 \subsection{Meilenstein 3}
 \textbf{Fertigstellungsdatum:} 18.06.2021 \\
 In der letzten Implementierungsphase soll das System hauptsächlich um Randfunktionen ergänzt werden. Als letzter essentieller Block wird die Suchfunktionalität für Medien fertiggestellt. Mitarbeiter sollen eine Listenansicht mit abzuholenden Exemplaren und Leihfristverstößen angezeigt bekommen können. Für Nutzer soll ebenfalls eine Liste mit ausgeliehenen/abzuholenden Exemplaren einsehbar sein. Auch wird Nutzern die Passwort- und E-Mail-Zurücksetzung ermöglicht. Kleinere Komfortfunktionen wie z.B. das Anzeigen von Suchvorschlägen folgen zuletzt.
+
 %----------------------------------------------------------------------Kapitel 2--------------------------------------------------------------------------------------------
 
 \section{Arbeitspakete}
 
-Die folgende Tabellen dienen der Übersicht über die einzelnen Arbeitspakete, die zur Realisierung unseren System benötigt werden.\\
-Als Konvention wird vereinbart, dass wenn nur der Klassenname angegeben wird, die gesamte Klasse
-einschließlich aller Methoden zu implementieren ist. Wird zusätzlich einer der Methodenbezeichner angegeben, ist nur
-die Methode.
+Die folgenden Tabellen dienen der Übersicht über die einzelnen Arbeitspakete, die zur Realisierung unseren System benötigt werden.
+Sie geben unter Anderem die Klassen, Methoden, und Facelets an, die verschiedenen Arbeitspaketen innerhalb von Milestones zugeordnet sind. 
+Dabei entsprechen die Tabellen den drei Milestones, die im Projekt vorgesehen sind.
+Als Konvention wird vereinbart, dass wenn nur der Klassenname angegeben wird, die gesamte Klasse einschließlich aller Methoden zu implementieren ist. 
+Analog steht ein Klassenattribut für die entsprechenden Getter- und Settermethoden.
+Wird zusätzlich ein Methodenbezeichner angegeben, wird nur die Klassenmethode gemeint.
 
+%----------------------------------------------------------------------Milestone 1--------------------------------------------------------------------------------------------
 
-
-%----------------------------------------------------------------------milestone1 --------------------------------------------------------------------------------------------
 \subsection{Meilenstein 1}
 Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones notwendig sind, aufgelistet und kurz beschrieben. Dabei steht BB für Backing Bean, C für Klasse, CC für Komponente, Co für Konverter, F für Facelet und M für Methode.
-
-
 
 %\begin{center}
 
@@ -219,16 +222,254 @@ Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones n
 	\end{table}
 	
 \end{landscape}
-
 \restoregeometry
 
-
-
-%----------------------------------------------------------------------milestone2 --------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------Milestone 2--------------------------------------------------------------------------------------------
 
 \subsection{Meilenstein 2}
-\newpage
-%----------------------------------------------------------------------Milestone3 --------------------------------------------------------------------------------------------
+\sectionauthor{Ivan Charviakou}
+
+Im Folgenden werden die Arbeitspakete zum zweiten Meilenstein angegeben. Dabei wird die geschätzte Zeit in Stunden gemessen.
+
+\begin{longtable}{|l|l|l|l|l|} 
+\hline
+\textbf{\uline{Arbeitspaket / Element}} & \textbf{\uline{ID / Inhalt}}             & \textbf{\uline{Abh.}}     & \textbf{\uline{Bearbeiter}} & \textbf{\uline{Zeit}}  \endfirsthead 
+\hline
+\textbf{\textit{Nutzerprofil}}          & \textbf{\textit{120}}                    & \textbf{\textit{50}}      & \textbf{\textit{Mohamad}}   & \textbf{\textit{3}}    \\ 
+\hline
+Facelet: Profilseite                    & profile.xhtml                            &                           &                             &                        \\ 
+\hline
+Backing-Bean: Profilseite               & Profile.init()                           &                           &                             &                        \\ 
+\hline
+                                        & Profile.user                             &                           &                             &                        \\ 
+\hline
+                                        & Profile.password                         &                           &                             &                        \\ 
+\hline
+                                        & Profile.confirmedPassword                &                           &                             &                        \\ 
+\hline
+                                        & Profile.delete()                         &                           &                             &                        \\ 
+\hline
+                                        & Profile.save()                           &                           &                             &                        \\ 
+\hline
+Session-Bean: Nutzer                    & UserSession.user                         &                           &                             &                        \\ 
+\hline
+DAO: Nutzer                             & UserDao.updateUser(…)                    &                           &                             &                        \\ 
+\hline
+                                        & UserDao.deleteUser(…)                    &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Medienerstellung}}      & \textbf{\textit{80}}                     & \textbf{\textit{30, 41}}  & \textbf{\textit{Ivan}}      & \textbf{\textit{5}}    \\ 
+\hline
+Facelet: Medienerstellung               & medium-creator.xhtml                     &                           &                             &                        \\ 
+\hline
+Backing-Bean: Medienerstellung          & MediumCreator.init()                     &                           &                             &                        \\ 
+\hline
+                                        & MediumCreator.medium                     &                           &                             &                        \\ 
+\hline
+                                        & MediumCreator.copy                       &                           &                             &                        \\ 
+\hline
+                                        & MediumCreator.user                       &                           &                             &                        \\ 
+\hline
+                                        & MediumCreator.createMedium()             &                           &                             &                        \\ 
+\hline
+DTO: Medium                             & MediumDto.id                             &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.category                       &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.returnPeriod                   &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.getAttribute(…)                &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.setAttribute(…)                &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.getCopy(…)                     &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.setCopy(…)                     &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.createMedium(...)              &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.createCopy(...)                &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Medienattribute}}       & \textbf{\textit{81}}                     & \textbf{\textit{30, 41}}  & \textbf{\textit{Jonas}}     & \textbf{\textit{5}}    \\ 
+\hline
+Facelet: Medienschema                   & medium-schema-editor.xhtml               &                           &                             &                        \\ 
+\hline
+Backing-Bean: Medienschema              & MediumSchemaEditor.init()                &                           &                             &                        \\ 
+\hline
+                                        & MediumSchemaEditor.addAttribute()        &                           &                             &                        \\ 
+\hline
+                                        & MediumSchemaEditor.deleteAttribute(...)  &                           &                             &                        \\ 
+\hline
+                                        & MediumSchemaEditor.save()                &                           &                             &                        \\ 
+\hline
+DTO: Attribut                           & AttributeDto.id                          &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.name                        &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.textValue                   &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.imageValue                  &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.urlValue                    &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.attributeModifiability      &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.type                        &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.attributeMultiplicity       &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.position                    &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.updateGlobalAttributes(...)    &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.readGlobalAttributes()         &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Mediumansicht I}}       & \textbf{\textit{83}}                     & \textbf{\textit{30, 41}}  & \textbf{\textit{Sergei}}    & \textbf{\textit{5}}    \\ 
+\hline
+Facelet: Mediumansicht                  & medium.xhtml                             &                           &                             &                        \\ 
+\hline
+Backing-Bean: Mediumansicht             & Medium.init()                            &                           &                             &                        \\ 
+\hline
+                                        & Medium.saveAttributes()                  &                           &                             &                        \\ 
+\hline
+                                        & Medium.createCopy()                      &                           &                             &                        \\ 
+\hline
+                                        & Medium.deleteCopy()                      &                           &                             &                        \\ 
+\hline
+                                        & Medium.medium                            &                           &                             &                        \\ 
+\hline
+                                        & Medium.copy                              &                           &                             &                        \\ 
+\hline
+DTO: Exemplar                           & CopyDto.id                               &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.location                         &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.signature                        &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.deadline                         &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.copyStatus                       &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.actor                            &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.readCopy(...)                  &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.updateMediumAttributes(…)      &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Mediumansicht II}}      & \textbf{\textit{82}}                     & \textbf{\textit{83}}      & \textbf{\textit{Mohamad}}   & \textbf{\textit{5}}    \\ 
+\hline
+Backing-Bean: Mediumansicht             & Medium.getReturnPeriod()                 &                           &                             &                        \\ 
+\hline
+                                        & Medium.updateReturnPeriod()              &                           &                             &                        \\ 
+\hline
+                                        & Medium.saveCopy()                        &                           &                             &                        \\ 
+\hline
+                                        & Medium.lendCopy()                        &                           &                             &                        \\ 
+\hline
+                                        & Medium.returnCopy()                      &                           &                             &                        \\ 
+\hline
+                                        & Medium.pickUpCopy()                      &                           &                             &                        \\ 
+\hline
+                                        & Medium.cancelPickup()                    &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.updateCopy(...)                &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.deleteCopy(...)                &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Kategoriesuche}}        & \textbf{\textit{110}}                    & \textbf{\textit{30, 41}}  & \textbf{\textit{Leon}}      & \textbf{\textit{4}}    \\ 
+\hline
+Facelet: Kategoriesuche                 & category-browser.xhtml                   &                           &                             &                        \\ 
+\hline
+Backing-Bean: Kategoriesuche            & CategoryBrowser.init()                   &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.categorySearch           &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.currentCategory          &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.deleteCategory()         &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.searchCategory()         &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.getItems()               &                           &                             &                        \\ 
+\hline
+DTO: Kategoriensuche                    & CategorySearchDto.searchTerm             &                           &                             &                        \\ 
+\hline
+DAO: Kategorie                          & CategoryDao.readCategory()               &                           &                             &                        \\ 
+\hline
+                                        & CategoryDao.readCategoriesByName()       &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Kategorieerstellung}}   & \textbf{\textit{111}}                    & \textbf{\textit{30, 41}}  & \textbf{\textit{Leon}}      & \textbf{\textit{4}}    \\ 
+\hline
+Facelet: Kategorieerstellung            & category-creator.xhtml                   &                           &                             &                        \\ 
+\hline
+Backing-Bean: Kategorieerstellung       & CategoryCreator.init()                   &                           &                             &                        \\ 
+\hline
+                                        & CategoryCreator.category                 &                           &                             &                        \\ 
+\hline
+                                        & CategoryCreator.createCategory()         &                           &                             &                        \\ 
+\hline
+DTO: Kategorie                          & CategoryDto.id                           &                           &                             &                        \\ 
+\hline
+                                        & CategoryDto.name                         &                           &                             &                        \\ 
+\hline
+                                        & CategoryDto.description                  &                           &                             &                        \\ 
+\hline
+                                        & CategoryDto.parent                       &                           &                             &                        \\ 
+\hline
+DAO: Kategorie                          & CategoryDao.createCategory(…)            &                           &                             &                        \\ 
+\hline
+                                        & CategoryDao.updateCategory(…)            &                           &                             &                        \\ 
+\hline
+                                        & CategoryDao.deleteCategory(…)            &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Medientransaktionen}}   & \textbf{\textit{90}}                     & \textbf{\textit{80, 120}} & \textbf{\textit{Sergei}}    & \textbf{\textit{4}}    \\ 
+\hline
+Facelet: Medienausleihe                 & lending.xhtml                            &                           &                             &                        \\ 
+\hline
+Backing-Bean: Medienausleihe            & Lending.init()                           &                           &                             &                        \\ 
+\hline
+                                        & Lending.user                             &                           &                             &                        \\ 
+\hline
+                                        & Lending.copies                           &                           &                             &                        \\ 
+\hline
+                                        & Lending.lendCopies()                     &                           &                             &                        \\ 
+\hline
+                                        & Lending.addSignatureInputField()         &                           &                             &                        \\ 
+\hline
+Facelet: Medienrückgabe                 & return-form.xhtml                        &                           &                             &                        \\ 
+\hline
+Backing-Bean: Medienrückgabe            & ReturnForm.init()                        &                           &                             &                        \\ 
+\hline
+                                        & ReturnForm.user                          &                           &                             &                        \\ 
+\hline
+                                        & ReturnForm.copies                        &                           &                             &                        \\ 
+\hline
+                                        & ReturnForm.returnCopies()                &                           &                             &                        \\ 
+\hline
+                                        & ReturnForm.addSignatureInputField()      &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.lendCopy(...)                  &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.returnCopy(...)                &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Wartungsprozess}}       & \textbf{\textit{170}}                    & \textbf{\textit{10, 20}}  & \textbf{\textit{Jonas}}     & \textbf{\textit{3}}    \\ 
+\hline
+Klasse: Wartungsprozess                 & MaintenanceProcess.setTimeoutInterval(…) &                           &                             &                        \\ 
+\hline
+                                        & MaintenanceProcess.run()                 &                           &                             &                        \\ 
+\hline
+                                        & MaintenanceProcess.shutdown()            &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Trespasslistener}}      & \textbf{\textit{161}}                    & \textbf{\textit{50}}      & \textbf{\textit{Ivan}}      & \textbf{\textit{3}}    \\ 
+\hline
+Klasse: Trespasslistener                & TrespassListener.beforePhase(…)          &                           &                             &                        \\ 
+\hline
+                                        & TrespassListener.afterPhase(…)           &                           &                             &                        \\ 
+\hline
+                                        & TrespassListener.getPhaseId()            &                           &                             &                        \\
+\hline
+\end{longtable}
+
+%----------------------------------------------------------------------Milestone 3--------------------------------------------------------------------------------------------
 
 \subsection{Meilenstein 3}
 \sectionauthor{León Liehr}
@@ -293,7 +534,17 @@ Nachfolgend die Arbeitspakete des dritten Milestones. Dabei steht BB für Backin
 \end{landscape}
 \restoregeometry
 
+%----------------------------------------------------------------------Kapitel 3--------------------------------------------------------------------------------------------
+
 \section{PERT-Diagramm}
+\sectionauthor{Ivan Charviakou}
+
+Im Folgenden wird das PERT Diagramm zum Projekt dargestellt. Insbesondere bildet es die Abhängigkeiten zwischen den Paketen ab und zeigt das kritische Pfad im Projekt auf. Dabei werden die Zeitdauer in Stunden berechnet.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 30em]{PERT}
+\end{figure}
 
 %----------------------------------------------------------------------Kapitel 4--------------------------------------------------------------------------------------------
 
