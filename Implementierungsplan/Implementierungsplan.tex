@@ -66,7 +66,7 @@ In diesem Dokument ist der Implementierungsplan der Webanwendung \textbf{BiBi} d
 
 \section{Meilensteine}
 \sectionauthor{Jonas Picker}
-Die Implementierungsphase wird drei Wochen dauern und in 3 gleiche Zeitabschnitte unterteilt, in denen wesentliche Funktionalitäten fertiggestellt werden sollen. Allgemein liegt der Schwerpunkt auf einer vertikale, testbare Realisierung einzelner Funktionen, jedoch müssen gewisse Kernmodule direkt im ersten Milestone abgearbeitet werden. 
+Die Implementierungsphase wird drei Wochen dauern und in 3 gleiche Zeitabschnitte unterteilt, in denen wesentliche Funktionalitäten fertiggestellt werden sollen. Allgemein liegt der Schwerpunkt auf einer vertikale, testbare Realisierung einzelner Funktionen, jedoch müssen gewisse Kernmodule direkt im ersten Milestone abgearbeitet werden.
 \subsection{Meilenstein 1}
 \textbf{Fertigstellungsdatum:} 04.06.2021 \\
 Im Fokus des ersten Meilensteins liegen Grundfunktionalitäten, nach seinem Erreichen soll das System auf normalem Wege gestartet und heruntergefahren werden können. Hierzu werden zunächst die Datenbankinitiallisierung und Anbindung, Fehlerbehandlung sowie System- und E-Mail-Konfiguration als horizontale Funktionspakete erstellt. Geplante vertikale Module des ersten Abschnitts beinhalten den Login und Registriervorgang für Benutzer sowie die Verwaltungsseite für Administratoren.
@@ -94,9 +94,9 @@ Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones n
 
 
 \begin{center}
-  
+
     \begin{table}[H]
-     
+
       \begin{tabular} {| p{3cm} | p{6cm} |  p{3cm}  | p{2.5cm}|  }
 		\hline
 	     \textbf{Arbeitspaket}& \textbf{Beschreibung} & \textbf{Entwickler} & \textbf{Dauer}\\
@@ -104,32 +104,32 @@ Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones n
 	     Meta-implementation & Logger \newline ConfigReader& Ivan Charviakou& ?\\ \hline
 	     Utilities I & ConnectionPool \newline ApplicationDao\newline ApplicationDto\newline CSSReader& Jonas Picker& ?\\
 	     \hline
-	     
+
 	     Utilities II & EmailUtility \newline TokenGenerator\newline HashingModule\newline & Ivan Charviakour& ?\\
 	     \hline
-	     
+
 	     System I & SystemStartStop \newline DataLayerInitializer\newline Datenbankinitialisierung& Jonas Picker& ?\\
 	     \hline
-	    
-	    Facelets I & Template \newline Header\newline Footer\newline PaginatedList und column &  León Liehr& ?\\
+
+	    Faccelets I & Template \newline Header\newline Footer\newline PaginatedList und column &  León Liehr& ?\\
 	    \hline
-	     
+
 	      Exception handling & Error  \newline ErrorDto\newline Exceptions\newline Global exception handler &  Sergei Pravdin& ?\\
 	     \hline
-	     
+
 	       User definition & UserDto  \newline UserSession\newline RoleConverter\newline PasswordValidator\newline ConfirmPasswordValidator \newline EmailValidator \newline UserDao &  Mohamad Najjar& ?\\
 	     \hline
-	     
-	     
+
+
 	     User authentication & UserDao  \newline Registration\newline Login\newline UserValidator &  Mohamad Najjar& ?\\
 	     \hline
-	
+
 	   Application management global & SiteNotice  \newline Contact\newline PrivacyPlocy &  León Liehr & ?\\
 	   \hline
-	   
+
 	    Administrative functions& Administration  \newline LogoValidator &  Sergei Pravdin& ?\\
 	   \hline
-	   
+
       \end{tabular}
       \caption{Tabelle des ersten Milestones}
     \end{table}
@@ -146,8 +146,66 @@ Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones n
 %----------------------------------------------------------------------Milestone3 --------------------------------------------------------------------------------------------
 
 \subsection{Meilenstein 3}
-\newpage
-%----------------------------------------------------------------------Kapitel 3--------------------------------------------------------------------------------------------
+\sectionauthor{León Liehr}
+
+Nachfolgend die Arbeitspakete des dritten Milestones. Dabei steht BB für Backing Bean, C für Klasse, CC für Komponente, Co für Konverter, F für Facelet und M für Methode.
+
+\newgeometry{top=1cm,bottom=1cm}
+\begin{landscape}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{llllll}
+        \toprule
+        \textbf{Arbeitspaket} &
+        \textbf{ID} &
+        \textbf{Inhalt} &
+        \textbf{Abhängigkeiten} &
+        \textbf{Entwickler} &
+        \textbf{Dauer} \\
+        \midrule
+        Medium Search &
+        130 &
+        \begin{tabular}[c]{@{}l@{}}medium-search (F)\\ MediumSearch (BB)\\ searchMedium (M)\\ addNuancedSearchField (M)\\ MediumDao (C)\\ readMediaBySearchCriteria (M)MediumSearchDto (C)\\ AttributeOrCategoryConverter (Co)\\ AvailabilityStatusConverter (Co)\\ MediumPeviewPositionConverter (Co)\\ SearchOperatorConverter (Co)\end{tabular} &
+        80, 81 &
+        León Liehr &
+        8 \\
+        Password Reset \& Email Validation &
+        150 &
+        \begin{tabular}[c]{@{}l@{}}password-reset (F)\\ PasswordReset (BB)\\ resetPassword (M)\\ email-confirmation (F)\\ EmailConfirmation (BB)\\ confirmEmailAddress (M)\\ UserDao (C)\end{tabular} &
+        120 &
+        Ivan Charviakou &
+        6 \\
+        Copies of a User &
+        100 &
+        \begin{tabular}[c]{@{}l@{}}copies-ready-for-pickup (F)\\ CopiesReadyForPickup (BB)\\ borrowed-copies (F)\\ BorrowedCopies (BB)\\ MediumDao (C)\end{tabular} &
+        80, 120 &
+        Sergei Pravdin &
+        5 \\
+        Copies by User &
+        91 &
+        \begin{tabular}[c]{@{}l@{}}copies-ready-for-pickup-all-users (F)\\ CopiesReadyForPickupAllUsers (BB)\\ lending-period-violations (F)\\ LendingPeriodViolations (BB)\\ MediumDao (C)\end{tabular} &
+        80, 120 &
+        Jonas Picker &
+        5 \\
+        User Search &
+        140 &
+        \begin{tabular}[c]{@{}l@{}}user-search (F)\\ UserSearch (BB)\\ UserSearchDto (C)\\ UserDao (C)\end{tabular} &
+        120 &
+        Mohamad Najjar &
+        6 \\
+        Enhancements &
+        160 &
+        reactiveInputField (CC) &
+        130, 140, 110 &
+        León Liehr &
+        3 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\end{landscape}
+\restoregeometry
 
 \section{PERT-Diagramm}
 
@@ -165,7 +223,7 @@ Die Vielzahl der verwendeten Technologien erfordert eine Spezialisierung der ein
      	\hline
      	JSF Internationalisierung & León Liehr \\
      	\hline
-    	JSF Templates & León Liehr \\	
+    	JSF Templates & León Liehr \\
      	\hline
      	JSF Components & León Liehr \\
      	\hline
