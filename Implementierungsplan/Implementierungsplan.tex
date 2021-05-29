@@ -19,24 +19,16 @@
 \usepackage{lscape}
 \usepackage{colortbl}
 \usepackage{listings}
+\usepackage[normalem]{ulem}
+\usepackage{longtable}
 
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
-
-\hypersetup{
-    colorlinks,
-    linkcolor={cyan!50!black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
-}
 
 \makeatletter
 \newcommand{\sectionauthor}[1]{
 	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{1em}}
 	\@afterheading
-}
-\newcommand{\specification}[3]{
-	{\parindent 0.5em \hangindent 3em \hypertarget{spec:#1:#2}{\textbf{/#1#2/}} #3 \par \nobreak \vspace*{0.5em}}
 }
 \makeatother
 
@@ -60,9 +52,13 @@
 \tableofcontents
 \newpage
 
-%----------------------------------------------------------------------Kapitel 1--------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------Kapitel 0--------------------------------------------------------------------------------------------
+
 \section{Einleitung}
+
 In diesem Dokument ist der Implementierungsplan der Webanwendung \textbf{BiBi} dokumentiert. Dabei  erfolgt die Gliederung der Implementierung in Milestones, welche wiederum in Arbeitspakete aufgeteilt werden. Außerdem sind das \textbf{PERT-Diagramm},   die \textbf{Spezialgebiete}-Tabelle und die \textbf{Whitebox-Tests} zu sehen.
+
+%----------------------------------------------------------------------Kapitel 1--------------------------------------------------------------------------------------------
 
 \section{Meilensteine}
 \sectionauthor{Jonas Picker}
@@ -76,74 +72,357 @@ Der Hauptteil der essentiellen Systemfunktionen sollen im zweiten Abschnitt als 
 \subsection{Meilenstein 3}
 \textbf{Fertigstellungsdatum:} 18.06.2021 \\
 In der letzten Implementierungsphase soll das System hauptsächlich um Randfunktionen ergänzt werden. Als letzter essentieller Block wird die Suchfunktionalität für Medien fertiggestellt. Mitarbeiter sollen eine Listenansicht mit abzuholenden Exemplaren und Leihfristverstößen angezeigt bekommen können. Für Nutzer soll ebenfalls eine Liste mit ausgeliehenen/abzuholenden Exemplaren einsehbar sein. Auch wird Nutzern die Passwort- und E-Mail-Zurücksetzung ermöglicht. Kleinere Komfortfunktionen wie z.B. das Anzeigen von Suchvorschlägen folgen zuletzt.
+
 %----------------------------------------------------------------------Kapitel 2--------------------------------------------------------------------------------------------
 
 \section{Arbeitspakete}
 
-Die folgende Tabellen dienen der Übersicht über die einzelnen Arbeitspakete, die zur Realisierung unseren System benötigt werden.\\
-Als Konvention wird vereinbart, dass wenn nur der Klassenname angegeben wird, die gesamte Klasse
-einschließlich aller Methoden zu implementieren ist. Wird zusätzlich einer der Methodenbezeichner angegeben, ist nur
-die Methode.
+Die folgenden Tabellen dienen der Übersicht über die einzelnen Arbeitspakete, die zur Realisierung unseren System benötigt werden.
+Sie geben unter Anderem die Klassen, Methoden, und Facelets an, die verschiedenen Arbeitspaketen innerhalb von Milestones zugeordnet sind. 
+Dabei entsprechen die Tabellen den drei Milestones, die im Projekt vorgesehen sind.
+Als Konvention wird vereinbart, dass wenn nur der Klassenname angegeben wird, die gesamte Klasse einschließlich aller Methoden zu implementieren ist. 
+Analog steht ein Klassenattribut für die entsprechenden Getter- und Settermethoden.
+Wird zusätzlich ein Methodenbezeichner angegeben, wird nur die Klassenmethode gemeint.
 
+%----------------------------------------------------------------------Milestone 1--------------------------------------------------------------------------------------------
 
-
-%----------------------------------------------------------------------milestone1 --------------------------------------------------------------------------------------------
 \subsection{Meilenstein 1}
-Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones notwendig sind, aufgelistet und kurz beschrieben.\\
+\sectionauthor{Mohamad Najjar}
+Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones notwendig sind, aufgelistet und kurz beschrieben. Dabei steht BB für Backing Bean, C für Klasse, CC für Komponente, Co für Konverter, F für Facelet und M für Methode.
 
+\newgeometry{top=1cm,bottom=1cm}
+\begin{landscape}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{llllll}
+			\toprule
+			\textbf{Arbeitspaket} &
+			\textbf{ID} &
+			\textbf{Inhalt} &
+			\textbf{Abhängigkeiten} &
+			\textbf{Entwickler} &
+			\textbf{Dauer} \\
+			\midrule
+			Basis &
+			11 &
+			\begin{tabular}[c]{@{}l@{}}Logger (C)\\ ConfigReader (C)\\ \end{tabular} &
+			11 &
+			 Ivan Charviakou&
+			5 \\
+			Utilities I&
+			10 &
+			\begin{tabular}[c]{@{}l@{}}ConnectionPool  (C)\\ ApplicationDao (C)\\ ApplicationDto (C)\\ CSSReader (C)\\ \end{tabular} &
+			11 &
+			Jonas Picker &
+			4  \\
+			Utilities II&
+			20 &
+			\begin{tabular}[c]{@{}l@{}} EmailUtility (C)\\ TokenGenerator (C)\\ PasswordHashingModule (C)\end{tabular} &
+			11 &
+			Ivan Charviakou&
+			4\\
+			Systemstart&
+			30 &
+			\begin{tabular}[c]{@{}l@{}}SystemStartStop (C)\\DataLayerInitializer (C)\\ DatenbankInitialisierung (SQL)
+		\end{tabular} &
+			10 &
+			Jonas Picker &
+			4 \\
+			Facelets &
+			40 &
+			\begin{tabular}[c]{@{}l@{}}Template (F) (BB)\\ PaginatedList (F)\\ \end{tabular} &
+			10 &
+			León Liehr &
+			4 \\
+			Fehlerbehandlung &
+			41 &
+		\begin{tabular}[c]{@{}l@{}}Fehlerseiten  (F) (BB)\\ ErrorDto (FC)\\ ExceptionHandler (C)\\ CustomExceptionHandler (C) \end{tabular}&
+			40 &
+			Sergei Pravdin &
+			3 \\
+			Nutzerdefinierung &
+			52 &
+			\begin{tabular}[c]{@{}l@{}}UserDto  (C) \\ UserSession (MB)\\ RoleConverter (Co)\\ PasswordValidator (C)\\ ConfirmPasswordValidator (C)\\ EmailValidator (C) \\ UserDao (M)\end{tabular}&
+			30, 41 &
+			Mohamad Najjar &
+			6\\
+			
+			Nutzerathentifizierung &
+			50 &
+			\begin{tabular}[c]{@{}l@{}}UserDao  (M) \\ Registration (BB) (F)\\ Login (BB) (F)\\ UserValidator (C)\\ ConfirmPasswordValidator (C)\\ EmailValidator (C) \\ UserDao (M)\end{tabular}&
+			52, 20 &
+			Mohamad Najjar &
+			4\\
+			
+			Globale Anwendungseinstellungen &
+			61 &
+			\begin{tabular}[c]{@{}l@{}}UserDao  (M) \\ Contact (BB) (F)\\ SiteNotice (BB) (F)\\ PrivacyPlocy (BB) (F)\\\end{tabular}&
+			30, 41 &
+			León Liehr &
+			3\\
+			
+			Administrative Funktionalitäten &
+			60 &
+			\begin{tabular}[c]{@{}l@{}}Administration   (BB) (F) \\ LogoValidator (C)\\  \\\end{tabular}&
+			30, 41 &
+			Sergei Pravdin &
+			4\\
+			\bottomrule
+		\end{tabular}
+	 \caption{Tabelle des ersten Milestones}
+	\end{table}
+	
+\end{landscape}
+\restoregeometry
 
-
-\begin{center}
-
-    \begin{table}[H]
-
-      \begin{tabular} {| p{3cm} | p{6cm} |  p{3cm}  | p{2.5cm}|  }
-		\hline
-	     \textbf{Arbeitspaket}& \textbf{Beschreibung} & \textbf{Entwickler} & \textbf{Dauer}\\
-	     \hline\hline
-	     Meta-implementation & Logger \newline ConfigReader& Ivan Charviakou& ?\\ \hline
-	     Utilities I & ConnectionPool \newline ApplicationDao\newline ApplicationDto\newline CSSReader& Jonas Picker& ?\\
-	     \hline
-
-	     Utilities II & EmailUtility \newline TokenGenerator\newline HashingModule\newline & Ivan Charviakour& ?\\
-	     \hline
-
-	     System I & SystemStartStop \newline DataLayerInitializer\newline Datenbankinitialisierung& Jonas Picker& ?\\
-	     \hline
-
-	    Faccelets I & Template \newline Header\newline Footer\newline PaginatedList und column &  León Liehr& ?\\
-	    \hline
-
-	      Exception handling & Error  \newline ErrorDto\newline Exceptions\newline Global exception handler &  Sergei Pravdin& ?\\
-	     \hline
-
-	       User definition & UserDto  \newline UserSession\newline RoleConverter\newline PasswordValidator\newline ConfirmPasswordValidator \newline EmailValidator \newline UserDao &  Mohamad Najjar& ?\\
-	     \hline
-
-
-	     User authentication & UserDao  \newline Registration\newline Login\newline UserValidator &  Mohamad Najjar& ?\\
-	     \hline
-
-	   Application management global & SiteNotice  \newline Contact\newline PrivacyPlocy &  León Liehr & ?\\
-	   \hline
-
-	    Administrative functions& Administration  \newline LogoValidator &  Sergei Pravdin& ?\\
-	   \hline
-
-      \end{tabular}
-      \caption{Tabelle des ersten Milestones}
-    \end{table}
-\end{center}
-
-
-
-
-
-%----------------------------------------------------------------------milestone2 --------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------Milestone 2--------------------------------------------------------------------------------------------
 
 \subsection{Meilenstein 2}
-\newpage
-%----------------------------------------------------------------------Milestone3 --------------------------------------------------------------------------------------------
+\sectionauthor{Ivan Charviakou}
+
+Im Folgenden werden die Arbeitspakete zum zweiten Meilenstein angegeben. Dabei wird die geschätzte Zeit in Stunden gemessen.
+
+\begin{longtable}{|l|l|l|l|l|} 
+\hline
+\textbf{\uline{Arbeitspaket / Element}} & \textbf{\uline{ID / Inhalt}}             & \textbf{\uline{Abh.}}     & \textbf{\uline{Bearbeiter}} & \textbf{\uline{Zeit}}  \endfirsthead 
+\hline
+\textbf{\textit{Nutzerprofil}}          & \textbf{\textit{120}}                    & \textbf{\textit{50}}      & \textbf{\textit{Mohamad}}   & \textbf{\textit{3}}    \\ 
+\hline
+Facelet: Profilseite                    & profile.xhtml                            &                           &                             &                        \\ 
+\hline
+Backing-Bean: Profilseite               & Profile.init()                           &                           &                             &                        \\ 
+\hline
+                                        & Profile.user                             &                           &                             &                        \\ 
+\hline
+                                        & Profile.password                         &                           &                             &                        \\ 
+\hline
+                                        & Profile.confirmedPassword                &                           &                             &                        \\ 
+\hline
+                                        & Profile.delete()                         &                           &                             &                        \\ 
+\hline
+                                        & Profile.save()                           &                           &                             &                        \\ 
+\hline
+Session-Bean: Nutzer                    & UserSession.user                         &                           &                             &                        \\ 
+\hline
+DAO: Nutzer                             & UserDao.updateUser(…)                    &                           &                             &                        \\ 
+\hline
+                                        & UserDao.deleteUser(…)                    &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Medienerstellung}}      & \textbf{\textit{80}}                     & \textbf{\textit{30, 41}}  & \textbf{\textit{Ivan}}      & \textbf{\textit{5}}    \\ 
+\hline
+Facelet: Medienerstellung               & medium-creator.xhtml                     &                           &                             &                        \\ 
+\hline
+Backing-Bean: Medienerstellung          & MediumCreator.init()                     &                           &                             &                        \\ 
+\hline
+                                        & MediumCreator.medium                     &                           &                             &                        \\ 
+\hline
+                                        & MediumCreator.copy                       &                           &                             &                        \\ 
+\hline
+                                        & MediumCreator.user                       &                           &                             &                        \\ 
+\hline
+                                        & MediumCreator.createMedium()             &                           &                             &                        \\ 
+\hline
+DTO: Medium                             & MediumDto.id                             &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.category                       &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.returnPeriod                   &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.getAttribute(…)                &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.setAttribute(…)                &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.getCopy(…)                     &                           &                             &                        \\ 
+\hline
+                                        & MediumDto.setCopy(…)                     &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.createMedium(...)              &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.createCopy(...)                &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Medienattribute}}       & \textbf{\textit{81}}                     & \textbf{\textit{30, 41}}  & \textbf{\textit{Jonas}}     & \textbf{\textit{5}}    \\ 
+\hline
+Facelet: Medienschema                   & medium-schema-editor.xhtml               &                           &                             &                        \\ 
+\hline
+Backing-Bean: Medienschema              & MediumSchemaEditor.init()                &                           &                             &                        \\ 
+\hline
+                                        & MediumSchemaEditor.addAttribute()        &                           &                             &                        \\ 
+\hline
+                                        & MediumSchemaEditor.deleteAttribute(...)  &                           &                             &                        \\ 
+\hline
+                                        & MediumSchemaEditor.save()                &                           &                             &                        \\ 
+\hline
+DTO: Attribut                           & AttributeDto.id                          &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.name                        &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.textValue                   &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.imageValue                  &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.urlValue                    &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.attributeModifiability      &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.type                        &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.attributeMultiplicity       &                           &                             &                        \\ 
+\hline
+                                        & AttributeDto.position                    &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.updateGlobalAttributes(...)    &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.readGlobalAttributes()         &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Mediumansicht I}}       & \textbf{\textit{83}}                     & \textbf{\textit{30, 41}}  & \textbf{\textit{Sergei}}    & \textbf{\textit{5}}    \\ 
+\hline
+Facelet: Mediumansicht                  & medium.xhtml                             &                           &                             &                        \\ 
+\hline
+Backing-Bean: Mediumansicht             & Medium.init()                            &                           &                             &                        \\ 
+\hline
+                                        & Medium.saveAttributes()                  &                           &                             &                        \\ 
+\hline
+                                        & Medium.createCopy()                      &                           &                             &                        \\ 
+\hline
+                                        & Medium.deleteCopy()                      &                           &                             &                        \\ 
+\hline
+                                        & Medium.medium                            &                           &                             &                        \\ 
+\hline
+                                        & Medium.copy                              &                           &                             &                        \\ 
+\hline
+DTO: Exemplar                           & CopyDto.id                               &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.location                         &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.signature                        &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.deadline                         &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.copyStatus                       &                           &                             &                        \\ 
+\hline
+                                        & CopyDto.actor                            &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.readCopy(...)                  &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.updateMediumAttributes(…)      &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Mediumansicht II}}      & \textbf{\textit{82}}                     & \textbf{\textit{83}}      & \textbf{\textit{Mohamad}}   & \textbf{\textit{5}}    \\ 
+\hline
+Backing-Bean: Mediumansicht             & Medium.getReturnPeriod()                 &                           &                             &                        \\ 
+\hline
+                                        & Medium.updateReturnPeriod()              &                           &                             &                        \\ 
+\hline
+                                        & Medium.saveCopy()                        &                           &                             &                        \\ 
+\hline
+                                        & Medium.lendCopy()                        &                           &                             &                        \\ 
+\hline
+                                        & Medium.returnCopy()                      &                           &                             &                        \\ 
+\hline
+                                        & Medium.pickUpCopy()                      &                           &                             &                        \\ 
+\hline
+                                        & Medium.cancelPickup()                    &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.updateCopy(...)                &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.deleteCopy(...)                &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Kategoriesuche}}        & \textbf{\textit{110}}                    & \textbf{\textit{30, 41}}  & \textbf{\textit{Leon}}      & \textbf{\textit{4}}    \\ 
+\hline
+Facelet: Kategoriesuche                 & category-browser.xhtml                   &                           &                             &                        \\ 
+\hline
+Backing-Bean: Kategoriesuche            & CategoryBrowser.init()                   &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.categorySearch           &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.currentCategory          &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.deleteCategory()         &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.searchCategory()         &                           &                             &                        \\ 
+\hline
+                                        & CategoryBrowser.getItems()               &                           &                             &                        \\ 
+\hline
+DTO: Kategoriensuche                    & CategorySearchDto.searchTerm             &                           &                             &                        \\ 
+\hline
+DAO: Kategorie                          & CategoryDao.readCategory()               &                           &                             &                        \\ 
+\hline
+                                        & CategoryDao.readCategoriesByName()       &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Kategorieerstellung}}   & \textbf{\textit{111}}                    & \textbf{\textit{30, 41}}  & \textbf{\textit{Leon}}      & \textbf{\textit{4}}    \\ 
+\hline
+Facelet: Kategorieerstellung            & category-creator.xhtml                   &                           &                             &                        \\ 
+\hline
+Backing-Bean: Kategorieerstellung       & CategoryCreator.init()                   &                           &                             &                        \\ 
+\hline
+                                        & CategoryCreator.category                 &                           &                             &                        \\ 
+\hline
+                                        & CategoryCreator.createCategory()         &                           &                             &                        \\ 
+\hline
+DTO: Kategorie                          & CategoryDto.id                           &                           &                             &                        \\ 
+\hline
+                                        & CategoryDto.name                         &                           &                             &                        \\ 
+\hline
+                                        & CategoryDto.description                  &                           &                             &                        \\ 
+\hline
+                                        & CategoryDto.parent                       &                           &                             &                        \\ 
+\hline
+DAO: Kategorie                          & CategoryDao.createCategory(…)            &                           &                             &                        \\ 
+\hline
+                                        & CategoryDao.updateCategory(…)            &                           &                             &                        \\ 
+\hline
+                                        & CategoryDao.deleteCategory(…)            &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Medientransaktionen}}   & \textbf{\textit{90}}                     & \textbf{\textit{80, 120}} & \textbf{\textit{Sergei}}    & \textbf{\textit{4}}    \\ 
+\hline
+Facelet: Medienausleihe                 & lending.xhtml                            &                           &                             &                        \\ 
+\hline
+Backing-Bean: Medienausleihe            & Lending.init()                           &                           &                             &                        \\ 
+\hline
+                                        & Lending.user                             &                           &                             &                        \\ 
+\hline
+                                        & Lending.copies                           &                           &                             &                        \\ 
+\hline
+                                        & Lending.lendCopies()                     &                           &                             &                        \\ 
+\hline
+                                        & Lending.addSignatureInputField()         &                           &                             &                        \\ 
+\hline
+Facelet: Medienrückgabe                 & return-form.xhtml                        &                           &                             &                        \\ 
+\hline
+Backing-Bean: Medienrückgabe            & ReturnForm.init()                        &                           &                             &                        \\ 
+\hline
+                                        & ReturnForm.user                          &                           &                             &                        \\ 
+\hline
+                                        & ReturnForm.copies                        &                           &                             &                        \\ 
+\hline
+                                        & ReturnForm.returnCopies()                &                           &                             &                        \\ 
+\hline
+                                        & ReturnForm.addSignatureInputField()      &                           &                             &                        \\ 
+\hline
+DAO: Medium                             & MediumDao.lendCopy(...)                  &                           &                             &                        \\ 
+\hline
+                                        & MediumDao.returnCopy(...)                &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Wartungsprozess}}       & \textbf{\textit{170}}                    & \textbf{\textit{10, 20}}  & \textbf{\textit{Jonas}}     & \textbf{\textit{3}}    \\ 
+\hline
+Klasse: Wartungsprozess                 & MaintenanceProcess.setTimeoutInterval(…) &                           &                             &                        \\ 
+\hline
+                                        & MaintenanceProcess.run()                 &                           &                             &                        \\ 
+\hline
+                                        & MaintenanceProcess.shutdown()            &                           &                             &                        \\ 
+\hline
+\textbf{\textit{Trespasslistener}}      & \textbf{\textit{161}}                    & \textbf{\textit{50}}      & \textbf{\textit{Ivan}}      & \textbf{\textit{3}}    \\ 
+\hline
+Klasse: Trespasslistener                & TrespassListener.beforePhase(…)          &                           &                             &                        \\ 
+\hline
+                                        & TrespassListener.afterPhase(…)           &                           &                             &                        \\ 
+\hline
+                                        & TrespassListener.getPhaseId()            &                           &                             &                        \\
+\hline
+\end{longtable}
+
+
+%----------------------------------------------------------------------Milestone 3--------------------------------------------------------------------------------------------
 
 \subsection{Meilenstein 3}
 \sectionauthor{León Liehr}
@@ -202,12 +481,25 @@ Nachfolgend die Arbeitspakete des dritten Milestones. Dabei steht BB für Backin
         3 \\
         \bottomrule
     \end{tabular}
+    \caption{Tabelle des drtten Milestones}
 \end{table}
 
 \end{landscape}
 \restoregeometry
 
+%----------------------------------------------------------------------Kapitel 3--------------------------------------------------------------------------------------------
+
 \section{PERT-Diagramm}
+\sectionauthor{Ivan Charviakou}
+
+Im Folgenden wird das PERT Diagramm zum Projekt dargestellt. 
+Insbesondere bildet es die Abhängigkeiten zwischen den Paketen ab und zeigt das kritische Pfad im Projekt auf. 
+Dabei werden die Zeitdauer in Stunden berechnet.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 38em]{PERT}
+\end{figure}
 
 %----------------------------------------------------------------------Kapitel 4--------------------------------------------------------------------------------------------
 
@@ -265,8 +557,94 @@ Die Vielzahl der verwendeten Technologien erfordert eine Spezialisierung der ein
      	\hline
 \end{tabular}
 \end{table}
+\newpage
 
 %----------------------------------------------------------------------Kapitel 5--------------------------------------------------------------------------------------------
+
 \section{Whitebox-Tests}
+\sectionauthor{Sergei Pravdin}
+Ein Entwickler implementiert nicht nur Arbeitspakete, für die er zuständig ist, sondern auch entsprechende für diese Arbeitspakete Whitebox-Test, um etwaige Bugs sofort in Quell-Code zu korrigieren. Whitebox-Test werden klassisch (nach der Implementierung der Klassen) und ohne TDD geschrieben. Die Arbeitspakete werden durch die Verbindung mit der Datenbank getestet, wenn der Zustand der Anwendung es ermöglicht. Sonst werden fehlende Bestandteile von Mockito oder PowerMock gemockt. Jedes Arbeitspaket hat mindestens einen Testfall. Die Tests werden mit dem Projekt mitgeliefert. Die im Folgenden beschriebenen Testfälle bauen aufeinander auf. Das bedeutet, dass der Zustand des Systems für den folgenden Testfall übernommen wird. Vor dem Projektabgabe werden die allen erzeugenden beim Testing Objekte aus der Datenbank manuell gelöscht. 
+
+­\subsection{Milestone 1}
+
+\subsubsection{Meta-implementation - Logger.}
+Für den Test des Loggers bekommen wir zuerst getInstance() und rufen die Methode development(''testMessage'') auf. Der Test ist bestanden, wenn das Ergebnis der Methode getMessage() ''testMessage'' ist.
+
+\subsubsection{Meta-implementation - ConfigReader}
+Um den ConfigReader zu testen, bekommen wir getInstance() und rufen getSystemConfigurations() auf. Als Ergebnis wird ein eine richtige Config-Propertie erwartet.
+
+\subsubsection{Utilities I}
+Der Test ist für ein ApplicationDao zuständig. Ein ApplicationDto 'testDto' wird erstellt und durch testDto.setName(''testName'') ausgefüllt. Danach wird eine Methode \linebreak ApplicationDao.createCustomization(testDto) aufgerufen. Der Test ist bestanden, wenn eine Methode ApplicationDao.readCustomization(testDto).getName() ''testName'' ist.
+
+\subsubsection{Utilities II - TokenGenerator}
+Zuerst wird ein TokenDto tokenDto erzeugt. Dann wird tokenDto durch tokenDto = TokenGenerator.generateToken() ausgefüllt. Der Test ist bestanden, falls tokenDto.getContent() nicht null ist.
+
+\subsubsection{System Start}
+Die Methode DataLayerInitializer.setUpConnectionPool() wird aufgerufen. Der Test ist bestanden, wenn ConnectionPool.getInstance() nicht null ist.
+
+\subsubsection{Facelets}
+Eine Methode logOut() von einem Footer wird aufgerufen. Der Test ist bestanden, wenn das Ergebnis ''logIn.xhtml?faces-redirect=true'' ist.
+
+\subsubsection{Exception handling}
+Wir wollen eine Fehlerseite testen, deshalb wird ErrorDto 'testErrorDto' erzeugt und durch setMessage(''testErrorMessage'') ausgefüllt. Dann wird eine Methode setErrorDto(testErrorDto) aufgerufen. Der Test ist bestanden, wenn das Ergebnis der Methode getMessage() von der Klasse 'Error' ''testErrorMessage'' ist.
+
+\subsubsection{User definition - Registrierung}
+Ein UserDto 'userDto' wird erzeugt. Dann werden eine Methode userDto.setId(1), \linebreak userDto.setPassword(testPassword) und userDto.setEmailAddress(testSep21email@gmail.com) aufgerufen. Im nächsten Schritt wird die Methode 'register()' in der Klasse 'Registration' aufgerufen. Diese Methode muss eine Interaktion mit einem UserDao, genauer gesagt mit der Methode 'UserDao.createUser(userDto)', implementieren, deshalb ist der Test bestanden, wenn das Ergebnis der Methode 'UserDao.readUserByEmail(userDto).getId()'  ''1'' ist (Das bedeutet, das ein neuer Nutzer mit der Id ''1'' in der Datenbank erfolgreich abgespeichert ist).
+
+\subsubsection{User Authentication - LogIn (erfolglos)}
+Eine Methode setEmail(wrongEmail) und eine Methode setPassword(wrongPassword) aus der Klasse Login werden aufgerufen. Im nächsten Schritt wird eine Methode logIn() aufgerufen. Das Ergebnis muss ''null'' sein, damit der Test als bestanden gilt. 
+
+\subsubsection{User Authentication - LogIn (erfolgreich)}
+Eine Methode setEmail(testSep21email@gmail.com) und eine Methode setPassword(testPassword) aus der Klasse Login werden aufgerufen. Im nächsten Schritt wird eine Methode logIn() aufgerufen. Das Ergebnis muss ''profile?id=1'' sein, damit der Test als bestanden gilt.
+
+\subsubsection{User Authentication - User Delete}
+Ein UserDto 'userDto' wird erzeugt. Dann werden eine Methode userDto.setId(1), \linebreak userDto.setPassword(testPassword) und userDto.setEmailAddress(testSep21email@gmail.com) aufgerufen. Im nächten Schritt wird eine Methode readUserByEmail(userDto).
+Ein erhaltenes UserDto wird wieder durch die Methode UserDao.deleteUser(userDto) übergeben. Der Test ist bestanden, wenn das Ergebnis der Methode UserDao.readUserByEmail(userDto) ''null'' ist. Das bedeutet, dass kein Nutzer mit der ID '1' in der Datenbank existiert. Am Schluss wird einen Test 'User definition - Registration' wieder aufgerufen, um einen Nutzer für weitere Test zur Verfügung zu stellen.
+
+\subsubsection{App management, global - Change contact information}
+Ein ApplicationDto 'testDto' wird erzeugt. Dann wird die Methode setApplication(testDto) aus der Klasse 'Contact' aufgerufen. Im nächsten Schritt werden die Methode testDto.setCity(''testCity'') und save() aus der Klasse 'Contact' aufgerufen. Der Test gilt als bestanden, wenn die Methode getApplication().getCity() aus der Klasse 'Contact' das Ergebnis ''testCity'' liefert.
+
+
+\subsubsection{Administrative functions}
+Ein ApplicationDto 'testDto' wird erzeugt. Dann wird die Methode setApplication(testDto) aus der Klasse 'Administration' aufgerufen. Im nächsten Schritt werden die Methode \linebreak testDto.setSiteNotice(''testNotice'') und save() aus der Klasse 'Administration' aufgerufen. Der Test gilt als bestanden, wenn die Methode getApplication().getSiteNotice() aus der Klasse 'Administration' das Ergebnis ''testNotice'' liefert.
+
+­\subsection{Milestone 2}
+\subsubsection{User profile - Änderung einer Hausnummer}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak userDto.setEmailAddress(''testSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'Profile' aufgerufen. Dann wird sich eine Hausnummer durch userDto.setStreetNumber(''13a'') geändert. Abschießend wird die Methode 'save()' aufgerufen. Jetzt muss die neue Hausnummer in der Datenbank durch das userDto von der Klasse 'Profile' aktualisiert. Der Test ist bestanden, wenn die Methode \linebreak UserDao.readUserByEmail(userDto).getStreetNumber() das Ergebnis ''13a'' liefert.
+
+\subsubsection{Medium attributes - Löschen eines Attributes}
+Ein Map<Integer, AttributeDto> 'attributes' wird gemockt. Ein neues AttributeDto 'testDto' wird erzeugt und eine Methode testDto.setId(1) aufgerufen. Danach wird ein 'testDto' durch attributes.put(1, testDto) hinzugefügt. Im nächsten Schritt wird eine Methode setAttributes(attributes) aus der Klasse 'MediumSchemaEditor' aufgerufen. Schließlich wird eine testende Methode deleteAttribute(1) aufgerufen. Der Test ist bestanden, wenn die Methode aus der Klasse 'MediumSchemaEditor' getAttributes.get(1) 'null' liefert.
+
+\subsubsection{Medium management - Erstellung eines Mediums}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''testSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'MediumCreator' aufgerufen. Danach werden ein mediumDto mit der ID '1', dem Name 'testMedium' und ein CopyDto mit der ID '2' erstellt. Im nächsten Schritt werden die Methoden setMedium und setCopy in der Klasse 'MediumCreator' aufgerufen. Schließlich wird die Methode createMediumAndFirstCopy() aufgerufen. Der Test ist bestanden, wenn die Methode MediumDao.readMedium(mediumDto).getId() das Ergebnis '1' liefert.
+
+\subsubsection{Medium management - Ausleihe eines Exemplars durch einen Nutzer}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''testSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'Medium' aufgerufen. Danach werden ein mediumDto mit der ID '1', eine Liste 'copies' und ein CopyDto mit der ID '2' erstellt. Im nächsten Schritt werden die Methoden setMedium und copies.put(1, copyDto) in der Klasse 'MediumCreator' aufgerufen. Schließlich wird die testende Methode pickUpCopy(1, userDto) aufgerufen. Der Test ist bestanden, wenn die Methode MediumDao.readMedium(mediumDto).getCopy(1).getCopyStatus() das Ergebnis 'READY FOR PICKUP' liefert.
+
+\subsubsection{Category search - Erstellung einer Kategorie}
+Zuerst wird ein categoryDto erzeugt und durch categoryDto.setId(3) und \linebreak categoryDto.setName(''testCategory'') ausgefüllt. Dann wird eine Methode \linebreak setCategory(categoryDto) in der Klasse 'CategoryCreator' aufgerufen. Schließlich wird eine testende Methode createCategory() aufgerufen. Der Test ist bestanden, wenn die Methode \linebreak CategoryDao.readCategory(categoryDto).getName() das Ergebnis ''testCategory'' liefert.
+
+\subsubsection{Medium transactions - Direktausleihe eines Exemplars durch einen Mitarbeiter}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''testSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'DirectLending' aufgerufen. Dann werden ein copyDto und ein mediumDto erzeugt. Sie werden durch copyDto.setId(2) und mediumDto.setId(1) definiert. Dann wird ein copyDto durch eine Methode MediumDao.readMedium(mediumDto).getCopies(1) ausgefüllt und durch eine Methode copies.put(copyDto) in der Klasse 'DirectLending' hinzugefügt. Schließlich wird eine testende Methode lendCopy(2, userDto) aufgerufen. Der Test ist bestanden, wenn die Methode MediumDao.readMedium(mediumDto).getCopy(1).getCopyStatus() das Ergebnis 'BORROWED' liefert.
+
+\subsubsection{MaintenanceProcess}
+Der Test ist bestanden, wenn MaintenanceProcess.getInstance() nicht 'null' ist.
+
+­\subsection{Milestone 3}
+\subsubsection{Medium search}
+Ein MediumSearchDto 'mediumSearch' wird erzeugt und durch \linebreak mediumSearch.setGeneralSearchTerm(''testMedium'') ausgefüllt. Im nächsten Schritt wird eine Methode setMediumSearch(mediumSearch) in der Klasse 'MediumSearch' aufgerufen. Schließlich wird eine testende Methode searchMedium() aufgerufen. Der Test ist bestanden, wenn eine Methode getItems() in der Klasse 'MediumSearch' ein mediumDto mit einem Attribut 'testMedium' liefert.
+
+\subsubsection{Password and email revalidation - Zurücksetzung eines Passwords}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''testSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'PasswordReset' aufgerufen.
+Die Attribute einer Klasse 'PasswordReset' werden durch setPassword(''newPassword'') und \linebreak setConfirmedPassword(''newPassword'') ausgefüllt. Ein TokenDto wird von einem TokenGenerator erstellt und durch setToket(tokenDto) hinzugewiesen. Dann wird eine testende Methode resetPassword(userDto) aufgerufen. Um zu testen, werden eine Methode setEmail(testSep21email@gmail.com) und eine Methode setPassword(newPassword) aus der Klasse 'Login' aufgerufen. Im nächsten Schritt wird eine Methode logIn() aufgerufen. Das Ergebnis muss ''profile?id=1'' sein, damit der Test als bestanden gilt (Erfolgreiche Anmeldung mit einem neuen Password).
+
+\subsubsection{Media by user, individual - Ausgeliehene Exemplare}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''testSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'BorrowedCopies' aufgerufen. Eine testende Methode 'loadCopies()' wird aufgerufen. Der Test ist bestanden, wenn ein Ergebnisliste einer Methode getItems() ein Copy mit der Id '2' beinhaltet.
+
+\subsubsection{Media by user, global - Leifristverstöße}
+Zuerst wird ein MediumDto 'mediumDto' erstellt und durch mediumDto.setId(1) identifiziert. Dann wird ein mediumDto durch mediumDto = MediumDao.readMedium(mediumDto) ausgefüllt. Jetzt wird ein CopyDto copyDto erzeugt und durch copyDto = mediumDto.getCopy(2) ausgefüllt (Ein entsprechendes Medium und sein Exemplar wurden in oben definierten Tests in der Datenbank gespeichert). Jetzt wollen wir einen neuen Abgabefrist durch copyDto.setDeadline(''Derzeit + 10 Sekunden'') definieren und diese Änderung in der Datenbank durch MediumDao.update(mediumDto) speichern. Danach wird eine Pause für 11 Sekunden im Test durchgeführt. Jetzt sind wir bereit eine Klasse 'LendingPeriodViolation' zu testen. Der Test ist bestanden, wenn sich ein copyDto mit der Id '2' im Ergebnis der Methode getItems() der Klasse 'LendingPeriodViolation' befindet.
+
+\subsubsection{User search}
+Ein userSearchDto wird erstellt und eine Methode \linebreak userSearchDto.setSearchTerm(''testSep21email@gmail.com'') aufgerufen. Danach wird eine Methode setUserSearchDto(userSearchDto) aus der Klasse 'UserSearch' aufgerufen. Im nächsten Schritt wird eine testende Methode searchUser() aufgerufen und eine Methode getItems() aus der Klasse 'UserSearch' muss im Ergebnis ein userDto mit der Id '1' beinhalten, damit der Test bestanden ist. 
 
 \end{document}
