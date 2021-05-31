@@ -48,4 +48,11 @@
 		<param-name>jakarta.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
+
+	<!-- don't output comments in the rendered HTML since they are a lot, used 
+		for debugging and documentation -->
+	<context-param>
+		<param-name>jakarta.faces.FACELETS_SKIP_COMMENTS</param-name>
+		<param-value>true</param-value>
+	</context-param>
 </web-app>
