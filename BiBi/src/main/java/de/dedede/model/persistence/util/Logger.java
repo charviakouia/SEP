@@ -45,7 +45,7 @@ public final class Logger {
 	private static void log(LogLevel level, String message) {
 	}
 	
-	public enum LogLevel {
+	public static enum LogLevel {
 		SEVERE, DETAILED, DEVELOPMENT
 	}
 
