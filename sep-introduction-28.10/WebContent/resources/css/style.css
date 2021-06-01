@@ -1,0 +1,54 @@
+body {
+    font-family: sans-serif;
+    max-width: 800px;
+    margin: auto;
+    background-color: #f7fbfb;
+}
+
+
+.header {
+	
+    border-style:inherit;
+    border-bottom: rgb(0, 238, 139)id #00008b;
+    background-color:#f0ecf7;
+    max-width: 800px;
+    display: flex;
+    align-items:baseline;
+    padding: 0 20px;
+    padding-top: 1%;
+    flex-basis:auto;
+    background: #d0efe9;
+}
+
+.header > h1 {
+    font-family: sans-serif;
+    flex-grow: 1 ;
+}
+
+form {
+    max-width: 400px;
+    margin: 16px auto;
+}
+
+.infoMessage {
+    color: green;
+}
+
+.errorMessage {
+    color: red;
+}
+
+
+
+form > input[type = submit] {
+    float: inherit;
+}
+
+form > input:not([type = submit]) {
+    display:  flex;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+

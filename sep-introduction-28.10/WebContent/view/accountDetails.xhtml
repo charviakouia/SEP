@@ -1,0 +1,56 @@
+<ui:composition template="masterTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="title">#{msg.account}</ui:define>
+    <ui:define name="headerButtons">
+        <h:form>
+            <h:commandButton value="#{msg.logout}" action="#{login.logout()}" />
+        </h:form>
+    </ui:define>
+
+    <ui:define name="mainContent">
+        <h:form id="accountDetails">
+            <h:outputLabel value="#{msg.username}"/>
+            <h:inputText id="username" value="#{accountDetails.user.username}" required="true"/>
+            <h:messages errorClass="errorMessage" for="username"/>
+
+            <h:outputLabel value="#{msg.password}"/>
+            <h:inputSecret id="password" value="#{accountDetails.user.password}">
+                <f:validateLength minimum="6"/>
+            </h:inputSecret>
+            <h:messages errorClass="errorMessage" for="password"/>
+
+            <h:outputLabel value="#{msg.firstName}"/>
+            <h:inputText id="firstName" value="#{accountDetails.user.firstName}" required="true"/>
+            <h:messages errorClass="errorMessage" for="firstName"/>
+
+            <h:outputLabel value="#{msg.lastName}"/>
+            <h:inputText id="lastName" value="#{accountDetails.user.lastName}" required="true"/>
+            <h:messages errorClass="errorMessage" for="lastName"/>
+
+            <h:outputLabel value="#{msg.birthday}"/>
+            <h:inputText id="birthday" value="#{accountDetails.user.birthday}" required="true">
+                <f:convertDateTime pattern="dd.MM.yyyy"/>
+            </h:inputText>
+            <h:messages errorClass="errorMessage" for="birthday"/>
+
+            <h:outputLabel value="#{msg.city}"/>
+            <h:inputText id="city" value="#{accountDetails.user.location.city}" required="true"/>
+            <h:messages errorClass="errorMessage" for="city"/>
+
+            <h:outputLabel value="#{msg.street}"/>
+            <h:inputText id="street" value="#{accountDetails.user.location.street}" required="true"/>
+            <h:messages errorClass="errorMessage" for="street"/>
+
+            <h:outputLabel value="#{msg.houseNumber}"/>
+            <h:inputText id="houseNumber" value="#{accountDetails.user.location.houseNumber}" required="true"/>
+            <h:messages errorClass="errorMessage" for="houseNumber"/>
+
+            <h:messages errorClass="errorMessage" infoClass="infoMessage" for="account"/>
+
+            <h:commandButton value="#{msg.saveChanges}" action="#{accountDetails.saveChanges()}" />
+        </h:form>
+    </ui:define>
+</ui:composition>
+
