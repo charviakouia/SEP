@@ -88,93 +88,104 @@ Wird zusätzlich ein Methodenbezeichner angegeben, wird nur die Klassenmethode g
 
 \subsection{Meilenstein 1}
 \sectionauthor{Mohamad Najjar}
-Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones notwendig sind, aufgelistet und kurz beschrieben. Dabei steht BB für Backing Bean, C für Klasse, CC für Komponente, Co für Konverter, F für Facelet und M für Methode.
+Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones notwendig sind, aufgelistet und kurz beschrieben. Dabei steht BB für Backing Bean, C für Klasse, CC für Komponente, Co für Konverter, F für Facelet und M für Methode.\\
 
-\newgeometry{top=1cm,bottom=1cm}
+\newgeometry{top=1cm, bottom=1cm}
 \begin{landscape}
-	
-	\begin{table}[H]
-		\centering
-		\begin{tabular}{llllll}
-			\toprule
-			\textbf{Arbeitspaket} &
-			\textbf{ID} &
-			\textbf{Inhalt} &
-			\textbf{Abhängigkeiten} &
-			\textbf{Entwickler} &
-			\textbf{Dauer} \\
-			\midrule
-			Basis &
-			11 &
-			\begin{tabular}[c]{@{}l@{}}Logger (C)\\ ConfigReader (C)\\ \end{tabular} &
-			11 &
-			 Ivan Charviakou&
-			5 \\
-			Utilities I&
-			10 &
-			\begin{tabular}[c]{@{}l@{}}ConnectionPool  (C)\\ ApplicationDao (C)\\ ApplicationDto (C)\\ CSSReader (C)\\ \end{tabular} &
-			11 &
-			Jonas Picker &
-			4  \\
-			Utilities II&
-			20 &
-			\begin{tabular}[c]{@{}l@{}} EmailUtility (C)\\ TokenGenerator (C)\\ PasswordHashingModule (C)\end{tabular} &
-			11 &
-			Ivan Charviakou&
-			4\\
-			Systemstart&
-			30 &
-			\begin{tabular}[c]{@{}l@{}}SystemStartStop (C)\\DataLayerInitializer (C)\\ DatenbankInitialisierung (SQL)
-		\end{tabular} &
-			10 &
-			Jonas Picker &
-			4 \\
-			Facelets &
-			40 &
-			\begin{tabular}[c]{@{}l@{}}Template (F) (BB)\\ PaginatedList (F)\\ \end{tabular} &
-			10 &
-			León Liehr &
-			4 \\
-			Fehlerbehandlung &
-			41 &
-		\begin{tabular}[c]{@{}l@{}}Fehlerseiten  (F) (BB)\\ ErrorDto (FC)\\ ExceptionHandler (C)\\ CustomExceptionHandler (C) \end{tabular}&
-			40 &
-			Sergei Pravdin &
-			3 \\
-			Nutzerdefinierung &
-			52 &
-			\begin{tabular}[c]{@{}l@{}}UserDto  (C) \\ UserSession (MB)\\ RoleConverter (Co)\\ PasswordValidator (C)\\ ConfirmPasswordValidator (C)\\ EmailValidator (C) \\ UserDao (M)\end{tabular}&
-			30, 41 &
-			Mohamad Najjar &
-			6\\
-			
-			Nutzerathentifizierung &
-			50 &
-			\begin{tabular}[c]{@{}l@{}}UserDao  (M) \\ Registration (BB) (F)\\ Login (BB) (F)\\ UserValidator (C)\\ ConfirmPasswordValidator (C)\\ EmailValidator (C) \\ UserDao (M)\end{tabular}&
-			52, 20 &
-			Mohamad Najjar &
-			4\\
-			
-			Globale Anwendungseinstellungen &
-			61 &
-			\begin{tabular}[c]{@{}l@{}}UserDao  (M) \\ Contact (BB) (F)\\ SiteNotice (BB) (F)\\ PrivacyPlocy (BB) (F)\\\end{tabular}&
-			30, 41 &
-			León Liehr &
-			3\\
-			
-			Administrative Funktionalitäten &
-			60 &
-			\begin{tabular}[c]{@{}l@{}}Administration   (BB) (F) \\ LogoValidator (C)\\  \\\end{tabular}&
-			30, 41 &
-			Sergei Pravdin &
-			4\\
-			\bottomrule
-		\end{tabular}
-	 \caption{Tabelle des ersten Milestones}
-	\end{table}
-	
+
+\begin{table}[H]
+	\begin{tabular}{llllllll}
+		\hline
+		Arbeitspaket &
+		ID &
+		Beschreibung &
+		Zeit &
+		Abhängigkeiten &
+		Entwickler &
+		Startzeit &
+		Endzeit \\
+		\hline
+		Basis &
+		100 &
+		\begin{tabular}[c]{@{}l@{}}Logger (C)\\ ConfigReader (C)\end{tabular} &
+		10 &
+		- &
+		Jonas Picker &
+		01.06.21 9:00 &
+		02.06.21 14:00 \\
+		\hline
+		Exceptions &
+		101 &
+		Exceptions &
+		2 &
+		- &
+		Ivan Charviakou &
+		01.06.21 8:00 &
+		01.06.21 10:00 \\
+		\hline
+		Utilities &
+		102 &
+		\begin{tabular}[c]{@{}l@{}}ConnectionPool (C)\\ ApplicationDao (C, komplett)\end{tabular} &
+		10 &
+		100 &
+		Ivan Charviakou &
+		02.06.21 8:00 &
+		03.06.21 13:00 \\
+		\hline
+		Systemstart &
+		103 &
+		\begin{tabular}[c]{@{}l@{}}SystemStartStop (C)\\ DataLayerInitializer (C): Table creation, Sample data\end{tabular} &
+		12 &
+		100, 101, 102 &
+		Jonas Picker &
+		03.06.21 9:00 &
+		04.06.21 15:00 \\
+		\hline
+		Login bzw. Nutzerauthentifizierung &
+		104 &
+		\begin{tabular}[c]{@{}l@{}}UserDao (C): readUserByEmail(..)\\ Login (F/B)\\ PasswordHashingModule (C)\\ UserSession (MB)\end{tabular} &
+		12 &
+		100, 101, 102,103 &
+		Mohamad Najjar &
+		04.06.21 10:00 &
+		05.06.21 16:00 \\
+		\hline
+		Seitenvorlage &
+		107 &
+		\begin{tabular}[c]{@{}l@{}}Header, Footer, Template (F/B)\\ Kontextsensitive Hilfe\end{tabular} &
+		5 &
+		100, 102 &
+		Leon Liehr &
+		03.06.21 10:00 &
+		03.06.21 15:00 \\
+		\hline
+		Medien aller Nutzer bzw. Listendemo &
+		105 &
+		\begin{tabular}[c]{@{}l@{}}PaginatedList \& column (F)\\ CopiesReadyForPickupAllUsers (F/B)\\ MediumDao (C): readGlobalPickuoList(...)\end{tabular} &
+		12 &
+		100, 101, 102, 103 &
+		Leon Liehr &
+		04.06.21 10:00 &
+		05.06.21 16:00 \\
+		\hline
+		Milestein-Testing 1 &
+		106 &
+		Einzelne Tests für Milestein 1 &
+		8 &
+		100, 101, 102, 103, 104, 105, 107 &
+		Sergei Pravdin &
+		05.06.21 9:00 &
+		05.06.21 17:00\\
+		\hline
+	\end{tabular}
+\end{table}
+
+
 \end{landscape}
+
 \restoregeometry
+
+
 
 %----------------------------------------------------------------------Milestone 2--------------------------------------------------------------------------------------------
 
