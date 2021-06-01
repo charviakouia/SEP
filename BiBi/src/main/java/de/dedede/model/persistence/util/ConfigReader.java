@@ -1,24 +1,51 @@
 package de.dedede.model.persistence.util;
 
+import java.io.InputStream;
 import java.util.Properties;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.inject.Inject;
 
 /**
  * A singleton utility class for returning system-wide property values.
  * 
  * See the {@link Properties} class for the implementation of properties in Java.
- *
+ * 
+ * @author Jonas Picker
  */
 public class ConfigReader {
-
+	
+	/**
+	 * Implicitly synchronized singleton-pattern to avoid 'synchronized' bottleneck on getInstance(). 
+	 */
+	private static final class InnerInstance {
+		static final ConfigReader InnerInstance = new ConfigReader();
+	}
+	
+	/**
+	 * Needed as basis for loading config with webapp-relative path.
+	 */
+	@Inject
+	private ExternalContext ext;
+	
+	/**
+	 * The path to the config-File starting from the webapp-Folder.
+	 */
+	private String relativeFilePath = "/WEB-INF/config.properties";
+	
+	/**
+	 * Singleton with private constructor.
+	 */
 	private ConfigReader() {}
 
 	/**
-	 * Returns the single instance of the ConfigReader.
+	 * Returns the single instance of the ConfigReader. Synchronized implicitly by the ClassLoader.
 	 * 
 	 * @return The singleton ConfigReader instance
 	 */
 	public static ConfigReader getInstance() {
-		return null;
+		
+		return InnerInstance.InnerInstance;
 	}
 	
 	/**
@@ -27,8 +54,17 @@ public class ConfigReader {
 	 * 
 	 * @return The system configurations
 	 */
-	public Properties getSystemConfigurations() {
-		return null;
+	public Properties getSystemConfigurations() { // eigene Exception werfen?
+		Properties config = new Properties();
+		try {
+			InputStream stream = ext.getResourceAsStream(relativeFilePath);
+			config.load(stream);		
+			stream.close();			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return config;
 	}
 	
 }
