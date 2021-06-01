@@ -14,11 +14,15 @@
 
 	<ui:composition>
 
-		<h:outputLink value="public/privacy-policy.xhtml">#{msg['privacy_policy']}</h:outputLink>
+		<h:panelGroup layout="block" styleClass="footer">
 
-		<h:outputLink value="public/site-notice.xhtml">#{msg['site_notice']}</h:outputLink>
-		
-		<h:outputLink value="public/contact.xhtml">#{msg['contact']}</h:outputLink>
+			<h:outputLink value="public/privacy-policy.xhtml">#{msg['privacy_policy']}</h:outputLink>
+
+			<h:outputLink value="public/site-notice.xhtml">#{msg['site_notice']}</h:outputLink>
+
+			<h:outputLink value="public/contact.xhtml">#{msg['contact']}</h:outputLink>
+
+		</h:panelGroup>
 
 	</ui:composition>
 
