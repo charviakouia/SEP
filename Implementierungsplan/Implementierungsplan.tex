@@ -64,16 +64,16 @@
 
 \section{Meilensteine}
 \sectionauthor{Jonas Picker}
-Die Implementierungsphase wird drei Wochen dauern und in 3 gleiche Zeitabschnitte unterteilt, in denen wesentliche Funktionalitäten fertiggestellt werden sollen. Allgemein liegt der Schwerpunkt auf einer vertikale, testbare Realisierung einzelner Funktionen, jedoch müssen gewisse Kernmodule direkt im ersten Milestone abgearbeitet werden. 
+Die Implementierungsphase wird drei Wochen dauern und in 3 gleiche Zeitabschnitte unterteilt, in denen wesentliche Funktionalitäten fertiggestellt werden sollen. Allgemein liegt der Schwerpunkt auf einer vertikalen, testbaren Realisierung einzelner Funktionen, jedoch müssen gewisse Kernmodule direkt im ersten Milestone abgearbeitet werden. 
 \subsection{Meilenstein 1}
 \textbf{Fertigstellungsdatum:} 04.06.2021 \\
-Im Fokus des ersten Meilensteins liegen Grundfunktionalitäten, nach seinem Erreichen soll das System auf normalem Wege gestartet und heruntergefahren werden können. Hierzu werden zunächst die Datenbankinitiallisierung und Anbindung, Fehlerbehandlung sowie System- und E-Mail-Konfiguration als horizontale Funktionspakete erstellt. Geplante vertikale Module des ersten Abschnitts beinhalten den Login und Registriervorgang für Benutzer sowie die Verwaltungsseite für Administratoren.
+Im Fokus des ersten Meilensteins liegen Grundfunktionalitäten, nach seinem Erreichen soll das System auf normalem Wege gestartet und heruntergefahren werden können. Hierzu werden zunächst die Datenbankinitiallisierung (mit Beispieldaten) und Anbindung sowie der Logger und die Systemkonfiguration als horizontale Funktionspakete erstellt. Geplante vertikale Module des ersten Abschnitts beinhalten den Login, eine paginierte Listenansicht und die auf allen Facelets sichtbaren Seiten- und Kopfleisten. 
 \subsection{Meilenstein 2}
 \textbf{Fertigstellungsdatum:} 11.06.2021 \\
-Der Hauptteil der essentiellen Systemfunktionen sollen im zweiten Abschnitt als vertikale Komponenten ausgearbeitet werden. Automatische Abläufe sowie die systemweite Sicherheit und Berechtigungsprüfung stehen an erster Stelle. Nach Erreichen des Meilensteins sollen Nutzer ihre Profildaten (außer E-Mail Reverifizierung) einsehen und verändern können, außerdem soll der Kategoriestöberer fertiggestellt werden. Die Mediumsansicht und Exemplarausleihe sowie Abarbeitungsfunktionalitäten für Mitarbeiter sind ebenfalls zu implementieren. Im gleichen Zug soll dann auch die Medienschemabearbeitung und das Erstellen neuer Medien ermöglicht werden.
+Der Hauptteil der essentiellen Systemfunktionen sollen im zweiten Abschnitt als vertikale Komponenten ausgearbeitet werden. Die Mediumsansicht/erstellung und Suchfunktionalitäten für Medien stehen dabei im Vordergrund. Nach Erreichen des Milestones soll nach Kategorien gestöbert und neue Kategorien sollen erstellt werden können. Neben dem Nutzerprofil und der Registrierung werden außerdem Listenansichten für Mitarbeiter fertiggestellt werden.
 \subsection{Meilenstein 3}
 \textbf{Fertigstellungsdatum:} 18.06.2021 \\
-In der letzten Implementierungsphase soll das System hauptsächlich um Randfunktionen ergänzt werden. Als letzter essentieller Block wird die Suchfunktionalität für Medien fertiggestellt. Mitarbeiter sollen eine Listenansicht mit abzuholenden Exemplaren und Leihfristverstößen angezeigt bekommen können. Für Nutzer soll ebenfalls eine Liste mit ausgeliehenen/abzuholenden Exemplaren einsehbar sein. Auch wird Nutzern die Passwort- und E-Mail-Zurücksetzung ermöglicht. Kleinere Komfortfunktionen wie z.B. das Anzeigen von Suchvorschlägen folgen zuletzt.
+In der letzten Implementierungsphase soll das System hauptsächlich um Randfunktionen ergänzt werden. Als letzte essentieller Blöcke werden die Anwendungseinstellungen für Admins, die Suchfunktionalität für Nutzer und der Wartungsthread fertiggestellt. Außerdem wird die Zugriffskontrolle mittels einer PhaseListener-Implementierung realisiert. Mitarbeiter sollen eine Listenansicht mit  Leihfristverstößen angezeigt bekommen können. Für Nutzer soll ebenfalls eine Liste mit ausgeliehenen/abzuholenden Exemplaren einsehbar sein. Kleinere Komfortfunktionen wie z.B. das Anzeigen von Suchvorschlägen folgen zuletzt.
 %----------------------------------------------------------------------Kapitel 2--------------------------------------------------------------------------------------------
 
 \section{Arbeitspakete}
@@ -100,6 +100,10 @@ Die Vielzahl der verwendeten Technologien erfordert eine Spezialisierung der ein
      	\hline
      	JSF Components & León Liehr \\
      	\hline
+     	Listenabstraktion & León Liehr \\
+     	\hline
+     	Suchfunktionalitäten & León Liehr \\
+     	\hline
      	\hline
      	LaTeX & Ivan Charviakou \\
      	\hline
@@ -109,6 +113,8 @@ Die Vielzahl der verwendeten Technologien erfordert eine Spezialisierung der ein
      	\hline
      	JSF Validators & Ivan Charviakou \\
      	\hline
+     	Design-Patterns & Ivan Charviakou \\
+     	\hline
      	\hline
      	JSF Converters & Mohamad Najjar \\
     	\hline
@@ -116,12 +122,12 @@ Die Vielzahl der verwendeten Technologien erfordert eine Spezialisierung der ein
     	\hline
     	 CSS/Bootstrap & Mohamad Najjar \\
      	\hline
-     	Listenabstraktion & Mohamad Najjar \\
+     	Nutzerauthentifizierung & Mohamad Najjar \\
      	\hline
      	\hline
      	SQL & Jonas Picker \\
     	\hline
-    	JSF File Upload & Jonas Picker \\
+    	Logging & Jonas Picker \\
      	\hline
      	JSF/CDI Scopes & Jonas Picker \\
      	\hline
@@ -132,10 +138,11 @@ Die Vielzahl der verwendeten Technologien erfordert eine Spezialisierung der ein
      	\hline
      	Selenium & Sergei Pravdin \\
      	\hline
-     	Logging & Sergei Pravdin \\
+     	JSF File Upload & Sergei Pravdin \\
      	\hline
      	JUnit & Sergei Pravdin \\
      	\hline
+     	
 \end{tabular}
 \end{table}
 
