@@ -1,5 +1,8 @@
 package de.dedede.model.logic.managed_beans;
 
+import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -31,6 +34,7 @@ public class Login {
 	@PostConstruct
 	public void init() {
 
+
 	}
 
 	public String getEmail() {
@@ -56,6 +60,18 @@ public class Login {
 	 *                                 connections.
 	 */
 	public String logIn() throws MaxConnectionsException {
+		UserDto user = new UserDto();
+		user.setEmailAddress(email);
+		UserDto dbUser = null;
+
+		try {
+			dbUser = UserDao.readUserByEmail(user);
+
+		} catch (EntityInstanceDoesNotExistException e){
+			//TODO auf Fehlerseite weiterleiten
+		}
+
+
 		return null;
 	}
 

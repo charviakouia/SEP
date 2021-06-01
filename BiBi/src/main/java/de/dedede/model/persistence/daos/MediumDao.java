@@ -1,11 +1,15 @@
 package de.dedede.model.persistence.daos;
 
+import java.util.Collection;
 import java.util.List;
 
+import de.dedede.model.data.dtos.AttributeDto;
 import de.dedede.model.data.dtos.CopyDto;
+import de.dedede.model.data.dtos.CopyMediumUser;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.data.dtos.MediumDto;
+import de.dedede.model.data.dtos.MediumSearchDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.data.dtos.UserDto;
 
@@ -123,9 +127,11 @@ public final class MediumDao {
 	 * 		isn't associated with any data entry.
 	 * @see CopyDto
 	 */
+	/*
 	public static CopyDto readCopy(CopyDto copyDto) {
 		return null;
 	}
+	*/
 	
 	/**
 	 * Fetches a paginated list of all overdue medium-copies from the persistent 
@@ -137,6 +143,16 @@ public final class MediumDao {
 	 */
 	public static List<CopyDto> readAllOverdueCopies(PaginationDto paginationDetails) {
 		return null;
+	}
+	
+	public static List<CopyDto> readMarkedCopiesByUser(PaginationDto paginationDetails){
+		return null;
+		
+	}
+	
+	public static List<CopyDto> readLentCopiesByUser(PaginationDto paginationDetails){
+		return null;
+		
 	}
 	
 	/**
@@ -212,6 +228,27 @@ public final class MediumDao {
 	 */
 	public static void returnCopy(CopyDto copyDto, UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
+	}
+	
+	public static void updateGlobalAttributes(Collection<AttributeDto> attributes) {
+	}
+	
+	public static void readGlobalAttributes() {
+	}
+	
+	public static void updateMediumAttributes(MediumDto mediumDto, 
+			Collection<AttributeDto> attributes) {
+	}
+	
+	public static List<CopyMediumUser> readGlobalPickupList(MediumSearchDto search) {
+		return null;
+	}
+	
+	public static void updateMarkedCopies() {
+	}
+	
+	public static List<CopyMediumUser> readDueDateReminders(){
+		return null;
 	}
 
 }

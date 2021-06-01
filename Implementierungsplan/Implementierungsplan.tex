@@ -19,28 +19,20 @@
 \usepackage{lscape}
 \usepackage{colortbl}
 \usepackage{listings}
+\usepackage[normalem]{ulem}
+\usepackage{longtable}
 
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
-
-\hypersetup{
-    colorlinks,
-    linkcolor={cyan!50!black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
-}
 
 \makeatletter
 \newcommand{\sectionauthor}[1]{
 	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{1em}}
 	\@afterheading
 }
-\newcommand{\specification}[3]{
-	{\parindent 0.5em \hangindent 3em \hypertarget{spec:#1:#2}{\textbf{/#1#2/}} #3 \par \nobreak \vspace*{0.5em}}
-}
 \makeatother
 
-\title{Bibliotheksanwendung - Feinspezifikation}
+\title{Bibliotheksanwendung - Implementierungsplan}
 \date{\today\\v1.1}
 \author{
 	Ivan Charviakou\\
@@ -60,9 +52,13 @@
 \tableofcontents
 \newpage
 
-%----------------------------------------------------------------------Kapitel 1--------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------Kapitel 0--------------------------------------------------------------------------------------------
+
 \section{Einleitung}
-In diesem Dokument ist der Implementierungsplan der Webanwendung \textbf{BiBi} dokumentiert. Dabei  erfolgt die Gliederung der Implementierung in Milestones, welche wiederum in Arbeitspakete aufgeteilt werden. Außerdem sind das \textbf{PERT-Diagramm},   die \textbf{Spezialgebiete}-Tabelle und die \textbf{Whitebox-Tests} zu sehen.
+
+In diesem Dokument ist der Implementierungsplan der Webanwendung \textbf{BiBi} dokumentiert. Dabei erfolgt die Gliederung der Implementierung in Milestones, welche wiederum in Arbeitspakete aufgeteilt werden. Außerdem sind das \textbf{PERT-Diagramm},   die \textbf{Spezialgebiete}-Tabelle und die \textbf{Whitebox-Tests} zu sehen.
+
+%----------------------------------------------------------------------Kapitel 1--------------------------------------------------------------------------------------------
 
 \section{Meilensteine}
 \sectionauthor{Jonas Picker}
@@ -76,138 +72,267 @@ Der Hauptteil der essentiellen Systemfunktionen sollen im zweiten Abschnitt als 
 \subsection{Meilenstein 3}
 \textbf{Fertigstellungsdatum:} 18.06.2021 \\
 In der letzten Implementierungsphase soll das System hauptsächlich um Randfunktionen ergänzt werden. Als letzter essentieller Block wird die Suchfunktionalität für Medien fertiggestellt. Mitarbeiter sollen eine Listenansicht mit abzuholenden Exemplaren und Leihfristverstößen angezeigt bekommen können. Für Nutzer soll ebenfalls eine Liste mit ausgeliehenen/abzuholenden Exemplaren einsehbar sein. Auch wird Nutzern die Passwort- und E-Mail-Zurücksetzung ermöglicht. Kleinere Komfortfunktionen wie z.B. das Anzeigen von Suchvorschlägen folgen zuletzt.
+
 %----------------------------------------------------------------------Kapitel 2--------------------------------------------------------------------------------------------
 
 \section{Arbeitspakete}
 
-Die folgende Tabellen dienen der Übersicht über die einzelnen Arbeitspakete, die zur Realisierung unseren System benötigt werden.\\
-Als Konvention wird vereinbart, dass wenn nur der Klassenname angegeben wird, die gesamte Klasse
-einschließlich aller Methoden zu implementieren ist. Wird zusätzlich einer der Methodenbezeichner angegeben, ist nur
-die Methode.
+Die folgenden Tabellen dienen der Übersicht über die einzelnen Arbeitspakete, die zur Realisierung unseren System benötigt werden.
+Sie geben unter Anderem die Klassen, Methoden, und Facelets an, die verschiedenen Arbeitspaketen innerhalb von Milestones zugeordnet sind. 
+Das Projekt wird in drei Meilensteilen aufgeteilt, die den drei Tabellen entsprechen.
+Als Konvention werden folgende Kürzel vereinbart: F steht für Facelet, C für Klasse, B für Managed-Bean, Co für Konverter, und V für Validatoren.
+Zusätzlich sind bei der Angabe einer Klassenname alle zugehörige Methoden zu implementieren. 
 
+%----------------------------------------------------------------------Milestone 1--------------------------------------------------------------------------------------------
 
-
-%----------------------------------------------------------------------milestone1 --------------------------------------------------------------------------------------------
 \subsection{Meilenstein 1}
-Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones notwendig sind, aufgelistet und kurz beschrieben.\\
+\sectionauthor{Mohamad Najjar}
 
+Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones notwendig sind, aufgelistet und kurz beschrieben. 
 
-
-\begin{center}
-
-    \begin{table}[H]
-
-      \begin{tabular} {| p{3cm} | p{6cm} |  p{3cm}  | p{2.5cm}|  }
-		\hline
-	     \textbf{Arbeitspaket}& \textbf{Beschreibung} & \textbf{Entwickler} & \textbf{Dauer}\\
-	     \hline\hline
-	     Meta-implementation & Logger \newline ConfigReader& Ivan Charviakou& ?\\ \hline
-	     Utilities I & ConnectionPool \newline ApplicationDao\newline ApplicationDto\newline CSSReader& Jonas Picker& ?\\
-	     \hline
-
-	     Utilities II & EmailUtility \newline TokenGenerator\newline HashingModule\newline & Ivan Charviakour& ?\\
-	     \hline
-
-	     System I & SystemStartStop \newline DataLayerInitializer\newline Datenbankinitialisierung& Jonas Picker& ?\\
-	     \hline
-
-	    Faccelets I & Template \newline Header\newline Footer\newline PaginatedList und column &  León Liehr& ?\\
-	    \hline
-
-	      Exception handling & Error  \newline ErrorDto\newline Exceptions\newline Global exception handler &  Sergei Pravdin& ?\\
-	     \hline
-
-	       User definition & UserDto  \newline UserSession\newline RoleConverter\newline PasswordValidator\newline ConfirmPasswordValidator \newline EmailValidator \newline UserDao &  Mohamad Najjar& ?\\
-	     \hline
-
-
-	     User authentication & UserDao  \newline Registration\newline Login\newline UserValidator &  Mohamad Najjar& ?\\
-	     \hline
-
-	   Application management global & SiteNotice  \newline Contact\newline PrivacyPlocy &  León Liehr & ?\\
-	   \hline
-
-	    Administrative functions& Administration  \newline LogoValidator &  Sergei Pravdin& ?\\
-	   \hline
-
-      \end{tabular}
-      \caption{Tabelle des ersten Milestones}
-    \end{table}
-\end{center}
-
-
-
-
-
-%----------------------------------------------------------------------milestone2 --------------------------------------------------------------------------------------------
-
-\subsection{Meilenstein 2}
-\newpage
-%----------------------------------------------------------------------Milestone3 --------------------------------------------------------------------------------------------
-
-\subsection{Meilenstein 3}
-\sectionauthor{León Liehr}
-
-Nachfolgend die Arbeitspakete des dritten Milestones. Dabei steht BB für Backing Bean, C für Klasse, CC für Komponente, Co für Konverter, F für Facelet und M für Methode.
-
-\newgeometry{top=1cm,bottom=1cm}
+\newgeometry{top=1cm, bottom=1cm}
 \begin{landscape}
-
+\centering
 \begin{table}[H]
-    \centering
-    \begin{tabular}{llllll}
-        \toprule
-        \textbf{Arbeitspaket} &
-        \textbf{ID} &
-        \textbf{Inhalt} &
-        \textbf{Abhängigkeiten} &
-        \textbf{Entwickler} &
-        \textbf{Dauer} \\
-        \midrule
-        Medium Search &
-        130 &
-        \begin{tabular}[c]{@{}l@{}}medium-search (F)\\ MediumSearch (BB)\\ searchMedium (M)\\ addNuancedSearchField (M)\\ MediumDao (C)\\ readMediaBySearchCriteria (M)MediumSearchDto (C)\\ AttributeOrCategoryConverter (Co)\\ AvailabilityStatusConverter (Co)\\ MediumPeviewPositionConverter (Co)\\ SearchOperatorConverter (Co)\end{tabular} &
-        80, 81 &
-        León Liehr &
-        8 \\
-        Password Reset \& Email Validation &
-        150 &
-        \begin{tabular}[c]{@{}l@{}}password-reset (F)\\ PasswordReset (BB)\\ resetPassword (M)\\ email-confirmation (F)\\ EmailConfirmation (BB)\\ confirmEmailAddress (M)\\ UserDao (C)\end{tabular} &
-        120 &
-        Ivan Charviakou &
-        6 \\
-        Copies of a User &
-        100 &
-        \begin{tabular}[c]{@{}l@{}}copies-ready-for-pickup (F)\\ CopiesReadyForPickup (BB)\\ borrowed-copies (F)\\ BorrowedCopies (BB)\\ MediumDao (C)\end{tabular} &
-        80, 120 &
-        Sergei Pravdin &
-        5 \\
-        Copies by User &
-        91 &
-        \begin{tabular}[c]{@{}l@{}}copies-ready-for-pickup-all-users (F)\\ CopiesReadyForPickupAllUsers (BB)\\ lending-period-violations (F)\\ LendingPeriodViolations (BB)\\ MediumDao (C)\end{tabular} &
-        80, 120 &
-        Jonas Picker &
-        5 \\
-        User Search &
-        140 &
-        \begin{tabular}[c]{@{}l@{}}user-search (F)\\ UserSearch (BB)\\ UserSearchDto (C)\\ UserDao (C)\end{tabular} &
-        120 &
-        Mohamad Najjar &
-        6 \\
-        Enhancements &
-        160 &
-        reactiveInputField (CC) &
-        130, 140, 110 &
-        León Liehr &
-        3 \\
-        \bottomrule
-    \end{tabular}
+	\begin{tabular}{llllllll}
+	\textbf{Arbeitspaket} &
+	\textbf{ID }&
+	\textbf{Inhalt} &
+	\textbf{Dauer} &
+	\textbf{Abh.} &
+	\textbf{Entwickler} &
+	\textbf{Startzeit} &
+	\textbf{Endzeit} \\
+		\hline
+		Basis &
+		100 &
+		\begin{tabular}[c]{@{}l@{}}Logger (C)\\ ConfigReader (C)\end{tabular} &
+		10 &
+		- &
+		Jonas Picker &
+		01.06.21 9:00 &
+		02.06.21 14:00 \\
+		\hline
+		Exceptions &
+		101 &
+		Exceptions &
+		2 &
+		- &
+		Ivan Charviakou &
+		01.06.21 8:00 &
+		01.06.21 10:00 \\
+		\hline
+		Utilities &
+		102 &
+		\begin{tabular}[c]{@{}l@{}}ConnectionPool (C)\\ ApplicationDao (C, komplett)\end{tabular} &
+		10 &
+		100 &
+		Ivan Charviakou &
+		02.06.21 8:00 &
+		03.06.21 13:00 \\
+		\hline
+		Systemstart &
+		103 &
+		\begin{tabular}[c]{@{}l@{}}SystemStartStop (C)\\ DataLayerInitializer (C): \\ -Table creation.\\ -Sample data\end{tabular} &
+		12 &
+		100, 101, 102 &
+		Jonas Picker &
+		03.06.21 9:00 &
+		04.06.21 15:00 \\
+		\hline
+		\begin{tabular}[c]{@{}l@{}}Login bzw. \\
+		 Nutzerauthentifizierung\end{tabular} &
+		104 &
+		\begin{tabular}[c]{@{}l@{}}UserDao (C): readUserByEmail(..)\\ Login (F/B)\\ PasswordHashingModule (C)\\ UserSession (MB)\end{tabular} &
+		12 &
+		100, 101, 102,103 &
+		Mohamad Najjar &
+		04.06.21 10:00 &
+		05.06.21 16:00 \\
+		\hline
+		Seitenvorlage &
+		107 &
+		\begin{tabular}[c]{@{}l@{}}Header, Footer, Template (F/B)\\ Kontextsensitive Hilfe\end{tabular} &
+		5 &
+		100, 102 &
+		Leon Liehr &
+		03.06.21 10:00 &
+		03.06.21 15:00 \\
+		\begin{tabular}[c]{@{}l@{}}Medien aller Nutzer \\ bzw. Listendemo\end{tabular} &
+		105 &
+		\begin{tabular}[c]{@{}l@{}}PaginatedList \& column (F)\\ CopiesReadyForPickupAllUsers (F/B)\\ MediumDao (C): readGlobalPickuoList(...)\end{tabular} &
+		12 &
+		100, 101, 102, 103 &
+		Leon Liehr &
+		04.06.21 10:00 &
+		05.06.21 16:00 \\
+		\hline
+		Milestein-Testing 1 &
+		106 &
+		Einzelne Tests für Milestein 1 &
+		8 &
+		\begin{tabular}[c]{@{}l@{}}100, 101, 102, 103,\\  104, 105, 107\end{tabular} &
+		Sergei Pravdin &
+		05.06.21 9:00 &
+		05.06.21 17:00\\
+		\hline
+	\end{tabular}
 \end{table}
 
 \end{landscape}
 \restoregeometry
 
+
+
+%----------------------------------------------------------------------Milestone 2--------------------------------------------------------------------------------------------
+
+\subsection{Meilenstein 2}
+\sectionauthor{Ivan Charviakou}
+
+Im Folgenden werden die Arbeitspakete zum zweiten Meilenstein angegeben.
+
+\begin{landscape}
+\begin{longtable}{@{}llllllll@{}}
+\toprule
+\textbf{Arbeitspaket}                                                    & \textbf{ID} & \textbf{Inhalt}                                                                                                                                                                                                                                                          & \textbf{Abh.}                                                                                         & \textbf{Entwickler} & \textbf{Dauer} & \textbf{Startzeit} & \textbf{Endzeit} \\* \midrule
+\endfirsthead
+%
+\endhead
+%
+Medienerstellung                                                         & 250         & \begin{tabular}[c]{@{}l@{}}Medienerstellung (F/B)\\ MediumDao (C)\\ - readGlobalAttributes()\\ - createMedium(...)\end{tabular}                                                                                                                                          & M1                                                                                                    & Ivan                & 5,00           & 7.6.21, 8:00       & 7.6.21, 13:00    \\* \midrule
+Medienansicht                                                            & 200         & \begin{tabular}[c]{@{}l@{}}Medienansicht (F/B)\\ MediumDao (C)\\ - createCopy(...)\\ - readAllCopiesFromMedium(...)\\ - updateCopy(...)\\ - deleteCopy(...)\\ - readMedium(...)\\ - updateMedium(...)\\ - deleteMedium(...)\\ - updateMediumAttributes(...)\end{tabular} & M1                                                                                                    & Sergei              & 14,00          & 7.6.21, 9:00       & 8.6.21, 16:00    \\* \midrule
+Mediensuche                                                              & 290         & \begin{tabular}[c]{@{}l@{}}Mediensuche (F/B)\\ MediumDao (C)\\ - readMediaBySearchCriteria(...)\\ AttributeOrCategoryConverter (Co)\\ SearchOperatorConverter (Co)\end{tabular}                                                                                          & M1                                                                                                    & León                & 12,00          & 7.6.21, 10:00      & 9.6.21, 16:00    \\* \midrule
+Medientransaktionen                                                      & 210         & \begin{tabular}[c]{@{}l@{}}Medienausleihe (F/B)\\ Medienrückgabe (F/B)\\ MediumDao (C)\\ - lendCopy(...)\\ - returnCopy(...)\end{tabular}                                                                                                                                & M1                                                                                                    & Jonas               & 5,00           & 7.6.21, 9:00       & 9.6.21, 14:00    \\* \midrule
+Nutzerprofil                                                             & 240         & \begin{tabular}[c]{@{}l@{}}Profile (F/B)\\ UserDao (C)\\ - deleteUser(...)\end{tabular}                                                                                                                                                                                  & M1                                                                                                    & Mohamad             & 3,00           & 7.6.21, 10:00      & 7.6.21, 17:00    \\* \midrule
+\begin{tabular}[c]{@{}l@{}}Passwort- und\\ Emailvalidierung\end{tabular} & 230         & \begin{tabular}[c]{@{}l@{}}Passwortzurücksetzung (F/B)\\ E-Mail-Validation (F/B)\\ Email-Utility (C)\\ Token generator (C)\\ UserDao (C)\\ - updateUser(...)\end{tabular}                                                                                                & 240, M1                                                                                               & Ivan                & 8,00           & 8.6.21, 8:00       & 8.6.21, 16:00    \\* \midrule
+Registrierung                                                            & 220         & \begin{tabular}[c]{@{}l@{}}Registration (F/B)\\ EmailValidator (V)\\ ConfirmPasswordValidator (V)\\ PasswordValidator (V)\\ UserValidator (V)\\ UserDao (C)\\ - createUser(...)\end{tabular}                                                                             & 230, M1                                                                                               & Mohamad             & 8,00           & 8.6.21, 10:00      & 8.6.21, 18:00    \\* \midrule
+Medienattribute                                                          & 260         & \begin{tabular}[c]{@{}l@{}}Mediumschemabearbeitung (F/B)\\ MediumDao (C)\\ - updateGlobalAttributes(...)\end{tabular}                                                                                                                                                    & M1                                                                                                    & Jonas               & 10,00          & 7.6.21, 9:00       & 9.6.21, 14:00    \\* \midrule
+Kategorienerstellung                                                     & 270         & \begin{tabular}[c]{@{}l@{}}CategoryCreator (F/B)\\ CategoryDao (C)\\ - createCategory(...)\end{tabular}                                                                                                                                                                  & M1                                                                                                    & Mohamad             & 4,00           & 7.6.21, 10:00      & 7.6.21, 17:00    \\* \midrule
+Kategoriensuche                                                          & 280         & \begin{tabular}[c]{@{}l@{}}CategoryBrowser (F/B)\\ CategoryDao (C)\\ - readCategory(...)\\ - readCategoriesByName(...)\\ - updateCategory(...)\\ - deleteCategory(...)\end{tabular}                                                                                      & M1                                                                                                    & León                & 8,00           & 7.6.21, 10:00      & 9.6.21, 16:00    \\* \midrule
+Milenstein-Testing                                                       & 295         & Einzelne Tests für Meilenstein 2                                                                                                                                                                                                                                         & \begin{tabular}[c]{@{}l@{}}200, 210, 220, \\ 230, 240, 250, \\ 260, 270, 280, \\ 290, M1\end{tabular} & Sergei              & 8,00           & 10.6.21, 9:00      & 10.6.21, 17:00   \\* \bottomrule
+\end{longtable}
+\end{landscape}
+
+
+%----------------------------------------------------------------------Milestone 3--------------------------------------------------------------------------------------------
+
+\subsection{Meilenstein 3}
+\sectionauthor{León Liehr}
+
+Nachfolgend die Arbeitspakete des dritten Milestones.
+
+\newgeometry{top=1cm, bottom=1cm}
+\begin{landscape}
+
+
+\begin{table}[]
+	\begin{tabular}{llllllll}
+		\hline
+		\textbf {Arbeitspaket} &
+	\textbf{	ID }&
+		\textbf{Inhalt}&
+		\textbf{Dauer} &
+		\textbf{Abh. }&
+		\textbf{Entwickler} &
+		\textbf{Startzeit} &
+	\textbf{	Endzeit} \\
+		\hline
+		Security &
+		306 &
+		Trespasslistener (C) &
+		4 &
+		M1, M2 &
+		Jonas Picker &
+		14.06.21 9:00 &
+		14.06.21 14:00 \\
+		\hline
+		Medien pro Nutzer &
+		301 &
+		\begin{tabular}[c]{@{}l@{}}Abzuholende Exemplare (F/B)\\ Ausgeliehne Exemplare (F/B)\\ MediumDao (C):\\ -readMarktCopiesByUSer(...)\\ -readLentCopiesByUser(...)\end{tabular} &
+		6 &
+		M1, M2 &
+		Sergei Pravdin &
+		14.06.21 9:00 &
+		14.06.21 15:00 \\
+		\hline
+		Nutzersuche &
+		302 &
+		\begin{tabular}[c]{@{}l@{}}Nutzersuche (F/B)\\ UserDao (C):\\ -readUserBySearchCriteria(...)\end{tabular} &
+		12 &
+		M1, M2 &
+		Mohamad Najjar &
+		14.06.21 10:00 &
+		16.06.21 16:00 \\
+		\hline
+		\begin{tabular}[c]{@{}l@{}}Globale Anwendungs-\\ einstellugen\end{tabular} &
+		305 &
+		\begin{tabular}[c]{@{}l@{}}Impressumseite(F/B)\\ Contact (F/B)\\ Datenschutzerklärung (F/B)\\ Administration (F/B)\\ LogoValidator (V)\\
+		 CSSReader (C)\end{tabular} &
+		12 &
+		M1, M2 &
+		Mohamad Najjar &
+		14.06.21 10:00 &
+		16.06.21 16:00 \\
+		\hline
+		Wartungsprozess &
+		303 &
+		\begin{tabular}[c]{@{}l@{}}MaintenanceProcess (C)\\ MediumDao (C):\\ -updateMarkedCopies(...)\\ -readDueDateReminders(...)\end{tabular} &
+		10 &
+		M1, M2, 305 &
+		Jonas Picker &
+		16.06.21 09:00 &
+		17.06.21 14:00 \\
+		\hline
+		Fehlerbehandlung &
+		307 &
+		\begin{tabular}[c]{@{}l@{}}StaticError (F)\\ DynamicError (F/B)\\ GlobalExceptionHandler (C)\\ CustomExecptionHandlerFauctory (C)\end{tabular} &
+		9 &
+		M1, M2 &
+		Ivan Charviakou &
+		14.06.21 8:00 &
+		15.06.21 15:00 \\
+		\hline
+		Leifristverstöße &
+		308 &
+		\begin{tabular}[c]{@{}l@{}}LendingPeriodViolation (F/B)\\ MediumDao (C):\\ -readOverdueCopies (...)\end{tabular} &
+		5 &
+		M1, M2 &
+		Ivan Charviakou &
+		14.06.21 8:00 &
+		15.06.21 15:00 \\
+		\hline
+		Zusatzfunktionalitäten &
+		304 &
+		Reactive input fields &
+		10 &
+		M1, M2, 302 &
+		Leon Liehr &
+		14.06.21 10:00 &
+		15.06.21 15:00 \\
+		\hline
+		Milestein-Testing 3 &
+		309 &
+		Einzelne Tests für Meilenstein 3 &
+		6 &
+		\begin{tabular}[c]{@{}l@{}}301, 302, 303,\\ 304, 305, 306,\\ 307, 308, M1,\\ M2\end{tabular} &
+		Sergei Pravdin &
+		17.06.21 9:00 &
+		17.06.21 15:00\\
+		\hline
+		
+	\end{tabular}
+\end{table}
+
+\end{landscape}
+\restoregeometry
+%----------------------------------------------------------------------Kapitel 3--------------------------------------------------------------------------------------------
+
 \section{PERT-Diagramm}
+\sectionauthor{Ivan Charviakou}
+
+Das PERT Diagramm zum Projekt wird im PDF Anhang dargestellt. 
+Insbesondere bildet es die Abhängigkeiten zwischen den Paketen ab und zeigt das kritische Pfad im Projekt auf. 
+Dabei werden die Zeitdauer in Stunden berechnet und die genauen Start- und Stoppzeiten sind den Milensteintabellen zu entnehmen.
 
 %----------------------------------------------------------------------Kapitel 4--------------------------------------------------------------------------------------------
 
@@ -265,8 +390,91 @@ Die Vielzahl der verwendeten Technologien erfordert eine Spezialisierung der ein
      	\hline
 \end{tabular}
 \end{table}
+\newpage
 
 %----------------------------------------------------------------------Kapitel 5--------------------------------------------------------------------------------------------
+
 \section{Whitebox-Tests}
+\sectionauthor{Sergei Pravdin}
+Am Ende jedes Milestones werden Whitebox-Tests von dem Verantwortlicher (Sergei Pravdin) geschrieben. Jedes Arbeitspaket hat mindestens einen Test, um seine Funktionalitäten zu prüfen. Die Arbeitspakete werden durch die Verbindung mit der Datenbank getestet, wenn der Zustand der Anwendung es ermöglicht. Sonst werden fehlende Bestandteile von Mockito oder PowerMock gemockt. Die Tests werden mit dem Projekt mitgeliefert. Vor dem Projektabgabe werden die allen erzeugenden beim Testing Objekte aus der Datenbank manuell gelöscht. 
+
+­\subsection{PreTests}
+Damit weitere Tests durchgeführt werden können, werden folgende PreTests zuerst definiert.
+
+\subsubsection{Arbeitspaket: Systemstart. DataLayerInitializer}
+Um eine Datenbankverbindung zu bekommen, wird eine Methode execute() aufgerufen.
+
+\subsubsection{Arbeitspaket: Systemstart. Erstellung der Test-Objekten - initObjects()}
+Um Tests von den Milestones durchzuführen, werden wir folgende Objekte in die Datenbank durch SQL-Anfragen abgespeichert: ein Nutzer (ID: 1, E-Mail-Adresse:  preTestSep21email@gmail.com, Password: testPassword1), ein Medium (ID: 1, Name: ''testMedium'', Copy: testCopy, Attribute: testAttribute), ein Copy (ID: 2, Name: ''testCopy''), ein Copy (ID: 30, Name: ''testCopyBorrowed''), ein Attribute (ID: 3, Name: ''testAttribute''), eine Kategorie (ID: 20, Name: ''testCategory''). \linebreak
+Ein Exemplar mit einer ID '30' wird als 'BORROWED' von einem testUser mit einer ID '1' gekennzeichnet.
+
+­\subsection{Milestone 1}
+
+\subsubsection{Arbeitspaket: Basis.}
+Der Logger wird getestet. Für den Test wird eine Message ins Log-File durch die Methode development(''testMessage'') geschrieben. Der Test ist bestanden, wenn eine erste Message im Log-File ''testMessage'' ist.
+
+\subsubsection{Arbeitspaket: Utilities I.}
+Der Test ist für ein ApplicationDao zuständig. Ein ApplicationDto 'testDto' wird erstellt und durch testDto.setName(''testName'') ausgefüllt. Danach wird eine Methode \linebreak ApplicationDao.createCustomization(testDto) aufgerufen. Der Test ist bestanden, wenn eine Methode ApplicationDao.readCustomization(testDto).getName() ''testName'' ist.
+
+\subsubsection{Arbeitspaket: Login bzw. Nutzerauthentifizierung. Test: LogIn (erfolglos).}
+Eine Methode setEmail(''wrongEmail'') und eine Methode setPassword(''wrongPassword'') aus der Klasse 'Login' werden aufgerufen. Im nächsten Schritt wird eine Methode logIn() aufgerufen. Das Ergebnis muss ''null'' sein, damit der Test als bestanden gilt. 
+
+\subsubsection{Arbeitspaket: Login bzw. Nutzerauthentifizierung. Test: LogIn (erfolgreich).}
+Eine Methode setEmail(''preTestSep21email@gmail.com'') und eine Methode \linebreak setPassword(''testPassword1'') aus der Klasse Login werden aufgerufen. Im nächsten Schritt wird eine Methode logIn() aufgerufen. Das Ergebnis muss ''profile?id=1'' sein, damit der Test als bestanden gilt.
+
+\subsubsection{Arbeitspaket: Facelets.}
+Eine Methode logOut() von einem Footer wird aufgerufen. Der Test ist bestanden, wenn das Ergebnis ''logIn.xhtml?faces-redirect=true'' ist.
+
+\subsubsection{Arbeitspaket: Medien aller Nutzer bzw. Listendemo. Test: Abzuholende Exemplare aller Nutzer.}
+Die Methode loadCopies() wird aus der Klasse 'BorrowedCopies' aufgerufen. Der Test ist bestanden, wenn ein Ergebnis einer Methode 'getCopies()' ein Exemplar mit der ID '30' beinhaltet.
+
+­\subsection{Milestone 2}
+\subsubsection{Arbeitspaket: Medienerstellung.}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''preTestSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'MediumCreator' aufgerufen. Danach werden ein mediumDto mit der ID '4', dem Name 'testMedium2' und ein CopyDto mit der ID '5' erstellt. Im nächsten Schritt werden die Methoden setMedium und setCopy in der Klasse 'MediumCreator' aufgerufen. Schließlich wird die Methode createMediumAndFirstCopy() aufgerufen. Der Test ist bestanden, wenn die Methode MediumDao.readMedium(mediumDto).getId() das Ergebnis '4' liefert.
+
+\subsubsection{Arbeitspaket: Medienansicht. Test: Ausleihe eines Exemplars durch einen Nutzer.}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''preTestSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird eine Methode setID(4) von einem mediumDto aufgerufen und eine BB bekommt ein ausgefülltes mediumDto durch MediumDao.readMedium(mediumDto) zurück. Schließlich wird die testende Methode pickUpCopy(4, userDto) aufgerufen. Der Test ist bestanden, wenn die Methode MediumDao.readMedium(mediumDto).getCopy(4).getCopyStatus() das Ergebnis 'READY FOR PICKUP' liefert.
+
+\subsubsection{Arbeitspaket: Mediensuche.}
+Ein MediumSearchDto 'mediumSearch' wird erzeugt und durch \linebreak mediumSearch.setGeneralSearchTerm(''testMedium'') ausgefüllt. Im nächsten Schritt wird eine Methode setMediumSearch(mediumSearch) in der Klasse 'MediumSearch' aufgerufen. Schließlich wird eine testende Methode searchMedium() aufgerufen. Der Test ist bestanden, wenn eine Methode getItems() in der Klasse 'MediumSearch' ein mediumDto mit einem Attribut 'testMedium' liefert.
+
+\subsubsection{Arbeitspaket: Medientransaktionen. Test: Direktausleihe eines Exemplars durch einen Mitarbeiter}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''preTestSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'DirectLending' aufgerufen. Dann werden ein copyDto und ein mediumDto erzeugt. Sie werden durch copyDto.setId(5) und mediumDto.setId(4) definiert. Dann wird ein copyDto durch eine Methode MediumDao.readMedium(mediumDto).getCopies(5) ausgefüllt und durch eine Methode copies.put(copyDto) in der Klasse 'DirectLending' hinzugefügt. Schließlich wird eine testende Methode lendCopy(5, userDto) aufgerufen. Der Test ist bestanden, wenn die Methode MediumDao.readMedium(mediumDto).getCopy(5).getCopyStatus() das Ergebnis 'BORROWED' liefert.
+
+\subsubsection{Arbeitspaket: Nutzerprofil.}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak userDto.setEmailAddress(''preTestSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten \linebreak Schritt wird die Methode setUser(userDto) aus der Klasse 'Profile' aufgerufen. Dann wird sich eine Hausnummer durch userDto.setStreetNumber(''13a'') geändert. Abschießend wird die Methode 'save()' aufgerufen. Jetzt muss die neue Hausnummer in der Datenbank durch das userDto von der Klasse 'Profile' aktualisiert. Der Test ist bestanden, wenn die Methode \linebreak UserDao.readUserByEmail(userDto).getStreetNumber() das Ergebnis ''13a'' liefert.
+
+\subsubsection{Arbeitspaket: Passwort- und Emailvalidierung. Test: Zurücksetzung eines Passwords.}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''preTestSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode setUser(userDto) aus der Klasse 'PasswordReset' aufgerufen.
+Die Attribute einer Klasse 'PasswordReset' werden durch setPassword(''newPassword'') und \linebreak setConfirmedPassword(''newPassword'') ausgefüllt. Ein TokenDto wird von einem TokenGenerator erstellt und durch setToket(tokenDto) hinzugewiesen. Dann wird eine testende Methode resetPassword(userDto) aufgerufen. Um zu testen, werden eine Methode \linebreak setEmail(''preTestSep21email@gmail.com'') und eine Methode setPassword(newPassword) aus der Klasse 'Login' aufgerufen. Im nächsten Schritt wird eine Methode logIn() aufgerufen. Das Ergebnis muss ''profile?id=1'' sein, damit der Test als bestanden gilt (Erfolgreiche Anmeldung mit einem neuen Password).
+
+\subsubsection{Arbeitspaket: Registrierung.}
+Ein UserDto 'userDto' wird erzeugt. Dann werden eine Methode userDto.setId(6), \linebreak userDto.setPassword(''testPassword'') und userDto.setEmailAddress(''testSep21email@gmail.com'') \linebreak aufgerufen. Im nächsten Schritt wird die Methode 'register()' in der Klasse 'Registration' aufgerufen. Diese Methode muss eine Interaktion mit einem UserDao, genauer gesagt mit der Methode 'UserDao.createUser(userDto)', implementieren, deshalb ist der Test bestanden, wenn das Ergebnis der Methode 'UserDao.readUserByEmail(userDto).getId()'  ''6'' ist (Das bedeutet, das ein neuer Nutzer mit der Id ''6' in der Datenbank erfolgreich abgespeichert ist).
+
+\subsubsection{Arbeitspaket: Medienattributen.}
+Ein Map 'attributes' wird gemockt. Ein neues AttributeDto 'testDto' wird erzeugt und eine Methode testDto.setId(7) aufgerufen. Danach wird ein 'testDto' durch attributes.put(7, testDto) hinzugefügt. Im nächsten Schritt wird eine Methode setAttributes(attributes) aus der Klasse 'MediumSchemaEditor' aufgerufen. Schließlich wird eine testende Methode deleteAttribute(1) aufgerufen. Der Test ist bestanden, wenn die Methode aus der Klasse 'MediumSchemaEditor' getAttributes.get(7) 'null' liefert.
+
+\subsubsection{Arbeitspaket: Kategorienerstellung.}
+Zuerst wird ein categoryDto erzeugt und durch categoryDto.setId(8) und \linebreak categoryDto.setName(''testCategory2'') ausgefüllt. Dann wird eine Methode \linebreak setCategory(categoryDto) in der Klasse 'CategoryCreator' aufgerufen. Schließlich wird eine testende Methode createCategory() aufgerufen. Der Test ist bestanden, wenn die Methode \linebreak CategoryDao.readCategory(categoryDto).getName() das Ergebnis ''testCategory2'' liefert.
+
+\subsubsection{Arbeitspaket: Kategoriensuche.}
+Zuerst wird ein categorySearchDto erzeugt und durch categorySearchDto.setSearchTerm(20) ausgefüllt. Dann wird eine Methode  searchCategory() in der Klasse 'CategoryBrowser' aufgerufen. Der Test ist bestanden, wenn die Methode  getCurrentCategory().getID() das Ergebnis ''20'' liefert.
+
+­\subsection{Milestone 3}
+
+\subsubsection{Arbeitspaket: Medien pro Nutzer.}
+Ein UserDto 'userDto' wird zuerst erzeugt, dann wird die Methode \linebreak setEmailAddress(''preTestSep21email@gmail.com'') aufgerufen und andere Attribute von userDto werden durch userDto = UserDao.readUserByEmail(userDto) ausgefüllt. Im nächsten Schritt wird die Methode getCopies(userDto) aus der Klasse 'BorrowedCopies' aufgerufen. Der Test ist bestanden, wenn ein Ergebnisliste einer Methode getCopies(userDto) ein Copy mit der Id '30' beinhaltet.
+
+\subsubsection{Arbeitspaket: Nutzersuche.}
+Ein userSearchDto wird erstellt und eine Methode \linebreak userSearchDto.setSearchTerm(''preTestSep21email@gmail.com'') aufgerufen. Danach wird eine Methode setUserSearchDto(userSearchDto) aus der Klasse 'UserSearch' aufgerufen. Im nächsten Schritt wird eine testende Methode searchUser() aufgerufen und eine Methode getItems() aus der Klasse 'UserSearch' muss im Ergebnis ein userDto mit der Id '1' beinhalten, damit der Test bestanden ist. 
+
+\subsubsection{Arbeitspaket: Globale Anwendungseinstellungen.}
+Ein ApplicationDto 'testDto' wird erzeugt. Dann wird die Methode setApplication(testDto) aus der Klasse 'Contact' aufgerufen. Im nächsten Schritt werden die Methode testDto.setCity(''testCity'') und save() aus der Klasse 'Contact' aufgerufen. Der Test gilt als bestanden, wenn die Methode getApplication().getCity() aus der Klasse 'Contact' das Ergebnis ''testCity'' liefert.
+
+\subsubsection{Arbeitspaket: Fehlerbehandlung.}
+Wir wollen eine Fehlerseite testen, deshalb wird ErrorDto 'testErrorDto' erzeugt und durch setMessage(''testErrorMessage'') ausgefüllt. Dann wird eine Methode setErrorDto(testErrorDto) aufgerufen. Der Test ist bestanden, wenn das Ergebnis der Methode getMessage() von der Klasse 'Error' ''testErrorMessage'' ist.
+
+\subsubsection{Arbeitspaket: Leifristverstöße.}
+Zuerst wird ein MediumDto 'mediumDto' erstellt und durch mediumDto.setId(1) identifiziert. Dann wird ein mediumDto durch mediumDto = MediumDao.readMedium(mediumDto) ausgefüllt. Jetzt wird ein CopyDto copyDto erzeugt und durch copyDto = mediumDto.getCopy(30) ausgefüllt. Jetzt wollen wir einen neuen Abgabefrist durch copyDto.setDeadline(''Derzeit + 10 Sekunden'') definieren und diese Änderung in der Datenbank durch MediumDao.update(mediumDto) speichern. Danach wird eine Pause für 11 Sekunden im Test durchgeführt. Jetzt sind wir bereit eine Klasse 'LendingPeriodViolation' zu testen. Der Test ist bestanden, wenn sich ein copyDto mit der Id '30' im Ergebnis der Methode getItems() der Klasse 'LendingPeriodViolation' befindet.
 
 \end{document}
