@@ -92,10 +92,9 @@ Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones n
 
 \newgeometry{top=1cm, bottom=1cm}
 \begin{landscape}
-
+\centering
 \begin{table}[H]
 	\begin{tabular}{llllllll}
-		\hline
 		Arbeitspaket &
 		ID &
 		Beschreibung &
@@ -134,14 +133,15 @@ Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones n
 		\hline
 		Systemstart &
 		103 &
-		\begin{tabular}[c]{@{}l@{}}SystemStartStop (C)\\ DataLayerInitializer (C): Table creation, Sample data\end{tabular} &
+		\begin{tabular}[c]{@{}l@{}}SystemStartStop (C)\\ DataLayerInitializer (C): \\ -Table creation.\\ -Sample data\end{tabular} &
 		12 &
 		100, 101, 102 &
 		Jonas Picker &
 		03.06.21 9:00 &
 		04.06.21 15:00 \\
 		\hline
-		Login bzw. Nutzerauthentifizierung &
+		\begin{tabular}[c]{@{}l@{}}Login bzw. \\
+			\hline Nutzerauthentifizierung\end{tabular} &
 		104 &
 		\begin{tabular}[c]{@{}l@{}}UserDao (C): readUserByEmail(..)\\ Login (F/B)\\ PasswordHashingModule (C)\\ UserSession (MB)\end{tabular} &
 		12 &
@@ -158,8 +158,7 @@ Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones n
 		Leon Liehr &
 		03.06.21 10:00 &
 		03.06.21 15:00 \\
-		\hline
-		Medien aller Nutzer bzw. Listendemo &
+		\begin{tabular}[c]{@{}l@{}}Medien aller Nutzer \\ bzw. Listendemo\end{tabular} &
 		105 &
 		\begin{tabular}[c]{@{}l@{}}PaginatedList \& column (F)\\ CopiesReadyForPickupAllUsers (F/B)\\ MediumDao (C): readGlobalPickuoList(...)\end{tabular} &
 		12 &
@@ -172,14 +171,13 @@ Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones n
 		106 &
 		Einzelne Tests für Milestein 1 &
 		8 &
-		100, 101, 102, 103, 104, 105, 107 &
+		\begin{tabular}[c]{@{}l@{}}100, 101, 102, 103,\\  104, 105, 107\end{tabular} &
 		Sergei Pravdin &
 		05.06.21 9:00 &
 		05.06.21 17:00\\
 		\hline
 	\end{tabular}
 \end{table}
-
 
 \end{landscape}
 
