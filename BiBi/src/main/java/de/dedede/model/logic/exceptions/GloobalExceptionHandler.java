@@ -9,7 +9,7 @@ import de.dedede.model.data.dtos.UserDto;
  * are handled by creating a FacesMessage that is displayed to the
  * {@link UserDto}.
  */
-public class ExceptionHandler {
+public class GloobalExceptionHandler {
 
 	/**
 	 * Logs the error and creates/displays a FacesMessage.
