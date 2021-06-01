@@ -1,6 +1,8 @@
 package de.dedede.model.persistence.util;
 
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import jakarta.faces.context.ExternalContext;
@@ -31,7 +33,7 @@ public class ConfigReader {
 	/**
 	 * The path to the config-File starting from the webapp-Folder.
 	 */
-	private String relativeFilePath = "/WEB-INF/config.properties";
+	private Path relativeFilePath = Paths.get("WEB-INF", "config.properties");
 	
 	/**
 	 * Singleton with private constructor.
@@ -57,11 +59,11 @@ public class ConfigReader {
 	public Properties getSystemConfigurations() { // eigene Exception werfen?
 		Properties config = new Properties();
 		try {
-			InputStream stream = ext.getResourceAsStream(relativeFilePath);
+			InputStream stream = ext.getResourceAsStream(relativeFilePath.toString());
 			config.load(stream);		
 			stream.close();			
 		} catch (Exception e) {
-			e.printStackTrace();
+			//HandleEception
 		}
 		
 		return config;
