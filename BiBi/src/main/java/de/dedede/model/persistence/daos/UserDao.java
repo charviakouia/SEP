@@ -1,5 +1,7 @@
 package de.dedede.model.persistence.daos;
 
+import java.util.List;
+
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
@@ -43,6 +45,11 @@ public final class UserDao {
 	public static UserDto readUserByEmail(UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
 		return null;
+	}
+	
+	public static List<UserDto> readUsersBySearchCriteria(){
+		return null;
+		
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 package de.dedede.model.logic.exceptions;
 
-import de.dedede.model.logic.managedbeans.EmailConfirmation;
-import de.dedede.model.logic.managedbeans.PasswordReset;
+import de.dedede.model.logic.managed_beans.EmailConfirmation;
+import de.dedede.model.logic.managed_beans.PasswordReset;
 
 /**
  * Thrown if the server could not send the {@link EmailConfirmation} or
