@@ -22,7 +22,11 @@
 		<ui:param name="page" value="login" />
 
 		<ui:define name="content">
-
+			<h:form>
+				<h:inputText id="email" type="text" styleClass="" value="#{login.email}" required="true"/>
+				<h:inputText id="password" type="text" styleClass="" value="#{login.password}" required="true"/>
+				<h:commandButton id="login-button" value="#Log In#" action="#{login.logIn()}"/>
+			</h:form>
 			<!-- UNIMPLEMENTED! -->
 				<button type="button" class="btn btn-primary"> Login </button>
 		</ui:define>
