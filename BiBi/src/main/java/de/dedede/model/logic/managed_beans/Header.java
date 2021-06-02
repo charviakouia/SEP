@@ -1,5 +1,7 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.util.Base64;
+
 import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.UserRole;
 import jakarta.annotation.PostConstruct;
@@ -28,9 +30,9 @@ public class Header {
 
 	}
 	
-//	public String getApplicationBase64Logo() {
-//		return Base64.getUrlEncoder().encodeToString(application.getLogo());
-//	}
+	public String getApplicationBase64Logo() {
+		return Base64.getEncoder().encodeToString(application.getLogo());
+	}
 
 	public ApplicationDto getApplication() {
 		return application;
@@ -46,6 +48,18 @@ public class Header {
 
 	public void setMediumSearch(MediumSearch mediumSearch) {
 		this.mediumSearch = mediumSearch;
+	}
+	
+	public boolean showingAccountHelp() {
+		return session.getUser() != null;
+	}
+	
+	public boolean showingStaffHelp() {
+		return session.getUser().getRole().isStaffOrHigher();
+	}
+	
+	public boolean showingAdminHelp() {
+		return session.getUser().getRole() == UserRole.ADMIN;
 	}
 
 	public boolean showingLogOut() {
