@@ -14,6 +14,8 @@ import com.sun.faces.config.ConfigurationException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 
+// TODO: Adjust the exceptions so that they accept other exceptions - would really help with testing...
+
 /**
  * This pool manages the creation and distribution of connection-objects.
  * These are then used to perform SQL-queries on the application's data store.
