@@ -37,7 +37,6 @@ public class SystemStartStop implements SystemEventListener {
 				initializeApplication();
 			} catch (Exception e) {
 				System.out.println("Initialization process on system startup failed");
-				e.printStackTrace();
 				throw new AbortProcessingException();
 			}
 		} else if (systemEvent instanceof PreDestroyApplicationEvent) {
@@ -69,7 +68,6 @@ public class SystemStartStop implements SystemEventListener {
 	}
 	
 	private void shutdownApplication() {
-	// TODO Auto-generated method stub
 	
 	}
 	

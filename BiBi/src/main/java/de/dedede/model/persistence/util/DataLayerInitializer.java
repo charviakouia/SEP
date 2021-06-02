@@ -14,7 +14,6 @@ import java.util.Scanner;
 
 import de.dedede.model.persistence.exceptions.InvalidSchemaException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
-import jakarta.faces.application.Application;
 
 /**
  * Initializes the application's utilities and environment.
@@ -24,6 +23,16 @@ import jakarta.faces.application.Application;
 public class DataLayerInitializer {
 	
 	private static final String[] tableNames = {"Users", "Application", "Medium", "CustomAttribute", "Copy", "AttributeType", "Category"}; 
+	private static final String DB_DRIVER = "DB_DRIVER";
+	private static final String DB_USER = "DB_USER";
+	private static final String DB_PASSWORD = "DB_PASSWORD";
+	private static final String DB_SSL = "DB_SSL";
+	private static final String DB_HOST = "DB_HOST";
+	private static final String DB_URL = "DB_URL";
+	private static final String DB_SSL_FACTORY =  "DB_SSL_FACTORY";
+	private static final String DB_PORT = "DB_PORT";
+	private static final String DB_NAME = "DB_NAME";
+	
 	/**
 	 * Performs tasks associated with the initialization of the data layer. 
 	 * This includes setting up the data store, the connection pool, and
@@ -38,42 +47,46 @@ public class DataLayerInitializer {
 	public static void execute() throws LostConnectionException {
 		
 		try {
-			setUpDatabase();
+			setUpConnectionPool();
 		} catch (ClassNotFoundException cnfe) {
-			throw new LostConnectionException("Connection to database failed during system startup.");
+			throw new LostConnectionException("Database driver encountered a problem during system startup.");
+		} catch (SQLException sqle) {
+			throw new LostConnectionException("A problem occured while trying to connect to the database during system startup.");
+		}
+		
+		try {
+			setUpDatabase();
 		} catch (SQLException sqle) {
 			throw new LostConnectionException("A problem occured while communicating with the database during system startup.");
 		}
-				
-		setUpMaintenanceProcess();
-					
+		
+		setUpMaintenanceProcess();			
 	}
 	
 	
 	
-	private static void setUpDatabase() throws ClassNotFoundException, SQLException {
+	private static void setUpDatabase() throws SQLException {
 		Properties config = ConfigReader.getInstance().getSystemConfigurations();
 		Properties connectionProperties = new Properties();
 		Connection connection = null;
 		try {
-            System.out.println("Loading JDBC Driver");
-            Class.forName(config.getProperty("DB_DRIVER"));
+            System.out.println("Loading JDBC Driver.");
+            Class.forName(config.getProperty(DB_DRIVER));
         }
-        catch(ClassNotFoundException e) {
-            System.err.println("JDBC Driver not found");
-            throw e;
+        catch(ClassNotFoundException e) { //already thrown in setUpConnectionPool()
+            System.out.println("JDBC Driver not found.");
         }
-		connectionProperties.setProperty("user", config.getProperty("DB_USER"));
-		connectionProperties.setProperty("password", config.getProperty("DB_PASSWORD"));
+		connectionProperties.setProperty("user", config.getProperty(DB_USER));
+		connectionProperties.setProperty("password", config.getProperty(DB_PASSWORD));
 		
-		if (config.getProperty("DB_SSL").equalsIgnoreCase("TRUE")) {
+		if (config.getProperty(DB_SSL).equalsIgnoreCase("TRUE")) {
 			connectionProperties.setProperty("ssl", "true");
-			connectionProperties.setProperty("sslfactory", config.getProperty("DB_SSL_FACTORY"));
+			connectionProperties.setProperty("sslfactory", config.getProperty(DB_SSL_FACTORY));
 		}
 		try {
             System.out.println("Testing Database Connection");
-            connection = DriverManager.getConnection("jdbc:postgresql://" 
-                + config.getProperty("DB_HOST") + "/" + config.getProperty("DB_NAME"), connectionProperties);
+            connection = DriverManager.getConnection(config.getProperty(DB_URL)
+                + config.getProperty(DB_HOST) + ":" + config.getProperty(DB_PORT) + "/" + config.getProperty(DB_NAME), connectionProperties);
         }
         catch(SQLException e) {
             System.out.println("Failed to initialize database connection");
@@ -101,12 +114,14 @@ public class DataLayerInitializer {
 	}
 
 
-	private static void setUpConnectionPool() {
-		
+	private static void setUpConnectionPool() throws SQLException, ClassNotFoundException {
+		ConnectionPool.setUpConnectionPool();
 	}
 	
 	private static void setUpMaintenanceProcess() {
-		MaintenanceProcess.startup();
+		MaintenanceProcess mp = MaintenanceProcess.getInstance();
+		mp.setup();
+		mp.startup();
 	}
 	
 	private static void consoleDialogue(Connection connection) throws IOException, SQLException {
