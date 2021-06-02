@@ -8,10 +8,10 @@ package de.dedede.model.persistence.util;
  *
  */
 public final class MaintenanceProcess implements Runnable {
-	
-	private static int timeoutInterval;
-	
+		
 	private static MaintenanceProcess instance;
+	
+	private MaintenanceProcess() {}
 	
 	/**
 	 * Sets the frequency, with which a maintenance process 
@@ -20,17 +20,22 @@ public final class MaintenanceProcess implements Runnable {
 	 * @param interval The new time interval between checks.
 	 */
 	public static void setTimeoutInterval(int interval) {
-		
+		//brauchma des???
 	}
 	
-	private MaintenanceProcess() {}
+	/**
+	 * Shoots up the thread from a static context.
+	 */
+	public static void startup() {
+		instance.run();
+	}
 	
 	/**
 	 * Returns the single instance of the MaintenanceProcess.
 	 * 
 	 * @return The singleton MaintenanceProcess instance
 	 */
-	public MaintenanceProcess getInstance() {
+	public synchronized MaintenanceProcess getInstance() {
 		if (instance == null) {
 			instance = new MaintenanceProcess();
 		}
@@ -55,6 +60,6 @@ public final class MaintenanceProcess implements Runnable {
 	 * it has no effect.
 	 * 
 	 */
-	public void shutdown() {}
+	public static void shutdown() {}
 	
 }
