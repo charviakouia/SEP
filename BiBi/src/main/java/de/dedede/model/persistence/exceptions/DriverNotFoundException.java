@@ -1,44 +1,40 @@
 package de.dedede.model.persistence.exceptions;
 
-import de.dedede.model.persistence.util.ConnectionPool;
-
 /**
- * This checked exception is used for situations in which a connection
- * object from the connection pool can no longer be used to execute
- * data queries.
- * <p>
- * See the {@link ConnectionPool} class for the connection pool implementation.
+ * This checked exception describes situations in which in which a driver
+ * for accessing the database was not found at the specified path.
+ * Sometimes, this may be the result of a race-condition.
  */
-public class LostConnectionException extends Exception {
+public class DriverNotFoundException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new LostConnectionException instance.
+     * Creates a new DriverNotFoundException instance.
      */
-    public LostConnectionException() {
+    public DriverNotFoundException() {
         super();
     }
 
     /**
-     * Creates a new LostConnectionException instance with a
+     * Creates a new DriverNotFoundException instance with a
      * display message identifying the specific cause.
      *
      * @param msg The message indicating the exception's cause.
      */
-    public LostConnectionException(String msg) {
+    public DriverNotFoundException(String msg) {
         super(msg);
     }
 
     /**
-     * Creates a new LostConnectionException instance with a
+     * Creates a new DriverNotFoundException instance with a
      * display message identifying the specific cause.
      *
      * @param msg   The message indicating the exception's cause.
      * @param cause the cause (which is saved for later retrieval by the Throwable.getCause() method).
      *              (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
-    public LostConnectionException(String msg, Throwable cause) {
+    public DriverNotFoundException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

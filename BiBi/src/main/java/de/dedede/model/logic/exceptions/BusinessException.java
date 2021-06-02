@@ -4,37 +4,36 @@ import de.dedede.model.logic.managed_beans.EmailConfirmation;
 import de.dedede.model.logic.managed_beans.PasswordReset;
 
 /**
- * Thrown if the server could not send the {@link EmailConfirmation} or
- * {@link PasswordReset}.
+ * The MyBusinessException wraps all checked standard Java exception and enriches them with a custom error code.
  */
-public class MailException extends Exception {
+public class BusinessException extends Exception {
 
     /**
-     * Constructs a new MailException.
+     * Constructs a new BusinessException.
      */
-    public MailException() {
+    public BusinessException() {
 
     }
 
     /**
-     * Constructs a new MailException with the specified detail message.
+     * Constructs a new BusinessException with the specified detail message.
      *
      * @param message The message which is set to the MailException is initialized
      *                by the Exception class.
      */
-    public MailException(String message) {
+    public BusinessException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new MailException with the specified detail message.
+     * Constructs a new BusinessException with the specified detail message.
      *
      * @param message The message which is set to the MailException is initialized
      *                by the Exception class.
      * @param cause   the cause (which is saved for later retrieval by the Throwable.getCause() method).
      *                (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
-    public MailException(String message, Throwable cause) {
+    public BusinessException(String message, Throwable cause) {
         super(message, cause);
     }
 }
