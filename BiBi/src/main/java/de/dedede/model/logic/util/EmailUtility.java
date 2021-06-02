@@ -15,5 +15,15 @@ public final class EmailUtility {
 	static void sendEmail(String recipient, String subject, String body) {
 
 	}
+	
+	/**
+	 * This method is called on system start, it reads the config-File and tries to connect to the specified Mail-Server.
+	 * 
+	 * @return true if the connection was successfully established
+	 */
+	public static boolean initializeConnection() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

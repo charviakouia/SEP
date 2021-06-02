@@ -64,6 +64,7 @@ public class ConfigReader {
 			stream.close();			
 		} catch (Exception e) {
 			//HandleEception
+			System.out.println("getSysConfig failed");
 		}
 		
 		return config;
