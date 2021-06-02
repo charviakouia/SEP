@@ -3,18 +3,11 @@ package de.dedede.model.persistence.util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Semaphore;
 
-import com.sun.faces.config.ConfigurationException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-
-// TODO: Adjust the exceptions so that they accept other exceptions - would really help with testing...
 
 /**
  * This pool manages the creation and distribution of connection-objects.
@@ -27,11 +20,13 @@ import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 public class ConnectionPool {
 
 	private static ConnectionPool INSTANCE = null;
-	private static Queue<Connection> queue = null;
-	private static List<Connection> backupList = null;
+	private static final Queue<Connection> queue = new ConcurrentLinkedQueue<>();
+	private static final Collection<Connection> backupList = new ConcurrentLinkedQueue<>();
+	private static volatile boolean isShutDown = true;
+	private static final Semaphore lifecycleSemaphore = new Semaphore(2, true);
 
 	private static final String DB_CAPACITY_KEY = "DB_CAPACITY";
-	private static final int DEFAULT_DB_CAPACITY = 10;
+	private static final int DEFAULT_DB_CAPACITY = 5;
 	private static final String DB_DRIVER_KEY = "DB_DRIVER";
 	private static final String DB_HOST_KEY = "DB_HOST";
 	private static final String DB_NAME_KEY = "DB_NAME";
@@ -48,26 +43,32 @@ public class ConnectionPool {
 	 * If this fails, an exception is thrown. The pool must be
 	 * initialized in order to be used.
 	 *
-	 * @throws LostConnectionException	is thrown when an error occurs when creating
+	 * @throws SQLException				is thrown when an error occurs when creating
 	 * 									the connections
-	 * @throws ConfigurationException	is thrown when a necessary configuration, like the driver,
+	 * @throws ClassNotFoundException	is thrown when a necessary configuration, like the driver,
 	 * 									could not be located
 	 */
-	public static void setUpConnectionPool() throws LostConnectionException, ConfigurationException {
-		queue = new ConcurrentLinkedQueue<>();
-		backupList = new LinkedList<>();
+	public static void setUpConnectionPool() throws ClassNotFoundException, SQLException {
+		lifecycleSemaphore.acquireUninterruptibly(2);
+		if (!isShutDown){
+			lifecycleSemaphore.release(2);
+			throw new IllegalStateException();
+		}
 		int maxConnections = readDBCapacity();
 		try {
 			populateQueue(maxConnections);
+			isShutDown = false;
+			Logger.detailed("Connection pool initialized successfully");
 		} catch (ClassNotFoundException e){
 			Logger.severe("Couldn't locate the driver");
-			throw new ConfigurationException("Couldn't locate the driver");
+			throw e;
 		} catch (SQLException e){
 			Logger.severe("Connection pool couldn't be initialized");
 			destroyConnectionPool();
-			throw new LostConnectionException("Connection pool couldn't be initialized");
+			throw e;
+		} finally {
+			lifecycleSemaphore.release(2);
 		}
-		Logger.detailed("Connection pool successfully initialized");
 	}
 
 	/**
@@ -77,10 +78,15 @@ public class ConnectionPool {
 	 *
 	 */
 	public static void destroyConnectionPool() {
+		lifecycleSemaphore.acquireUninterruptibly(2);
+		isShutDown = true;
 		Logger.detailed("Closing connection pool...");
 		for (Connection conn : backupList){
-			try { conn.close(); } catch (SQLException ignore) { }
+			attemptToCloseConnection(conn);
 		}
+		queue.clear();
+		backupList.clear();
+		lifecycleSemaphore.release(2);
 	}
 
 	private static int readDBCapacity(){
@@ -134,7 +140,13 @@ public class ConnectionPool {
 	 * @throws MaxConnectionsException Is thrown if no connection is available.
 	 */
 	public Connection fetchConnection() throws MaxConnectionsException {
+		lifecycleSemaphore.acquireUninterruptibly(1);
+		if (isShutDown){
+			lifecycleSemaphore.release(1);
+			throw new IllegalStateException("Pool is shut down");
+		}
 		Connection result = queue.poll();
+		lifecycleSemaphore.release(1);
 		if (result == null){
 			throw new MaxConnectionsException("No connections available");
 		} else {
@@ -149,15 +161,30 @@ public class ConnectionPool {
 	 * @param conn The connection to be returned.
 	 */
 	public void releaseConnection(Connection conn) {
+		lifecycleSemaphore.acquireUninterruptibly(1);
+		if (isShutDown){ return; }
 		try {
-			if (!conn.getAutoCommit()){
-				conn.rollback();
-			}
+			if (!conn.getAutoCommit()){ conn.rollback(); }
 			queue.offer(conn);
 		} catch (SQLException e){
 			Logger.severe("A connection appears to be damaged...");
 			backupList.remove(conn);
-			try { conn.close(); } catch (SQLException ignored){}
+			attemptToCloseConnection(conn);
+			try {
+				populateQueue(1);
+			} catch (ClassNotFoundException | SQLException e2){
+				Logger.detailed("A broken connection couldn't be replaced");
+			}
+		} finally {
+			lifecycleSemaphore.release(1);
+		}
+	}
+
+	private static void attemptToCloseConnection(Connection conn){
+		try {
+			conn.close();
+		} catch (SQLException e){
+			Logger.detailed("A broken connection couldn't be closed...");
 		}
 	}
 
