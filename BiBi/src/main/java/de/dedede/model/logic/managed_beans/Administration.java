@@ -1,7 +1,7 @@
 package de.dedede.model.logic.managed_beans;
 
-import java.io.Serial;
 import java.io.Serializable;
+import java.io.Serial;
 
 import de.dedede.model.data.dtos.ApplicationDto;
 import jakarta.annotation.PostConstruct;

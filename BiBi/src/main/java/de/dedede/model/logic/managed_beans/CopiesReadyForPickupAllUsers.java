@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.Serial;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CopyDto;
@@ -18,6 +19,7 @@ import jakarta.inject.Named;
 @RequestScoped
 public class CopiesReadyForPickupAllUsers extends PaginatedList {
 
+	@Serial
 	private List<CopyDto> copies;
 
 	@PostConstruct

@@ -4,7 +4,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import de.dedede.model.data.dtos.AttributeDto;
 import jakarta.enterprise.context.SessionScoped;
@@ -18,7 +17,7 @@ import jakarta.inject.Named;
 public class MediumSchemaEditor implements Serializable {
 
 	@Serial
-	private static  final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private final Map<Integer, AttributeDto> attributes = new HashMap<Integer, AttributeDto>();
 

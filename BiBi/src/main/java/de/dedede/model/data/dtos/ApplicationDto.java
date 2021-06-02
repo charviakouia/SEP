@@ -15,6 +15,8 @@ import de.dedede.model.logic.util.SystemRegistrationStatus;
  */
 public class ApplicationDto {
 
+    private long id;
+
     private String name;
 
     private String siteNotice;
@@ -27,8 +29,6 @@ public class ApplicationDto {
 
     private String emailAddressSuffixRegEx;
 
-    private Theme theme;
-
     private String lendingStatus;
 
     private Duration warningPeriod;
@@ -38,6 +38,18 @@ public class ApplicationDto {
     private Duration pickupPeriod;
 
 	private SystemRegistrationStatus systemRegistrationStatus;
+
+	private String lookAndFeel;
+
+    private String anonRights;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     /**
      * Fetches the name of the application.
@@ -151,26 +163,6 @@ public class ApplicationDto {
     }
 
     /**
-     * Fetches the visual design theme of the application.
-     *
-     * @return the visual design theme
-     * @see Theme
-     */
-    public Theme getTheme() {
-        return theme;
-    }
-
-    /**
-     * Sets the visual theme for the application from a enumeration of available themes.
-     *
-     * @param theme the visual design theme
-     * @see Theme
-     */
-    public void setTheme(Theme theme) {
-        this.theme = theme;
-    }
-
-    /**
      * Fetches the global lending status in the application.
      * The status indicates whether users are allowed to lend copies of the medium.
      *
@@ -265,7 +257,7 @@ public class ApplicationDto {
      * @return The register status of the applicationю
      * @see SystemRegistrationStatus
      */
-    public SystemRegistrationStatus getRegisterStatus() {
+    public SystemRegistrationStatus getSystemRegistrationStatus() {
         return systemRegistrationStatus;
     }
 
@@ -277,7 +269,24 @@ public class ApplicationDto {
      * @param  systemRegistrationStatus register status of the application.
      * @see SystemRegistrationStatus
      */
-	public void setRegisterStatus(SystemRegistrationStatus systemRegistrationStatus) {
+	public void setSystemRegistrationStatus(SystemRegistrationStatus systemRegistrationStatus) {
 		this.systemRegistrationStatus = systemRegistrationStatus;
 	}
+
+    public String getLookAndFeel() {
+        return lookAndFeel;
+    }
+
+    public void setLookAndFeel(String lookAndFeel) {
+        this.lookAndFeel = lookAndFeel;
+    }
+
+    public String getAnonRights() {
+        return anonRights;
+    }
+
+    public void setAnonRights(String anonRights) {
+        this.anonRights = anonRights;
+    }
+
 }

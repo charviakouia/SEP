@@ -18,7 +18,7 @@ import jakarta.inject.Named;
 @RequestScoped
 public class Error implements Serializable {
 
-    @Serial
+	@Serial
     private static  final long serialVersionUID = 1L;
 
 	private ErrorDto errorDto;

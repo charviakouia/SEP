@@ -1,6 +1,7 @@
 package de.dedede.model.logic.exceptions;
 
 import de.dedede.model.data.dtos.UserDto;
+import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExceptionHandlerWrapper;
 
 /**
