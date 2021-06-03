@@ -39,6 +39,7 @@ public final class MediumDao {
 	 */
 	public static void createMedium(MediumDto mediumDto) 
 			throws EntityInstanceNotUniqueException {
+		//TODO: MS2 von Ivan
 	}
 	
 	/**
@@ -53,6 +54,7 @@ public final class MediumDao {
 	 */
 	public static MediumDto readMedium(MediumDto mediumDto) 
 			throws EntityInstanceDoesNotExistException {
+		//TODO: MS1 von Sergej
 		return null;
 	}
 	
@@ -68,6 +70,7 @@ public final class MediumDao {
 	 * @see MediumDto
 	 */
 	public static List<MediumDto> readMediaBySearchCriteria(PaginationDto paginationDetails) {
+		//TODO: MS2 von León
 		return null;
 	}
 	
@@ -83,6 +86,7 @@ public final class MediumDao {
 	 */
 	public static void updateMedium(MediumDto mediumDto) 
 			throws EntityInstanceDoesNotExistException {
+		//TODO: MS2 von Sergej
 	}
 	
 	/**
@@ -98,6 +102,7 @@ public final class MediumDao {
 	 */
 	public static MediumDto deleteMedium(MediumDto mediumDto) 
 			throws EntityInstanceDoesNotExistException {
+		//TODO: MS2 von Sergej
 		return null;
 	}
 	
@@ -113,6 +118,7 @@ public final class MediumDao {
 	 */
 	public static void createCopy(CopyDto copyDto) 
 			throws EntityInstanceNotUniqueException {
+		//TODO: MS1 von Sergej
 	}
 	
 	/**
@@ -142,20 +148,23 @@ public final class MediumDao {
 	 * @see CopyDto
 	 */
 	public static List<CopyDto> readAllOverdueCopies(PaginationDto paginationDetails) {
+		//TODO: MS3 von Ivan
 		return null;
 	}
 	
 	public static List<CopyDto> readMarkedCopiesByUser(PaginationDto paginationDetails){
+		//TODO: MS3 von Sergej
 		return null;
 		
 	}
 	
 	public static List<CopyDto> readLentCopiesByUser(PaginationDto paginationDetails){
+		//TODO: MS3 von Sergej
 		return null;
 		
 	}
-	
-	/**
+
+	/*	/**
 	 * Fetches a paginated list of all medium-copies belonging to a specific medium from the
 	 * persistent data store.
 	 *
@@ -165,10 +174,16 @@ public final class MediumDao {
 	 * @return A list of DTO containers with the medium-copy data for the given medium-ID.
 	 * @see CopyDto
 	 */
-	public static List<CopyDto> readAllCopiesFromMedium(MediumDto mediumDto, 
+	/*
+	public static List<CopyDto> readAllCopiesFromMedium(MediumDto mediumDto,
 			PaginationDto paginationDetails) {
+
+			// Wir wollen doch keine paginierte Liste von Exemplaren haben!
+			// -> Diese Methode ist unnötig.
+
 		return null;
 	}
+ */
 
 	/**
 	 * Overwrites existing medium-copy data in the persistent data store. The
@@ -182,6 +197,7 @@ public final class MediumDao {
 	 */
 	public static void updateCopy(CopyDto copyDto) 
 			throws EntityInstanceDoesNotExistException {
+		//TODO: MS2 von Sergej
 	}
 	
 	/**
@@ -197,6 +213,7 @@ public final class MediumDao {
 	 * @see CopyDto
 	 */
 	public static CopyDto deleteCopy(CopyDto copyDto) {
+		//TODO: MS2 von Sergej
 		return null;
 	}
 
@@ -213,6 +230,7 @@ public final class MediumDao {
 	 */
 	public static void lendCopy(CopyDto copyDto, UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
+		//TODO: MS2 von Jonas
 	}
 
 	/**
@@ -228,27 +246,33 @@ public final class MediumDao {
 	 */
 	public static void returnCopy(CopyDto copyDto, UserDto userDto) 
 			throws EntityInstanceDoesNotExistException {
+		//TODO: MS3 von Jonas
 	}
 	
 	public static void updateGlobalAttributes(Collection<AttributeDto> attributes) {
+		//TODO: MS2 von Jonas
 	}
 	
 	public static void readGlobalAttributes() {
+		//TODO: MS2 von Ivan
 	}
 	
 	public static void updateMediumAttributes(MediumDto mediumDto, 
 			Collection<AttributeDto> attributes) {
+		//TODO: MS2 von Sergej
 	}
 	
 	public static List<CopyMediumUser> readGlobalPickupList(MediumSearchDto search) {
+		//TODO: MS1 von León
 		return null;
 	}
 	
 	public static void updateMarkedCopies() {
+		//TODO: MS3 von Jonas
 	}
 	
 	public static List<CopyMediumUser> readDueDateReminders(){
+		//TODO: MS3 von Jonas
 		return null;
 	}
-
 }
