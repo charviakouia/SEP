@@ -36,6 +36,7 @@ public class ConnectionPool {
 	private static final String DB_USER_KEY = "DB_USER";
 	private static final String DB_PASSWORD_KEY = "DB_PASSWORD";
 	private static final String DB_SSL_FACTORY_KEY = "DB_SSL_FACTORY";
+	private static final String DB_SSL_KEY = "DB_SSL";
 
 	private ConnectionPool() {}
 
@@ -109,11 +110,16 @@ public class ConnectionPool {
 		Properties connProps = new Properties();
 		connProps.setProperty("user", props.getProperty(DB_USER_KEY));
 		connProps.setProperty("password", props.getProperty(DB_PASSWORD_KEY));
-		connProps.setProperty("ssl", "true");
-		connProps.setProperty("sslfactory", props.getProperty(DB_SSL_FACTORY_KEY));
+		String sslEnabled = props.getProperty(DB_SSL_KEY);
+		if (sslEnabled.toLowerCase(Locale.ROOT).equals("true")){
+			connProps.setProperty("ssl", "true");
+			connProps.setProperty("sslfactory", props.getProperty(DB_SSL_FACTORY_KEY));
+		} else {
+			connProps.setProperty("ssl", "false");
+		}
 		Class.forName(props.getProperty(DB_DRIVER_KEY));
-		String url = String.format(props.getProperty(DB_URL_KEY), props.getProperty(DB_HOST_KEY),
-				props.getProperty(DB_PORT_KEY), props.getProperty(DB_NAME_KEY));
+		String url = props.getProperty(DB_URL_KEY) + props.getProperty(DB_HOST_KEY) + ":" +
+				props.getProperty(DB_PORT_KEY) + "/" + props.getProperty(DB_NAME_KEY);
 		for (int i = 0; i < numConnections; i++){
 			Connection conn = DriverManager.getConnection(url, connProps);
 			queue.offer(conn);
