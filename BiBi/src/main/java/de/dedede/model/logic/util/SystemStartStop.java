@@ -39,7 +39,7 @@ public class SystemStartStop implements SystemEventListener {
 			}
 			} catch (Exception e) {
 				System.out.println("Initialization process on system startup failed");
-				//throw new AbortProcessingException();
+				throw new AbortProcessingException();
 			}
 	}
 
@@ -56,9 +56,9 @@ public class SystemStartStop implements SystemEventListener {
 		}
 		
 		if (EmailUtility.initializeConnection()) {
-			System.out.println("Connected to the Mailserver successfully.");
+			System.out.println("Connected to the Mailserver successfully.");//log?
 		} else {
-			System.out.println("Failed to connect to the Mail Server.");
+			System.out.println("Failed to connect to the Mail Server.");//log?
 		}
 		
 		DataLayerInitializer.execute();
@@ -67,7 +67,7 @@ public class SystemStartStop implements SystemEventListener {
 	}
 	
 	private void shutdownApplication() {
-	
+		DataLayerInitializer.shutdownDataLayer();
 	}
 	
 	/**

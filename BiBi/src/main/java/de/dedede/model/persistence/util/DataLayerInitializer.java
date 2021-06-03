@@ -40,7 +40,6 @@ public class DataLayerInitializer {
 	 * 
 	 * @throws LostConnectionException Is thrown if a connection could
 	 * 		not be established to the data store to perform the initialization.
-	 * @throws InvalidSchemaException
 	 * @see ConnectionPool
 	 * @see MaintenanceProcess
 	 */
@@ -64,6 +63,11 @@ public class DataLayerInitializer {
 		}
 		
 		setUpMaintenanceProcess();			
+	}
+	
+	public static void shutdownDataLayer() {
+		MaintenanceProcess.shutdown();
+		ConnectionPool.destroyConnectionPool();
 	}
 	
 	private static class CloseConnectionThread extends Thread {
@@ -105,16 +109,18 @@ public class DataLayerInitializer {
             System.out.println("Testing Database Connection");
             String port = "";
             if (!config.getProperty(DB_PORT).equals("") || !(config.getProperty(DB_PORT) == null)) {
-            	port = ":" + config.getProperty(DB_PORT)
+            	port = ":" + config.getProperty(DB_PORT);
             }
             connection = DriverManager.getConnection(config.getProperty(DB_URL)
-                + config.getProperty(DB_HOST) + ":" + config.getProperty(DB_PORT) + "/" + config.getProperty(DB_NAME), connectionProperties);
+                + config.getProperty(DB_HOST) + port + "/" + config.getProperty(DB_NAME), connectionProperties);
         }
         catch(SQLException e) {
+        	Logger.severe("Getting Connection from driver failed on database initialization.");
             System.out.println("Failed to initialize database connection");
             throw e;
         } 
 		if (connection != null) {
+			Logger.development("Successful initial connection with database established.");
 			System.out.println("Database connection was established successfully.");
 			CloseConnectionThread thread = new CloseConnectionThread(connection);
 			Runtime.getRuntime().addShutdownHook(thread);
@@ -124,12 +130,15 @@ public class DataLayerInitializer {
 				for (String str : tableNames) {
 					resultSet.getString(str);
 				}
+				Logger.detailed("All required tables are present. Database is ready for use.");
 				System.out.println("All required tables are present. Database is ready for use.");
 			} catch (SQLException e) {
+				Logger.severe("Not all or none of the required tables are present in the database.");
 				System.out.println("Not all or none of the required tables are present in the database.");
 				try {
 					consoleDialogue(connection);
 				} catch (IOException io) {
+					Logger.severe("Unable to read console Input");
 					System.out.println("Unable to read console Input");
 				}
 			}
@@ -176,6 +185,7 @@ public class DataLayerInitializer {
 		        switch (fc) {
 		        case 'y':
 		        	try {
+		        	Logger.detailed("'Y' was selected, attempting fresh database initialization.");
 		        	connection.setAutoCommit(false);
 		        	PreparedStatement dropTables = connection.prepareStatement(
 		        			"DROP TABLE IF EXISTS Users, Application, Medium, "
@@ -189,6 +199,7 @@ public class DataLayerInitializer {
 		        	sampleEntries();																//	REMOVE IN PROD.!				
 		        	System.out.println("The database was populated with sample entries!");			//  REMOVE IN PROD.!
 		        	} catch (SQLException sql) {
+		        		Logger.severe("SQL Error while dropping/creating tables on DB initialization.");
 		        		System.out.println("SQL Error while dropping/creating tables on DB initialization.");
 		        		scanner.close();
 		        		throw sql;
@@ -196,6 +207,7 @@ public class DataLayerInitializer {
 		        	end = true;
 		        	break;
 		        case 'n': 
+		        	Logger.detailed("'N' was selected, proceeding system start with potentially damaged/incomplete tables.");
 		        	end = true;
 		        	break;
 		        default:
@@ -211,7 +223,7 @@ public class DataLayerInitializer {
 	}
 	
 	private static void sampleEntries() {
-		
+		String s1 = "";
 		
 	}
 	
@@ -242,7 +254,7 @@ public class DataLayerInitializer {
 				+ "	'READY_FOR_PICKUP',"
 				+ "	'AVAILABLE'"
 				+ ");";
-		String s7 = "CREATE TYPE AttributeType AS ENUM ("
+		String s7 = "CREATE TYPE AttributeDataType AS ENUM ("
 				+ "	'TEXT',"
 				+ "	'IMAGE',"
 				+ "	'LINK'"
@@ -316,7 +328,7 @@ public class DataLayerInitializer {
 				+ ");";
 		String s15 = "CREATE TABLE CustomAttribute ("
 				+ "	attributeID SERIAL,"
-				+ "	mediumID INTEGER NOT NULL,"
+				+ "	mediumID INTEGER NOT NULL UNIQUE,"
 				+ "	attributeName VARCHAR(40) NOT NULL,"
 				+ "	attributeValue BYTEA,"
 				+ "	PRIMARY KEY(mediumID, attributeID),"
@@ -324,17 +336,18 @@ public class DataLayerInitializer {
 				+ ");";
 		String s16 = "CREATE TABLE AttributeType ("
 				+ "	typeID SERIAL,"
-				+ "	attributeID INTEGER NOT NULL,"
-				+ "	previewPosition ATTRIBUTEPREVIEWPOSITION NOT NULL DEFAULT 'HIDDEN',"
+				+ "	attributeID INTEGER NOT NULL UNIQUE,"
+				+ " mediumID INTEGER NOT NULL UNIQUE,"
+				+ "	previewPosition MEDIUMPREVIEWPOSITION NOT NULL DEFAULT 'HIDDEN',"
 				+ "	multiplicity ATTRIBUTEMULTIPLICITY NOT NULL DEFAULT 'SINGLE_VALUED',"
 				+ "	modifiability ATTRIBUTEMODIFIABILITY NOT NULL DEFAULT 'MODIFIABLE',"
-				+ "	dataType ATTRIBUTEDATATYPE NOT NULL DEFAULT 'TEXT',"
-				+ "	PRIMARY KEY(attributeID, typeID),"
-				+ "	CONSTRAINT fk_CustomAttribute FOREIGN KEY(attributeID) REFERENCES CustomAttribute(attributeID) ON DELETE CASCADE"
+				+ "	attributeDataType ATTRIBUTEDATATYPE NOT NULL DEFAULT 'TEXT',"
+				+ "	PRIMARY KEY(mediumID, attributeID, typeID),"
+				+ "	CONSTRAINT fk_CustomAttribute FOREIGN KEY(attributeID, mediumID) REFERENCES CustomAttribute(attributeID, mediumID) ON DELETE CASCADE"
 				+ ");";
-		String s17 = "CREATE TABLE Copy ("
+		String s17 = "CREATE TABLE MediumCopy ("
 				+ "	copyID SERIAL,"
-				+ "	mediumID INTEGER NOT NULL,"
+				+ "	mediumID INTEGER NOT NULL UNIQUE,"
 				+ "	signature VARCHAR(100) UNIQUE,"
 				+ "	bibPosition VARCHAR(100),"
 				+ "	status COPYSTATUS NOT NULL DEFAULT 'AVAILABLE',"
@@ -342,37 +355,37 @@ public class DataLayerInitializer {
 				+ "	actor INTEGER,"
 				+ "	PRIMARY KEY(mediumID, copyID),"
 				+ "	CONSTRAINT fk_Medium FOREIGN KEY(mediumID) REFERENCES Medium(mediumID) ON DELETE CASCADE,"
-				+ "	CONSTRAINT fk_User FOREIGN KEY(actor) REFERENCES User(userID) ON DELETE RESTRICT,"
-				+ "	CONSTRAINT positive_deadline CHECK ((deadline IS NULL) OR (deadline > NOW()),"
-				+ "	CONSTRAINT CHECK (status != 'AVAILABLE' OR actor IS NULL)"
+				+ "	CONSTRAINT fk_User FOREIGN KEY(actor) REFERENCES Users(userID) ON DELETE RESTRICT,"
+				+ "	CONSTRAINT positive_deadline CHECK ((deadline IS NULL) OR (deadline >= CURRENT_TIMESTAMP),"
+				+ "	CONSTRAINT no_actor_available CHECK ((status != 'AVAILABLE'::COPYSTATUS) OR (actor IS NULL))"
 				+ ");";
-		String s18 = "CREATE FUNCTION check_status_validity() RETURNS TRIGGER AS"
-				+ "$$"
+		String s18 = "CREATE OR REPLACE FUNCTION check_status_validity() RETURNS TRIGGER AS"
+				+ "$BODY$"
 				+ "	BEGIN"
-				+ "		IF (OLD.status == 'BORROWED') AND (NEW.status == 'READY_FOR_PICKUP') THEN"
-				+ "		RAISE EXCEPTION 'Cannot mark a lent copy';"
-				+ "		ELSE IF (OLD.status == 'BORROWED') AND (NEW.status == 'BORROWED') THEN"
-				+ "		RAISE EXCEPTION 'Copy is already lent';"
-				+ "		ELSE IF (OLD.status == 'READY_FOR_PICKUP') AND (NEW.status == 'READY_FOR_PICKUP') THEN"
-				+ "		RAISE EXCEPTION 'Copy is already marked';"
-				+ "		ELSE IF (NEW.status == 'AVAILABLE') AND (NEW.actor IS NOT NULL) THEN"
-				+ "		RAISE EXCEPTION 'An available copys actor must be NULL';"
-				+ "		ELSE IF NOT ((OLD.status == 'READY_FOR_PICKUP' AND NEW.status == 'BORROWED') AND (OLD.actor == NEW.actor)) THEN"
-				+ "		RAISE EXCEPTION 'A marked copy can only be lent by the marking user!';"
-				+ "		ELSE IF NOT (	   ((OLD.status == 'AVAILABLE') AND (NEW.status == 'BORROWED'))"
-				+ "						OR ((OLD.status == 'READY_FOR_PICKUP') AND (NEW.status == 'AVAILABLE'))"
-				+ "						OR ((OLD.status == 'AVAILABLE') AND (NEW.status == 'AVAILABLE'))"
+				+ "		IF (OLD.status = 'BORROWED'::COPYSTATUS) AND (NEW.status = 'READY_FOR_PICKUP'::COPYSTATUS) THEN"
+				+ "		RAISE EXCEPTION 'Cannot mark a lent copy' ;"
+				+ "		ELSEIF (OLD.status = 'BORROWED'::COPYSTATUS) AND (NEW.status = 'BORROWED'::COPYSTATUS) THEN"
+				+ "		RAISE EXCEPTION 'Copy is already lent' ;"
+				+ "		ELSEIF (OLD.status = 'READY_FOR_PICKUP'::COPYSTATUS) AND (NEW.status = 'READY_FOR_PICKUP'::COPYSTATUS) THEN"
+				+ "		RAISE EXCEPTION 'Copy is already marked' ;"
+				+ "		ELSEIF (NEW.status = 'AVAILABLE'::COPYSTATUS) AND (NEW.actor IS NOT NULL) THEN"
+				+ "		RAISE EXCEPTION 'An available copys actor must be NULL' ;"
+				+ "		ELSEIF NOT ((OLD.status = 'READY_FOR_PICKUP'::COPYSTATUS AND NEW.status = 'BORROWED'::COPYSTATUS) AND (OLD.actor = NEW.actor)) THEN"
+				+ "		RAISE EXCEPTION 'A marked copy can only be lent by the marking user!' ;"
+				+ "		ELSEIF NOT (	   ((OLD.status = 'AVAILABLE'::COPYSTATUS) AND (NEW.status = 'BORROWED'::COPYSTATUS))"
+				+ "						OR ((OLD.status = 'READY_FOR_PICKUP'::COPYSTATUS) AND (NEW.status = 'AVAILABLE'::COPYSTATUS))"
+				+ "						OR ((OLD.status = 'AVAILABLE'::COPYSTATUS) AND (NEW.status = 'AVAILABLE'::COPYSTATUS))"
 				+ "					) THEN"
-				+ "		RAISE EXCEPTION 'Invalid operation';"
-				+ "		RETURN NEW;"
-				+ "	END IF;"
-				+ "	END;"
-				+ "$$"
+				+ "		RAISE EXCEPTION 'Invalid operation' ;"
+				+ "		RETURN NEW ;"
+				+ "	END IF ;"
+				+ "	END"
+				+ "$BODY$"
 				+ "LANGUAGE plpgsql;";
-		String s19 = "CREATE TRIGGER"
-				+ "	BEFORE UPDATE OF status ON Copy"
+		String s19 = "CREATE TRIGGER on_status_update"
+				+ "	BEFORE UPDATE OF status ON MediumCopy"
 				+ "	FOR EACH ROW"
-				+ "	EXECUTE PROCEDURE check_validity();";
+				+ "	EXECUTE PROCEDURE check_status_validity();";
 		
 		PreparedStatement createCustomTypes = connection.prepareStatement(s1);
 		createCustomTypes.addBatch(s2);
