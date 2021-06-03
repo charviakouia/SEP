@@ -12,7 +12,7 @@ import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
  * CRUD operations (create, read, update, delete).
  * 
  * See the {@link UserDto} class for the used DTO.
- *
+ * 
  */
 public final class UserDao {
 

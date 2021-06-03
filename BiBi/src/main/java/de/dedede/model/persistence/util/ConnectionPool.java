@@ -135,8 +135,10 @@ public class ConnectionPool {
 
 	/**
 	 * Issues a connection to the caller. If a no connection is available
-	 * due to the limitation on their total quantity, an exception is thrown.
-	 * 
+	 * because of the limitation on their total quantity, an exception is thrown.
+	 *
+	 * @param timeout The number of milliseconds to wait for a connection to
+	 *                become available
 	 * @return A connection for executing queries on the app's data store.
 	 * @throws MaxConnectionsException Is thrown if no connection is available.
 	 */

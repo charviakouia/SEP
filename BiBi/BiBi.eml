@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component jdk="JavaSE-1.7" jdk_type="JavaSDK">
-	<contentEntry url="file://$MODULE_DIR$"/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/src/test"/>
+	</contentEntry>
 	<lib name="jakarta.faces-3.0.0.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/jakarta.faces-3.0.0.jar!/"/>
 	</lib>
