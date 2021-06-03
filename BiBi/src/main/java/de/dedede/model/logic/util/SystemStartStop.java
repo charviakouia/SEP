@@ -14,34 +14,33 @@ import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 
-import java.util.EventListener;
-
 /**
  *  Conducts and relays necessary actions before the system is shutdown or after it was started. Is registered in the faces-config.xml.
  */
 @ApplicationScoped
 public class SystemStartStop implements SystemEventListener {
-		
+	
 	@PostConstruct
 	public void init() {
-		System.out.println("System is starting...");
+		System.out.println("Starting system...");
 	}
 	
    /** {@inheritDoc}
    */
 	@Override
 	public void processEvent(SystemEvent systemEvent) throws AbortProcessingException {
-		
-		if (systemEvent instanceof PostConstructApplicationEvent) {
-			try {
+		try {
+				
+			if (systemEvent instanceof PostConstructApplicationEvent) {
 				initializeApplication();
+			
+			} else if (systemEvent instanceof PreDestroyApplicationEvent) {
+				shutdownApplication();
+			}
 			} catch (Exception e) {
 				System.out.println("Initialization process on system startup failed");
-				throw new AbortProcessingException();
+				//throw new AbortProcessingException();
 			}
-		} else if (systemEvent instanceof PreDestroyApplicationEvent) {
-			shutdownApplication();
-		}
 	}
 
 	
@@ -49,7 +48,7 @@ public class SystemStartStop implements SystemEventListener {
 	private void initializeApplication() throws InvalidSchemaException, LostConnectionException {
 		ConfigReader config = ConfigReader.getInstance();
 		config.getSystemConfigurations(); //Tests the config-reading process
-		
+		System.out.println("ConfigReader initialized");
 		if (Logger.logSetup()) {
 			System.out.println("The log-File was newly created.");
 		} else {

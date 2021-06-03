@@ -21,8 +21,8 @@ import jakarta.inject.Named;
 @RequestScoped
 public class Login {
 
-	@Inject
-	private FacesContext facesContext;
+	//@Inject
+	//private FacesContext facesContext;
 
 	@Inject
 	private UserSession userSession;

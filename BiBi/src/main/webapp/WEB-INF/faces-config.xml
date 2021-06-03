@@ -18,7 +18,7 @@
 		
 		<system-event-listener>
             <system-event-listener-class>de.dedede.model.logic.util.SystemStartStop</system-event-listener-class>
-            <system-event-class>javax.faces.event.PostConstructApplicationEvent</system-event-class>
+            <system-event-class>jakarta.faces.event.PostConstructApplicationEvent</system-event-class>
         </system-event-listener>
         
 	</application>

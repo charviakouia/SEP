@@ -49,31 +49,49 @@ public class DataLayerInitializer {
 		try {
 			setUpConnectionPool();
 		} catch (ClassNotFoundException cnfe) {
-			throw new LostConnectionException("Database driver encountered a problem during system startup.");
+			Logger.severe("Database JDBC driver was not found during ConnectionPool initialization.");
+			throw new LostConnectionException("Database driver encountered a problem during system start.");
 		} catch (SQLException sqle) {
+			Logger.severe("SQLException occured during database communication while initializing ConnectionPool.");
 			throw new LostConnectionException("A problem occured while trying to connect to the database during system startup.");
 		}
 		
 		try {
 			setUpDatabase();
 		} catch (SQLException sqle) {
+			Logger.severe("SQLException occured during database initialization");
 			throw new LostConnectionException("A problem occured while communicating with the database during system startup.");
 		}
 		
 		setUpMaintenanceProcess();			
 	}
 	
-	
-	
+	private static class CloseConnectionThread extends Thread {
+		
+		private Connection connection;
+		
+		public CloseConnectionThread(Connection connection) {
+			this.connection=connection;
+		}
+		@Override
+		public void run() {
+		try {
+			connection.close();
+		} catch (SQLException ignored) {System.out.println("Shutdownhook fail");}}
+		
+	}
+		
 	private static void setUpDatabase() throws SQLException {
 		Properties config = ConfigReader.getInstance().getSystemConfigurations();
 		Properties connectionProperties = new Properties();
 		Connection connection = null;
 		try {
             System.out.println("Loading JDBC Driver.");
+            Logger.detailed("Loading JDBC Driver.");
             Class.forName(config.getProperty(DB_DRIVER));
         }
         catch(ClassNotFoundException e) { //already thrown in setUpConnectionPool()
+        	Logger.detailed("JDBC Driver not found on database initialization.");
             System.out.println("JDBC Driver not found.");
         }
 		connectionProperties.setProperty("user", config.getProperty(DB_USER));
@@ -85,6 +103,10 @@ public class DataLayerInitializer {
 		}
 		try {
             System.out.println("Testing Database Connection");
+            String port = "";
+            if (!config.getProperty(DB_PORT).equals("") || !(config.getProperty(DB_PORT) == null)) {
+            	port = ":" + config.getProperty(DB_PORT)
+            }
             connection = DriverManager.getConnection(config.getProperty(DB_URL)
                 + config.getProperty(DB_HOST) + ":" + config.getProperty(DB_PORT) + "/" + config.getProperty(DB_NAME), connectionProperties);
         }
@@ -94,6 +116,8 @@ public class DataLayerInitializer {
         } 
 		if (connection != null) {
 			System.out.println("Database connection was established successfully.");
+			CloseConnectionThread thread = new CloseConnectionThread(connection);
+			Runtime.getRuntime().addShutdownHook(thread);
 			DatabaseMetaData metadata = connection.getMetaData();
 			ResultSet resultSet = metadata.getTables(null, null, null, new String[]{"TABLE"});
 			try {
@@ -109,6 +133,7 @@ public class DataLayerInitializer {
 					System.out.println("Unable to read console Input");
 				}
 			}
+			connection.close();
 		} 
 		
 	}

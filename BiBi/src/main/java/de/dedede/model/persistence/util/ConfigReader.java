@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 
 /**
@@ -27,8 +28,7 @@ public class ConfigReader {
 	/**
 	 * Needed as basis for loading config with webapp-relative path.
 	 */
-	@Inject
-	private ExternalContext ext;
+	private ExternalContext ext = FacesContext.getCurrentInstance().getExternalContext();
 	
 	/**
 	 * The path to the config-File starting from the webapp-Folder.
