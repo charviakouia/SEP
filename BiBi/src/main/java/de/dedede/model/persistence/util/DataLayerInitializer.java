@@ -195,8 +195,10 @@ public class DataLayerInitializer {
 		        	connection.commit();
 		        	initializeNewScheme(connection);
 		        	initializeStandartAttributes(connection); //<----- To-Do!
+		        	Logger.development("DB freshly initialized.");
 		        	System.out.println("The database was initialized successfully.");	
-		        	sampleEntries();																//	REMOVE IN PROD.!				
+		        	sampleEntries();																//	REMOVE IN PROD.!
+		        	Logger.development("The database was populated with sample entries!");  		//  REMOVE IN PROD.!
 		        	System.out.println("The database was populated with sample entries!");			//  REMOVE IN PROD.!
 		        	} catch (SQLException sql) {
 		        		Logger.severe("SQL Error while dropping/creating tables on DB initialization.");
@@ -328,7 +330,7 @@ public class DataLayerInitializer {
 				+ ");";
 		String s15 = "CREATE TABLE CustomAttribute ("
 				+ "	attributeID SERIAL,"
-				+ "	mediumID INTEGER NOT NULL UNIQUE,"
+				+ "	mediumID INTEGER NOT NULL,"
 				+ "	attributeName VARCHAR(40) NOT NULL,"
 				+ "	attributeValue BYTEA,"
 				+ "	PRIMARY KEY(mediumID, attributeID),"
@@ -336,8 +338,8 @@ public class DataLayerInitializer {
 				+ ");";
 		String s16 = "CREATE TABLE AttributeType ("
 				+ "	typeID SERIAL,"
-				+ "	attributeID INTEGER NOT NULL UNIQUE,"
-				+ " mediumID INTEGER NOT NULL UNIQUE,"
+				+ "	attributeID INTEGER NOT NULL,"
+				+ " mediumID INTEGER NOT NULL,"
 				+ "	previewPosition MEDIUMPREVIEWPOSITION NOT NULL DEFAULT 'HIDDEN',"
 				+ "	multiplicity ATTRIBUTEMULTIPLICITY NOT NULL DEFAULT 'SINGLE_VALUED',"
 				+ "	modifiability ATTRIBUTEMODIFIABILITY NOT NULL DEFAULT 'MODIFIABLE',"
@@ -399,27 +401,27 @@ public class DataLayerInitializer {
 		createCustomTypes.addBatch(s10);
 		createCustomTypes.executeBatch();
 		connection.commit();
-		
+		Logger.development("Executed first batch (enums) of statements on DB initialization.");
 		PreparedStatement createIndependentTables = connection.prepareStatement(s11);
 		createIndependentTables.addBatch(s12);
 		createIndependentTables.addBatch(s14);
 		createIndependentTables.executeBatch();
 		connection.commit();
-		
+		Logger.development("Executed second batch (tables) of statements on DB initialization.");
 		PreparedStatement createMedium = connection.prepareStatement(s13);
 		createMedium.execute();
 		connection.commit();
-		
+		Logger.development("Executed third batch (dependent tables) of statements on DB initialization.");
 		PreparedStatement createDependentTables = connection.prepareStatement(s15);
 		createDependentTables.addBatch(s17);
 		createDependentTables.executeBatch();
 		connection.commit();
-		
+		Logger.development("Executed fourth batch (further dependent tables and function) of statements on DB initialization.");
 		PreparedStatement createAttributeTypeAndFunction = connection.prepareStatement(s16);
 		createAttributeTypeAndFunction.addBatch(s18);
 		createAttributeTypeAndFunction.executeBatch();
 		connection.commit();
-		
+		Logger.development("Executed last batch (trigger) of statements on DB initialization.");
 		PreparedStatement createTrigger = connection.prepareStatement(s19);
 		createTrigger.execute();
 		connection.commit();
