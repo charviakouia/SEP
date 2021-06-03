@@ -24,6 +24,7 @@ public class ConnectionPool {
 	private static final Collection<Connection> backupList = new ConcurrentLinkedQueue<>();
 	private static volatile boolean isShutDown = true;
 	private static final Semaphore lifecycleSemaphore = new Semaphore(2, true);
+	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
 
 	private static final String DB_CAPACITY_KEY = "DB_CAPACITY";
 	private static final int DEFAULT_DB_CAPACITY = 5;
@@ -43,9 +44,9 @@ public class ConnectionPool {
 	 * If this fails, an exception is thrown. The pool must be
 	 * initialized in order to be used.
 	 *
-	 * @throws SQLException				is thrown when an error occurs when creating
+	 * @throws SQLException				Is thrown when an error occurs when creating
 	 * 									the connections
-	 * @throws ClassNotFoundException	is thrown when a necessary configuration, like the driver,
+	 * @throws ClassNotFoundException	Is thrown when a necessary configuration, like the driver,
 	 * 									could not be located
 	 */
 	public static void setUpConnectionPool() throws ClassNotFoundException, SQLException {
@@ -139,19 +140,31 @@ public class ConnectionPool {
 	 * @return A connection for executing queries on the app's data store.
 	 * @throws MaxConnectionsException Is thrown if no connection is available.
 	 */
-	public Connection fetchConnection() throws MaxConnectionsException {
+	public Connection fetchConnection(long timeout) throws MaxConnectionsException {
 		lifecycleSemaphore.acquireUninterruptibly(1);
 		if (isShutDown){
 			lifecycleSemaphore.release(1);
 			throw new IllegalStateException("Pool is shut down");
 		}
-		Connection result = queue.poll();
+		Connection result = waitForConnection(timeout);
 		lifecycleSemaphore.release(1);
 		if (result == null){
 			throw new MaxConnectionsException("No connections available");
 		} else {
 			return result;
 		}
+	}
+
+	private Connection waitForConnection(long timeout){
+		Connection result = queue.poll();
+		long waitedTime = 0;
+		while (result == null && waitedTime < timeout){
+			try {
+				wait(ACQUIRING_CONNECTION_PERIOD);
+			} catch (InterruptedException ignored){}
+			waitedTime += ACQUIRING_CONNECTION_PERIOD;
+		}
+		return result;
 	}
 
 	/**

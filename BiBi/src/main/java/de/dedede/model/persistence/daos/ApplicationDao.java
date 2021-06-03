@@ -1,6 +1,7 @@
 package de.dedede.model.persistence.daos;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
@@ -22,12 +23,14 @@ import java.time.Duration;
  */
 public final class ApplicationDao {
 
+	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
+
 	private ApplicationDao() {}
 
 	private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
 		Connection conn = null;
 		try {
-			conn = ConnectionPool.getInstance().fetchConnection();
+			conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 		} catch (SQLException e){
@@ -40,12 +43,13 @@ public final class ApplicationDao {
 
 	/**
 	 * Writes new global application data to the persistent data store,
-	 * as represented by an ApplicationDto object. The enclosed ID must not
-	 * be in use. Otherwise, an exception is thrown.
+	 * as represented by an ApplicationDto object.
 	 *
 	 * @param appDTO A DTO container with global application data to be written.
-	 * @throws EntityInstanceNotUniqueException Is thrown if the supplied 
-	 * 		ID is already in use in the data store.
+	 * @throws MaxConnectionsException	Is thrown if no connection was available
+	 * 		to carry out the operation.
+	 * @throws LostConnectionException	Is thrown if the used connection stopped
+	 * 		working correctly before concluding the operation.
 	 * @see ApplicationDto
 	 */
 	public static void createCustomization(ApplicationDto appDTO)
@@ -54,7 +58,7 @@ public final class ApplicationDao {
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
 					"INSERT INTO Application (bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, " +
-							"bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus," +
+							"bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, " +
 							"lookAndFeel, ananRights, userLendStatus) VALUES " +
 							"(?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), CAST(? AS INTERVAL), CAST(? AS INTERVAL)," +
 							"CAST(? AS systemRegistrationStatus), CAST(? AS systemLookAndFeel)," +
@@ -79,10 +83,10 @@ public final class ApplicationDao {
 		} catch (SQLException e){
 			String msg = "Database error occurred while creating application entity";
 			Logger.severe(msg);
-			ConnectionPool.getInstance().releaseConnection(conn);
 			throw new LostConnectionException(msg);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
 		}
-		ConnectionPool.getInstance().releaseConnection(conn);
 	}
 
 	private static void attemptToInsertGeneratedKey(ApplicationDto applicationDto, Statement stmt)
@@ -120,20 +124,64 @@ public final class ApplicationDao {
 	
 	/**
 	 * Fetches global application data from the persistent data store.
-	 * The enclosed ID must be present in the data store. Otherwise, an
-	 * exception is thrown.
+	 * The enclosed ID must be present in the data store. Otherwise, null
+	 * is returned.
 	 *
 	 * @param appDTO A DTO container with the ID of the global application 
 	 * 		data to be read.
-	 * @throws EntityInstanceDoesNotExistException Is thrown if the supplied
-	 * 		ID does not identify a data entry in the data store.
+	 * @throws MaxConnectionsException	Is thrown if no connection was available
+	 * 		to carry out the operation.
+	 * @throws LostConnectionException	Is thrown if the used connection
+	 * 		stopped working correctly before concluding the operation.
 	 * @return A DTO container with global application data identified
-	 * 		by the passed ID.
+	 * 		by the passed ID. If the enclosed ID isn't present in the data
+	 * 		store, null is returned.
 	 * @see ApplicationDto
 	 */
-	public static ApplicationDto readCustomization(ApplicationDto appDTO) 
-			throws EntityInstanceDoesNotExistException {
-		return null;
+	public static ApplicationDto readCustomization(ApplicationDto appDTO)
+			throws LostConnectionException, MaxConnectionsException {
+		Connection conn = getConnection();
+		try {
+			PreparedStatement readStmt = conn.prepareStatement(
+					"SELECT one, bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, bibLogo, " +
+							"globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, " +
+							"lookAndFeel, anonRights, userLendStatus " +
+							"FROM Application " +
+							"WHERE one = ?;"
+			);
+			readStmt.setInt(1, Math.toIntExact(appDTO.getId()));
+			ResultSet resultSet = readStmt.executeQuery();
+			if (resultSet.next()){
+				appDTO.setId(resultSet.getInt(1));
+				appDTO.setName(resultSet.getString(2));
+				appDTO.setEmailAddressSuffixRegEx(resultSet.getString(3));
+				appDTO.setContactInfo(resultSet.getString(4));
+				appDTO.setSiteNotice(resultSet.getString(5));
+				appDTO.setPrivacyPolicy(resultSet.getString(6));
+				appDTO.setLogo(resultSet.getBytes(7));
+				long lendingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(8)).getSeconds());
+				appDTO.setReturnPeriod(Duration.ofSeconds(lendingPeriodSeconds));
+				long markingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(9)).getSeconds());
+				appDTO.setPickupPeriod(Duration.ofSeconds(markingPeriodSeconds));
+				long remindPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(10)).getSeconds());
+				appDTO.setWarningPeriod(Duration.ofSeconds(remindPeriodSeconds));
+				SystemRegistrationStatus status = SystemRegistrationStatus.valueOf(resultSet.getString(11));
+				appDTO.setSystemRegistrationStatus(status);
+				appDTO.setLookAndFeel(resultSet.getString(12));
+				appDTO.setAnonRights(resultSet.getString(13));
+				appDTO.setLendingStatus(resultSet.getString(14));
+				conn.commit();
+				return appDTO;
+			} else {
+				return null;
+			}
+		} catch (SQLException e){
+			String msg = "Database error occurred while reading application entity";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
