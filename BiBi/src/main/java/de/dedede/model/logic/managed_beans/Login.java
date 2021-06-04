@@ -4,7 +4,6 @@ import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
