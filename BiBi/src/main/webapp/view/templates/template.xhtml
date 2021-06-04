@@ -12,12 +12,11 @@
 	<!-- TODO: add a suffix e.g. a dash followed by the name of the system -->
 	<title>#{msg['title.'.concat(page)]}</title>
 
+	<h:outputStylesheet library="css" name="bootstrap-5.0.1.min.css"/>
 	<h:outputStylesheet library="css" name="style.css" />
-
 	<!-- TODO: dynamic stylesheets -->
-	<!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-      crossorigin="anonymous"/-->
+	
+	<h:outputScript library="js" name="bootstrap-5.0.1.bundle.min.js" />
 
 </h:head>
 
@@ -25,7 +24,7 @@
 
 	<ui:include src="header.xhtml" />
 
-	<h:panelGroup layout="block" styleClass="container">
+	<h:panelGroup layout="block" styleClass="container p-4">
 
 		<ui:insert name="content" />
 

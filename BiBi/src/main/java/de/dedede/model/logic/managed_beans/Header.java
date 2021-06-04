@@ -3,6 +3,7 @@ package de.dedede.model.logic.managed_beans;
 import java.util.Base64;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import de.dedede.model.data.dtos.MediumSearchDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -22,7 +23,7 @@ public class Header {
 
 	private ApplicationDto application;
 
-	private MediumSearch mediumSearch;
+	private MediumSearchDto mediumSearch;
 
 	@PostConstruct
 	public void init() {
@@ -40,11 +41,11 @@ public class Header {
 		this.application = application;
 	}
 
-	public MediumSearch getMediumSearch() {
+	public MediumSearchDto getMediumSearch() {
 		return mediumSearch;
 	}
 
-	public void setMediumSearch(MediumSearch mediumSearch) {
+	public void setMediumSearch(MediumSearchDto mediumSearch) {
 		this.mediumSearch = mediumSearch;
 	}
 	

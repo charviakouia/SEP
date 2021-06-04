@@ -1,3 +1,7 @@
+.nav-link.active {
+	text-decoration: underline;
+}
+
 /* <help> author: L.L. */
 
 .header > .menu > .display-help {
@@ -10,12 +14,11 @@
 .header > .menu > .help {
 	/* don't display the help dialog by default */
 	display: none;
-	
-	position: fixed;
 	--width: 70%;
 	width: var(--width);
-	left: calc((100% - var(--width)) / 2);
-	right: calc((100% - var(--width)) / 2);
+	background: lightblue;
+	position: fixed;
+	top: 2em;
 }
 
 /* display the help dialog (.help) when hovering over the help trigger (.display-help) */

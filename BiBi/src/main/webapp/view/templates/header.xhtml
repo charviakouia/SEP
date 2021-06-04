@@ -5,9 +5,10 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi">
 
-	<h:panelGroup layout="block" styleClass="header">
+	<h:panelGroup layout="block"
+		styleClass="header container-fluid p-3 d-flex border-bottom justify-content-center justify-content-lg-between">
 
-		<h:panelGroup layout="block" styleClass="information">
+		<h:panelGroup layout="block" styleClass="information me-5">
 
 			<!-- TASK: replace this mechanism with a separate facelet streaming binary data -->
 			<!-- <h:graphicImage
@@ -15,12 +16,15 @@
 
 			<h:outputText value="#{header_.application.name}" />
 
+			<!--  TEMPORARY -->
+			BIBLIOTHEKSSYSTEM
+
 		</h:panelGroup>
 
-		<h:panelGroup layout="block" styleClass="menu">
+		<h:panelGroup layout="block" styleClass="menu nav">
 
 			<h:graphicImage library="icons" name="question-mark-circle.svg"
-				styleClass="display-help" />
+				styleClass="display-help nav-link" />
 
 			<h:panelGroup layout="block" styleClass="help">
 
@@ -45,40 +49,70 @@
 
 			</h:panelGroup>
 
-			<h:form id="form_log_out" rendered="#{header_.showingLogOut()}">
-				<h:commandButton id="button_log_out" value="#{msg['log_out']}"
-					action="#{header_.logOut()}" />
+			<h:form id="form_log_out" rendered="#{header_.showingLogOut()}"
+				styleClass="nav-item">
+				<h:commandLink id="button_log_out" value="#{msg['log_out']}"
+					action="#{header_.logOut()}" styleClass="nav-link" />
 			</h:form>
-
+ 
 			<h:outputLink value="/BiBi/view/staff/lending.xhtml"
-				rendered="#{header_.showingLending()}">#{msg['lending']}</h:outputLink>
+				rendered="#{header_.showingLending()}"
+				styleClass="nav-link #{page == 'lending' ? 'active' : ''}">
+				#{msg['lending']}
+			</h:outputLink>
 
 			<h:outputLink value="/BiBi/view/staff/return-form.xhtml"
-				rendered="#{header_.showingReturnForm()}">#{msg['return_form']}</h:outputLink>
+				rendered="#{header_.showingReturnForm()}"
+				styleClass="nav-link #{page == 'return_form' ? 'active' : ''}">
+				#{msg['return_form']}
+			</h:outputLink>
 
-			<h:outputLink value="/BiBi/view/staff/copies-ready-for-pickup-all-users.xhtml"
-				rendered="#{header_.showingCopiesReadyForPickupAllUsers()}">#{msg['copies_ready_for_pickup_all_users']}</h:outputLink>
+			<h:outputLink
+				value="/BiBi/view/staff/copies-ready-for-pickup-all-users.xhtml"
+				rendered="#{header_.showingCopiesReadyForPickupAllUsers()}"
+				styleClass="nav-link #{page == 'copies_ready_for_pickup_all_users' ? 'active' : ''}">
+				#{msg['copies_ready_for_pickup_all_users']}
+			</h:outputLink>
 
 			<h:outputLink value="/BiBi/view/staff/medium-creator.xhtml"
-				rendered="#{header_.showingMediumCreator()}">#{msg['medium_creator']}</h:outputLink>
+				rendered="#{header_.showingMediumCreator()}"
+				styleClass="nav-link #{page == 'medium_creator' ? 'active' : ''}">
+				#{msg['medium_creator']}
+			</h:outputLink>
 
-			<h:outputLink value="/BiBi/view/account/profile.xhtml?id=#{userSession.user.id}"
-				rendered="#{header_.showingProfile()}">#{msg['profile']}</h:outputLink>
+			<h:outputLink
+				value="/BiBi/view/account/profile.xhtml?id=#{userSession.user.id}"
+				rendered="#{header_.showingProfile()}"
+				styleClass="nav-link #{page == 'profile' ? 'active' : ''}">
+				#{msg['profile']}
+				</h:outputLink>
 
 			<h:outputLink value="/BiBi/view/admin/administration.xhtml"
-				rendered="#{header_.showingAdministration()}">#{msg['administration']}</h:outputLink>
+				rendered="#{header_.showingAdministration()}"
+				styleClass="nav-link #{page == 'administration' ? 'active' : ''}">
+				#{msg['administration']}
+			</h:outputLink>
 
 			<h:outputLink value="/BiBi/view/public/login.xhtml"
-				rendered="#{header_.showingLogin()}">#{msg['log_in']}</h:outputLink>
+				rendered="#{header_.showingLogin()}"
+				styleClass="nav-link #{page == 'login' ? 'active' : ''}">
+				#{msg['log_in']}
+			</h:outputLink>
 
 			<h:outputLink value="/BiBi/view/public/registration.xhtml"
-				rendered="#{header_.showingRegistration()}">#{msg['register']}</h:outputLink>
+				rendered="#{header_.showingRegistration()}"
+				styleClass="nav-link #{page == 'registration' ? 'active' : ''}">
+				#{msg['register']}
+			</h:outputLink>
 
-			<h:outputLink value="/BiBi/view/public/medium-search.xhtml">#{msg['advanced_search']}</h:outputLink>
+			<h:outputLink value="/BiBi/view/public/medium-search.xhtml"
+				styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}">
+				#{msg['advanced_search']}
+			</h:outputLink>
 
-			<h:form id="form_medium_search" action="#{header_.searchMedium()}">
+			<h:form id="form_medium_search" action="#{header_.searchMedium()}" styleClass="">
 				<h:inputText id="input_medium_search"
-					value="#{header_.mediumSearch.term}" />
+					value="#{header_.mediumSearch.generalSearchTerm}" />
 			</h:form>
 
 		</h:panelGroup>
