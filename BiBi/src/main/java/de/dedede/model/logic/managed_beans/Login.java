@@ -32,11 +32,17 @@ public class Login {
 
     private String email;
 
+<<<<<<< HEAD
     private String password;
 
     @PostConstruct
     public void init() {
 
+=======
+	@PostConstruct
+	public void init() {
+	}
+>>>>>>> master
 
     }
 
@@ -67,6 +73,7 @@ public class Login {
         user.setEmailAddress(email);
         UserDto dbUser = null;
 
+<<<<<<< HEAD
         try {
             dbUser = UserDao.readUserByEmail(user);
 
@@ -80,6 +87,10 @@ public class Login {
         // throw invalid username or password
         return null;
     }
+=======
+		return null;
+	}
+>>>>>>> master
 
     /**
      * Send an email to the user with a reset link inside.
