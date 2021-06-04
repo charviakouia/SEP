@@ -37,10 +37,10 @@ public class SystemStartStop implements SystemEventListener {
 			} else if (systemEvent instanceof PreDestroyApplicationEvent) {
 				shutdownApplication();
 			}
-			} catch (Exception e) {
+		} catch (Exception e) {
 				System.out.println("Initialization process on system startup failed");
 				throw new AbortProcessingException();
-			}
+		}
 	}
 
 	
