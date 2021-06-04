@@ -1,0 +1,106 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- COMPOSITE URI IS TEMPORARY! -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi">
+
+<h:body>
+
+	<ui:composition>
+
+		<h:panelGroup layout="block" styleClass="header">
+
+			<h:panelGroup layout="block" styleClass="information">
+
+				<!-- TASK: replace this mechanism with a separate facelet streaming binary data -->
+				<!--h:graphicImage
+					value="data:image/png;base64,#{header_.applicationBase64Logo}" /-->
+
+				<h:outputText value="#{header_.application.name}" />
+
+			</h:panelGroup>
+
+			<h:panelGroup layout="block" styleClass="menu">
+
+				<h:graphicImage library="icons" name="question-mark-circle.svg"
+					styleClass="display-help" />
+
+				<h:panelGroup layout="block" styleClass="help">
+
+					<h:panelGroup layout="block" styleClass="public">
+						#{msg['help.'.concat(page).concat('.public')]}
+					</h:panelGroup>
+
+					<h:panelGroup layout="block" styleClass="account"
+						rendered="#{header_.showingAccountHelp()}">
+						#{msg['help.'.concat(page).concat('.account')]}
+					</h:panelGroup>
+
+					<h:panelGroup layout="block" styleClass="staff"
+						rendered="#{header_.showingStaffHelp()}">
+						#{msg['help.'.concat(page).concat('.staff')]}
+					</h:panelGroup>
+
+					<h:panelGroup layout="block" styleClass="admin"
+						rendered="#{header_.showingAdminHelp()}">
+						#{msg['help.'.concat(page).concat('.admin')]}
+					</h:panelGroup>
+
+				</h:panelGroup>
+
+				<h:form id="form_log_out" rendered="#{header_.showingLogOut()}">
+					<h:commandButton id="button_log_out" value="#{msg['log_out']}"
+						action="#{header_.logOut()}" />
+				</h:form>
+
+				<h:outputLink value="staff/lending.xhtml"
+					rendered="#{header_.showingLending()}">#{msg['lending']}</h:outputLink>
+
+				<h:outputLink value="staff/return-form.xhtml"
+					rendered="#{header_.showingReturnForm()}">#{msg['return_form']}</h:outputLink>
+
+				<h:outputLink value="staff/copies-ready-for-pickup-all-users.xhtml"
+					rendered="#{header_.showingCopiesReadyForPickupAllUsers()}">#{msg['copies_ready_for_pickup_all_users']}</h:outputLink>
+
+				<h:outputLink value="staff/medium-creator.xhtml"
+					rendered="#{header_.showingMediumCreator()}">#{msg['medium_creator']}</h:outputLink>
+
+				<h:outputLink
+					value="account/profile.xhtml?id=#{userSession.user.id}"
+					rendered="#{header_.showingProfile()}">#{msg['profile']}</h:outputLink>
+
+				<h:outputLink value="admin/administration.xhtml"
+					rendered="#{header_.showingAdministration()}">#{msg['administration']}</h:outputLink>
+
+				<h:outputLink value="public/login.xhtml"
+					rendered="#{header_.showingLogin()}">#{msg['log_in']}</h:outputLink>
+
+				<h:outputLink value="public/registration.xhtml"
+					rendered="#{header_.showingRegistration()}">#{msg['register']}</h:outputLink>
+
+				<h:outputLink value="public/medium-search.xhtml">#{msg['advanced_search']}</h:outputLink>
+
+				<h:form id="form_medium_search" action="#{header_.searchMedium()}">
+					<h:inputText id="input_medium_search"
+						value="#{header_.mediumSearch.term}" />
+				</h:form>
+
+			</h:panelGroup>
+
+		</h:panelGroup>
+
+		<h:messages globalOnly="true" showDetail="false"
+			styleClass="message global" infoClass="info" warningClass="warning"
+			errorClass="error" />
+
+	</ui:composition>
+
+</h:body>
+
+</html>
