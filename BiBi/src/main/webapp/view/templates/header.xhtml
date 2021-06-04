@@ -19,8 +19,8 @@
 			<h:panelGroup layout="block" styleClass="information">
 
 				<!-- TASK: replace this mechanism with a separate facelet streaming binary data -->
-				<h:graphicImage
-					value="data:image/png;base64,#{header_.applicationBase64Logo}" />
+				<!--h:graphicImage
+					value="data:image/png;base64,#{header_.applicationBase64Logo}" /-->
 
 				<h:outputText value="#{header_.application.name}" />
 
@@ -69,7 +69,7 @@
 					rendered="#{header_.showingCopiesReadyForPickupAllUsers()}">#{msg['copies_ready_for_pickup_all_users']}</h:outputLink>
 
 				<h:outputLink value="staff/medium-creator.xhtml"
-					rendered="#{header_.showingMediumCreator()}">#{msg['medium_creator']]}</h:outputLink>
+					rendered="#{header_.showingMediumCreator()}">#{msg['medium_creator']}</h:outputLink>
 
 				<h:outputLink
 					value="account/profile.xhtml?id=#{userSession.user.id}"

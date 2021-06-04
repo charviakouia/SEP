@@ -10,7 +10,7 @@
 			<default-locale>de_DE</default-locale>
 		</locale-config>
 		<resource-bundle>
-			<base-name>de.dedede.model.i18n.messages</base-name>
+			<base-name>de.dedede.model.logic.i18n.messages</base-name>
 			<var>msg</var>
 		</resource-bundle>
 	</application>

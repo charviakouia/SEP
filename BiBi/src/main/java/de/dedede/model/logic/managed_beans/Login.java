@@ -33,8 +33,6 @@ public class Login {
 
 	@PostConstruct
 	public void init() {
-
-
 	}
 
 	public String getEmail() {
@@ -70,7 +68,6 @@ public class Login {
 		} catch (EntityInstanceDoesNotExistException e){
 			//TODO auf Fehlerseite weiterleiten
 		}
-
 
 		return null;
 	}
