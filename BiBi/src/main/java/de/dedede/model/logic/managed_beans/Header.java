@@ -27,6 +27,7 @@ public class Header {
 
 	@PostConstruct
 	public void init() {
+
 	}
 	
 	public String getApplicationBase64Logo() {
@@ -54,13 +55,11 @@ public class Header {
 	}
 	
 	public boolean showingStaffHelp() {
-	    // return session.getUser().getRole().isStaffOrHigher();
-	    return true;
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 	
 	public boolean showingAdminHelp() {
-		// return session.getUser().getRole() == UserRole.ADMIN;
-	    return true;
+		return session.getUser().getRole() == UserRole.ADMIN;
 	}
 
 	public boolean showingLogOut() {
@@ -68,23 +67,19 @@ public class Header {
 	}
 
 	public boolean showingLending() {
-	    // return session.getUser().getRole().isStaffOrHigher();
-        return true;
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean showingReturnForm() {
-		// return session.getUser().getRole().isStaffOrHigher();
-	    return true;
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean showingCopiesReadyForPickupAllUsers() {
-		// return session.getUser().getRole().isStaffOrHigher();
-        return true;
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean showingMediumCreator() {
-		// return session.getUser().getRole().isStaffOrHigher();
-	    return true;
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean showingProfile() {
@@ -92,8 +87,7 @@ public class Header {
 	}
 
 	public boolean showingAdministration() {
-		// return session.getUser().getRole() == UserRole.ADMIN;
-	    return true;
+		return session.getUser().getRole() == UserRole.ADMIN;
 	}
 
 	public boolean showingLogin() {
@@ -119,5 +113,6 @@ public class Header {
 	 * Displays the Help text when user click on it.
 	 */
 	public void displayHelpText() {
+
 	}
 }

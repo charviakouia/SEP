@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component jdk="JavaSE-1.7" jdk_type="JavaSDK">
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="jakarta.faces-3.0.0.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/jakarta.faces-3.0.0.jar!/"/>
+	</lib>
+	<lib name="jakarta.mail-2.0.0.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/jakarta.mail-2.0.0.jar!/"/>
+	</lib>
+	<lib name="weld-servlet-shaded-4.0.0.Final.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/weld-servlet-shaded-4.0.0.Final.jar!/"/>
+	</lib>
+	<levels>
+		<level name="postgresql-42.2.20" value="project"/>
+	</levels>
+</component>
