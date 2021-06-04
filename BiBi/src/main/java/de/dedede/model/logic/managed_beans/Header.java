@@ -3,7 +3,6 @@ package de.dedede.model.logic.managed_beans;
 import java.util.Base64;
 
 import de.dedede.model.data.dtos.ApplicationDto;
-import de.dedede.model.data.dtos.UserRole;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
