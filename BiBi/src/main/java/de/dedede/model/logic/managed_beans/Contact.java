@@ -15,11 +15,18 @@ import jakarta.inject.Named;
  */
 @Named
 @ViewScoped
+<<<<<<< HEAD
 public class Contact implements Serializable {
 	
 	@Serial
 	private static  final long serialVersionUID = 1L;
+=======
+public class Contact  implements Serializable {
+>>>>>>> origin/master
 
+    @Serial
+    private static final long serialVersionUID = 1L;
+    
 	private ApplicationDto application;
 
 	@PostConstruct
