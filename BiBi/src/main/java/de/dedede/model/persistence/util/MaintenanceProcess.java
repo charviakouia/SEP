@@ -8,29 +8,21 @@ package de.dedede.model.persistence.util;
  *
  */
 public final class MaintenanceProcess implements Runnable {
-	
-	private static int timeoutInterval;
-	
+		
 	private static MaintenanceProcess instance;
 	
-	/**
-	 * Sets the frequency, with which a maintenance process 
-	 * instance queries the data store. Takes immediate effect.
-	 * 
-	 * @param interval The new time interval between checks.
-	 */
-	public static void setTimeoutInterval(int interval) {
-		
-	}
+	private static Thread thread; //frag Ivan
 	
 	private MaintenanceProcess() {}
+	
+	
 	
 	/**
 	 * Returns the single instance of the MaintenanceProcess.
 	 * 
 	 * @return The singleton MaintenanceProcess instance
 	 */
-	public MaintenanceProcess getInstance() {
+	public static synchronized MaintenanceProcess getInstance() {
 		if (instance == null) {
 			instance = new MaintenanceProcess();
 		}
@@ -55,6 +47,18 @@ public final class MaintenanceProcess implements Runnable {
 	 * it has no effect.
 	 * 
 	 */
-	public void shutdown() {}
+	public static void shutdown() {}
+
+	//thread definieren und starten evtl gleich mit setup
+	public void startup() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	//Interval einlesen
+	public void setup() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

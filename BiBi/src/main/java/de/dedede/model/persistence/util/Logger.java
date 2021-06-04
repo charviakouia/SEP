@@ -1,6 +1,7 @@
 package de.dedede.model.persistence.util;
 
 import java.io.BufferedWriter;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.util.Properties;
  * methods for different logging levels. In particular, these are: 
  * Development, detailed, and severe. The logs are written to a file, whose
  * location is specified in the global application configurations.
+ * 
+ * @author Jonas Picker
  *
  */
 public final class Logger { //TO-DO: ExceptionHandling, Testing
@@ -29,8 +32,9 @@ public final class Logger { //TO-DO: ExceptionHandling, Testing
 		try {
 			File logFile = new File(config.getProperty("LOG_DIRECTORY") + config.getProperty("LOG_FILENAME") + ".txt");
 			return logFile.createNewFile();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			//handle Exception
+			System.out.println("logSetup failed (IO or no write permission)");
 			return false;
 		}
 	}

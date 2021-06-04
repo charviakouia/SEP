@@ -16,4 +16,9 @@ public final class EmailUtility {
 
 	}
 
+	public static boolean initializeConnection() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
