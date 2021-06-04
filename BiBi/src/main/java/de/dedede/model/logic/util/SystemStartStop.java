@@ -3,6 +3,7 @@ package de.dedede.model.logic.util;
 import de.dedede.model.persistence.exceptions.InvalidSchemaException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.util.ConfigReader;
+import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.DataLayerInitializer;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
@@ -13,6 +14,8 @@ import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
+
+import java.sql.SQLException;
 
 /**
  *  Conducts and relays necessary actions before the system is shutdown or after it was started. Is registered in the faces-config.xml.
@@ -45,7 +48,7 @@ public class SystemStartStop implements SystemEventListener {
 
 	
 
-	private void initializeApplication() throws InvalidSchemaException, LostConnectionException {
+	private void initializeApplication() throws InvalidSchemaException, LostConnectionException, SQLException, ClassNotFoundException {
 		ConfigReader config = ConfigReader.getInstance();
 		config.getSystemConfigurations(); //Tests the config-reading process
 		System.out.println("ConfigReader initialized");
@@ -62,7 +65,7 @@ public class SystemStartStop implements SystemEventListener {
 		}
 		
 		DataLayerInitializer.execute();
-		
+		ConnectionPool.setUpConnectionPool();
 	
 	}
 	

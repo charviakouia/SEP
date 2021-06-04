@@ -19,12 +19,17 @@
 </head>
 <h:body>
 
-	<ui:composition template="templates/template.xhtml">
+	<ui:composition template="/view/templates/template.xhtml">
 		<ui:param name="page" value="login" />
 
 		<ui:define name="content">
 			<h:form>
+				<h:outputText value="Username" />
+				<h:inputText id="username" value="#{login.userSession}"/>
+
+				<h:outputText value="Email"/>
 				<h:inputText id="email" type="text" styleClass="" value="#{login.email}" required="true"/>
+				<h:outputText value="Password"/>
 				<h:inputText id="password" type="text" styleClass="" value="#{login.password}" required="true"/>
 				<h:commandButton id="login-button" value="#Log In#" action="#{login.logIn()}"/>
 			</h:form>

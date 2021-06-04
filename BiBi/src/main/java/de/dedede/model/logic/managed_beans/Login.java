@@ -4,6 +4,7 @@ import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -73,9 +74,9 @@ public class Login {
             String hashedPasswordInput = PasswordHashingModule.hashPassword(password, dbUser.getPasswordSalt());
             if (hashedPasswordInput.equals(dbUser.getPasswordHash())) {
                 userSession.setUser(dbUser);
-                return "profile.xhtml";
+                return "/view/public/profile.xhtml";
             }
-        } catch (EntityInstanceDoesNotExistException e) {
+        } catch (EntityInstanceDoesNotExistException | LostConnectionException e) {
         }
         // throw invalid username or password
         return null;

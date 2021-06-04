@@ -1,10 +1,19 @@
 package de.dedede.model.persistence.daos;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
+import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
+import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.util.ConnectionPool;
+import de.dedede.model.persistence.util.Logger;
 
 /**
  * This DAO (data access object) manages data and privileges for users, who are
@@ -14,6 +23,8 @@ import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
  * See the {@link UserDto} class for the used DTO.
  */
 public final class UserDao {
+
+    private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
 
     private UserDao() {
     }
@@ -43,15 +54,17 @@ public final class UserDao {
      *                                             email address isn't associated with an existing data entry.
      */
     public static UserDto readUserByEmail(UserDto userDto)
-            throws EntityInstanceDoesNotExistException {
-        // TODO: implement DAO
-
-        // return mock
-        UserDto user = new UserDto();
-        // TODO: hardcoded data right now
-        user.setEmailAddress("xxx@hotmail.com");
-
-        return user;
+            throws EntityInstanceDoesNotExistException, MaxConnectionsException, LostConnectionException {
+        Connection conn = getConnection();
+        try {
+            return readUserHelper(conn, userDto);
+        } catch (SQLException e){
+            String msg = "Database error occurred while reading application entity with id: " + userDto.getId();
+            Logger.severe(msg);
+            throw new LostConnectionException(msg, e);
+        } finally {
+            ConnectionPool.getInstance().releaseConnection(conn);
+        }
     }
 
     public static List<UserDto> readUsersBySearchCriteria() {
@@ -86,6 +99,42 @@ public final class UserDao {
     public static UserDto deleteUser(UserDto userDto)
             throws EntityInstanceDoesNotExistException {
         return null;
+    }
+
+    private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
+        Connection conn = null;
+        try {
+            conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+            conn.setAutoCommit(false);
+            conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        } catch (SQLException e){
+            Logger.severe("Couldn't configure the connection");
+            ConnectionPool.getInstance().releaseConnection(conn);
+            throw new LostConnectionException("Couldn't configure the connection");
+        }
+        return conn;
+    }
+
+    private static UserDto readUserHelper(Connection conn, UserDto userDto)
+            throws SQLException {
+        PreparedStatement readStmt = conn.prepareStatement(
+                "select * from users where emailaddress = ?;"
+        );
+        readStmt.setString(1, userDto.getEmailAddress());
+        ResultSet resultSet = readStmt.executeQuery();
+        if (resultSet.next()){
+           // populateDto(resultSet, appDTO);
+            userDto.setId(resultSet.getInt(1));
+            userDto.setEmailAddress(resultSet.getString(2));
+            userDto.setPasswordSalt(resultSet.getString(3));
+            userDto.setPasswordHash(resultSet.getString(4));
+            // TODO: füge fehlende attribute hinzu
+            conn.commit();
+            return userDto;
+        } else {
+            conn.commit();
+            return null;
+        }
     }
 
 }
