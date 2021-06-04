@@ -27,20 +27,6 @@ public final class ApplicationDao {
 
 	private ApplicationDao() {}
 
-	private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
-		Connection conn = null;
-		try {
-			conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-			conn.setAutoCommit(false);
-			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-		} catch (SQLException e){
-			Logger.severe("Couldn't configure the connection");
-			ConnectionPool.getInstance().releaseConnection(conn);
-			throw new LostConnectionException("Couldn't configure the connection");
-		}
-		return conn;
-	}
-
 	/**
 	 * Writes new global application data to the persistent data store,
 	 * as represented by an ApplicationDto object.
@@ -64,61 +50,16 @@ public final class ApplicationDao {
 							"CAST(? AS systemRegistrationStatus), CAST(? AS systemLookAndFeel)," +
 							"CAST(? AS systemAnonRights), CAST(? AS userLendStatus));"
 			);
-			createStmt.setString(1, appDTO.getName());
-			createStmt.setString(2, appDTO.getEmailAddressSuffixRegEx());
-			createStmt.setString(3, appDTO.getContactInfo());
-			createStmt.setString(4, appDTO.getSiteNotice());
-			createStmt.setString(5, appDTO.getPrivacyPolicy());
-			createStmt.setBytes(6, appDTO.getLogo());
-			createStmt.setObject(7, toPGInterval(appDTO.getReturnPeriod()));
-			createStmt.setObject(8, toPGInterval(appDTO.getPickupPeriod()));
-			createStmt.setObject(9, toPGInterval(appDTO.getWarningPeriod()));
-			createStmt.setString(10, appDTO.getSystemRegistrationStatus().toString());
-			createStmt.setString(11, appDTO.getLookAndFeel());
-			createStmt.setString(12, appDTO.getAnonRights());
-			createStmt.setString(13, appDTO.getLendingStatus());
+			populateStatement(createStmt, appDTO);
 			int numAffectedRows = createStmt.executeUpdate();
 			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(appDTO, createStmt); }
 			conn.commit();
 		} catch (SQLException e){
-			String msg = "Database error occurred while creating application entity";
+			String msg = "Database error occurred while creating application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
-			throw new LostConnectionException(msg);
+			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
-		}
-	}
-
-	private static void attemptToInsertGeneratedKey(ApplicationDto applicationDto, Statement stmt)
-			throws SQLException {
-		ResultSet resultSet = stmt.getGeneratedKeys();
-		if (resultSet.next()){
-			applicationDto.setId(resultSet.getLong(1));
-		}
-	}
-
-	private static PGInterval toPGInterval(Duration duration){
-		PGInterval result = new PGInterval();
-		result.setSeconds(duration.getSeconds());
-		return result;
-	}
-
-	private static boolean customizationEntityExists(Connection conn, ApplicationDto appDTO) throws SQLException {
-		try {
-			PreparedStatement checkingStmt = conn.prepareStatement(
-					"SELECT CASE " +
-							"WHEN (SELECT COUNT(one) FROM Application WHERE one = ?) > 0 THEN true " +
-							"ELSE false " +
-							"END AS entityExists;"
-			);
-			checkingStmt.setString(1, String.valueOf(appDTO.getId()));
-			ResultSet resultSet = checkingStmt.executeQuery();
-			resultSet.next();
-			return resultSet.getBoolean(1);
-		} catch (SQLException e) {
-			String msg = "Database error occurred while checking for application entity uniqueness";
-			Logger.severe(msg);
-			throw e;
 		}
 	}
 	
@@ -142,43 +83,11 @@ public final class ApplicationDao {
 			throws LostConnectionException, MaxConnectionsException {
 		Connection conn = getConnection();
 		try {
-			PreparedStatement readStmt = conn.prepareStatement(
-					"SELECT one, bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, bibLogo, " +
-							"globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, " +
-							"lookAndFeel, anonRights, userLendStatus " +
-							"FROM Application " +
-							"WHERE one = ?;"
-			);
-			readStmt.setInt(1, Math.toIntExact(appDTO.getId()));
-			ResultSet resultSet = readStmt.executeQuery();
-			if (resultSet.next()){
-				appDTO.setId(resultSet.getInt(1));
-				appDTO.setName(resultSet.getString(2));
-				appDTO.setEmailAddressSuffixRegEx(resultSet.getString(3));
-				appDTO.setContactInfo(resultSet.getString(4));
-				appDTO.setSiteNotice(resultSet.getString(5));
-				appDTO.setPrivacyPolicy(resultSet.getString(6));
-				appDTO.setLogo(resultSet.getBytes(7));
-				long lendingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(8)).getSeconds());
-				appDTO.setReturnPeriod(Duration.ofSeconds(lendingPeriodSeconds));
-				long markingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(9)).getSeconds());
-				appDTO.setPickupPeriod(Duration.ofSeconds(markingPeriodSeconds));
-				long remindPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(10)).getSeconds());
-				appDTO.setWarningPeriod(Duration.ofSeconds(remindPeriodSeconds));
-				SystemRegistrationStatus status = SystemRegistrationStatus.valueOf(resultSet.getString(11));
-				appDTO.setSystemRegistrationStatus(status);
-				appDTO.setLookAndFeel(resultSet.getString(12));
-				appDTO.setAnonRights(resultSet.getString(13));
-				appDTO.setLendingStatus(resultSet.getString(14));
-				conn.commit();
-				return appDTO;
-			} else {
-				return null;
-			}
+			return readCustomizationHelper(conn, appDTO);
 		} catch (SQLException e){
-			String msg = "Database error occurred while reading application entity";
+			String msg = "Database error occurred while reading application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
-			throw new LostConnectionException(msg);
+			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
@@ -189,13 +98,44 @@ public final class ApplicationDao {
 	 * The enclosed ID must be present in the data store and is used to 
 	 * identify and remove existing data. 
 	 *
-	 * @param applicationDto A DTO container with the overwriting data
+	 * @param appDTO A DTO container with the overwriting data
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the supplied
 	 * 		ID does not identify a data entry in the data store.
+	 * @throws MaxConnectionsException    Is thrown if no connection was available
+	 * 		to carry out the operation.
+	 * @throws LostConnectionException	Is thrown if the used connection
+	 * 		stopped working correctly before concluding the operation.
 	 * @see ApplicationDto
 	 */
-	public static void updateCustomization(ApplicationDto applicationDto) 
-			throws EntityInstanceDoesNotExistException {
+	public static void updateCustomization(ApplicationDto appDTO)
+			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException {
+		Connection conn = getConnection();
+		try {
+			PreparedStatement updateStmt = conn.prepareStatement(
+					"UPDATE Application " +
+							"SET bibName = ?, emailRegEx = ?, contactInfo = ?, imprintInfo = ?, privacyPolicy = ?, " +
+							"bibLogo = ?, globalLendLimit = CAST(? AS INTERVAL), " +
+							"globalMarkingLimit = CAST(? AS INTERVAL), reminderOffset = CAST(? AS INTERVAL), " +
+							"registrationStatus = CAST(? AS systemRegistrationStatus), " +
+							"lookAndFeel = CAST(? AS systemLookAndFeel), anonRights = CAST(? AS systemAnonRights), " +
+							"userLendStatus = CAST(? AS userLendStatus) " +
+							"WHERE one = ?;"
+			);
+			populateStatement(updateStmt, appDTO);
+			int numAffectedRows = updateStmt.executeUpdate();
+			conn.commit();
+			if (numAffectedRows == 0){
+				String msg = String.format("No entity with the id: %d exists", appDTO.getId());
+				Logger.severe(msg);
+				throw new EntityInstanceDoesNotExistException(msg);
+			}
+		} catch (SQLException e){
+			String msg = "Database error occurred while updating application entity with id: " + appDTO.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 	
 	/**
@@ -204,13 +144,148 @@ public final class ApplicationDao {
 	 *
 	 * @param appDTO A DTO container with the ID of the global application 
 	 * 		data to be deleted.
-	 * @return A DTO container with the deleted data store entry.
-	 * @throws EntityInstanceDoesNotExistException Is thrown if the supplied
+	 * @throws EntityInstanceDoesNotExistException	Is thrown if the supplied
 	 * 		ID does not identify a data entry in the data store.
+	 * @throws MaxConnectionsException    			Is thrown if no connection
+	 * 		was available to carry out the operation.
+	 * @throws LostConnectionException	Is thrown if the used connection
+	 * 		stopped working correctly before concluding the operation.
+	 * @return A DTO container with the deleted data store entry.
 	 * @see ApplicationDto
 	 */
-	public static ApplicationDto deleteCustomization(ApplicationDto appDTO) {
-		return null;
+	public static ApplicationDto deleteCustomization(ApplicationDto appDTO)
+			throws LostConnectionException, MaxConnectionsException, EntityInstanceDoesNotExistException {
+		Connection conn = getConnection();
+		try {
+			if (customizationEntityExists(conn, appDTO)){
+				readCustomizationHelper(conn, appDTO);
+				deleteCustomizationHelper(conn, appDTO);
+				conn.commit();
+				return appDTO;
+			} else {
+				String msg = String.format("No entity with the id: %d exists", appDTO.getId());
+				Logger.severe(msg);
+				throw new EntityInstanceDoesNotExistException(msg);
+			}
+		} catch (SQLException e) {
+			String msg = "Database error occurred while deleting application entity with id: " + appDTO.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	// Helper methods:
+
+	private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
+		Connection conn = null;
+		try {
+			conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+			conn.setAutoCommit(false);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+		} catch (SQLException e){
+			Logger.severe("Couldn't configure the connection");
+			ConnectionPool.getInstance().releaseConnection(conn);
+			throw new LostConnectionException("Couldn't configure the connection");
+		}
+		return conn;
+	}
+
+	private static boolean customizationEntityExists(Connection conn, ApplicationDto appDTO)
+			throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE " +
+						"WHEN (SELECT COUNT(one) FROM Application WHERE one = ?) > 0 THEN true " +
+						"ELSE false " +
+						"END AS entityExists;"
+		);
+		checkingStmt.setString(1, String.valueOf(appDTO.getId()));
+		ResultSet resultSet = checkingStmt.executeQuery();
+		resultSet.next();
+		return resultSet.getBoolean(1);
+	}
+
+	private static ApplicationDto readCustomizationHelper(Connection conn, ApplicationDto appDTO)
+			throws SQLException {
+		PreparedStatement readStmt = conn.prepareStatement(
+				"SELECT one, bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, bibLogo, " +
+						"globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, " +
+						"lookAndFeel, anonRights, userLendStatus " +
+						"FROM Application " +
+						"WHERE one = ?;"
+		);
+		readStmt.setInt(1, Math.toIntExact(appDTO.getId()));
+		ResultSet resultSet = readStmt.executeQuery();
+		if (resultSet.next()){
+			populateDto(resultSet, appDTO);
+			conn.commit();
+			return appDTO;
+		} else {
+			conn.commit();
+			return null;
+		}
+	}
+
+	private static void deleteCustomizationHelper(Connection conn, ApplicationDto appDto)
+			throws SQLException {
+		PreparedStatement deleteStmt = conn.prepareStatement(
+				"DELETE FROM Application " +
+						"WHERE one = ?;"
+		);
+		deleteStmt.setInt(1, Math.toIntExact(appDto.getId()));
+		deleteStmt.executeUpdate();
+	}
+
+	private static void attemptToInsertGeneratedKey(ApplicationDto applicationDto, Statement stmt)
+			throws SQLException {
+		ResultSet resultSet = stmt.getGeneratedKeys();
+		if (resultSet.next()){
+			applicationDto.setId(resultSet.getLong(1));
+		}
+	}
+
+	private static void populateStatement(PreparedStatement stmt, ApplicationDto appDto) throws SQLException {
+		stmt.setString(1, appDto.getName());
+		stmt.setString(2, appDto.getEmailAddressSuffixRegEx());
+		stmt.setString(3, appDto.getContactInfo());
+		stmt.setString(4, appDto.getSiteNotice());
+		stmt.setString(5, appDto.getPrivacyPolicy());
+		stmt.setBytes(6, appDto.getLogo());
+		stmt.setObject(7, toPGInterval(appDto.getReturnPeriod()));
+		stmt.setObject(8, toPGInterval(appDto.getPickupPeriod()));
+		stmt.setObject(9, toPGInterval(appDto.getWarningPeriod()));
+		stmt.setString(10, appDto.getSystemRegistrationStatus().toString());
+		stmt.setString(11, appDto.getLookAndFeel());
+		stmt.setString(12, appDto.getAnonRights());
+		stmt.setString(13, appDto.getLendingStatus());
+	}
+
+	private static void populateDto(ResultSet resultSet, ApplicationDto appDTO) throws SQLException {
+		appDTO.setId(resultSet.getInt(1));
+		appDTO.setName(resultSet.getString(2));
+		appDTO.setEmailAddressSuffixRegEx(resultSet.getString(3));
+		appDTO.setContactInfo(resultSet.getString(4));
+		appDTO.setSiteNotice(resultSet.getString(5));
+		appDTO.setPrivacyPolicy(resultSet.getString(6));
+		appDTO.setLogo(resultSet.getBytes(7));
+		long lendingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(8)).getSeconds());
+		appDTO.setReturnPeriod(Duration.ofSeconds(lendingPeriodSeconds));
+		long markingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(9)).getSeconds());
+		appDTO.setPickupPeriod(Duration.ofSeconds(markingPeriodSeconds));
+		long remindPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(10)).getSeconds());
+		appDTO.setWarningPeriod(Duration.ofSeconds(remindPeriodSeconds));
+		SystemRegistrationStatus status = SystemRegistrationStatus.valueOf(resultSet.getString(11));
+		appDTO.setSystemRegistrationStatus(status);
+		appDTO.setLookAndFeel(resultSet.getString(12));
+		appDTO.setAnonRights(resultSet.getString(13));
+		appDTO.setLendingStatus(resultSet.getString(14));
+	}
+
+	private static PGInterval toPGInterval(Duration duration){
+		PGInterval result = new PGInterval();
+		result.setSeconds(duration.getSeconds());
+		return result;
 	}
 
 }
