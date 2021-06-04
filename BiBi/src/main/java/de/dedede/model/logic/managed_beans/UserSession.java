@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
@@ -27,4 +28,7 @@ public class UserSession implements Serializable {
 		this.user = user;
 	}
 
+	public boolean isLoggedIn() {
+		return user != null;
+	}
 }
