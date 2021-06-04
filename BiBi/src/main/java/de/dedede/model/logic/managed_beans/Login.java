@@ -21,8 +21,8 @@ import jakarta.inject.Named;
 @RequestScoped
 public class Login {
 
-	//@Inject
-	//private FacesContext facesContext;
+	@Inject
+	private FacesContext facesContext;
 
 	@Inject
 	private UserSession userSession;
@@ -33,8 +33,6 @@ public class Login {
 
 	@PostConstruct
 	public void init() {
-
-
 	}
 
 	public String getEmail() {
@@ -70,7 +68,6 @@ public class Login {
 		} catch (EntityInstanceDoesNotExistException e){
 			//TODO auf Fehlerseite weiterleiten
 		}
-
 
 		return null;
 	}
