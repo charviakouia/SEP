@@ -5,13 +5,44 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
-	
+
 	<ui:param name="page" value="copies_ready_for_pickup_all_users" />
 
 	<ui:define name="content">
 
-		UNIMPLEMENTED
+		<bibi:paginatedList items="#{copiesReadyForPickupAllUsers.stuff}">
+			
+			<h:column>
+				<f:facet name="header">#{msg['copy']}</f:facet>
+				<bibi:columnContent>
+					<h:outputLink value="/BiBi/view/staff/lending.xhtml">#SIGNATUR# [#{item.first}]</h:outputLink>
+				</bibi:columnContent>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">#{msg['medium']}</f:facet>
+				<bibi:columnContent>
+					<h:outputLink value="/BiBi/view/public/medium.xhtml?id=TODO">#MEDIENTITEL# [#{item.first}]</h:outputLink>
+				</bibi:columnContent>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">#{msg['user']}</f:facet>
+				<bibi:columnContent>
+					<h:outputLink value="/BiBi/view/account/profile.xhtml?id=TODO">#NUTZER# [#{item.first}]</h:outputLink>
+				</bibi:columnContent>
+			</h:column>
+			
+			<h:column>
+				<!-- Dauer bis zum Zeitpunkt der Fristüberschreitung -->
+				<f:facet name="header">#TIME#</f:facet>
+				<bibi:columnContent>
+					#DAUER# [#{item.first}]
+				</bibi:columnContent>
+			</h:column>
+			
+		</bibi:paginatedList>
 
 	</ui:define>
-	
+
 </ui:composition>
