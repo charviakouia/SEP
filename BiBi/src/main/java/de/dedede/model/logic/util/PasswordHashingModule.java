@@ -35,7 +35,7 @@ public final class PasswordHashingModule {
             }
             hashedPassword = sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            //Logger.development("The SHA3-256 does not exist");
+            //Logger.development("The SHA-256 does not exist");
             e.printStackTrace();
         }
 
