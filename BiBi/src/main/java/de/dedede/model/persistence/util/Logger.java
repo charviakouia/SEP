@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
+import de.dedede.model.persistence.exceptions.InvalidLogFileException;
+
 /**
  * Defines a thread-safe logging utility, which is implemented with static 
  * methods for different logging levels. In particular, these are: 
@@ -23,20 +25,30 @@ public final class Logger { //TO-DO: ExceptionHandling, Testing
 	private Logger() {}
 	
 	/**
-	 * Initializes the Logger by creating a new .txt-File in the config-specified directory, if it isn't already present.
+	 * Initializes the Logger by creating a new .txt-File in the 
+	 * config-specified directory, if it isn't already present.
 	 * 
 	 * @return true if the file was created anew
 	 */
-	public static boolean logSetup() {
-		Properties config = ConfigReader.getInstance().getSystemConfigurations();
+	public static boolean logSetup() throws InvalidLogFileException {
+		ConfigReader CRinstance = ConfigReader.getInstance();
+		Properties config = CRinstance.getSystemConfigurations();
+		boolean newFileCreated = false;
 		try {
-			File logFile = new File(config.getProperty("LOG_DIRECTORY") + config.getProperty("LOG_FILENAME") + ".txt");
-			return logFile.createNewFile();
-		} catch (Exception e) {
-			//handle Exception
-			System.out.println("logSetup failed (IO or no write permission)");
-			return false;
+			File logFile = new File(config.getProperty("LOG_DIRECTORY") + 
+					config.getProperty("LOG_FILENAME") + ".txt");
+			newFileCreated = logFile.createNewFile();
+		} catch (IOException e) {
+			System.out.println("log-Setup failed with IOException.");
+			
+		} catch (SecurityException se) {
+			System.out.println("log-Setup failed due to denied"
+					+ " write permissions.");
+			throw new InvalidLogFileException("Insufficient access "
+					+ "permissions to specified log-file path.", se);
 		}
+		
+		return newFileCreated;
 	}
 
 	/**
@@ -47,7 +59,8 @@ public final class Logger { //TO-DO: ExceptionHandling, Testing
 	 * @param message The message which accompanies the log entry.
 	 */
 	public static synchronized void severe(String message) {
-		Properties config = ConfigReader.getInstance().getSystemConfigurations();
+		ConfigReader CRinstance = ConfigReader.getInstance();
+		Properties config = CRinstance.getSystemConfigurations();
 		log(config, LogLevel.SEVERE, message);
 	}
 
@@ -58,30 +71,34 @@ public final class Logger { //TO-DO: ExceptionHandling, Testing
 	 * @param message The message which accompanies the log entry.
 	 */
 	public static synchronized void detailed(String message) {
-		Properties config = ConfigReader.getInstance().getSystemConfigurations();
-		String level = config.getProperty("LOG_LEVEL");
+		ConfigReader CRinstance = ConfigReader.getInstance();
+		Properties config = CRinstance.getSystemConfigurations();
+		String level = config.getProperty("LOG_LEVEL", "SEVERE");
 		
-		if (level.equalsIgnoreCase("DEVELOPMENT") || level.equalsIgnoreCase("DETAILED")) {
+		if (level.equalsIgnoreCase("DEVELOPMENT") 
+				|| level.equalsIgnoreCase("DETAILED")) {
 			log(config, LogLevel.DETAILED, message);
 		}
 	}
 
 	/**
-	 * Writes a development message to the log. Development messages are reserved
-	 * for events, which could later be used to diagnose an error.
+	 * Writes a development message to the log. Development messages 
+	 * are reserved for events, which could later be used to diagnose an error.
 	 * 
 	 * @param message The message which accompanies the log entry.
 	 */
 	public static synchronized void development(String message) {
-		Properties config = ConfigReader.getInstance().getSystemConfigurations();
+		ConfigReader CRinstance = ConfigReader.getInstance();
+		Properties config = CRinstance.getSystemConfigurations();
 		
-		if (config.getProperty("LOG_LEVEL").equalsIgnoreCase("DEVELOPMENT")) {
+		String logLevel = config.getProperty("LOG_LEVEL", "SEVERE");
+		if (logLevel.equalsIgnoreCase("DEVELOPMENT")) {
 			log(config, LogLevel.DEVELOPMENT, message);
 		}
 	}
 
 	private static void log(Properties config, LogLevel level, String message) {
-		String consoleOutput = config.getProperty("LOG_CONSOLE");
+		String consoleOutput = config.getProperty("LOG_CONSOLE", "FALSE");
 		
 		if (consoleOutput.equalsIgnoreCase("TRUE")) {
 			System.out.println(level.toString() + ": " + message);
@@ -89,15 +106,25 @@ public final class Logger { //TO-DO: ExceptionHandling, Testing
 		logToFile(config, level, message);
 	}
 
-	private static void logToFile(Properties config, LogLevel level, String message) {
-		SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static void logToFile(Properties config, LogLevel level,
+			String message) {
+		SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd "
+				+ "HH:mm:ss");
+		
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(config.getProperty("LOG_DIRECTORY") + config.getProperty("LOG_FILENAME") + ".txt", true));
+			String logDirectory = config.getProperty("LOG_DIRECTORY");
+			String fileName = config.getProperty("LOG_FILENAME", "BiBiLog");
+			FileWriter fw = new FileWriter(logDirectory + fileName 
+					+ ".txt", true);
+			BufferedWriter writer = new BufferedWriter(fw);
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			writer.append(level.toString() + ": " + timestampFormat.format(timestamp) + " ---> " + message + System.getProperty("line.separator"));
+			String messageFormat = level.toString() + ": " + 
+			timestampFormat.format(timestamp) + " ---> " + message + 
+			System.getProperty("line.separator");
+			writer.append(messageFormat);
 			writer.close();
 		} catch (IOException e) {
-			//handle Exception
+			System.out.println("IOException while trying to log to file.");
 		}
 	}
 	

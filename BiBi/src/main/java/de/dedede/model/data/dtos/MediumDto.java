@@ -1,5 +1,7 @@
 package de.dedede.model.data.dtos;
 
+import jakarta.annotation.PostConstruct;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,11 @@ public class MediumDto {
     private CategoryDto category;
 
     private Duration returnPeriod;
+
+    @PostConstruct
+    private void init() {
+        category = new CategoryDto();
+    }
 
     /**
      * Fetches the id of the medium.
@@ -123,5 +130,13 @@ public class MediumDto {
      */
     public void setCopy(Integer key, CopyDto value) {
         copies.put(key, value);
+    }
+
+    public Map<Integer, AttributeDto> getAttributes() {
+        return attributes;
+    }
+
+    public Map<Integer, CopyDto> getCopies() {
+        return copies;
     }
 }
