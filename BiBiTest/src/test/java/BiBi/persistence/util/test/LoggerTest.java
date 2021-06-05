@@ -1,25 +1,18 @@
 package BiBi.persistence.util.test;
 
+import de.dedede.model.persistence.util.ConfigReader;
+import de.dedede.model.persistence.util.Logger;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.junit.Before;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-
-import de.dedede.model.persistence.util.ConfigReader;
-import de.dedede.model.persistence.util.Logger;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
+// import org.junit.Before;
 
 
 /**

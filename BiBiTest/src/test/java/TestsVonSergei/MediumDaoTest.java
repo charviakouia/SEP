@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MediumDaoTest {
 
     @BeforeAll
-    static void preTestSetUp() throws DriverNotFoundException, LostConnectionException {
+    static void preTestSetUp() throws DriverNotFoundException, LostConnectionException, InvalidConfigurationException {
         DataLayerInitializer.execute();
     }
 

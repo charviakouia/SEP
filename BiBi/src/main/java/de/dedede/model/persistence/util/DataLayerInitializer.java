@@ -1,19 +1,15 @@
 package de.dedede.model.persistence.util;
 
+import de.dedede.model.persistence.exceptions.DriverNotFoundException;
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 import java.util.Scanner;
-
-import de.dedede.model.persistence.exceptions.DriverNotFoundException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
 
 /**
  * Initializes the application's utilities and environment.
@@ -47,11 +43,11 @@ public class DataLayerInitializer {
 	 * @see ConnectionPool
 	 * @see MaintenanceProcess
 	 */
-	public static void execute() throws LostConnectionException, 
-											DriverNotFoundException {
+	public static void execute() throws LostConnectionException,
+			DriverNotFoundException, InvalidConfigurationException {
 		
 		try {
-			ConnectionPool.setUpConnectionPool();
+			ConnectionPool.setUpConnectionPool(false);
 		} catch (ClassNotFoundException cnfe) {
 			Logger.severe("Database JDBC driver was not found during "
 					+ "ConnectionPool initialization.");
