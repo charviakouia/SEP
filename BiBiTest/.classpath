@@ -9,5 +9,10 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container/BiBi"/>
+	<classpathentry kind="lib" path="C:/Users/Molto Homo/Downloads/mockito-core-3.9.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Molto Homo/Downloads/byte-buddy-1.10.20.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Molto Homo/Downloads/objenesis-3.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Molto Homo/Downloads/byte-buddy-agent-1.10.20.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BiBi"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

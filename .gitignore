@@ -2,6 +2,7 @@
 *.class
 
 # package files, archives
+*.properties
 *.war
 *.zip
 *.tar.gz
