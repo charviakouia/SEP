@@ -62,8 +62,9 @@ public final class MediumDao {
 			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException {
 		Connection conn = getConnection();
 		try {
+			mediumDto = readMediumHelper(conn, mediumDto);
 			return readMediumHelper(conn, mediumDto);
-		} catch (SQLException e){
+		} catch (SQLException | MediumDoesNotExistException e){
 			String msg = "Database error occurred while reading medium entity with id: " + mediumDto.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -355,7 +356,7 @@ public final class MediumDao {
 	 * @author Sergei Pravdin
 	 */
 	private static MediumDto readMediumHelper(Connection conn, MediumDto mediumDto)
-			throws SQLException, LostConnectionException, MaxConnectionsException {
+			throws SQLException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		PreparedStatement readStmt = conn.prepareStatement(
 				"SELECT mediumid, mediumlendperiod, hascategory " +
 						"FROM Medium " +
@@ -369,7 +370,9 @@ public final class MediumDao {
 			return mediumDto;
 		} else {
 			conn.commit();
-			return null;
+			String msg = "A medium does not exist with id: " + mediumDto.getId();
+			Logger.severe(msg);
+			throw new MediumDoesNotExistException();
 		}
 	}
 
