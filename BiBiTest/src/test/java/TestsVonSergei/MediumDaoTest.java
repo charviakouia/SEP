@@ -1,4 +1,4 @@
-package test.java;
+package test.java.TestsVonSergei;
 
 import de.dedede.model.data.dtos.CopyStatus;
 import de.dedede.model.data.dtos.MediumDto;
