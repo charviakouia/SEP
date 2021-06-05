@@ -6,13 +6,24 @@
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd">
 
 	<application>
+
 		<locale-config>
 			<default-locale>de_DE</default-locale>
 		</locale-config>
+
 		<resource-bundle>
 			<base-name>de.dedede.model.logic.i18n.messages</base-name>
 			<var>msg</var>
 		</resource-bundle>
+
+		<system-event-listener>
+			<system-event-listener-class>de.dedede.model.logic.util.SystemStartStop</system-event-listener-class>
+			<system-event-class>jakarta.faces.event.PostConstructApplicationEvent</system-event-class>
+		</system-event-listener>
+		<system-event-listener>
+			<system-event-listener-class>de.dedede.model.logic.util.SystemStartStop</system-event-listener-class>
+			<system-event-class>jakarta.faces.event.PreDestroyApplicationEvent</system-event-class>
+		</system-event-listener>
 	</application>
 
 </faces-config>
