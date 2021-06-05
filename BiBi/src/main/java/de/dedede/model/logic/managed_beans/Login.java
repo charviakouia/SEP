@@ -6,8 +6,10 @@ import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -30,6 +32,8 @@ public class Login {
 
     @Inject
     private UserSession userSession;
+
+    private  UserDto userDto;
 
     private String email;
 
@@ -71,13 +75,22 @@ public class Login {
         try {
             dbUser = UserDao.readUserByEmail(user);
 
-            String hashedPasswordInput = PasswordHashingModule.hashPassword(password, dbUser.getPasswordSalt());
-            if (hashedPasswordInput.equals(dbUser.getPasswordHash())) {
-                userSession.setUser(dbUser);
-                return "/view/public/profile.xhtml";
+            if (dbUser == null) {
+                Logger.development("Login failed: No user for email");
+            } else {
+                String hashedPasswordInput = PasswordHashingModule.hashPassword(password, dbUser.getPasswordSalt());
+                if (hashedPasswordInput.equals(dbUser.getPasswordHash())) {
+                    userSession.setUser(dbUser);
+                    return "/view/account/profile.xhtml";
+                }
             }
+
+
         } catch (EntityInstanceDoesNotExistException | LostConnectionException e) {
+            Logger.development("Login failed: " + e.getMessage());
         }
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Passwort oder Email falsch", null);
+        facesContext.addMessage(null, msg);
         // throw invalid username or password
         return null;
     }
@@ -87,5 +100,13 @@ public class Login {
      */
     public void resetPassword() {
 
+    }
+
+    public UserDto getUserDto() {
+        return userDto;
+    }
+
+    public void setUserDto(UserDto userDto) {
+        this.userDto = userDto;
     }
 }

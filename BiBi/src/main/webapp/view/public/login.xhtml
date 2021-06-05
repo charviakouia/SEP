@@ -12,12 +12,12 @@
     <ui:define name="content">
         <h:form>
 
-
-            <h:outputText value="Email Adresse"/>
+            <h:outputLabel for="email" value="Email"/>
             <h:inputText id="email" type="text" styleClass="" value="#{login.email}" required="true"/>
-            <h:outputText value="Password"/>
-            <h:inputText id="password" type="text" styleClass="" value="#{login.password}" required="true"/>
+            <h:outputLabel for="password" value="Password"/>
+            <h:inputSecret id="password" type="text" styleClass="" value="#{login.password}" required="true"/>
             <h:commandButton id="login-button" value="#Log In#" action="#{login.logIn()}"/>
+
         </h:form>
     </ui:define>
 

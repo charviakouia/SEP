@@ -118,16 +118,24 @@ public final class UserDao {
     private static UserDto readUserHelper(Connection conn, UserDto userDto)
             throws SQLException {
         PreparedStatement readStmt = conn.prepareStatement(
-                "select * from users where emailaddress = ?;"
+                "select * from \"users\" where emailaddress = ?;"
         );
         readStmt.setString(1, userDto.getEmailAddress());
         ResultSet resultSet = readStmt.executeQuery();
+
         if (resultSet.next()){
+            Logger.development("hier i am  in if ResultSet::::...");
             userDto.setId(resultSet.getInt(1));
             userDto.setEmailAddress(resultSet.getString(2));
             userDto.setPasswordSalt(resultSet.getString(3));
             userDto.setPasswordHash(resultSet.getString(4));
-            // TODO: füge fehlende attribute hinzu
+            /*userDto.setFirstName(resultSet.getString(5));
+            userDto.setLastName(resultSet.getString(6));
+            userDto.setCity(resultSet.getString(7));
+            userDto.setStreet(resultSet.getString(8));
+            userDto.setZipCode(resultSet.getInt(10));
+            userDto.setStreetNumber(resultSet.getString(11));
+            */
             conn.commit();
             return userDto;
         } else {
