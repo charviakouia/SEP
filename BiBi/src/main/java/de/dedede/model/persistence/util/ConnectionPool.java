@@ -24,7 +24,7 @@ public class ConnectionPool {
 	private static final Collection<Connection> backupList = new ConcurrentLinkedQueue<>();
 	private static volatile boolean isShutDown = true;
 	private static final Semaphore lifecycleSemaphore = new Semaphore(2, true);
-	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
+	public static final long ACQUIRING_CONNECTION_PERIOD = 5000;
 
 	private static final String DB_CAPACITY_KEY = "DB_CAPACITY";
 	private static final int DEFAULT_DB_CAPACITY = 5;
