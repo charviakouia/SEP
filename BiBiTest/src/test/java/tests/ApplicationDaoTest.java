@@ -1,9 +1,11 @@
-package utilities;
+package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.SQLException;
+import java.time.Duration;
 
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,15 +21,16 @@ import de.dedede.model.persistence.util.ConnectionPool;
 class ApplicationDaoTest {
 	
 	private static ApplicationDto current, other;
-	private static final long id = 100;
+	private static long id;
 	
 	@BeforeAll
-	public static void setUp() throws ClassNotFoundException, SQLException, MaxConnectionsException, 
-			LostConnectionException {
-		ConnectionPool.setUpConnectionPool();
+	public static void setUp() throws ClassNotFoundException, SQLException, MaxConnectionsException,
+			LostConnectionException, InvalidConfigurationException {
+		ConnectionPool.setUpConnectionPool(true);
 		initializeFirstDto();
 		initializeSecondDto();
 		ApplicationDao.createCustomization(current);
+		other.setId(id = current.getId());
 	}
 	
 	@AfterAll
@@ -54,14 +57,36 @@ class ApplicationDaoTest {
 	
 	private static void initializeFirstDto() {
 		current = new ApplicationDto();
-		current.setId(id);
-		current.setSystemRegistrationStatus(SystemRegistrationStatus.CLOSED);
+		current.setName("A");
+		current.setEmailAddressSuffixRegEx("A");
+		current.setContactInfo("A");
+		current.setSiteNotice("A");
+		current.setPrivacyPolicy("A");
+		current.setLogo(new byte[0]);
+		current.setReturnPeriod(Duration.ofDays(10));
+		current.setPickupPeriod(Duration.ofHours(5));
+		current.setWarningPeriod(Duration.ofDays(2));
+		current.setSystemRegistrationStatus(SystemRegistrationStatus.OPEN);
+		current.setLookAndFeel("css a");
+		current.setAnonRights("OPAC");
+		current.setLendingStatus("UNLOCKED");
 	}
 
 	private static void initializeSecondDto() {
 		other = new ApplicationDto();
-		other.setId(id);
-		other.setSystemRegistrationStatus(SystemRegistrationStatus.OPEN);
+		other.setName("B");
+		other.setEmailAddressSuffixRegEx("B");
+		other.setContactInfo("B");
+		other.setSiteNotice("B");
+		other.setPrivacyPolicy("B");
+		other.setLogo(new byte[0]);
+		other.setReturnPeriod(Duration.ofDays(11));
+		other.setPickupPeriod(Duration.ofHours(6));
+		other.setWarningPeriod(Duration.ofDays(3));
+		other.setSystemRegistrationStatus(SystemRegistrationStatus.CLOSED);
+		other.setLookAndFeel("css a");
+		other.setAnonRights("OPAC");
+		other.setLendingStatus("UNLOCKED");
 	}
 	
 	private ApplicationDto readById(long id) throws LostConnectionException, MaxConnectionsException {
