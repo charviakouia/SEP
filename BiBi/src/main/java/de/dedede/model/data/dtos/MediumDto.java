@@ -124,4 +124,12 @@ public class MediumDto {
     public void setCopy(Integer key, CopyDto value) {
         copies.put(key, value);
     }
+
+    public Map<Integer, AttributeDto> getAttributes() {
+        return attributes;
+    }
+
+    public Map<Integer, CopyDto> getCopies() {
+        return copies;
+    }
 }
