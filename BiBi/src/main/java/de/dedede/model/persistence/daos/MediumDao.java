@@ -1,17 +1,21 @@
 package de.dedede.model.persistence.daos;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-import de.dedede.model.data.dtos.AttributeDto;
-import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.data.dtos.CopyMediumUser;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.data.dtos.MediumDto;
-import de.dedede.model.data.dtos.MediumSearchDto;
-import de.dedede.model.data.dtos.PaginationDto;
-import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.*;
+import de.dedede.model.logic.managed_beans.Medium;
+import de.dedede.model.logic.util.SystemRegistrationStatus;
+import de.dedede.model.persistence.exceptions.*;
+import de.dedede.model.persistence.util.ConnectionPool;
+import de.dedede.model.persistence.util.Logger;
+import org.postgresql.util.PGInterval;
 
 /**
  * This DAO (data access object) manages data pertaining to a medium or a copy.
@@ -23,6 +27,8 @@ import de.dedede.model.data.dtos.UserDto;
  *
  */
 public final class MediumDao {
+
+	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
 
 	private MediumDao() {}
 
@@ -52,10 +58,18 @@ public final class MediumDao {
 	 * 		is not associated with any existing data entry.
 	 * @return A DTO container with the medium data referenced by the ID.
 	 */
-	public static MediumDto readMedium(MediumDto mediumDto) 
-			throws EntityInstanceDoesNotExistException {
-		//TODO: MS1 von Sergej
-		return null;
+	public static MediumDto readMedium(MediumDto mediumDto)
+			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException {
+		Connection conn = getConnection();
+		try {
+			return readMediumHelper(conn, mediumDto);
+		} catch (SQLException e){
+			String msg = "Database error occurred while reading application entity with id: " + mediumDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 	
 	/**
@@ -274,5 +288,104 @@ public final class MediumDao {
 	public static List<CopyMediumUser> readDueDateReminders(){
 		//TODO: MS3 von Jonas
 		return null;
+	}
+
+	// Helper methods:
+
+	private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
+		Connection conn = null;
+		try {
+			conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+			conn.setAutoCommit(false);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+		} catch (SQLException e){
+			Logger.severe("Couldn't configure the connection");
+			ConnectionPool.getInstance().releaseConnection(conn);
+			throw new LostConnectionException("Couldn't configure the connection");
+		}
+		return conn;
+	}
+
+	private static boolean mediumEntityExists(Connection conn, MediumDto mediumDto)
+			throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE " +
+						"WHEN (SELECT COUNT(mediumid) FROM Medium WHERE mediumid = ?) > 0 THEN true " +
+						"ELSE false " +
+						"END AS entityExists;"
+		);
+		checkingStmt.setString(1, String.valueOf(mediumDto.getId()));
+		ResultSet resultSet = checkingStmt.executeQuery();
+		resultSet.next();
+		return resultSet.getBoolean(1);
+	}
+
+	private static MediumDto readMediumHelper(Connection conn, MediumDto mediumDto)
+			throws SQLException, LostConnectionException, MaxConnectionsException {
+		PreparedStatement readStmt = conn.prepareStatement(
+				"SELECT mediumid, mediumlendperiod, hascategory " +
+						"FROM Medium " +
+						"WHERE mediumid = ?;"
+		);
+		readStmt.setInt(1, Math.toIntExact(mediumDto.getId()));
+		ResultSet resultSet = readStmt.executeQuery();
+		if (resultSet.next()){
+			populateMediumDto(resultSet, mediumDto);
+			conn.commit();
+			return mediumDto;
+		} else {
+			conn.commit();
+			return null;
+		}
+	}
+
+	private static void populateMediumDto(ResultSet resultSet, MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
+		mediumDto.setId(resultSet.getInt(1));
+		long returnPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(2)).getSeconds());
+		mediumDto.setReturnPeriod(Duration.ofSeconds(returnPeriodSeconds));
+		mediumDto.getCategory().setId(resultSet.getInt(3));
+		try {
+			mediumDto.setCategory(CategoryDao.readCategory(mediumDto.getCategory()));
+		} catch (CategoryDoesNotExistException e) {
+			//ignore
+		}
+		readCopiesHelper(mediumDto);
+		readAttributesHelper(mediumDto);
+	}
+
+	private static void readCopiesHelper(MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
+		Connection conn = getConnection();
+		PreparedStatement readStmt = conn.prepareStatement(
+				"SELECT copyid, mediumid = ?, signature, bibposition, status, deadline, actor " +
+						"FROM Mediumcopy " +
+						"WHERE mediumid = ?;"
+		);
+		readStmt.setInt(2, Math.toIntExact(mediumDto.getId()));
+		ResultSet resultSet = readStmt.executeQuery();
+		while (resultSet.next()) {
+			CopyDto copyDto = new CopyDto();
+			populateCopyDto(copyDto, resultSet);
+			mediumDto.setCopy(copyDto.getId(), copyDto);
+			conn.commit();
+		}
+	}
+
+	private static void populateCopyDto(CopyDto copyDto, ResultSet resultSet) throws SQLException {
+		copyDto.setId(resultSet.getInt(1));
+		copyDto.setSignature(resultSet.getString(3));
+		copyDto.setLocation(resultSet.getString(4));
+		copyDto.setCopyStatus((CopyStatus) resultSet.getObject(5));
+		copyDto.setDeadline(resultSet.getDate(6));
+		copyDto.setActor(resultSet.getInt(7));
+	}
+
+	private static void readAttributesHelper(MediumDto mediumDto) {
+		//TODO: MS2 von Sergej
+	}
+
+	private static PGInterval toPGInterval(Duration duration){
+		PGInterval result = new PGInterval();
+		result.setSeconds(duration.getSeconds());
+		return result;
 	}
 }

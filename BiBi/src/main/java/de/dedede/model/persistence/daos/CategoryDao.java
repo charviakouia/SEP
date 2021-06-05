@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.PaginationDto;
+import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 
@@ -38,12 +39,12 @@ public final class CategoryDao {
 	 * be associated with an existing data entry. Otherwise, an exception is thrown.
 	 *
 	 * @param categoryDto A DTO container with the ID of the category data to be fetched.
-	 * @throws EntityInstanceDoesNotExistException Is thrown if the passed ID is not
+	 * @throws CategoryDoesNotExistException Is thrown if the passed ID is not
 	 * 		associated with a data entry.
 	 * @see CategoryDto
 	 */
 	public static CategoryDto readCategory(CategoryDto categoryDto) 
-			throws EntityInstanceDoesNotExistException {
+			throws CategoryDoesNotExistException {
 		return null;
 	}
 	
