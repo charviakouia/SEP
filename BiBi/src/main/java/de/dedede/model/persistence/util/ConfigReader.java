@@ -1,5 +1,6 @@
 package de.dedede.model.persistence.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,19 +8,19 @@ import java.util.Properties;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
 
 /**
  * A singleton utility class for returning system-wide property values.
  * 
- * See the {@link Properties} class for the implementation of properties in Java.
+ * See the {@link Properties} class for the implementation of properties in Java
  * 
  * @author Jonas Picker
  */
 public class ConfigReader {
 	
 	/**
-	 * Implicitly synchronized singleton-pattern to avoid 'synchronized' bottleneck on getInstance(). 
+	 * Implicitly synchronized singleton-pattern to avoid 'synchronized' 
+	 * bottleneck on getInstance(). 
 	 */
 	private static final class InnerInstance {
 		static final ConfigReader InnerInstance = new ConfigReader();
@@ -28,7 +29,8 @@ public class ConfigReader {
 	/**
 	 * Needed as basis for loading config with webapp-relative path.
 	 */
-	private ExternalContext ext = FacesContext.getCurrentInstance().getExternalContext();
+	private ExternalContext ext = 
+			findContext().getExternalContext();
 	
 	/**
 	 * The path to the config-File starting from the webapp-Folder.
@@ -40,8 +42,14 @@ public class ConfigReader {
 	 */
 	private ConfigReader() {}
 
+	private FacesContext findContext() {
+		
+		return FacesContext.getCurrentInstance();
+	}
+
 	/**
-	 * Returns the single instance of the ConfigReader. Synchronized implicitly by the ClassLoader.
+	 * Returns the single instance of the ConfigReader. Synchronized implicitly 
+	 * by the ClassLoader.
 	 * 
 	 * @return The singleton ConfigReader instance
 	 */
@@ -50,21 +58,31 @@ public class ConfigReader {
 		return InnerInstance.InnerInstance;
 	}
 	
+	public void setupConfigReader() throws IOException {
+		Properties testProperties = new Properties();
+		String pathString = relativeFilePath.toString();
+		InputStream stream = ext.getResourceAsStream(pathString);
+		testProperties.load(stream);		
+		stream.close();	
+		System.out.println("Testreading configuration file successful.");
+	}
+	
 	/**
 	 * Returns a properties-object containing the system configurations.
-	 * This properties-object only permits read-only operations.
+	 * This properties-object permits read-only operations.
 	 * 
 	 * @return The system configurations
 	 */
-	public Properties getSystemConfigurations() { // eigene Exception werfen?
+	public Properties getSystemConfigurations() {
 		Properties config = new Properties();
 		try {
-			InputStream stream = ext.getResourceAsStream(relativeFilePath.toString());
+			String pathString = relativeFilePath.toString();
+			InputStream stream = ext.getResourceAsStream(pathString);
 			config.load(stream);		
 			stream.close();			
 		} catch (Exception e) {
-			//HandleEception
-			System.out.println("getSysConfig failed");
+			Logger.severe("Failed to read system configurations.");
+			System.out.println("Unable to read system configuration file.");
 		}
 		
 		return config;
