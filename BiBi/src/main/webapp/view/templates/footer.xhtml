@@ -6,19 +6,17 @@
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi">
 
 	<h:panelGroup layout="block"
-		styleClass="footer text-center bg-dark text-white">
-		<h:panelGroup layout="block" styleClass="container-fluid p-4">
+		styleClass="footer text-center bg-dark text-white position-absolute bottom-0 w-100 p-5">
 
-			<h:outputLink value="/BiBi/view/public/privacy-policy.xhtml"
-				styleClass="text-reset">#{msg['privacy_policy']}</h:outputLink>
+		<h:outputLink value="/BiBi/view/public/privacy-policy.xhtml"
+			styleClass="text-reset">#{msg['privacy_policy']}</h:outputLink>
 				|
 			<h:outputLink value="/BiBi/view/public/site-notice.xhtml"
-				styleClass="text-reset">#{msg['site_notice']}</h:outputLink>
+			styleClass="text-reset">#{msg['site_notice']}</h:outputLink>
 				|
 			<h:outputLink value="/BiBi/view/public/contact.xhtml"
-				styleClass="text-reset">#{msg['contact']}</h:outputLink>
+			styleClass="text-reset">#{msg['contact']}</h:outputLink>
 
-		</h:panelGroup>
 	</h:panelGroup>
 
 </ui:composition>

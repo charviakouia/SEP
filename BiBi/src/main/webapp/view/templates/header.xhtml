@@ -14,10 +14,9 @@
 			<!-- <h:graphicImage
 					value="data:image/png;base64,#{header_.applicationBase64Logo}"/> -->
 
-			<h:outputText value="#{header_.application.name}" />
-
+			<!-- <h:outputText value="#{header_.application.name}" styleClass="h2" /> -->
 			<!--  TEMPORARY -->
-			BIBLIOTHEKSSYSTEM
+			<h:outputText value="Bibliothekssystem" styleClass="h2" />
 
 		</h:panelGroup>
 
@@ -112,7 +111,7 @@
 
 			<h:form id="form_medium_search" action="#{header_.searchMedium()}" styleClass="">
 				<h:inputText id="input_medium_search"
-					value="#{header_.mediumSearch.generalSearchTerm}" />
+					value="#{header_.mediumSearch.generalSearchTerm}" styleClass="nav-item" />
 			</h:form>
 
 		</h:panelGroup>
