@@ -1,6 +1,7 @@
 package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;

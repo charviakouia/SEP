@@ -1,13 +1,14 @@
 package de.dedede.model.logic.util;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.persistence.util.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Hashes the Password of the {@link UserDto} with SHA512, before it is stored
+ * Hashes the Password of the {@link UserDto} with SHA-256, before it is stored
  * in the database.
  */
 public final class PasswordHashingModule {
@@ -16,7 +17,7 @@ public final class PasswordHashingModule {
     }
 
     /**
-     * Hash a password with the SHA256 hash function.
+     * Hash a password with the SHA-256 hash function.
      *
      * @param password The String which should be hashed.
      * @return password in a hash as String.
@@ -34,6 +35,7 @@ public final class PasswordHashingModule {
             }
             hashedPassword = sb.toString();
         } catch (NoSuchAlgorithmException e) {
+            //Logger.development("The SHA3-256 does not exist");
             e.printStackTrace();
         }
 

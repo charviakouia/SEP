@@ -124,18 +124,17 @@ public final class UserDao {
         ResultSet resultSet = readStmt.executeQuery();
 
         if (resultSet.next()){
-            Logger.development("hier i am  in if ResultSet::::...");
+           // Logger.development("hier i am  in if ResultSet::::...");
             userDto.setId(resultSet.getInt(1));
             userDto.setEmailAddress(resultSet.getString(2));
             userDto.setPasswordSalt(resultSet.getString(3));
             userDto.setPasswordHash(resultSet.getString(4));
-            /*userDto.setFirstName(resultSet.getString(5));
+            userDto.setFirstName(resultSet.getString(5));
             userDto.setLastName(resultSet.getString(6));
+            userDto.setZipCode(resultSet.getInt(10));
             userDto.setCity(resultSet.getString(7));
             userDto.setStreet(resultSet.getString(8));
-            userDto.setZipCode(resultSet.getInt(10));
             userDto.setStreetNumber(resultSet.getString(11));
-            */
             conn.commit();
             return userDto;
         } else {
