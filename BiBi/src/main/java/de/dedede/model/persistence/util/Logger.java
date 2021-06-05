@@ -33,7 +33,6 @@ public final class Logger { //TO-DO: ExceptionHandling, Testing
 			File logFile = new File(config.getProperty("LOG_DIRECTORY") + config.getProperty("LOG_FILENAME") + ".txt");
 			return logFile.createNewFile();
 		} catch (Exception e) {
-			//handle Exception
 			System.out.println("logSetup failed (IO or no write permission)");
 			return false;
 		}

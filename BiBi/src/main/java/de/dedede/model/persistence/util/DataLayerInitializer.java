@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Scanner;
 
-import de.dedede.model.persistence.exceptions.InvalidSchemaException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 
 /**
@@ -88,7 +87,10 @@ public class DataLayerInitializer {
 		public void run() {
 		try {
 			connection.close();
-		} catch (SQLException ignored) {System.out.println("Shutdownhook fail");}}
+		} catch (SQLException ignored) {
+			System.out.println("Shutdownhook fail");
+			}
+		}
 		
 	}
 	
@@ -242,8 +244,8 @@ public class DataLayerInitializer {
 		        	end = true;
 		        	break;
 		        case 'n': 
-		        	Logger.detailed("'N' was selected, proceeding system start with potentially damaged/incomplete tables.");
-		        	System.out.println("'N' was selected, proceeding system start with potentially damaged/incomplete tables.");
+		        	Logger.detailed("'N' was selected, proceeding system start with existing tables.");
+		        	System.out.println("'N' was selected, proceeding system start with existing tables.");
 		        	end = true;
 		        	break;
 		        default:
@@ -424,7 +426,6 @@ public class DataLayerInitializer {
 		PreparedStatement createIndependentTables2 = connection.prepareStatement(s12);
 		createIndependentTables2.executeUpdate();
 		createIndependentTables2.close();
-		
 		Logger.development("Executed second group (independent tables user/category/application) of create statements on DB initialization.");
 	}
 	
