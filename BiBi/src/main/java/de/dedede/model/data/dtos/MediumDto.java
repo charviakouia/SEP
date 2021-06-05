@@ -1,5 +1,7 @@
 package de.dedede.model.data.dtos;
 
+import jakarta.annotation.PostConstruct;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,11 @@ public class MediumDto {
     private CategoryDto category;
 
     private Duration returnPeriod;
+
+    @PostConstruct
+    private void init() {
+        category = new CategoryDto();
+    }
 
     /**
      * Fetches the id of the medium.
