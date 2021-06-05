@@ -123,7 +123,6 @@ public final class UserDao {
         readStmt.setString(1, userDto.getEmailAddress());
         ResultSet resultSet = readStmt.executeQuery();
         if (resultSet.next()){
-           // populateDto(resultSet, appDTO);
             userDto.setId(resultSet.getInt(1));
             userDto.setEmailAddress(resultSet.getString(2));
             userDto.setPasswordSalt(resultSet.getString(3));
