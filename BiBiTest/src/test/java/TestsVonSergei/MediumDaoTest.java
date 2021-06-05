@@ -7,6 +7,7 @@ import de.dedede.model.logic.managed_beans.Medium;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.DataLayerInitializer;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,11 @@ public class MediumDaoTest {
     @BeforeAll
     static void preTestSetUp() throws DriverNotFoundException, LostConnectionException {
         DataLayerInitializer.execute();
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        DataLayerInitializer.shutdownDataLayer();
     }
 
     @Test
