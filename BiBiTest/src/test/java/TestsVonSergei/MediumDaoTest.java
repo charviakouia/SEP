@@ -61,12 +61,12 @@ public class MediumDaoTest {
         CopyDto copyDto = new CopyDto();
         mediumDto.setId(2);
         copyDto.setId(555);
-        copyDto.setSignature("testSignature");
+        copyDto.setSignature("testSignature2");
         copyDto.setCopyStatus(CopyStatus.BORROWED);
-        copyDto.setLocation("testLocation");
+        copyDto.setLocation("testLocation2");
         copyDto.setActor(333);
         MediumDao.createCopy(copyDto, mediumDto);
-        Assertions.assertEquals("testSignature", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
+        Assertions.assertEquals("testSignature2", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
     }
 
 }
