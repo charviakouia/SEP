@@ -50,6 +50,7 @@ public class SystemStartStop implements SystemEventListener {
 	 * 
 	 * @throws LostConnectionException If data layer failed to communicate to DB
 	 * @throws DriverNotFoundException If JDBC driver wasn't found 
+	 * @throws InvalidConfigurationException If config file is unreadable
 	 */
 	private void initializeApplication() throws LostConnectionException, 
 	DriverNotFoundException, InvalidConfigurationException {

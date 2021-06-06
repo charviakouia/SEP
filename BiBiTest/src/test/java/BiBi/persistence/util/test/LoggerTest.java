@@ -35,7 +35,7 @@ public class LoggerTest {
 		ConfigReader configMock = Mockito.mock(ConfigReader.class);
 		Properties testProperties = new Properties();
 		InputStream stream = 
-			this.getClass().getClassLoader().getResourceAsStream("config.txt");
+			getClass().getClassLoader().getResourceAsStream("config.txt");
 		try {
 			testProperties.load(stream);
 			stream.close();
