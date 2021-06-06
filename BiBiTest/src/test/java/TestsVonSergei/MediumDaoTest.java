@@ -1,4 +1,4 @@
-package test.java.TestsVonSergei;
+package TestsVonSergei;
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
