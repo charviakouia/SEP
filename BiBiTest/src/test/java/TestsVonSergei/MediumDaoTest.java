@@ -1,16 +1,17 @@
 package test.java.TestsVonSergei;
 
+import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
 import de.dedede.model.data.dtos.MediumDto;
-import de.dedede.model.logic.exceptions.BusinessException;
-import de.dedede.model.logic.managed_beans.Medium;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.*;
-import de.dedede.model.persistence.util.DataLayerInitializer;
+import de.dedede.model.persistence.util.ConnectionPool;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,21 +22,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MediumDaoTest {
 
     @BeforeAll
-    static void preTestSetUp() throws DriverNotFoundException, LostConnectionException, InvalidConfigurationException {
-        DataLayerInitializer.execute();
+    public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
+        ConnectionPool.setUpConnectionPool(true);
     }
 
     @AfterAll
-    public static void tearDown() {
-        DataLayerInitializer.shutdownDataLayer();
+    public static void tearDown() throws LostConnectionException, SQLException, MaxConnectionsException {
+        CopyDto copyDto = new CopyDto();
+        copyDto.setId(555);
+        MediumDao.deleteCopy(copyDto);
+        ConnectionPool.destroyConnectionPool();
     }
 
     @Test
-    public void readMediumTest() throws LostConnectionException, EntityInstanceDoesNotExistException, MaxConnectionsException {
+    public void readMediumTest() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
         MediumDto mediumDto = new MediumDto();
         mediumDto.setId(2);
-        MediumDao.readMedium(mediumDto);
-        Assertions.assertEquals(1, mediumDto.getCategory().getId());
+        Assertions.assertTrue(MediumDao.readMedium(mediumDto).getCopies().containsKey(333));
     }
 
     @Test
@@ -47,24 +50,23 @@ public class MediumDaoTest {
         Exception exception = assertThrows(MediumDoesNotExistException.class, () -> {
             MediumDao.readMedium(mediumDto);
         });
-
         String expectedMessage = "A medium does not exist with id: " + testId;
         String actualMessage = exception.getMessage();
-
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    public void testCreateCopy() throws BusinessException, LostConnectionException, EntityInstanceDoesNotExistException, MaxConnectionsException {
-        Medium medium = new Medium();
-        medium.getMedium().setId(1);
-        medium.getCopy().setId(555);
-        medium.getCopy().setSignature("testSignature");
-        medium.getCopy().setLocation("testPosition");
-        medium.getCopy().setCopyStatus(CopyStatus.AVAILABLE);
-        medium.createCopy();
-        MediumDao.readMedium(medium.getMedium());
-        Assertions.assertEquals("testSignature", medium.getMedium().getCopy(555).getSignature());
+    public void testCreateCopy() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException, MediumDoesNotExistException {
+        MediumDto mediumDto = new MediumDto();
+        CopyDto copyDto = new CopyDto();
+        mediumDto.setId(2);
+        copyDto.setId(555);
+        copyDto.setSignature("testSignature");
+        copyDto.setCopyStatus(CopyStatus.BORROWED);
+        copyDto.setLocation("testLocation");
+        copyDto.setActor(333);
+        MediumDao.createCopy(copyDto, mediumDto);
+        Assertions.assertEquals("testSignature", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
     }
 
 }

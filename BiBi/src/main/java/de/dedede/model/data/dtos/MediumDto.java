@@ -22,7 +22,7 @@ public class MediumDto {
 
     private final Map<Integer, CopyDto> copies = new HashMap<Integer, CopyDto>();
 
-    private CategoryDto category;
+    private CategoryDto category = new CategoryDto();;
 
     private Duration returnPeriod;
 

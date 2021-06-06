@@ -59,16 +59,20 @@ public final class MediumDao {
 	 * @author Sergei Pravdin
 	 */
 	public static MediumDto readMedium(MediumDto mediumDto)
-			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException {
+			throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		Connection conn = getConnection();
 		try {
-			mediumDto = readMediumHelper(conn, mediumDto);
 			return readMediumHelper(conn, mediumDto);
-		} catch (SQLException | MediumDoesNotExistException e){
+		} catch (SQLException e){
 			String msg = "Database error occurred while reading medium entity with id: " + mediumDto.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
-		} finally {
+		}  catch (MediumDoesNotExistException e) {
+			String msg = "A medium does not exist with id: " + mediumDto.getId();
+//			Logger.severe(msg);
+			throw new MediumDoesNotExistException(msg, e);
+		}
+		finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
@@ -145,16 +149,19 @@ public final class MediumDao {
 			PreparedStatement createStmt = conn.prepareStatement(
 					"INSERT INTO Mediumcopy (copyid, mediumid, signature, bibposition, status, " +
 							"deadline, actor) VALUES " +
-							"(?, ?, ?, ?, CAST(? AS copyStatus), CAST(? AS DATE), ?);"
+							"(?, ?, ?, ?, CAST (? AS copyStatus), ?, ?);",
+					Statement.RETURN_GENERATED_KEYS
 			);
 			createStmt.setInt(2, mediumDto.getId());
 			populateStatement(createStmt, copyDto);
+			System.out.println(createStmt);
 			int numAffectedRows = createStmt.executeUpdate();
+			System.out.println(numAffectedRows);
 			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(copyDto, createStmt); }
 			conn.commit();
 		} catch (SQLException e){
 			String msg = "Database error occurred while creating mediumCopy entity with id: " + copyDto.getId();
-			Logger.severe(msg);
+//			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -251,10 +258,20 @@ public final class MediumDao {
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the signature isn't
 	 * 		associated with any data entry.
 	 * @see CopyDto
+	 *
+	 * @author Sergei Pravdin
 	 */
-	public static CopyDto deleteCopy(CopyDto copyDto) {
-		//TODO: MS2 von Sergej
-		return null;
+	public static void deleteCopy(CopyDto copyDto) throws LostConnectionException, MaxConnectionsException, SQLException {
+		//TODO: MS2 von Sergej. Jetzt ist die Methode implementiert, um AfterAll im Test durchzuführen.
+		Connection conn = getConnection();
+		PreparedStatement deleteStmt = conn.prepareStatement(
+				"DELETE FROM MediumCopy " +
+						"WHERE copyid = ?;"
+		);
+		deleteStmt.setInt(1, Math.toIntExact(copyDto.getId()));
+		deleteStmt.executeUpdate();
+		conn.commit();
+		ConnectionPool.getInstance().releaseConnection(conn);
 	}
 
 	/**
@@ -371,7 +388,6 @@ public final class MediumDao {
 		} else {
 			conn.commit();
 			String msg = "A medium does not exist with id: " + mediumDto.getId();
-			Logger.severe(msg);
 			throw new MediumDoesNotExistException();
 		}
 	}
@@ -398,12 +414,13 @@ public final class MediumDao {
 	 */
 	private static void readCopiesHelper(MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
 		Connection conn = getConnection();
+
 		PreparedStatement readStmt = conn.prepareStatement(
-				"SELECT copyid, mediumid = ?, signature, bibposition, status, deadline, actor " +
+				"SELECT copyid, mediumid, signature, bibposition, status, deadline, actor " +
 						"FROM Mediumcopy " +
 						"WHERE mediumid = ?;"
 		);
-		readStmt.setInt(2, Math.toIntExact(mediumDto.getId()));
+		readStmt.setInt(1, Math.toIntExact(mediumDto.getId()));
 		ResultSet resultSet = readStmt.executeQuery();
 		while (resultSet.next()) {
 			CopyDto copyDto = new CopyDto();
@@ -420,8 +437,12 @@ public final class MediumDao {
 		copyDto.setId(resultSet.getInt(1));
 		copyDto.setSignature(resultSet.getString(3));
 		copyDto.setLocation(resultSet.getString(4));
-		copyDto.setCopyStatus((CopyStatus) resultSet.getObject(5));
-		copyDto.setDeadline(resultSet.getDate(6));
+		switch (resultSet.getString(5)) {
+			case "BORROWED" -> copyDto.setCopyStatus(CopyStatus.BORROWED);
+			case "READY_FOR_PICKUP" -> copyDto.setCopyStatus(CopyStatus.READY_FOR_PICKUP);
+			case "AVAILABLE" -> copyDto.setCopyStatus(CopyStatus.AVAILABLE);
+		}
+		copyDto.setDeadline(resultSet.getTimestamp(6));
 		copyDto.setActor(resultSet.getInt(7));
 	}
 
@@ -446,8 +467,10 @@ public final class MediumDao {
 		stmt.setString(3, copyDto.getSignature());
 		stmt.setString(4, copyDto.getLocation());
 		stmt.setString(5, String.valueOf(copyDto.getCopyStatus()));
-		stmt.setDate(6, (Date) copyDto.getDeadline());
-		stmt.setInt(7, copyDto.getActor());
+		stmt.setTimestamp(6, copyDto.getDeadline());
+		if (copyDto.getActor() != 0) {
+			stmt.setInt(7, copyDto.getActor());
+		}
 	}
 
 	/**
