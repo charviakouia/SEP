@@ -1,14 +1,21 @@
 package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * Backing bean for the login page. This page is the one users first face when
@@ -21,61 +28,86 @@ import jakarta.inject.Named;
 @RequestScoped
 public class Login {
 
-	@Inject
-	private FacesContext facesContext;
+    @Inject
+    private FacesContext facesContext;
 
-	@Inject
-	private UserSession userSession;
+    @Inject
+    private UserSession userSession;
 
-	private String email;
+    private  UserDto userDto;
 
-	private String password;
+    private String email;
 
-	@PostConstruct
-	public void init() {
-	}
+    private String password;
 
-	public String getEmail() {
-		return email;
-	}
+    @PostConstruct
+    public void init() {
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
 
-	public String getPassword() {
-		return password;
-	}
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	/**
-	 * Log into the system.
-	 * 
-	 * @throws MaxConnectionsException If there are no more available database
-	 *                                 connections.
-	 */
-	public String logIn() throws MaxConnectionsException {
-		UserDto user = new UserDto();
-		user.setEmailAddress(email);
-		UserDto dbUser = null;
+    public String getEmail() {
+        return email;
+    }
 
-		try {
-			dbUser = UserDao.readUserByEmail(user);
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-		} catch (EntityInstanceDoesNotExistException e){
-			//TODO auf Fehlerseite weiterleiten
-		}
+    public String getPassword() {
+        return password;
+    }
 
-		return null;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	/**
-	 * Send an email to the user with a reset link inside.
-	 */
-	public void resetPassword() {
+    /**
+     * Log into the system.
+     *
+     * @throws MaxConnectionsException If there are no more available database
+     *                                 connections.
+     */
+    public String logIn() throws MaxConnectionsException {
+        UserDto user = new UserDto();
+        user.setEmailAddress(email);
+        UserDto dbUser = null;
 
-	}
+        try {
+            dbUser = UserDao.readUserByEmail(user);
+
+            if (dbUser == null) {
+                Logger.development("Login failed: No user for email");
+            } else {
+                String hashedPasswordInput = PasswordHashingModule.hashPassword(password, dbUser.getPasswordSalt());
+                if (hashedPasswordInput.equals(dbUser.getPasswordHash())) {
+                    userSession.setUser(dbUser);
+                    return "/view/account/profile.xhtml";
+                }
+            }
+
+
+        } catch (EntityInstanceDoesNotExistException | LostConnectionException e) {
+            Logger.development("Login failed: " + e.getMessage());
+        }
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Passwort oder Email falsch", null);
+        facesContext.addMessage(null, msg);
+        // throw invalid username or password
+        return null;
+    }
+
+    /**
+     * Send an email to the user with a reset link inside.
+     */
+    public void resetPassword() {
+
+    }
+
+    public UserDto getUserDto() {
+        return userDto;
+    }
+
+    public void setUserDto(UserDto userDto) {
+        this.userDto = userDto;
+    }
 }
