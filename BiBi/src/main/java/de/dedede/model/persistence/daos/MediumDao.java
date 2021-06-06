@@ -154,9 +154,7 @@ public final class MediumDao {
 			);
 			createStmt.setInt(2, mediumDto.getId());
 			populateStatement(createStmt, copyDto);
-			System.out.println(createStmt);
 			int numAffectedRows = createStmt.executeUpdate();
-			System.out.println(numAffectedRows);
 			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(copyDto, createStmt); }
 			conn.commit();
 		} catch (SQLException e){
