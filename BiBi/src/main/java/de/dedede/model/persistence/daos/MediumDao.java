@@ -1,21 +1,15 @@
 package de.dedede.model.persistence.daos;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.Duration;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import de.dedede.model.data.dtos.*;
-import de.dedede.model.logic.managed_beans.Medium;
-import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 import org.postgresql.util.PGInterval;
+
+import java.sql.*;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This DAO (data access object) manages data pertaining to a medium or a copy.
@@ -56,18 +50,29 @@ public final class MediumDao {
 	 * @param mediumDto A DTO container with the ID of the medium data to be fetched
 	 * @throws EntityInstanceDoesNotExistException Is thrown when the passed ID
 	 * 		is not associated with any existing data entry.
+	 * @throws MaxConnectionsException    Is thrown if no connection was available
+	 * 		to carry out the operation.
+	 * @throws LostConnectionException	Is thrown if the used connection
+	 * 		stopped working correctly before concluding the operation.
 	 * @return A DTO container with the medium data referenced by the ID.
+	 *
+	 * @author Sergei Pravdin
 	 */
 	public static MediumDto readMedium(MediumDto mediumDto)
-			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException {
+			throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		Connection conn = getConnection();
 		try {
 			return readMediumHelper(conn, mediumDto);
 		} catch (SQLException e){
-			String msg = "Database error occurred while reading application entity with id: " + mediumDto.getId();
+			String msg = "Database error occurred while reading medium entity with id: " + mediumDto.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
-		} finally {
+		}  catch (MediumDoesNotExistException e) {
+			String msg = "A medium does not exist with id: " + mediumDto.getId();
+//			Logger.severe(msg);
+			throw new MediumDoesNotExistException(msg, e);
+		}
+		finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
@@ -126,13 +131,39 @@ public final class MediumDao {
 	 * in the data store. Otherwise, an exception is thrown.
 	 *
 	 * @param copyDto A DTO container with the overwriting data
+	 * @param mediumDto A DTO container with the medium to which the copy to be created belongs
 	 * @throws EntityInstanceNotUniqueException Is thrown if the passed ID is already
 	 * 		associated with a data entry.
+	 * @throws MaxConnectionsException    Is thrown if no connection was available
+	 * 		to carry out the operation.
+	 * @throws LostConnectionException	Is thrown if the used connection
+	 * 		stopped working correctly before concluding the operation.
 	 * @see CopyDto
+	 *
+	 * @author Sergei Pravdin
 	 */
-	public static void createCopy(CopyDto copyDto) 
-			throws EntityInstanceNotUniqueException {
-		//TODO: MS1 von Sergej
+	public static void createCopy(CopyDto copyDto, MediumDto mediumDto)
+			throws EntityInstanceNotUniqueException, LostConnectionException, MaxConnectionsException {
+		Connection conn = getConnection();
+		try {
+			PreparedStatement createStmt = conn.prepareStatement(
+					"INSERT INTO Mediumcopy (copyid, mediumid, signature, bibposition, status, " +
+							"deadline, actor) VALUES " +
+							"(?, ?, ?, ?, CAST (? AS copyStatus), ?, ?);",
+					Statement.RETURN_GENERATED_KEYS
+			);
+			createStmt.setInt(2, mediumDto.getId());
+			populateStatement(createStmt, copyDto);
+			int numAffectedRows = createStmt.executeUpdate();
+			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(copyDto, createStmt); }
+			conn.commit();
+		} catch (SQLException e){
+			String msg = "Database error occurred while creating mediumCopy entity with id: " + copyDto.getId();
+//			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 	
 	/**
@@ -225,10 +256,20 @@ public final class MediumDao {
 	 * @throws EntityInstanceDoesNotExistException Is thrown if the signature isn't
 	 * 		associated with any data entry.
 	 * @see CopyDto
+	 *
+	 * @author Sergei Pravdin
 	 */
-	public static CopyDto deleteCopy(CopyDto copyDto) {
-		//TODO: MS2 von Sergej
-		return null;
+	public static void deleteCopy(CopyDto copyDto) throws LostConnectionException, MaxConnectionsException, SQLException {
+		//TODO: MS2 von Sergej. Jetzt ist die Methode implementiert, um AfterAll im Test durchzuführen.
+		Connection conn = getConnection();
+		PreparedStatement deleteStmt = conn.prepareStatement(
+				"DELETE FROM MediumCopy " +
+						"WHERE copyid = ?;"
+		);
+		deleteStmt.setInt(1, Math.toIntExact(copyDto.getId()));
+		deleteStmt.executeUpdate();
+		conn.commit();
+		ConnectionPool.getInstance().releaseConnection(conn);
 	}
 
 	/**
@@ -292,6 +333,9 @@ public final class MediumDao {
 
 	// Helper methods:
 
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
 		Connection conn = null;
 		try {
@@ -306,6 +350,9 @@ public final class MediumDao {
 		return conn;
 	}
 
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static boolean mediumEntityExists(Connection conn, MediumDto mediumDto)
 			throws SQLException {
 		PreparedStatement checkingStmt = conn.prepareStatement(
@@ -320,8 +367,11 @@ public final class MediumDao {
 		return resultSet.getBoolean(1);
 	}
 
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static MediumDto readMediumHelper(Connection conn, MediumDto mediumDto)
-			throws SQLException, LostConnectionException, MaxConnectionsException {
+			throws SQLException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		PreparedStatement readStmt = conn.prepareStatement(
 				"SELECT mediumid, mediumlendperiod, hascategory " +
 						"FROM Medium " +
@@ -335,10 +385,14 @@ public final class MediumDao {
 			return mediumDto;
 		} else {
 			conn.commit();
-			return null;
+			String msg = "A medium does not exist with id: " + mediumDto.getId();
+			throw new MediumDoesNotExistException();
 		}
 	}
 
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static void populateMediumDto(ResultSet resultSet, MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
 		mediumDto.setId(resultSet.getInt(1));
 		long returnPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(2)).getSeconds());
@@ -353,14 +407,18 @@ public final class MediumDao {
 		readAttributesHelper(mediumDto);
 	}
 
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static void readCopiesHelper(MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
 		Connection conn = getConnection();
+
 		PreparedStatement readStmt = conn.prepareStatement(
-				"SELECT copyid, mediumid = ?, signature, bibposition, status, deadline, actor " +
+				"SELECT copyid, mediumid, signature, bibposition, status, deadline, actor " +
 						"FROM Mediumcopy " +
 						"WHERE mediumid = ?;"
 		);
-		readStmt.setInt(2, Math.toIntExact(mediumDto.getId()));
+		readStmt.setInt(1, Math.toIntExact(mediumDto.getId()));
 		ResultSet resultSet = readStmt.executeQuery();
 		while (resultSet.next()) {
 			CopyDto copyDto = new CopyDto();
@@ -370,12 +428,19 @@ public final class MediumDao {
 		}
 	}
 
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static void populateCopyDto(CopyDto copyDto, ResultSet resultSet) throws SQLException {
 		copyDto.setId(resultSet.getInt(1));
 		copyDto.setSignature(resultSet.getString(3));
 		copyDto.setLocation(resultSet.getString(4));
-		copyDto.setCopyStatus((CopyStatus) resultSet.getObject(5));
-		copyDto.setDeadline(resultSet.getDate(6));
+		switch (resultSet.getString(5)) {
+			case "BORROWED" -> copyDto.setCopyStatus(CopyStatus.BORROWED);
+			case "READY_FOR_PICKUP" -> copyDto.setCopyStatus(CopyStatus.READY_FOR_PICKUP);
+			case "AVAILABLE" -> copyDto.setCopyStatus(CopyStatus.AVAILABLE);
+		}
+		copyDto.setDeadline(resultSet.getTimestamp(6));
 		copyDto.setActor(resultSet.getInt(7));
 	}
 
@@ -383,9 +448,37 @@ public final class MediumDao {
 		//TODO: MS2 von Sergej
 	}
 
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static PGInterval toPGInterval(Duration duration){
 		PGInterval result = new PGInterval();
 		result.setSeconds(duration.getSeconds());
 		return result;
+	}
+
+	/**
+	 * @author Sergei Pravdin
+	 */
+	private static void populateStatement(PreparedStatement stmt, CopyDto copyDto) throws SQLException {
+		stmt.setInt(1, copyDto.getId());
+		stmt.setString(3, copyDto.getSignature());
+		stmt.setString(4, copyDto.getLocation());
+		stmt.setString(5, String.valueOf(copyDto.getCopyStatus()));
+		stmt.setTimestamp(6, copyDto.getDeadline());
+		if (copyDto.getActor() != 0) {
+			stmt.setInt(7, copyDto.getActor());
+		}
+	}
+
+	/**
+	 * @author Sergei Pravdin
+	 */
+	private static void attemptToInsertGeneratedKey(CopyDto copyDto, Statement stmt)
+			throws SQLException {
+		ResultSet resultSet = stmt.getGeneratedKeys();
+		if (resultSet.next()){
+			copyDto.setId(resultSet.getInt(1));
+		}
 	}
 }

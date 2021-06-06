@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="BiBi:Web exploded">
+    <output-path>$PROJECT_DIR$/classes/artifacts/BiBi_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="BiBi/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="BiBi" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="JUnit5.7.0" module-name="BiBi" />
+          <element id="library" level="module" name="junit5" module-name="BiBi" />
+          <element id="library" level="project" name="postgresql-42.2.20" />
+          <element id="library" level="project" name="jakarta.mail-2.0.0" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
