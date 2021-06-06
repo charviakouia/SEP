@@ -88,99 +88,91 @@ Zusätzlich sind bei der Angabe einer Klassenname alle zugehörige Methoden zu i
 
 Im Folgenden werden die Arbeitspakete, die zum Erreichen des ersten Milestones notwendig sind, aufgelistet und kurz beschrieben. 
 
-\newgeometry{top=1cm, bottom=1cm}
+\newgeometry{top=1cm,bottom=1cm}
 \begin{landscape}
-\centering
-\begin{table}[H]
-	\begin{tabular}{llllllll}
-	\textbf{Arbeitspaket} &
-	\textbf{ID }&
-	\textbf{Inhalt} &
-	\textbf{Dauer} &
-	\textbf{Abh.} &
-	\textbf{Entwickler} &
-	\textbf{Startzeit} &
-	\textbf{Endzeit} \\
-		\hline
-		Basis &
-		100 &
-		\begin{tabular}[c]{@{}l@{}}Logger (C)\\ ConfigReader (C)\end{tabular} &
-		10 &
-		- &
-		Jonas Picker &
-		01.06.21 9:00 &
-		02.06.21 14:00 \\
-		\hline
-		Exceptions &
-		101 &
-		Exceptions &
-		2 &
-		- &
-		Ivan Charviakou &
-		01.06.21 8:00 &
-		01.06.21 10:00 \\
-		\hline
-		Utilities &
-		102 &
-		\begin{tabular}[c]{@{}l@{}}ConnectionPool (C)\\ ApplicationDao (C, komplett)\end{tabular} &
-		10 &
-		100 &
-		Ivan Charviakou &
-		02.06.21 8:00 &
-		03.06.21 13:00 \\
-		\hline
-		Systemstart &
-		103 &
-		\begin{tabular}[c]{@{}l@{}}SystemStartStop (C)\\ DataLayerInitializer (C): \\ -Table creation.\\ -Sample data\end{tabular} &
-		12 &
-		100, 101, 102 &
-		Jonas Picker &
-		03.06.21 9:00 &
-		04.06.21 15:00 \\
-		\hline
-		\begin{tabular}[c]{@{}l@{}}Login bzw. \\
-		 Nutzerauthentifizierung\end{tabular} &
-		104 &
-		\begin{tabular}[c]{@{}l@{}}UserDao (C): readUserByEmail(..)\\ Login (F/B)\\ PasswordHashingModule (C)\\ UserSession (MB)\end{tabular} &
-		12 &
-		100, 101, 102,103 &
-		Mohamad Najjar &
-		04.06.21 10:00 &
-		05.06.21 16:00 \\
-		\hline
-		Seitenvorlage &
-		107 &
-		\begin{tabular}[c]{@{}l@{}}Header, Footer, Template (F/B)\\ Kontextsensitive Hilfe\end{tabular} &
-		5 &
-		100, 102 &
-		Leon Liehr &
-		03.06.21 10:00 &
-		03.06.21 15:00 \\
-		\begin{tabular}[c]{@{}l@{}}Medien aller Nutzer \\ bzw. Listendemo\end{tabular} &
-		105 &
-		\begin{tabular}[c]{@{}l@{}}PaginatedList \& column (F)\\ CopiesReadyForPickupAllUsers (F/B)\\ MediumDao (C): readGlobalPickuoList(...)\end{tabular} &
-		12 &
-		100, 101, 102, 103 &
-		Leon Liehr &
-		04.06.21 10:00 &
-		05.06.21 16:00 \\
-		\hline
-		Milestein-Testing 1 &
-		106 &
-		Einzelne Tests für Milestein 1 &
-		8 &
-		\begin{tabular}[c]{@{}l@{}}100, 101, 102, 103,\\  104, 105, 107\end{tabular} &
-		Sergei Pravdin &
-		05.06.21 9:00 &
-		05.06.21 17:00\\
-		\hline
-	\end{tabular}
-\end{table}
-
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{llllll}
+			\toprule
+			\textbf{Arbeitspaket} &
+			\textbf{ID} &
+			\textbf{Inhalt} &
+			\textbf{Abhängigkeiten} &
+			\textbf{Entwickler} &
+			\textbf{Dauer} \\
+			\midrule
+			Basis &
+			11 &
+			\begin{tabular}[c]{@{}l@{}}Logger (C)\\ ConfigReader (C)\\ \end{tabular} &
+			11 &
+			 Ivan Charviakou&
+			5 \\
+			Utilities I&
+			10 &
+			\begin{tabular}[c]{@{}l@{}}ConnectionPool  (C)\\ ApplicationDao (C)\\ ApplicationDto (C)\\ CSSReader (C)\\ \end{tabular} &
+			11 &
+			Jonas Picker &
+			4  \\
+			Utilities II&
+			20 &
+			\begin{tabular}[c]{@{}l@{}} EmailUtility (C)\\ TokenGenerator (C)\\ PasswordHashingModule (C)\end{tabular} &
+			11 &
+			Ivan Charviakou&
+			4\\
+			Systemstart&
+			30 &
+			\begin{tabular}[c]{@{}l@{}}SystemStartStop (C)\\DataLayerInitializer (C)\\ DatenbankInitialisierung (SQL)
+		\end{tabular} &
+			10 &
+			Jonas Picker &
+			4 \\
+			Facelets &
+			40 &
+			\begin{tabular}[c]{@{}l@{}}Template (F) (BB)\\ PaginatedList (F)\\ \end{tabular} &
+			10 &
+			León Liehr &
+			4 \\
+			Fehlerbehandlung &
+			41 &
+		\begin{tabular}[c]{@{}l@{}}Fehlerseiten  (F) (BB)\\ ErrorDto (FC)\\ ExceptionHandler (C)\\ CustomExceptionHandler (C) \end{tabular}&
+			40 &
+			Sergei Pravdin &
+			3 \\
+			Nutzerdefinierung &
+			52 &
+			\begin{tabular}[c]{@{}l@{}}UserDto  (C) \\ UserSession (MB)\\ RoleConverter (Co)\\ PasswordValidator (C)\\ ConfirmPasswordValidator (C)\\ EmailValidator (C) \\ UserDao (M)\end{tabular}&
+			30, 41 &
+			Mohamad Najjar &
+			6\\
+			
+			Nutzerathentifizierung &
+			50 &
+			\begin{tabular}[c]{@{}l@{}}UserDao  (M) \\ Registration (BB) (F)\\ Login (BB) (F)\\ UserValidator (C)\\ ConfirmPasswordValidator (C)\\ EmailValidator (C) \\ UserDao (M)\end{tabular}&
+			52, 20 &
+			Mohamad Najjar &
+			4\\
+			
+			Globale Anwendungseinstellungen &
+			61 &
+			\begin{tabular}[c]{@{}l@{}}UserDao  (M) \\ Contact (BB) (F)\\ SiteNotice (BB) (F)\\ PrivacyPlocy (BB) (F)\\\end{tabular}&
+			30, 41 &
+			León Liehr &
+			3\\
+			
+			Administrative Funktionalitäten &
+			60 &
+			\begin{tabular}[c]{@{}l@{}}Administration   (BB) (F) \\ LogoValidator (C)\\  \\\end{tabular}&
+			30, 41 &
+			Sergei Pravdin &
+			4\\
+			\bottomrule
+		\end{tabular}
+	 \caption{Tabelle des ersten Milestones}
+	\end{table}
+	
 \end{landscape}
 \restoregeometry
-
-
 
 %----------------------------------------------------------------------Milestone 2--------------------------------------------------------------------------------------------
 
@@ -219,106 +211,59 @@ Milenstein-Testing                                                       & 295  
 
 Nachfolgend die Arbeitspakete des dritten Milestones.
 
-\newgeometry{top=1cm, bottom=1cm}
+\newgeometry{top=1cm,bottom=1cm}
 \begin{landscape}
 
-
-\begin{table}[]
-	\begin{tabular}{llllllll}
-		\hline
-		\textbf {Arbeitspaket} &
-	\textbf{	ID }&
-		\textbf{Inhalt}&
-		\textbf{Dauer} &
-		\textbf{Abh. }&
-		\textbf{Entwickler} &
-		\textbf{Startzeit} &
-	\textbf{	Endzeit} \\
-		\hline
-		Security &
-		306 &
-		Trespasslistener (C) &
-		4 &
-		M1, M2 &
-		Jonas Picker &
-		14.06.21 9:00 &
-		14.06.21 14:00 \\
-		\hline
-		Medien pro Nutzer &
-		301 &
-		\begin{tabular}[c]{@{}l@{}}Abzuholende Exemplare (F/B)\\ Ausgeliehne Exemplare (F/B)\\ MediumDao (C):\\ -readMarktCopiesByUSer(...)\\ -readLentCopiesByUser(...)\end{tabular} &
-		6 &
-		M1, M2 &
-		Sergei Pravdin &
-		14.06.21 9:00 &
-		14.06.21 15:00 \\
-		\hline
-		Nutzersuche &
-		302 &
-		\begin{tabular}[c]{@{}l@{}}Nutzersuche (F/B)\\ UserDao (C):\\ -readUserBySearchCriteria(...)\end{tabular} &
-		12 &
-		M1, M2 &
-		Mohamad Najjar &
-		14.06.21 10:00 &
-		16.06.21 16:00 \\
-		\hline
-		\begin{tabular}[c]{@{}l@{}}Globale Anwendungs-\\ einstellugen\end{tabular} &
-		305 &
-		\begin{tabular}[c]{@{}l@{}}Impressumseite(F/B)\\ Contact (F/B)\\ Datenschutzerklärung (F/B)\\ Administration (F/B)\\ LogoValidator (V)\\
-		 CSSReader (C)\end{tabular} &
-		12 &
-		M1, M2 &
-		Mohamad Najjar &
-		14.06.21 10:00 &
-		16.06.21 16:00 \\
-		\hline
-		Wartungsprozess &
-		303 &
-		\begin{tabular}[c]{@{}l@{}}MaintenanceProcess (C)\\ MediumDao (C):\\ -updateMarkedCopies(...)\\ -readDueDateReminders(...)\end{tabular} &
-		10 &
-		M1, M2, 305 &
-		Jonas Picker &
-		16.06.21 09:00 &
-		17.06.21 14:00 \\
-		\hline
-		Fehlerbehandlung &
-		307 &
-		\begin{tabular}[c]{@{}l@{}}StaticError (F)\\ DynamicError (F/B)\\ GlobalExceptionHandler (C)\\ CustomExecptionHandlerFauctory (C)\end{tabular} &
-		9 &
-		M1, M2 &
-		Ivan Charviakou &
-		14.06.21 8:00 &
-		15.06.21 15:00 \\
-		\hline
-		Leifristverstöße &
-		308 &
-		\begin{tabular}[c]{@{}l@{}}LendingPeriodViolation (F/B)\\ MediumDao (C):\\ -readOverdueCopies (...)\end{tabular} &
-		5 &
-		M1, M2 &
-		Ivan Charviakou &
-		14.06.21 8:00 &
-		15.06.21 15:00 \\
-		\hline
-		Zusatzfunktionalitäten &
-		304 &
-		Reactive input fields &
-		10 &
-		M1, M2, 302 &
-		Leon Liehr &
-		14.06.21 10:00 &
-		15.06.21 15:00 \\
-		\hline
-		Milestein-Testing 3 &
-		309 &
-		Einzelne Tests für Meilenstein 3 &
-		6 &
-		\begin{tabular}[c]{@{}l@{}}301, 302, 303,\\ 304, 305, 306,\\ 307, 308, M1,\\ M2\end{tabular} &
-		Sergei Pravdin &
-		17.06.21 9:00 &
-		17.06.21 15:00\\
-		\hline
-		
-	\end{tabular}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{llllll}
+        \toprule
+        \textbf{Arbeitspaket} &
+        \textbf{ID} &
+        \textbf{Inhalt} &
+        \textbf{Abhängigkeiten} &
+        \textbf{Entwickler} &
+        \textbf{Dauer} \\
+        \midrule
+        Medium Search &
+        130 &
+        \begin{tabular}[c]{@{}l@{}}medium-search (F)\\ MediumSearch (BB)\\ searchMedium (M)\\ addNuancedSearchField (M)\\ MediumDao (C)\\ readMediaBySearchCriteria (M)MediumSearchDto (C)\\ AttributeOrCategoryConverter (Co)\\ AvailabilityStatusConverter (Co)\\ MediumPeviewPositionConverter (Co)\\ SearchOperatorConverter (Co)\end{tabular} &
+        80, 81 &
+        León Liehr &
+        8 \\
+        Password Reset \& Email Validation &
+        150 &
+        \begin{tabular}[c]{@{}l@{}}password-reset (F)\\ PasswordReset (BB)\\ resetPassword (M)\\ email-confirmation (F)\\ EmailConfirmation (BB)\\ confirmEmailAddress (M)\\ UserDao (C)\end{tabular} &
+        120 &
+        Ivan Charviakou &
+        6 \\
+        Copies of a User &
+        100 &
+        \begin{tabular}[c]{@{}l@{}}copies-ready-for-pickup (F)\\ CopiesReadyForPickup (BB)\\ borrowed-copies (F)\\ BorrowedCopies (BB)\\ MediumDao (C)\end{tabular} &
+        80, 120 &
+        Sergei Pravdin &
+        5 \\
+        Copies by User &
+        91 &
+        \begin{tabular}[c]{@{}l@{}}copies-ready-for-pickup-all-users (F)\\ CopiesReadyForPickupAllUsers (BB)\\ lending-period-violations (F)\\ LendingPeriodViolations (BB)\\ MediumDao (C)\end{tabular} &
+        80, 120 &
+        Jonas Picker &
+        5 \\
+        User Search &
+        140 &
+        \begin{tabular}[c]{@{}l@{}}user-search (F)\\ UserSearch (BB)\\ UserSearchDto (C)\\ UserDao (C)\end{tabular} &
+        120 &
+        Mohamad Najjar &
+        6 \\
+        Enhancements &
+        160 &
+        reactiveInputField (CC) &
+        130, 140, 110 &
+        León Liehr &
+        3 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Tabelle des drtten Milestones}
 \end{table}
 
 \end{landscape}
@@ -396,6 +341,7 @@ Die Vielzahl der verwendeten Technologien erfordert eine Spezialisierung der ein
 \end{tabular}
 \end{table}
 \newpage
+
 %----------------------------------------------------------------------Kapitel 5--------------------------------------------------------------------------------------------
 
 \section{Whitebox-Tests}
