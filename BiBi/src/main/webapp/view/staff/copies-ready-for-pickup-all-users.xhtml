@@ -10,36 +10,48 @@
 
 	<ui:define name="content">
 
-		<bibi:paginatedList items="#{copiesReadyForPickupAllUsers.stuff}">
+		<bibi:paginatedList items="#{copiesReadyForPickupAllUsers.items}">
 			
 			<h:column>
 				<f:facet name="header">#{msg['copy']}</f:facet>
 				<bibi:columnContent>
-					<h:outputLink value="/BiBi/view/staff/lending.xhtml">#SIGNATUR# [#{item.first}]</h:outputLink>
+					<!-- @Task commandLink -->		
+					<!-- <h:outputLink value="/BiBi/view/staff/lending.xhtml">…</h:outputLink> -->
+					#{item.copy.signature}
+				</bibi:columnContent>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">#{msg['location']}</f:facet>
+				<bibi:columnContent>
+					#{item.copy.location}
 				</bibi:columnContent>
 			</h:column>
 			
 			<h:column>
 				<f:facet name="header">#{msg['medium']}</f:facet>
 				<bibi:columnContent>
-					<h:outputLink value="/BiBi/view/public/medium.xhtml?id=TODO">#MEDIENTITEL# [#{item.first}]</h:outputLink>
+					<!-- @Task support other types, too! -->
+					<h:outputLink value="/BiBi/view/public/medium.xhtml?id=#{item.medium.id}">#{item.attribute.textValue[0]}</h:outputLink>
 				</bibi:columnContent>
 			</h:column>
 			
 			<h:column>
 				<f:facet name="header">#{msg['user']}</f:facet>
 				<bibi:columnContent>
-					<h:outputLink value="/BiBi/view/account/profile.xhtml?id=TODO">#NUTZER# [#{item.first}]</h:outputLink>
+					<!-- @Task link only for admins -->
+					<!-- @Task display fullname in some cases -->
+					<h:outputLink value="/BiBi/view/account/profile.xhtml?id=#{item.user.id}">#{item.user.emailAddress}</h:outputLink>
 				</bibi:columnContent>
 			</h:column>
 			
 			<h:column>
 				<!-- Dauer bis zum Zeitpunkt der Fristüberschreitung -->
-				<f:facet name="header">#TIME#</f:facet>
+				<f:facet name="header">TIME</f:facet>
 				<bibi:columnContent>
-					#DAUER# [#{item.first}]
+					#{item.copy.deadline}
 				</bibi:columnContent>
-			</h:column>
+			</h:column> -->
 			
 		</bibi:paginatedList>
 

@@ -15,7 +15,5 @@ public class Footer {
 
     @PostConstruct
 	public void init() {
-
-	}
-
+    }
 }

@@ -17,15 +17,14 @@ import jakarta.inject.Named;
 public class PrivacyPolicy implements Serializable {
 
 	@Serial
-	private static  final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private ApplicationDto application;
 
 	@PostConstruct
 	public void init() {
-
 	}
-	
+
 	public ApplicationDto getApplication() {
 		return application;
 	}
@@ -33,7 +32,7 @@ public class PrivacyPolicy implements Serializable {
 	public void setApplication(ApplicationDto application) {
 		this.application = application;
 	}
-	
+
 	/**
 	 * Save the changes made to the privacy policy by an admin.
 	 */

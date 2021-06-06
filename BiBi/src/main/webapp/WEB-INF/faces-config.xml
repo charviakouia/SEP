@@ -15,7 +15,7 @@
 			<base-name>de.dedede.model.logic.i18n.messages</base-name>
 			<var>msg</var>
 		</resource-bundle>
-
+		
 		<system-event-listener>
 			<system-event-listener-class>de.dedede.model.logic.util.SystemStartStop</system-event-listener-class>
 			<system-event-class>jakarta.faces.event.PostConstructApplicationEvent</system-event-class>

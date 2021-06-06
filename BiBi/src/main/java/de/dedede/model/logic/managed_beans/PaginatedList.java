@@ -11,23 +11,16 @@ import de.dedede.model.data.dtos.PaginationDto;
 // @Temporary design
 public abstract class PaginatedList {
 
-	protected PaginationDto select;
-	
+	private PaginationDto paginatedList;
+
 	public abstract List<?> getItems();
 
-	public void setPage(int page) {
-
+	public PaginationDto getPaginatedList() {
+		return paginatedList;
 	}
 
-	public void getPage(int page) {
-
+	public void setPaginatedList(PaginationDto paginatedList) {
+		this.paginatedList = paginatedList;
 	}
 
-	public void forward() {
-
-	}
-
-	public void backward() {
-
-	}
 }
