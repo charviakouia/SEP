@@ -276,17 +276,25 @@ public final class MediumDao {
 	 *
 	 * @author Sergei Pravdin
 	 */
-	public static void deleteCopy(CopyDto copyDto) throws LostConnectionException, MaxConnectionsException, SQLException {
-		//TODO: MS2 von Sergej. Jetzt ist die Methode implementiert, um AfterAll im Test durchzuführen.
+	public static CopyDto deleteCopy(CopyDto copyDto) throws MediumDoesNotExistException, LostConnectionException, MaxConnectionsException {
 		Connection conn = getConnection();
-		PreparedStatement deleteStmt = conn.prepareStatement(
-				"DELETE FROM MediumCopy " +
-						"WHERE copyid = ?;"
-		);
-		deleteStmt.setInt(1, Math.toIntExact(copyDto.getId()));
-		deleteStmt.executeUpdate();
-		conn.commit();
-		ConnectionPool.getInstance().releaseConnection(conn);
+		try {
+			if (copyEntityExists(conn, copyDto)){
+				deleteCopyHelper(conn, copyDto);
+				conn.commit();
+				return copyDto;
+			} else {
+				String msg = String.format("No entity with the id: %d exists", copyDto.getId());
+				// Logger.severe(msg);
+				throw new MediumDoesNotExistException(msg);
+			}
+		} catch (SQLException e) {
+			String msg = "Database error occurred while deleting medium entity with id: " + copyDto.getId();
+			// Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
@@ -458,6 +466,19 @@ public final class MediumDao {
 	/**
 	 * @author Sergei Pravdin
 	 */
+	private static boolean copyEntityExists(Connection conn, CopyDto copyDto) throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE " + "WHEN (SELECT COUNT(copyid) FROM MediumCopy WHERE copyid = ?) > 0 THEN true "
+						+ "ELSE false " + "END AS entityExists;");
+		checkingStmt.setString(1, String.valueOf(copyDto.getId()));
+		ResultSet resultSet = checkingStmt.executeQuery();
+		resultSet.next();
+		return resultSet.getBoolean(1);
+	}
+
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static MediumDto readMediumHelper(Connection conn, MediumDto mediumDto)
 			throws SQLException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		PreparedStatement readStmt = conn.prepareStatement(
@@ -564,6 +585,9 @@ public final class MediumDao {
 		}
 	}
 
+	/**
+	 * @author Sergei Pravdin
+	 */
 	private static void deleteMediumHelper(Connection conn, MediumDto mediumDto) throws SQLException {
 		PreparedStatement deleteStmt = conn.prepareStatement(
 				"DELETE FROM Medium " +
@@ -571,5 +595,18 @@ public final class MediumDao {
 		);
 		deleteStmt.setInt(1, Math.toIntExact(mediumDto.getId()));
 		deleteStmt.executeUpdate();
+	}
+
+	/**
+	 * @author Sergei Pravdin
+	 */
+	private static void deleteCopyHelper(Connection conn, CopyDto copyDto) throws SQLException {
+		PreparedStatement deleteStmt = conn.prepareStatement(
+				"DELETE FROM MediumCopy " +
+						"WHERE copyid = ?;"
+		);
+		deleteStmt.setInt(1, Math.toIntExact(copyDto.getId()));
+		deleteStmt.executeUpdate();
+		conn.commit();
 	}
 }
