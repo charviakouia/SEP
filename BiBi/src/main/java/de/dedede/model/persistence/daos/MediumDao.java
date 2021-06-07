@@ -168,7 +168,7 @@ public final class MediumDao {
 					Statement.RETURN_GENERATED_KEYS
 			);
 			createStmt.setInt(2, mediumDto.getId());
-			populateStatement(createStmt, copyDto);
+			populateCopyStatement(createStmt, copyDto);
 			int numAffectedRows = createStmt.executeUpdate();
 			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(copyDto, createStmt); }
 			conn.commit();
@@ -253,13 +253,33 @@ public final class MediumDao {
 	 * identify and remove data. Otherwise, an exception is thrown.
 	 *
 	 * @param copyDto A DTO container with the overwriting data
-	 * @throws EntityInstanceDoesNotExistException Is thrown if the enclosed
+	 * @throws CopyDoesNotExistException Is thrown if the enclosed
 	 *                                             signature isn't associated with
 	 *                                             any data entry.
 	 * @see CopyDto
 	 */
-	public static void updateCopy(CopyDto copyDto) throws EntityInstanceDoesNotExistException {
-		// TODO: MS2 von Sergej
+	public static void updateCopy(CopyDto copyDto) throws CopyDoesNotExistException, LostConnectionException, MaxConnectionsException {
+		Connection conn = getConnection();
+		try {
+			PreparedStatement updateStmt = conn.prepareStatement(
+					"UPDATE Mediumcopy" +
+							"SET (copyid = ?, mediumid = ?, signature = ?, bibposition = ?," +
+							" status = CAST(? AS copyStatus), deadline = ?, actor = ?) WHERE copyid = ? ");
+			populateCopyStatement(updateStmt, copyDto);
+			int numAffectedRows = updateStmt.executeUpdate();
+			conn.commit();
+			if (numAffectedRows == 0){
+				String msg = String.format("No entity with the id: %d exists", copyDto.getId());
+				// Logger.severe(msg);
+				throw new CopyDoesNotExistException(msg);
+			}
+		} catch (SQLException e){
+			String msg = "Database error occurred while updating application entity with id: " + copyDto.getId();
+			// Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
@@ -563,7 +583,7 @@ public final class MediumDao {
 	/**
 	 * @author Sergei Pravdin
 	 */
-	private static void populateStatement(PreparedStatement stmt, CopyDto copyDto) throws SQLException {
+	private static void populateCopyStatement(PreparedStatement stmt, CopyDto copyDto) throws SQLException {
 		stmt.setInt(1, copyDto.getId());
 		stmt.setString(3, copyDto.getSignature());
 		stmt.setString(4, copyDto.getLocation());
