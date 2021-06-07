@@ -1,33 +1,17 @@
 package de.dedede.model.persistence.daos;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import de.dedede.model.data.dtos.*;
+import de.dedede.model.persistence.exceptions.*;
+import de.dedede.model.persistence.util.ConfigReader;
+import de.dedede.model.persistence.util.ConnectionPool;
+import de.dedede.model.persistence.util.Logger;
+import org.postgresql.util.PGInterval;
+
+import java.sql.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.postgresql.util.PGInterval;
-
-import de.dedede.model.data.dtos.AttributeDto;
-import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.data.dtos.CopyStatus;
-import de.dedede.model.data.dtos.MediumCopyAttributeUserDto;
-import de.dedede.model.data.dtos.MediumDto;
-import de.dedede.model.data.dtos.PaginationDto;
-import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
-import de.dedede.model.persistence.util.ConfigReader;
-import de.dedede.model.persistence.util.ConnectionPool;
-import de.dedede.model.persistence.util.Logger;
 /**
  * This DAO (data access object) manages data pertaining to a medium or a copy.
  * A medium describes general library entities, of which several copies may
@@ -471,7 +455,7 @@ public final class MediumDao {
 		} else {
 			conn.commit();
 			String msg = "A medium does not exist with id: " + mediumDto.getId();
-			throw new MediumDoesNotExistException();
+			throw new MediumDoesNotExistException(msg);
 		}
 	}
 
@@ -497,7 +481,6 @@ public final class MediumDao {
 	 */
 	private static void readCopiesHelper(MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
 		Connection conn = getConnection();
-
 		PreparedStatement readStmt = conn.prepareStatement(
 				"SELECT copyid, mediumid, signature, bibposition, status, deadline, actor " +
 						"FROM Mediumcopy " +
@@ -508,8 +491,7 @@ public final class MediumDao {
 		while (resultSet.next()) {
 			CopyDto copyDto = new CopyDto();
 			populateCopyDto(copyDto, resultSet);
-			mediumDto.setCopy(copyDto.getId(), copyDto);
-			conn.commit();
+			mediumDto.addCopy(copyDto.getId(), copyDto);
 		}
 	}
 
