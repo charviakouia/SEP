@@ -119,9 +119,25 @@ public final class MediumDao {
 	 *                                             associated with any data entry.
 	 * @see MediumDto
 	 */
-	public static MediumDto deleteMedium(MediumDto mediumDto) throws EntityInstanceDoesNotExistException {
-		// TODO: MS2 von Sergej
-		return null;
+	public static MediumDto deleteMedium(MediumDto mediumDto) throws MediumDoesNotExistException, LostConnectionException, MaxConnectionsException {
+		Connection conn = getConnection();
+		try {
+			if (mediumEntityExists(conn, mediumDto)){
+				deleteMediumHelper(conn, mediumDto);
+				conn.commit();
+				return mediumDto;
+			} else {
+				String msg = String.format("No entity with the id: %d exists", mediumDto.getId());
+				// Logger.severe(msg);
+				throw new MediumDoesNotExistException(msg);
+			}
+		} catch (SQLException e) {
+			String msg = "Database error occurred while deleting medium entity with id: " + mediumDto.getId();
+			// Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
@@ -546,5 +562,14 @@ public final class MediumDao {
 		if (resultSet.next()){
 			copyDto.setId(resultSet.getInt(1));
 		}
+	}
+
+	private static void deleteMediumHelper(Connection conn, MediumDto mediumDto) throws SQLException {
+		PreparedStatement deleteStmt = conn.prepareStatement(
+				"DELETE FROM Medium " +
+						"WHERE mediumid = ?;"
+		);
+		deleteStmt.setInt(1, Math.toIntExact(mediumDto.getId()));
+		deleteStmt.executeUpdate();
 	}
 }
