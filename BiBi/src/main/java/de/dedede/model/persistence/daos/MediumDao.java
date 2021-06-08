@@ -15,6 +15,7 @@ import org.postgresql.util.PGInterval;
 import de.dedede.model.data.dtos.AttributeDto;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
+import de.dedede.model.data.dtos.MediumCopyAttributeUserDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -69,9 +70,10 @@ public final class MediumDao {
 	 * @throws EntityInstanceDoesNotExistException Is thrown when the passed ID
 	 * 		is not associated with any existing data entry.
 	 * @return A DTO container with the medium data referenced by the ID.
+	 * @throws MediumDoesNotExistException 
 	 */
 	public static MediumDto readMedium(MediumDto mediumDto)
-			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException {
+			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		Connection conn = getConnection();
 		try {
 			return readMediumHelper(conn, mediumDto);
@@ -366,7 +368,7 @@ public final class MediumDao {
 	public static List<MediumCopyAttributeUserDto> readCopiesReadyForPickup(PaginationDto paginationDetails)
 			throws LostConnectionException, MaxConnectionsException {
 
-		final int entriesPerPage = Integer.parseInt(ConfigReader.getInstance().getSystemConfigurations().getProperty("MAX_PAGES"));
+		final int entriesPerPage = Integer.parseInt(ConfigReader.getInstance().getKey("MAX_PAGES", "20"));
 		final var connection = getConnection();
 
 		try {
@@ -491,9 +493,10 @@ public final class MediumDao {
 
 	/**
 	 * @author Sergei Pravdin
+	 * @throws MediumDoesNotExistException 
 	 */
 	private static MediumDto readMediumHelper(Connection conn, MediumDto mediumDto)
-			throws SQLException, LostConnectionException, MaxConnectionsException {
+			throws SQLException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		PreparedStatement readStmt = conn.prepareStatement(
 				"SELECT mediumid, mediumlendperiod, hascategory " + "FROM Medium " + "WHERE mediumid = ?;");
 		readStmt.setInt(1, Math.toIntExact(mediumDto.getId()));
@@ -544,7 +547,7 @@ public final class MediumDao {
 		copyDto.setSignature(resultSet.getString(3));
 		copyDto.setLocation(resultSet.getString(4));
 		copyDto.setCopyStatus((CopyStatus) resultSet.getObject(5));
-		copyDto.setDeadline(resultSet.getDate(6));
+		copyDto.setDeadline(resultSet.getTimestamp(6));
 		copyDto.setActor(resultSet.getInt(7));
 	}
 
