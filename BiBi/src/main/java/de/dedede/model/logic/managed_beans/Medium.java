@@ -10,6 +10,8 @@ import de.dedede.model.data.dtos.UserDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Backing bean for the medium facelet. This page provides information about a
@@ -27,20 +29,12 @@ public class Medium implements Serializable {
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private MediumDto medium;
-
-	private List<CopyDto> copies;
-
-	/**
-	 * A copy to be created.
-	 */
-	private CopyDto copy;
-
-	private UserDto user;
+	private MediumDto mediumDto;
 
 	@PostConstruct
-	public void init() {
 
+	private void init() {
+		mediumDto = new MediumDto();
 	}
 
 	/**
@@ -59,7 +53,21 @@ public class Medium implements Serializable {
 	/**
 	 * Insert a new copy of this medium.
 	 */
-	public void createCopy() {
+
+	public void createCopy() throws BusinessException {
+		CopyDto newCopyDto = new CopyDto();
+		try {
+			MediumDao.createCopy(newCopyDto, mediumDto);
+		} catch (LostConnectionException e) {
+			String msg = "Database error occurred while creating copy with id: " + newCopyDto.getId();
+			throw new BusinessException(msg, e);
+		} catch (MaxConnectionsException e) {
+			String msg = "Connection is not available while creating copy with id: " + newCopyDto.getId();
+			throw new BusinessException(msg, e);
+		} catch (EntityInstanceNotUniqueException e) {
+			String msg = "A copy with this ID already exists: " + newCopyDto.getId();
+			throw new BusinessException(msg, e);
+		}
 
 	}
 
@@ -137,19 +145,11 @@ public class Medium implements Serializable {
 	public void pickUpCopy(int index, UserDto user) throws IllegalStateException {
 	}
 
-	public MediumDto getMedium() {
-		return medium;
+	public MediumDto getMediumDto() {
+		return mediumDto;
 	}
 
-	public void setMedium(MediumDto medium) {
-		this.medium = medium;
-	}
-
-	public CopyDto getCopy() {
-		return copy;
-	}
-
-	public void setCopy(CopyDto copy) {
-		this.copy = copy;
+	public void setMediumDto(MediumDto mediumDto) {
+		this.mediumDto = mediumDto;
 	}
 }

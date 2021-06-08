@@ -6,6 +6,9 @@ import java.util.List;
 
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.MediumSearchDto;
+import de.dedede.model.data.dtos.MediumSearchDto.NuancedSearchQuery;
+import de.dedede.model.data.dtos.SearchOperator;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -24,9 +27,14 @@ public class MediumSearch extends PaginatedList implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 	
-	private MediumSearchDto mediumSearch;
+	private MediumSearchDto mediumSearch = new MediumSearchDto();
 	
 	private List<MediumDto> mediums;
+	
+	@PostConstruct
+	public void init() {
+		
+	}
 	
 	public MediumSearchDto getMediumSearch() {
 		return mediumSearch;
@@ -34,6 +42,10 @@ public class MediumSearch extends PaginatedList implements Serializable {
 
 	public void setMediumSearch(MediumSearchDto mediumSearch) {
 		this.mediumSearch = mediumSearch;
+	}
+	
+	public SearchOperator[] getAllSearchOperators() {
+		return SearchOperator.values();
 	}
 
 	/**
@@ -48,7 +60,7 @@ public class MediumSearch extends PaginatedList implements Serializable {
 	 * and a search term.
 	 */
 	public void addNuancedSearchQuery() {
-
+		mediumSearch.getNuancedSearchQueries().add(new NuancedSearchQuery());
 	}
 
 	@Override

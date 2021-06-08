@@ -4,8 +4,9 @@ import java.util.Base64;
 
 import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.MediumSearchDto;
+import de.dedede.model.data.dtos.UserRole;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -14,8 +15,8 @@ import jakarta.inject.Named;
  * necessary for the header facelet into the template.
  */
 
-@Named("header_") // "header" is reserved / an implicit object in EL
-@Dependent
+@Named("pageHeader") // "header" is reserved / an implicit object in EL
+@RequestScoped
 public class Header {
 
 	@Inject
@@ -23,12 +24,26 @@ public class Header {
 
 	private ApplicationDto application;
 
-	private MediumSearchDto mediumSearch;
-
+	private MediumSearchDto mediumSearch = new MediumSearchDto();
+	
+	// @Bug
+	// this method is called about 17 times resulting in ca. 17 seconds (!) of loading time
+	// per facelet. that's why it's commented out right now
 	@PostConstruct
 	public void init() {
+//		final var PROPER_APPLICATION_ID = 1;
+//
+//		var argument = new ApplicationDto();
+//		argument.setId(PROPER_APPLICATION_ID);
+//
+//		try {
+//			application = ApplicationDao.readCustomization(argument);
+//		} catch (LostConnectionException | MaxConnectionsException e) {
+//			// @Temporary
+//			throw new RuntimeException("database connection issue");
+//		}
 	}
-	
+
 	public String getApplicationBase64Logo() {
 		return Base64.getEncoder().encodeToString(application.getLogo());
 	}
@@ -48,19 +63,25 @@ public class Header {
 	public void setMediumSearch(MediumSearchDto mediumSearch) {
 		this.mediumSearch = mediumSearch;
 	}
-	
+
 	public boolean showingAccountHelp() {
 		return session.getUser() != null;
 	}
-	
+
 	public boolean showingStaffHelp() {
-	    // return session.getUser().getRole().isStaffOrHigher();
-	    return true;
+		if (session.getUser() == null) {
+			return false;
+		}
+
+		return session.getUser().getRole().isStaffOrHigher();
 	}
-	
+
 	public boolean showingAdminHelp() {
-		// return session.getUser().getRole() == UserRole.ADMIN;
-	    return true;
+		if (session.getUser() == null) {
+			return false;
+		}
+
+		return session.getUser().getRole() == UserRole.ADMIN;
 	}
 
 	public boolean showingLogOut() {
@@ -68,23 +89,35 @@ public class Header {
 	}
 
 	public boolean showingLending() {
-	    // return session.getUser().getRole().isStaffOrHigher();
-        return true;
+		if (session.getUser() == null) {
+			return false;
+		}
+
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean showingReturnForm() {
-		// return session.getUser().getRole().isStaffOrHigher();
-	    return true;
+		if (session.getUser() == null) {
+			return false;
+		}
+
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean showingCopiesReadyForPickupAllUsers() {
-		// return session.getUser().getRole().isStaffOrHigher();
-        return true;
+		if (session.getUser() == null) {
+			return false;
+		}
+
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean showingMediumCreator() {
-		// return session.getUser().getRole().isStaffOrHigher();
-	    return true;
+		if (session.getUser() == null) {
+			return false;
+		}
+
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean showingProfile() {
@@ -92,8 +125,11 @@ public class Header {
 	}
 
 	public boolean showingAdministration() {
-		// return session.getUser().getRole() == UserRole.ADMIN;
-	    return true;
+		if (session.getUser() == null) {
+			return false;
+		}
+
+		return session.getUser().getRole() == UserRole.ADMIN;
 	}
 
 	public boolean showingLogin() {
@@ -109,15 +145,17 @@ public class Header {
 	 * session of the user is invalidated and the user is lead back to the
 	 * {@link Login}.
 	 * 
-	 * @return the String to the login and Register Page.
+	 * @return the String to the login page.
 	 */
 	public String logOut() {
-		return "";
-	}
+		session.setUser(null);
+		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
-	/**
-	 * Displays the Help text when user click on it.
-	 */
-	public void displayHelpText() {
+		return "/BiBi/view/public/login.xhtml?faces-redirect=true";
+	}
+	
+	public String searchMedium() {
+		// @Task put the term into a flash scope
+		return "/BiBi/view/public/medium-search.xhtml?faces-redirect=true";
 	}
 }

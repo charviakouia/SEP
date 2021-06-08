@@ -1,4 +1,8 @@
+<<<<<<< HEAD:BiBiTest/src/test/java/TestsVonSergei/MediumDaoTest.java
 package TestsVonSergei;
+=======
+package test.java.tests;
+>>>>>>> master:BiBiTest/src/test/java/tests/MediumDaoTest.java
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
@@ -27,7 +31,7 @@ public class MediumDaoTest {
     }
 
     @AfterAll
-    public static void tearDown() throws LostConnectionException, SQLException, MaxConnectionsException {
+    public static void tearDown() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
         CopyDto copyDto = new CopyDto();
         copyDto.setId(555);
         MediumDao.deleteCopy(copyDto);
@@ -61,12 +65,17 @@ public class MediumDaoTest {
         CopyDto copyDto = new CopyDto();
         mediumDto.setId(2);
         copyDto.setId(555);
-        copyDto.setSignature("testSignature");
+        copyDto.setSignature("testSignature2");
         copyDto.setCopyStatus(CopyStatus.BORROWED);
-        copyDto.setLocation("testLocation");
+        copyDto.setLocation("testLocation2");
         copyDto.setActor(333);
+<<<<<<< HEAD:BiBiTest/src/test/java/TestsVonSergei/MediumDaoTest.java
         MediumDao.createCopy(copyDto);
         Assertions.assertEquals("testSignature", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
+=======
+        MediumDao.createCopy(copyDto, mediumDto);
+        Assertions.assertEquals("testSignature2", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
+>>>>>>> master:BiBiTest/src/test/java/tests/MediumDaoTest.java
     }
 
 }

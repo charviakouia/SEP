@@ -16,7 +16,7 @@
 	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>view/public/login.xhtml</welcome-file>
+		<welcome-file>view/public/medium-search.xhtml</welcome-file>
 	</welcome-file-list>
 
 	<security-constraint>

@@ -3,7 +3,11 @@ package de.dedede.model.logic.managed_beans;
 import java.io.Serial;
 import java.util.List;
 
-import de.dedede.model.data.dtos.CopyDto;
+import de.dedede.model.data.dtos.MediumCopyAttributeUserDto;
+import de.dedede.model.data.dtos.PaginationDto;
+import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
+import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
@@ -20,16 +24,21 @@ import jakarta.inject.Named;
 public class CopiesReadyForPickupAllUsers extends PaginatedList {
 
 	@Serial
-	private List<CopyDto> copies;
+	private List<MediumCopyAttributeUserDto> copies;
 
 	@PostConstruct
 	public void init() {
+		try {
+			copies = MediumDao.readCopiesReadyForPickup(new PaginationDto());
+		} catch (LostConnectionException | MaxConnectionsException e) {
+			// @Task enhance
+			throw new RuntimeException("database connection issue");
+		}
 
 	}
 
 	@Override
-	public List<CopyDto> getItems() {
+	public List<MediumCopyAttributeUserDto> getItems() {
 		return copies;
 	}
-
 }

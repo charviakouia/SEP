@@ -99,7 +99,7 @@ public class MediumDto {
      * @param value An attributeDto with the data of the attribute which should be assigned to this medium.
      * @see AttributeDto
      */
-    public void setAttribute(Integer key, AttributeDto value) {
+    public void addAttribute(Integer key, AttributeDto value) {
         attributes.put(key, value);
     }
 
@@ -121,7 +121,7 @@ public class MediumDto {
      * @param value A CopyDto with the data of the copy which should be assigned to this medium.
      * @see CopyDto
      */
-    public void setCopy(Integer key, CopyDto value) {
+    public void addCopy(Integer key, CopyDto value) {
         copies.put(key, value);
     }
 

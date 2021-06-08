@@ -1,8 +1,7 @@
 package de.dedede.model.data.dtos;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This DTO (data transfer object) is responsible for aggregating and
@@ -12,34 +11,21 @@ import java.util.Map;
  */
 public class PaginationDto implements Serializable {
 
-	private static final long serialVersionID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
-	private final Map<String, String> filterCriteria = new HashMap<>();
-
-	private int pageSize;
-
-	private int page;
+	private int pageNumber;
 
 	private int totalAmountOfRows;
 
 	private String sortBy;
 
-	/**
-	 * Fetches size of the page.
-	 *
-	 * @return A size of the page.
-	 */
-	public int getPageSize() {
-		return pageSize;
+	public int getPageNumber() {
+		return pageNumber;
 	}
 
-	/**
-	 * Sets size of the page.
-	 *
-	 * @param pageSize A size of the page.
-	 */
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
 	}
 
 	/**
@@ -58,39 +44,5 @@ public class PaginationDto implements Serializable {
 	 */
 	public void setTotalAmountOfRows(int totalAmountOfRows) {
 		this.totalAmountOfRows = totalAmountOfRows;
-	}
-
-	/**
-	 * Fetches a serial version ID for the page.
-	 *
-	 * @return A serial version ID for the page.
-	 */
-	public static long getSerialVersionID() {
-		return serialVersionID;
-	}
-
-	/**
-	 * Fetches a filter criteria for the pagination.
-	 *
-	 * @param key Filter criteria ID.
-	 * @return Criteria value according to which page is filtered.
-	 */
-	public String getFilterCriteria(String key) {
-		return filterCriteria.get(key);
-	}
-
-	/**
-	 * Sets a filter criteria for the pagination.
-	 *
-	 * @param key Filter criteria ID.
-	 * @param value Criteria value according to which page is filtered.
-	 */
-	public String setFilterCriteria(String key, String value) {
-		return filterCriteria.put(key, value);
-	}
-
-	//Was ist das?
-	public int getPage() {
-		return page;
 	}
 }

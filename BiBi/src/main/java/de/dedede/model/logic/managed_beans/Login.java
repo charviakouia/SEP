@@ -1,7 +1,6 @@
 package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -15,8 +14,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import java.nio.charset.StandardCharsets;
-
 /**
  * Backing bean for the login page. This page is the one users first face when
  * they are not already logged in. It allows them to log into the system to gain
@@ -28,86 +25,86 @@ import java.nio.charset.StandardCharsets;
 @RequestScoped
 public class Login {
 
-    @Inject
-    private FacesContext facesContext;
+	@Inject
+	private FacesContext facesContext;
 
-    @Inject
-    private UserSession userSession;
+	@Inject
+	private UserSession userSession;
 
-    private  UserDto userDto;
+	private  UserDto userDto;
 
-    private String email;
+	private String email;
 
-    private String password;
+	private String password;
 
-    @PostConstruct
-    public void init() {
-
-
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Log into the system.
-     *
-     * @throws MaxConnectionsException If there are no more available database
-     *                                 connections.
-     */
-    public String logIn() throws MaxConnectionsException {
-        UserDto user = new UserDto();
-        user.setEmailAddress(email);
-        UserDto dbUser = null;
-
-        try {
-            dbUser = UserDao.readUserByEmail(user);
-
-            if (dbUser == null) {
-                Logger.development("Login failed: No user for email");
-            } else {
-                String hashedPasswordInput = PasswordHashingModule.hashPassword(password);
-                if (hashedPasswordInput.equals(dbUser.getPasswordHash())) {
-                    userSession.setUser(dbUser);
-                    return "/view/account/profile.xhtml";
-                }
-            }
+	@PostConstruct
+	public void init() {
 
 
-        } catch (EntityInstanceDoesNotExistException | LostConnectionException e) {
-            Logger.development("Login failed: " + e.getMessage());
-        }
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Passwort oder Email falsch", null);
-        facesContext.addMessage(null, msg);
-        // throw invalid username or password
-        return null;
-    }
+	}
 
-    /**
-     * Send an email to the user with a reset link inside.
-     */
-    public void resetPassword() {
+	public String getEmail() {
+		return email;
+	}
 
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public UserDto getUserDto() {
-        return userDto;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setUserDto(UserDto userDto) {
-        this.userDto = userDto;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * Log into the system.
+	 *
+	 * @throws MaxConnectionsException If there are no more available database
+	 *                                 connections.
+	 */
+	public String logIn() throws MaxConnectionsException {
+		UserDto user = new UserDto();
+		user.setEmailAddress(email);
+		UserDto dbUser = null;
+
+		try {
+			dbUser = UserDao.readUserByEmail(user);
+
+			if (dbUser == null) {
+				Logger.development("Login failed: No user for email");
+			} else {
+				String hashedPasswordInput = PasswordHashingModule.hashPassword(password, dbUser.getPasswordSalt());
+				if (hashedPasswordInput.equals(dbUser.getPasswordHash())) {
+					userSession.setUser(dbUser);
+					return "/view/account/profile.xhtml";
+				}
+			}
+
+
+		} catch (EntityInstanceDoesNotExistException | LostConnectionException e) {
+			Logger.development("Login failed: " + e.getMessage());
+		}
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Passwort oder Email falsch", null);
+		facesContext.addMessage(null, msg);
+		// throw invalid username or password
+		return null;
+	}
+
+	/**
+	 * Send an email to the user with a reset link inside.
+	 */
+	public void resetPassword() {
+
+	}
+
+	public UserDto getUserDto() {
+		return userDto;
+	}
+
+	public void setUserDto(UserDto userDto) {
+		this.userDto = userDto;
+	}
 }
