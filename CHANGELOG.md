@@ -2,6 +2,9 @@
 
 ## Feinspezifikation – 2. Meilenstein
 
+* Erstelle die Validatoren `LendingProcessSignatureValidator`, `ReturnFormSignatureValidator` und `MediumCreationSignatureValidator`,
+  welche bei manchen Facelets benötigt werden. 
+
 ## Feinspezifikation – 1. Meilenstein
 
 * Verwende bei jedem Facelet / jeder Backing Bean, welche Bedienelemente abhängig vom Nutzer ein- oder ausblendet,
