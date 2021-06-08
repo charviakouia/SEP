@@ -23,7 +23,7 @@ public class MediumDaoTest {
 
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
-        ConnectionPool.setUpConnectionPool(true);
+        ConnectionPool.setUpConnectionPool();
     }
 
     @AfterAll
@@ -35,7 +35,7 @@ public class MediumDaoTest {
     }
 
     @Test
-    public void readMediumTest() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
+    public void readMediumTest() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException, EntityInstanceDoesNotExistException {
         MediumDto mediumDto = new MediumDto();
         mediumDto.setId(2);
         Assertions.assertTrue(MediumDao.readMedium(mediumDto).getCopies().containsKey(333));
@@ -56,7 +56,7 @@ public class MediumDaoTest {
     }
 
     @Test
-    public void testCreateCopy() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException, MediumDoesNotExistException {
+    public void testCreateCopy() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException, MediumDoesNotExistException, EntityInstanceDoesNotExistException {
         MediumDto mediumDto = new MediumDto();
         CopyDto copyDto = new CopyDto();
         mediumDto.setId(2);
@@ -65,7 +65,7 @@ public class MediumDaoTest {
         copyDto.setCopyStatus(CopyStatus.BORROWED);
         copyDto.setLocation("testLocation");
         copyDto.setActor(333);
-        MediumDao.createCopy(copyDto, mediumDto);
+        MediumDao.createCopy(copyDto);
         Assertions.assertEquals("testSignature", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
     }
 

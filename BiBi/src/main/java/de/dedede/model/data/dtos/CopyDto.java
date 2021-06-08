@@ -1,6 +1,6 @@
 package de.dedede.model.data.dtos;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * This DTO (data transfer object) is responsible for aggregating and
@@ -18,7 +18,7 @@ public class CopyDto {
 
 	private String signature;
 
-	private Timestamp deadline;
+	private Date deadline;
 
 	private CopyStatus copyStatus;
 
@@ -66,7 +66,7 @@ public class CopyDto {
 	 *
 	 * @return A deadline of the copy.
 	 */
-	public Timestamp getDeadline() {
+	public Date getDeadline() {
 		return deadline;
 	}
 
@@ -76,7 +76,7 @@ public class CopyDto {
 	 *
 	 * @param deadline A deadline of the copy.
 	 */
-	public void setDeadline(Timestamp deadline) {
+	public void setDeadline(Date deadline) {
 		this.deadline = deadline;
 	}
 

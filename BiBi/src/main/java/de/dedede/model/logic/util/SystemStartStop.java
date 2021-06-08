@@ -1,9 +1,6 @@
 package de.dedede.model.logic.util;
 
-import java.io.IOException;
-
 import de.dedede.model.persistence.exceptions.DriverNotFoundException;
-import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
 import de.dedede.model.persistence.exceptions.InvalidLogFileException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.util.ConfigReader;
@@ -28,7 +25,7 @@ public class SystemStartStop implements SystemEventListener {
    /** {@inheritDoc}
    */
 	@Override
-	public void processEvent(SystemEvent systemEvent) 
+	public void processEvent(SystemEvent systemEvent) 							
 			throws AbortProcessingException {
 		try {	
 			if (systemEvent instanceof PostConstructApplicationEvent) {
@@ -50,19 +47,9 @@ public class SystemStartStop implements SystemEventListener {
 	 * 
 	 * @throws LostConnectionException If data layer failed to communicate to DB
 	 * @throws DriverNotFoundException If JDBC driver wasn't found 
-	 * @throws InvalidConfigurationException If config file is unreadable
 	 */
-	private void initializeApplication() throws LostConnectionException, 
-	DriverNotFoundException, InvalidConfigurationException {
-		ConfigReader config = ConfigReader.getInstance();
-		try {
-			config.setupConfigReader();
-		} catch (IOException e1) {
-			System.out.println("Critical error while trying to access"
-					+ " system configurations!");
-			throw new InvalidConfigurationException("Critical error while "
-					+ "trying to read system configuration file!", e1);
-		} 
+	private void initializeApplication() {
+		ConfigReader.getInstance();						
 		System.out.println("ConfigReader initialized");
 		try {
 			if (Logger.logSetup()) {
@@ -75,7 +62,7 @@ public class SystemStartStop implements SystemEventListener {
 					+ " set LOG_CONSOLE to 'TRUE' or restart the system with"
 					+ " a new log-File path.");
 		}
-		if (EmailUtility.initializeConnection()) { //maybe Exception Handling when Email-Utility is finished?
+		if (EmailUtility.initializeConnection()) { 
 			Logger.detailed("Successful connection with the mail "
 					+ "server established.");
 			System.out.println("Connected to the Mailserver successfully.");

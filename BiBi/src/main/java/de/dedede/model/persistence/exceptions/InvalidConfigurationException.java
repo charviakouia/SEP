@@ -4,7 +4,7 @@ package de.dedede.model.persistence.exceptions;
  * This checked exception describes situations in which in which in which the config reader
  * cannot read the configuration file because the configuration file is invalid.
  */
-public class InvalidConfigurationException extends Exception {
+public class InvalidConfigurationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
