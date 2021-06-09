@@ -1,7 +1,7 @@
 package de.dedede.model.logic.managed_beans;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
 /**
@@ -10,7 +10,7 @@ import jakarta.inject.Named;
  */
 
 @Named
-@Dependent
+@RequestScoped
 public class Footer {
 
     @PostConstruct

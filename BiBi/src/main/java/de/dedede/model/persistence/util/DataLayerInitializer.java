@@ -1,15 +1,17 @@
 package de.dedede.model.persistence.util;
 
-import de.dedede.model.persistence.exceptions.DriverNotFoundException;
-import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.*;
-import java.util.Properties;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
+
+import de.dedede.model.persistence.exceptions.DriverNotFoundException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
 
 /**
  * Initializes the application's utilities and environment.
@@ -22,15 +24,6 @@ public class DataLayerInitializer {
 	
 	private static final String[] tableNames = {"Users", "Application", "Medium"
 			, "CustomAttribute", "MediumCopy", "AttributeType", "Category"}; 
-	private static final String DB_DRIVER = "DB_DRIVER";
-	private static final String DB_USER = "DB_USER";
-	private static final String DB_PASSWORD = "DB_PASSWORD";
-	private static final String DB_SSL = "DB_SSL";
-	private static final String DB_HOST = "DB_HOST";
-	private static final String DB_URL = "DB_URL";
-	private static final String DB_SSL_FACTORY =  "DB_SSL_FACTORY";
-	private static final String DB_PORT = "DB_PORT";
-	private static final String DB_NAME = "DB_NAME";
 	
 	/**
 	 * Performs tasks associated with the initialization of the data layer. 
@@ -43,11 +36,9 @@ public class DataLayerInitializer {
 	 * @see ConnectionPool
 	 * @see MaintenanceProcess
 	 */
-	public static void execute() throws LostConnectionException,
-			DriverNotFoundException, InvalidConfigurationException {
-		
+	public static void execute() {
 		try {
-			ConnectionPool.setUpConnectionPool(false);
+			ConnectionPool.setUpConnectionPool();								
 		} catch (ClassNotFoundException cnfe) {
 			Logger.severe("Database JDBC driver was not found during "
 					+ "ConnectionPool initialization.");
@@ -109,9 +100,9 @@ public class DataLayerInitializer {
 		
 	}
 	
-	private static void setUpDatabase() throws SQLException, 
-											DriverNotFoundException {
-		Connection connection = setUpInitialDBConnection();
+	private static void setUpDatabase() throws SQLException {
+		ConnectionPool cpInstance = ConnectionPool.getInstance();
+		Connection connection = cpInstance.fetchConnection(2000);
 		if (connection != null) {
 			Logger.development("Successful initial connection with database "
 					+ "established.");
@@ -175,57 +166,7 @@ public class DataLayerInitializer {
 		} 
 		
 	}
-	
-	private static Connection setUpInitialDBConnection() throws SQLException,
-													DriverNotFoundException {
-		ConfigReader CRinstance = ConfigReader.getInstance();
-		Properties config = CRinstance.getSystemConfigurations();
-		Properties connectionProperties = new Properties();
-		Connection connection = null;
-		try {
-            System.out.println("Loading JDBC Driver.");
-            Logger.detailed("Loading JDBC Driver.");
-            Class.forName(config.getProperty(DB_DRIVER));
-        }
-        catch(ClassNotFoundException e) { //already thrown in setUpConnPool()
-        	Logger.detailed("JDBC Driver not found on "
-        			+ "database initialization.");
-            System.out.println("JDBC Driver not found.");
-            throw new DriverNotFoundException("Database initialization could "
-            		+ "not find the required driver.", e);
-        }
-		String dbUser = config.getProperty(DB_USER);
-		connectionProperties.setProperty("user", dbUser);
-		String dbPassword = config.getProperty(DB_PASSWORD);
-		connectionProperties.setProperty("password", dbPassword);
 		
-		if (config.getProperty(DB_SSL).equalsIgnoreCase("TRUE")) {
-			connectionProperties.setProperty("ssl", "true");
-			String sslFactory = config.getProperty(DB_SSL_FACTORY);
-			connectionProperties.setProperty("sslfactory", sslFactory);
-		}
-		try {
-            System.out.println("Testing Database Connection");
-            String port = "";
-            if (!config.getProperty(DB_PORT).equals("") 
-            		|| !(config.getProperty(DB_PORT) == null)) {
-            	port = ":" + config.getProperty(DB_PORT);
-            }
-            String dbHost = config.getProperty(DB_HOST);
-			String dbName = config.getProperty(DB_NAME);
-			String dbUrl = config.getProperty(DB_URL);
-			connection = DriverManager.getConnection(dbUrl
-                + dbHost + port + "/" + dbName, connectionProperties);
-        }
-        catch(SQLException e) {
-        	Logger.severe("Getting Connection from driver failed"
-        			+ " on database initialization.");
-            System.out.println("Failed to initialize database connection");
-            throw e;
-        } 
-		return connection;
-	}
-	
 	private static void setUpMaintenanceProcess() {
 		MaintenanceProcess mp = MaintenanceProcess.getInstance();
 		mp.setup();
@@ -233,16 +174,16 @@ public class DataLayerInitializer {
 	}
 	
 	private static void consoleDialogue(Connection connection) throws 
-													IOException, SQLException {
+				IOException, SQLException {
 		System.out.println("You can start a fresh database initialization now, "
 				+ "this will overwrite existing tables with the names: ");
-				System.out.println("\"Users\", \"Application\","
+		System.out.println("\"Users\", \"Application\","
 						+ " \"Medium\", \"Category\", "
 				+ "\"CustomAttribute\", \"AttributeType\", \"MediumCopy\" ");
-				System.out.println("Do you want to (re)create the "
+		System.out.println("Do you want to (re)create the "
 						+ "tables, type 'y', (a standart set of attributes will"
 						+ " be added), else type 'n'."); 
-						System.out.println("If you wanna add sample"
+		System.out.println("If you wanna add sample"
 						+ " entries to the database, type in 'y y'. In any"
 						+ " case confirm with enter");
 		InputStreamReader inputStreamReader = new InputStreamReader(System.in);
@@ -271,7 +212,6 @@ public class DataLayerInitializer {
 		        			+ " database initialization.");
 		        	System.out.println("'Y' was selected, attempting fresh"
 		        			+ " database initialization.");
-		        	connection.setAutoCommit(true);
 		        	Logger.development("Autocommit was set to true on "
 		        			+ "initial DB connection");
 		        	dropOldDataScheme(connection);
@@ -334,6 +274,8 @@ public class DataLayerInitializer {
 		    			+ " mediumPreviewPosition CASCADE;"
 				);
 		dropTables.execute();
+		connection.commit();
+		dropTables.close();
 		Logger.development("droptables executed");
 		PreparedStatement dropTypes = connection.prepareStatement(
 				"DROP TABLE IF EXISTS Users, Application, Medium, "
@@ -341,17 +283,21 @@ public class DataLayerInitializer {
 		    	+ "CASCADE;"
 				);
 		dropTypes.execute();
+		connection.commit();
+		dropTypes.close();
 		Logger.development("droptypes executed");
 		Logger.detailed("Previous tables and enums dropped.");
 		PreparedStatement dropTrigger = connection.prepareStatement(
 				"DROP TRIGGER IF EXISTS on_status_update ON MediumCopy "
 				+ "CASCADE;");
 		dropTrigger.execute();
+		connection.commit();
 		dropTrigger.close();
 		Logger.development("trigger dropped");
 		PreparedStatement dropFunction = connection.prepareStatement(
 				"DROP FUNCTION IF EXISTS check_status_validity() CASCADE;");
 		dropFunction.execute();
+		connection.commit();
 		dropFunction.close();
 		Logger.development("function dropped");
 		Logger.detailed("Previous function and trigger dropped.");
@@ -412,36 +358,47 @@ public class DataLayerInitializer {
 				+ ");";
 		PreparedStatement createCustomTypes1 = connection.prepareStatement(s1);
 		createCustomTypes1.execute();
+		connection.commit();
 		createCustomTypes1.close();
 		PreparedStatement createCustomTypes2 = connection.prepareStatement(s2);
 		createCustomTypes2.execute();
+		connection.commit();
 		createCustomTypes2.close();
 		PreparedStatement createCustomTypes3 = connection.prepareStatement(s3);
 		createCustomTypes3.execute();
+		connection.commit();
 		createCustomTypes3.close();
 		PreparedStatement createCustomTypes4 = connection.prepareStatement(s4);
 		createCustomTypes4.execute();
+		connection.commit();
 		createCustomTypes4.close();
 		PreparedStatement createCustomTypes5 = connection.prepareStatement(s5);
 		createCustomTypes5.execute();
+		connection.commit();
 		createCustomTypes5.close();
 		PreparedStatement createCustomTypes6 = connection.prepareStatement(s6);
 		createCustomTypes6.execute();
+		connection.commit();
 		createCustomTypes6.close();
 		PreparedStatement createCustomTypes7 = connection.prepareStatement(s7);
 		createCustomTypes7.execute();
+		connection.commit();
 		createCustomTypes7.close();
 		PreparedStatement createCustomTypes8 = connection.prepareStatement(s8);
 		createCustomTypes8.execute();
+		connection.commit();
 		createCustomTypes8.close();
 		PreparedStatement createCustomTypes9 = connection.prepareStatement(s9);
 		createCustomTypes9.execute();
+		connection.commit();
 		createCustomTypes9.close();
 		PreparedStatement createCustomType10 = connection.prepareStatement(s10);
 		createCustomType10.execute();
+		connection.commit();
 		createCustomType10.close();
 		PreparedStatement createCustomType11 = connection.prepareStatement(s11);
 		createCustomType11.execute();
+		connection.commit();
 		createCustomType11.close();
 		Logger.development("Added " + 11 + " custom types (enums) to DB on"
 				+ " initialization.");
@@ -499,13 +456,16 @@ public class DataLayerInitializer {
 				+ "REFERENCES Category(categoryID) ON DELETE CASCADE"
 				+ ");";
 		PreparedStatement createIndependent3 = connection.prepareStatement(s14);
-		createIndependent3.executeUpdate();
+		createIndependent3.executeUpdate(); 
+		connection.commit();
 		createIndependent3.close();
 		PreparedStatement createIndependent1 = connection.prepareStatement(s11);
 		createIndependent1.executeUpdate();
+		connection.commit();
 		createIndependent1.close();
 		PreparedStatement createIndependent2 = connection.prepareStatement(s12);
 		createIndependent2.executeUpdate();
+		connection.commit();
 		createIndependent2.close();
 		Logger.development("Executed second group (independent tables "
 				+ "user/category/application) of create statements on DB "
@@ -524,6 +484,7 @@ public class DataLayerInitializer {
 				+ ");";
 		PreparedStatement createMedium = connection.prepareStatement(s13);
 		createMedium.execute();
+		connection.commit();
 		createMedium.close();
 		Logger.development("Executed third create statement (medium) on DB "
 				+ "initialization.");
@@ -560,9 +521,11 @@ public class DataLayerInitializer {
 				+ ");";
 		PreparedStatement createDependent1 = connection.prepareStatement(s15);
 		createDependent1.execute();
+		connection.commit();
 		createDependent1.close();
 		PreparedStatement createDependent2 = connection.prepareStatement(s17);
 		createDependent2.execute();
+		connection.commit();
 		createDependent2.close();
 		Logger.development("Executed fourth group (further dependent tables "
 				+ "CostumAttribute/mediumcopy) of statements on "
@@ -628,9 +591,11 @@ public class DataLayerInitializer {
 				+ "LANGUAGE plpgsql;";
 		PreparedStatement createAttType = connection.prepareStatement(s16);
 		createAttType.execute();
+		connection.commit();
 		createAttType.close();
 		PreparedStatement createFunction = connection.prepareStatement(s18);
 		createFunction.execute();
+		connection.commit();
 		createFunction.close();
 		Logger.development("Executed fifth group (function + attrTypes) of "
 				+ "statements on DB initialization.");
@@ -644,6 +609,7 @@ public class DataLayerInitializer {
 				+ "	EXECUTE PROCEDURE check_status_validity();";
 		PreparedStatement createTrigger = connection.prepareStatement(s19);
 		createTrigger.execute();
+		connection.commit();
 		createTrigger.close();
 		Logger.development("Executed last batch (trigger) of statements "
 				+ "on DB initialization.");
@@ -705,15 +671,18 @@ public class DataLayerInitializer {
 				+ " 'IMAGE');";
 		PreparedStatement anchorMedium = conn.prepareStatement(insertAnchor);
 		int affected1 = anchorMedium.executeUpdate();
+		conn.commit();
 		anchorMedium.close();
 		Logger.development(affected1 + " entry inserted into Medium,"
 				+ " is anchor for scheme.");
 		PreparedStatement attributes = conn.prepareStatement(insertAttributes);
 		int affected2 = attributes.executeUpdate();
+		conn.commit();
 		attributes.close();
 		Logger.development(affected2 + "Default attributes inserted.");
 		PreparedStatement attTypes = conn.prepareStatement(insertAttTypes);
 		int affected3 = attTypes.executeUpdate();
+		conn.commit();
 		attTypes.close();
 		Logger.development(affected3 + " default attribute types inserted.");
 	}
@@ -742,10 +711,12 @@ public class DataLayerInitializer {
 				+ "'SelectedLookAndFeel', default, default);";
 		PreparedStatement sampleAppData = conn.prepareStatement(insSaAppData);
 		sampleAppData.execute();
+		conn.commit();
 		sampleAppData.close();
 		Logger.development("Exemplary application data was added");
 		PreparedStatement defAdm = conn.prepareStatement(insertDefaultAdmin);
 		defAdm.execute();
+		conn.commit();
 		defAdm.close();
 		Logger.development("Default admin was added");
 	}
@@ -905,43 +876,52 @@ public class DataLayerInitializer {
 		PreparedStatement sampleCategories1 = 
 				conn.prepareStatement(insertSampleCategory1);
 		int c1 = sampleCategories1.executeUpdate();
+		conn.commit();
 		sampleCategories1.close();
 		Logger.development(c1 + " sample category added");
 		PreparedStatement sampleCategories2 = 
 				conn.prepareStatement(insertSampleCategory2);
 		int c2 = sampleCategories2.executeUpdate();
+		conn.commit();
 		sampleCategories2.close();
 		Logger.development("Another (" + c2 + ") sample category added");
 		PreparedStatement sampleMedium =
 				conn.prepareStatement(insertSampleMediums);
 		int c3 = sampleMedium.executeUpdate();
+		conn.commit();
 		sampleMedium.close();
 		Logger.development(c3 + " medium samples added");
 		PreparedStatement sampleAttributes1 =
 				conn.prepareStatement(insertSampleAttributes1);
 		int c4 = sampleAttributes1.executeUpdate();
+		conn.commit();
 		sampleAttributes1.close();
 		PreparedStatement sampleAttributes2 =
 				conn.prepareStatement(insertSampleAttributes2);
 		int c5 = c4 + sampleAttributes2.executeUpdate();
+		conn.commit();
 		sampleAttributes2.close();
 		Logger.development(c5+ " sample attributes added");
 		PreparedStatement sampleAttributeTypes =
 				conn.prepareStatement(insertSampleAttributeTypes1);
 		int c6 = sampleAttributeTypes.executeUpdate();
+		conn.commit();
 		sampleAttributeTypes.close();
 		PreparedStatement sampleAttTypes2 =
 				conn.prepareStatement(insertSampleAttributeTypes2);
 		int c7 = c6 + sampleAttTypes2.executeUpdate();
+		conn.commit();
 		sampleAttTypes2.close();
 		Logger.development(c7 + " sample attribute types added");
 		PreparedStatement sampleUsers = 
 				conn.prepareStatement(insertSampleUsers);
 		int c8 = sampleUsers.executeUpdate();
+		conn.commit();
 		sampleUsers.close();
 		Logger.development(c8 + " sample user added");
 		PreparedStatement samCop = conn.prepareStatement(insertSampleCopies);
 		int c9 = samCop.executeUpdate();
+		conn.commit();
 		samCop.close();
 		Logger.development(c9 + " sample copies added");		
 	}

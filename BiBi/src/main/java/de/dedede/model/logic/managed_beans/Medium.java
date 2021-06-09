@@ -1,5 +1,9 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -11,7 +15,6 @@ import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
-
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -34,6 +37,7 @@ public class Medium implements Serializable {
 	private MediumDto mediumDto;
 
 	@PostConstruct
+
 	private void init() {
 		mediumDto = new MediumDto();
 	}
@@ -53,9 +57,8 @@ public class Medium implements Serializable {
 
 	/**
 	 * Insert a new copy of this medium.
-	 *
-	 * @author Sergei Pravdin
 	 */
+
 	public void createCopy() throws BusinessException {
 		CopyDto newCopyDto = new CopyDto();
 		try {
@@ -70,6 +73,7 @@ public class Medium implements Serializable {
 			String msg = "A copy with this ID already exists: " + newCopyDto.getId();
 			throw new BusinessException(msg, e);
 		}
+
 	}
 
 	/**

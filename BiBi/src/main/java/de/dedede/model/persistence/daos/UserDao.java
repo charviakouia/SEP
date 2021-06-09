@@ -1,15 +1,17 @@
 package de.dedede.model.persistence.daos;
 
+
+
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 
 /**
  * This DAO (data access object) manages data and privileges for users, who are

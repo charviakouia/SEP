@@ -9,7 +9,7 @@ import de.dedede.model.persistence.util.ConnectionPool;
  * <p>
  * See the {@link ConnectionPool} class for the connection pool implementation.
  */
-public class LostConnectionException extends Exception {
+public class LostConnectionException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

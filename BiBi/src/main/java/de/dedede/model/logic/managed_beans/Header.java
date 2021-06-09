@@ -6,7 +6,7 @@ import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.MediumSearchDto;
 import de.dedede.model.data.dtos.UserRole;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -15,8 +15,8 @@ import jakarta.inject.Named;
  * necessary for the header facelet into the template.
  */
 
-@Named("header_") // "header" is reserved / an implicit object in EL
-@Dependent
+@Named("pageHeader") // "header" is reserved / an implicit object in EL
+@RequestScoped
 public class Header {
 
 	@Inject

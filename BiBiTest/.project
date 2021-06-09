@@ -3,6 +3,7 @@
 	<name>BiBiTest</name>
 	<comment></comment>
 	<projects>
+		<project>BiBi</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

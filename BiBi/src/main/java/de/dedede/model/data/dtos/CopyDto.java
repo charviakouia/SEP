@@ -1,6 +1,7 @@
 package de.dedede.model.data.dtos;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * This DTO (data transfer object) is responsible for aggregating and

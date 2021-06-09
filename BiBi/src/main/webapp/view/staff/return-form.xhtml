@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
@@ -9,9 +11,36 @@
 	<ui:param name="page" value="return_form" />
 
 	<ui:define name="content">
+	
+   <!-- <bibi:reactiveInputText value="#{lending.user.emailAddress}">
+			<f:validator validatorId="EmailValidator"/>
+		</bibi:reactiveInputText> -->
+		<h:inputText value="#{returnForm.user.emailAddress}"> 
+			<f:validator validatorId="emailValidator"/>
+		</h:inputText>
+		
+		
+		
+		
+			
+		<ui:repeat var="copy" value="#{returnForm.copies}" varStatus="status">
+	   <!-- <bibi:reactiveInputField id="field" value="#{copy.signature}"/>
+	   			<f:validator validatorId="returnFormSignatureValidator"/>
+	   		</bibi:reactiveInputField>
+				 -->
+			<h:inputText id="field" value="#{copy.signature}">
+				<f:validator validatorId="returnFormSignatureValidator"/>
+			</h:inputText>
+		</ui:repeat>
 
-		UNIMPLEMENTED
-
+		<h:commandButton id="button_add_signature_return_field"
+							action="#{returnForm.addSignatureInputField()}" 
+							label="msg['returnForm.add_input']"
+							styleClass="btn btn-secondary"/>
+		<h:commandButton id="button_return_copies"
+							action="#{returnForm.lendCopies()}" 
+							label="#{'returnForm.lend_copies'}"
+							styleClass="btn btn-primary"/>			
 	</ui:define>
 
 </ui:composition>

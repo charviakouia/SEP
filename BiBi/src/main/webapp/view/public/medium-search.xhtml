@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
@@ -10,7 +12,69 @@
 
 	<ui:define name="content">
 
-		UNIMPLEMENTED
+		<h:form id="form_medium_search">
+
+			<h:panelGroup layout="block" styleClass="general-search input-group">
+
+				<h:inputText id="input_general_search_term"
+					value="#{mediumSearch.mediumSearch.generalSearchTerm}"
+					styleClass="form-control" />
+
+				<h:commandButton id="button_search" value="#{msg['search']}"
+					action="#{mediumSearch.searchMedium()}"
+					styleClass="btn btn-primary" />
+
+			</h:panelGroup>
+
+			<h:panelGroup layout="block" styleClass="nuanced-search-query-block">
+
+				<h:panelGroup layout="block"
+					styleClass="nuanced-search-queries d-grid gap-2 my-2">
+
+					<ui:repeat
+						value="#{mediumSearch.mediumSearch.nuancedSearchQueries}"
+						var="nuancedSearchQuery" varStatus="status">
+
+						<h:panelGroup layout="block"
+							styleClass="nuanced-search-query input-group">
+
+							<h:selectOneMenu id="select_search_operator_#{status.index}"
+								value="#{nuancedSearchQuery.operator}" styleClass="form-select">
+
+								<f:selectItems value="#{mediumSearch.allSearchOperators}"
+									var="operator" itemValue="#{operator}"
+									itemLabel="#{msg[operator.toString()]}" />
+
+							</h:selectOneMenu>
+
+							<!-- TASK -->
+							<h:selectOneMenu id="select_search_criterion_#{status.index}"
+								value="#{nuancedSearchQuery.criterion}" styleClass="form-select">
+							</h:selectOneMenu>
+
+							<h:inputText id="input_nuanced_search_term_#{status.index}"
+								value="#{nuancedSearchQuery.term}"
+								styleClass="form-control w-50" />
+
+						</h:panelGroup>
+
+					</ui:repeat>
+
+				</h:panelGroup>
+
+				<h:commandButton id="button_add_nuanced_search_query"
+					value="#{msg['add_nuanced_search_query']}"
+					action="#{mediumSearch.addNuancedSearchQuery()}"
+					styleClass="btn btn-secondary" />
+
+			</h:panelGroup>
+
+			<!-- TASK: search results: paginated list -->
+
+		</h:form>
+
+		<!-- @Task -->
+		<!-- <bibi:paginatedList /> -->
 
 	</ui:define>
 

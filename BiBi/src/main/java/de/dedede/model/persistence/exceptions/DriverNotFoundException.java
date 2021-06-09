@@ -5,7 +5,7 @@ package de.dedede.model.persistence.exceptions;
  * for accessing the database was not found at the specified path.
  * Sometimes, this may be the result of a race-condition.
  */
-public class DriverNotFoundException extends Exception {
+public class DriverNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

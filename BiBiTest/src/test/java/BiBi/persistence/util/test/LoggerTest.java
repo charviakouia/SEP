@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-// import org.junit.Before;
-
-
 /**
  * The tests for BiBi.dedede.de.model.persistance.util.Logger are held here.
  *
@@ -22,13 +19,13 @@ import java.util.Properties;
  *
  */
 public class LoggerTest {
-
+   	
 	@Test
 	public void testSevere() {
 		ConfigReader configMock = Mockito.mock(ConfigReader.class);
 		Properties testProperties = new Properties();
 		InputStream stream = 
-			this.getClass().getClassLoader().getResourceAsStream("config.txt");
+			getClass().getResourceAsStream("config.txt");
 		try {
 			testProperties.load(stream);
 			stream.close();
