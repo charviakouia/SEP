@@ -128,8 +128,7 @@ public class DataLayerInitializer {
 					Logger.severe(found + " of the 7 required tables are "
 							+ "present in the database.");
 					System.out.println( found + " of the 7 required tables "
-							+ "are present in the database. You can do a fresh "
-							+ "restart now:");
+							+ "are present in the database.");
 					try {
 						consoleDialogue(connection);
 					} catch (IOException io) {
@@ -139,14 +138,7 @@ public class DataLayerInitializer {
 				} else {
 					Logger.detailed("All required tables seem to be present.");
 					System.out.println("All required tables are present. "
-							+ "You can still reinitialize a fresh database "
-							+ "scheme if you wish:");
-					try {
-						consoleDialogue(connection);
-					} catch (IOException io) {
-						Logger.severe("Unable to read console Input");
-						System.out.println("Unable to read console Input");
-					}
+							+ "Starting system with existing tables..........");
 				}
 			} catch (SQLException e) {
 				Logger.severe("An Error occured while verifying the "
@@ -181,11 +173,11 @@ public class DataLayerInitializer {
 						+ " \"Medium\", \"Category\", "
 				+ "\"CustomAttribute\", \"AttributeType\", \"MediumCopy\" ");
 		System.out.println("Do you want to (re)create the "
-						+ "tables, type 'y', (a standart set of attributes will"
-						+ " be added), else type 'n'."); 
+						+ "tables, type 'create', (a standart set of attributes"
+						+ " will be added)."); 
 		System.out.println("If you wanna add sample"
-						+ " entries to the database, type in 'y y'. In any"
-						+ " case confirm with enter");
+						+ " entries to the database as well, type in 'c s'. "
+						+ "In any case confirm with enter");
 		InputStreamReader inputStreamReader = new InputStreamReader(System.in);
 		BufferedReader stdn = new BufferedReader(inputStreamReader);
 		boolean end = false;
@@ -206,7 +198,7 @@ public class DataLayerInitializer {
 		        char fc = Character.toLowerCase(order[0]);
 		        
 		        switch (fc) {
-		        case 'y':
+		        case 'c':
 		        	try {
 		        	Logger.detailed("'Y' was selected, attempting fresh"
 		        			+ " database initialization.");
@@ -229,7 +221,7 @@ public class DataLayerInitializer {
 		        	System.out.println("The database was initialized "
 		        			+ "successfully.");
 		        	if (scanner.hasNext()) {
-		        		if (scanner.next().equalsIgnoreCase("y")) {
+		        		if (scanner.next().equalsIgnoreCase("s")) {
 		        			sampleEntries(connection);														
 				        	Logger.development("The database was populated with"
 				        			+ " sample entries!");  													
@@ -247,16 +239,10 @@ public class DataLayerInitializer {
 		        	}
 		        	end = true;
 		        	break;
-		        case 'n': 
-		        	Logger.detailed("'N' was selected, proceeding system start"
-		        			+ " with existing tables.");
-		        	System.out.println("'N' was selected, proceeding system"
-		        			+ " start with existing tables.");
-		        	end = true;
-		        	break;
 		        default:
-		        	System.out.println("First letter of command is parsed,"
-		        			+ " expects 'y' or 'n' for Yes or No");
+		        	System.out.println("Only first letter of command is parsed,"
+		        			+ " expects 'c' or  for table creation and 'c s' "
+		        			+ "if you want samples as well");
 		        } 
 		        scanner.close();
 		   }

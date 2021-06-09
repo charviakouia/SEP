@@ -30,7 +30,7 @@ public class ConfigReader {
 	/**
 	 * Holds the Properties Object with system configurations.
 	 */
-	private Properties systemConfigurations;
+	private Properties systemConfigurations = new Properties();
 	
 	/**
 	 * Needed as basis for loading config with webapp-relative path.
