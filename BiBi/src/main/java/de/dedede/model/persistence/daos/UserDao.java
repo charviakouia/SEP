@@ -1,10 +1,7 @@
 package de.dedede.model.persistence.daos;
 
 import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 
@@ -92,12 +89,29 @@ public final class UserDao {
 	 * @param userDto A DTO container with an email address identifying the user
 	 *                to be deleted.
 	 * @return A DTO container with data from the deleted user.
-	 * @throws EntityInstanceDoesNotExistException Is thrown when the enclosed
+	 * @throws UserDoesNotExistException Is thrown when the enclosed
 	 *                                             email address isn't associated with an existing data entry.
 	 */
 	public static UserDto deleteUser(UserDto userDto)
-			throws EntityInstanceDoesNotExistException {
-		return null;
+			throws UserDoesNotExistException, LostConnectionException, MaxConnectionsException {
+		Connection conn = getConnection();
+		try {
+			if (userEntityExists(conn, userDto)){
+				deleteUserHelper(conn, userDto);
+				conn.commit();
+				return userDto;
+			} else {
+				String msg = String.format("No user entity with the id: %d exists", userDto.getId());
+				// Logger.severe(msg);
+				throw new UserDoesNotExistException(msg);
+			}
+		} catch (SQLException e) {
+			String msg = "Database error occurred while deleting user entity with id: " + userDto.getId();
+			// Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
@@ -142,4 +156,29 @@ public final class UserDao {
 		}
 	}
 
+	/**
+	 * @author Sergei Pravdin
+	 */
+	private static boolean userEntityExists(Connection conn, UserDto userDto) throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE " + "WHEN (SELECT COUNT(userid) FROM Users WHERE userid = ?) > 0 THEN true "
+						+ "ELSE false " + "END AS entityExists;");
+		checkingStmt.setInt(1, userDto.getId());
+		ResultSet resultSet = checkingStmt.executeQuery();
+		resultSet.next();
+		return resultSet.getBoolean(1);
+	}
+
+	/**
+	 * @author Sergei Pravdin
+	 */
+	private static void deleteUserHelper(Connection conn, UserDto userDto) throws SQLException {
+		PreparedStatement deleteStmt = conn.prepareStatement(
+				"DELETE FROM Users " +
+						"WHERE userid = ?;"
+		);
+		deleteStmt.setInt(1, Math.toIntExact(userDto.getId()));
+		deleteStmt.executeUpdate();
+		conn.commit();
+	}
 }
