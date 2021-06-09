@@ -6,8 +6,10 @@ import java.util.ArrayList;
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -32,6 +34,7 @@ public class Lending implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		MediumDao.refreshCopyStatusIfMarked();
 		for(int i = 0; i < 5; i++) {
 			copies.add(new CopyDto());
 		}
@@ -42,10 +45,16 @@ public class Lending implements Serializable {
 	 */
 	public void lendCopies() {
 		for(CopyDto copy : copies) {
-			try {																//To-Do: Fehlerbehandlung
+			try {
 				MediumDao.lendCopy(copy, user);
-			} catch (EntityInstanceDoesNotExistException e) {
-				Logger.development("Dao-Method lendUser() threw Exception");
+			} catch (CopyDoesNotExistException e) {
+				String message = "An unexpected error occured during lending process, the copy didn't exist or the transaction was invalid.";
+				Logger.severe(message);
+				throw new BusinessException(message, e);
+			} catch (UserDoesNotExistException e) {
+				String message = "An unexpected error occured during lending process, the user wasn't found in the database.";
+				Logger.severe(message);
+				throw new BusinessException(message, e);
 			}
 		}
 	}

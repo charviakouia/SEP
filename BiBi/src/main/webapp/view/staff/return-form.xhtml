@@ -13,10 +13,10 @@
 	<ui:define name="content">
 	
    <!-- <bibi:reactiveInputText value="#{lending.user.emailAddress}">
-			<f:validator validatorId="EmailValidator"/>
+			<f:validator validatorId="userValidator"/>
 		</bibi:reactiveInputText> -->
 		<h:inputText value="#{returnForm.user.emailAddress}"> 
-			<f:validator validatorId="emailValidator"/>
+			<f:validator validatorId="userValidator"/>
 		</h:inputText>
 		
 		
@@ -38,8 +38,8 @@
 							label="msg['returnForm.add_input']"
 							styleClass="btn btn-secondary"/>
 		<h:commandButton id="button_return_copies"
-							action="#{returnForm.lendCopies()}" 
-							label="#{'returnForm.lend_copies'}"
+							action="#{returnForm.returnCopies()}" 
+							label="#{'returnForm.return_copies'}"
 							styleClass="btn btn-primary"/>			
 	</ui:define>
 

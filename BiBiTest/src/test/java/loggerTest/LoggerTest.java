@@ -1,4 +1,4 @@
-package BiBi.persistence.util.test;
+package loggerTest;
 
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.Logger;
@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +16,7 @@ import java.util.Properties;
 /**
  * The tests for BiBi.dedede.de.model.persistance.util.Logger are held here.
  *
- * @author Molto Homo
+ * @author Jonas Picker
  *
  */
 public class LoggerTest {
@@ -24,17 +25,23 @@ public class LoggerTest {
 	public void testSevere() {
 		ConfigReader configMock = Mockito.mock(ConfigReader.class);
 		Properties testProperties = new Properties();
+		String sep = File.pathSeparator;
+		String up = "..";
 		InputStream stream = 
-			getClass().getResourceAsStream("config.txt");
+			this.getClass().getClassLoader().getResourceAsStream(up + sep 
+					+ up + sep + up + sep + up + sep + up + sep + "src" 
+					+ sep + "main" + sep + "webapp" + sep + "WEB-INF" 
+					+ sep + "config.txt");
 		try {
 			testProperties.load(stream);
 			stream.close();
-		} catch (IOException e) {}		
-		Properties config = testProperties;
+		} catch (IOException ignored) {}		
 		Mockito.when(ConfigReader.getInstance()).thenReturn(configMock);
-		Mockito.when(configMock.getSystemConfigurations()).thenReturn(config);
-		String absolutePath = config.getProperty("LOG_DIRECTORY") + 
-				config.getProperty("LOG_FILENAME") + ".txt";
+		Mockito.when(configMock.getKey("LOG_DIRECTORY")).thenReturn(testProperties.getProperty("LOG_DIRECTORY"));
+		Mockito.when(configMock.getKey("LOG_FILENAME")).thenReturn(testProperties.getProperty("LOG_FILENAME"));
+		
+		String absolutePath = ConfigReader.getInstance().getKey("LOG_DIRECTORY") + 
+				ConfigReader.getInstance().getKey("LOG_FILENAME") + ".txt";
 		String testMessage = "this is a test message";
 		Logger.severe(testMessage);
 		String result = "";
