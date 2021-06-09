@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import de.dedede.model.persistence.exceptions.DriverNotFoundException;
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 
 /**
@@ -44,14 +45,16 @@ public class DataLayerInitializer {
 	 * @throws LostConnectionException Is thrown if a connection could
 	 * 		not be established to the data store to perform the initialization.
 	 * @throws DriverNotFoundException if the JDBC driver was the problem source
+	 * @throws InvalidConfigurationException If a configuration in the application's 
+	 * 		configuration file is invalid
 	 * @see ConnectionPool
 	 * @see MaintenanceProcess
 	 */
 	public static void execute() throws LostConnectionException, 
-											DriverNotFoundException {
+											DriverNotFoundException, InvalidConfigurationException {
 		
 		try {
-			ConnectionPool.setUpConnectionPool();
+			ConnectionPool.setUpConnectionPool(false);
 		} catch (ClassNotFoundException cnfe) {
 			Logger.severe("Database JDBC driver was not found during "
 					+ "ConnectionPool initialization.");
@@ -63,6 +66,10 @@ public class DataLayerInitializer {
 			throw new LostConnectionException("A problem occured while "
 					+ "trying to connect to the database during "
 					+ "system startup.", sqle);
+		} catch (InvalidConfigurationException e) {
+			Logger.severe("The connection pool encountered a faulty configuration "
+					+ "while starting...");
+			throw e;
 		}
 		
 		try {
