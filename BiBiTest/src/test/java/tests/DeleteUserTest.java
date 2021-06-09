@@ -38,8 +38,9 @@ public class DeleteUserTest {
         Connection conn = getConnection();
         try {
             PreparedStatement createStmt = conn.prepareStatement(
-                    "INSERT INTO Users (userid, emailaddress, passwordhashsalt, passwordhash, name, " +
-                            "surname, postalcode, city, street, housenumber, token, tokencreation, userlendperiod," +
+                    "INSERT INTO Users (userid, emailaddress, passwordhashsalt," +
+                            " passwordhash, name, surname, postalcode, city, street," +
+                            " housenumber, token, tokencreation, userlendperiod," +
                             "lendstatus, verificationstatus, userrole) " +
                             "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,CAST (? AS userlendstatus)," +
                             "CAST (? AS userverificationstatus), CAST (? AS userrole))",
@@ -57,7 +58,8 @@ public class DeleteUserTest {
         }
     }
 
-    private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
+    private static Connection getConnection() throws LostConnectionException,
+            MaxConnectionsException {
         Connection conn = null;
         try {
             conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
@@ -71,7 +73,8 @@ public class DeleteUserTest {
         return conn;
     }
 
-    private static void populateStmt(PreparedStatement createStmt) throws SQLException {
+    private static void populateStmt(PreparedStatement createStmt)
+            throws SQLException {
         createStmt.setInt(1, testID);
         createStmt.setString(2, "testtest");
         createStmt.setString(3, "testtesttest");
@@ -88,14 +91,17 @@ public class DeleteUserTest {
         interval.setSeconds(30000);
         createStmt.setObject(13, interval);
         createStmt.setString(14, String.valueOf(UserLendStatus.ENABLED));
-        createStmt.setString(15,  String.valueOf(UserVerificationStatus.VERIFIED));
+        createStmt.setString(15,
+                String.valueOf(UserVerificationStatus.VERIFIED));
         createStmt.setString(16, String.valueOf(UserRole.REGISTERED));
     }
 
-    private static boolean userEntityExists(UserDto userDto) throws SQLException, LostConnectionException, MaxConnectionsException {
+    private static boolean userEntityExists(UserDto userDto) throws SQLException,
+            LostConnectionException, MaxConnectionsException {
         Connection conn = getConnection();
         PreparedStatement checkingStmt = conn.prepareStatement(
-                "SELECT CASE " + "WHEN (SELECT COUNT(userid) FROM Users WHERE userid = ?) > 0 THEN true "
+                "SELECT CASE " + "WHEN (SELECT COUNT(userid) " +
+                        "FROM Users WHERE userid = ?) > 0 THEN true "
                         + "ELSE false " + "END AS entityExists;");
         checkingStmt.setInt(1, userDto.getId());
         ResultSet resultSet = checkingStmt.executeQuery();
@@ -106,7 +112,8 @@ public class DeleteUserTest {
     }
 
     @AfterAll
-    public static void tearDown() throws LostConnectionException, MaxConnectionsException, SQLException {
+    public static void tearDown() throws LostConnectionException, MaxConnectionsException,
+            SQLException {
         Connection conn = getConnection();
         PreparedStatement deleteStmt = conn.prepareStatement(
                 "DELETE FROM Users " +

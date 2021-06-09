@@ -1,8 +1,4 @@
-<<<<<<< HEAD:BiBiTest/src/test/java/TestsVonSergei/MediumDaoTest.java
-package TestsVonSergei;
-=======
 package test.java.tests;
->>>>>>> master:BiBiTest/src/test/java/tests/MediumDaoTest.java
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
@@ -27,7 +23,7 @@ public class MediumDaoTest {
 
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
-        ConnectionPool.setUpConnectionPool();
+        ConnectionPool.setUpConnectionPool(true);
     }
 
     @AfterAll
@@ -39,7 +35,7 @@ public class MediumDaoTest {
     }
 
     @Test
-    public void readMediumTest() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException, EntityInstanceDoesNotExistException {
+    public void readMediumTest() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
         MediumDto mediumDto = new MediumDto();
         mediumDto.setId(2);
         Assertions.assertTrue(MediumDao.readMedium(mediumDto).getCopies().containsKey(333));
@@ -60,7 +56,8 @@ public class MediumDaoTest {
     }
 
     @Test
-    public void testCreateCopy() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException, MediumDoesNotExistException, EntityInstanceDoesNotExistException {
+    public void testCreateCopy() throws LostConnectionException, MaxConnectionsException,
+            EntityInstanceNotUniqueException, MediumDoesNotExistException {
         MediumDto mediumDto = new MediumDto();
         CopyDto copyDto = new CopyDto();
         mediumDto.setId(2);
@@ -69,13 +66,8 @@ public class MediumDaoTest {
         copyDto.setCopyStatus(CopyStatus.BORROWED);
         copyDto.setLocation("testLocation2");
         copyDto.setActor(333);
-<<<<<<< HEAD:BiBiTest/src/test/java/TestsVonSergei/MediumDaoTest.java
-        MediumDao.createCopy(copyDto);
-        Assertions.assertEquals("testSignature", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
-=======
         MediumDao.createCopy(copyDto, mediumDto);
         Assertions.assertEquals("testSignature2", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
->>>>>>> master:BiBiTest/src/test/java/tests/MediumDaoTest.java
     }
 
 }
