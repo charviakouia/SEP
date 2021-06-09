@@ -19,11 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Sergei Pravdin
  */
+
 public class MediumDaoTest {
 
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
-        ConnectionPool.setUpConnectionPool(true);
+        ConnectionPool.setUpConnectionPool();
     }
 
     @AfterAll

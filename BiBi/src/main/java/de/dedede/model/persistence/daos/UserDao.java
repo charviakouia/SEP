@@ -1,15 +1,22 @@
 package de.dedede.model.persistence.daos;
 
 
-
+import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserLendStatus;
+import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
+import org.postgresql.util.PGInterval;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -65,9 +72,33 @@ public final class UserDao {
 		}
 	}
 
+
 	public static List<UserDto> readUsersBySearchCriteria() {
 		return null;
 
+	}
+
+	/**
+	 * Fetches user data associated with a given ID. The ID
+	 * must be existed in the data store. Otherwise, an exception is thrown.
+	 *
+	 * @param userDto A DTO container with the ID that identifies the
+	 *                user to be fetched.
+	 * @return A DTO container with the fetched user.
+	 * @throws UserDoesNotExistException Is thrown when the enclosed
+	 *                                      ID does not exist in the data store.
+	 */
+	public static UserDto readUserForProfile(UserDto userDto) throws UserDoesNotExistException {
+		Connection conn = getConnection();
+		try {
+			return readUserForProfileHelper(conn, userDto);
+		} catch (SQLException e){
+			String message = "Database error occurred while reading user entity with id: " + userDto.getId();
+			Logger.severe(message);
+			throw new LostConnectionException(message, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
@@ -182,5 +213,67 @@ public final class UserDao {
 		deleteStmt.setInt(1, Math.toIntExact(userDto.getId()));
 		deleteStmt.executeUpdate();
 		conn.commit();
+	}
+
+	/**
+	 * @author Sergei Pravdin
+	 */
+	public static UserDto readUserForProfileHelper(Connection conn, UserDto userDto) throws SQLException, UserDoesNotExistException {
+		PreparedStatement readStmt = conn.prepareStatement(
+				"SELECT userid, emailaddress, passwordhashsalt," +
+						" passwordhash, name, surname, postalcode, city, street," +
+						" housenumber, token, tokencreation, userlendperiod," +
+						"lendstatus, verificationstatus, userrole " +
+						"FROM Users " +
+						"WHERE userid = ?)");
+		readStmt.setInt(1, Math.toIntExact(userDto.getId()));
+		ResultSet resultSet = readStmt.executeQuery();
+		if (resultSet.next()) {
+			populateUserDto(resultSet, userDto);
+			conn.commit();
+			return userDto;
+		} else {
+			conn.commit();
+			String msg = "A medium does not exist with id: " + userDto.getId();
+			throw new UserDoesNotExistException(msg);
+		}
+	}
+
+	/**
+	 * @author Sergei Pravdin
+	 */
+	private static void populateUserDto(ResultSet resultSet, UserDto userDto) throws SQLException {
+		userDto.setEmailAddress(resultSet.getString(2));
+		userDto.setPasswordSalt(resultSet.getString(3));
+		userDto.setPasswordHash(resultSet.getString(4));
+		userDto.setFirstName(resultSet.getString(5));
+		userDto.setLastName(resultSet.getString(6));
+		userDto.setZipCode(Integer.parseInt(resultSet.getString(7)));
+		userDto.setCity(resultSet.getString(8));
+		userDto.setStreet(resultSet.getString(9));
+		userDto.setStreetNumber(resultSet.getString(10));
+		userDto.setTokenDto(prepareTokenDto(resultSet));
+		long lendingPeriod = Math.round(((PGInterval)
+				resultSet.getObject(13)).getSeconds());
+		userDto.setLendingPeriod(Duration.ofSeconds(lendingPeriod));
+		UserLendStatus userLendStatus = UserLendStatus.valueOf
+				(resultSet.getString(14));
+		userDto.setUserLendStatus(userLendStatus);
+		UserVerificationStatus verificationStatus =
+				UserVerificationStatus.valueOf(resultSet.getString(15));
+		userDto.setUserVerificationStatus(verificationStatus);
+		UserRole userRole = UserRole.valueOf(resultSet.getString(16));
+		userDto.setUserRole(userRole);
+	}
+
+	/**
+	 * @author Sergei Pravdin
+	 */
+	private static TokenDto prepareTokenDto(ResultSet resultSet) throws SQLException {
+		TokenDto tokenDto = new TokenDto();
+		tokenDto.setContent(resultSet.getString(11));
+		LocalDateTime localDateTime = resultSet.getTimestamp(12).toLocalDateTime();
+		tokenDto.setCreationTime(localDateTime);
+		return tokenDto;
 	}
 }

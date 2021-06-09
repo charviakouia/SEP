@@ -1,5 +1,7 @@
 package de.dedede.model.data.dtos;
 
+import de.dedede.model.logic.util.UserVerificationStatus;
+
 import java.time.Duration;
 import java.util.Date;
 
@@ -40,6 +42,8 @@ public class UserDto {
     private Duration lendingPeriod;
 
     private UserLendStatus userLendStatus;
+
+    private UserVerificationStatus userVerificationStatus;
 
     private TokenDto tokenDto;
 
@@ -358,5 +362,29 @@ public class UserDto {
      */
     public void setPasswordSalt(String passwordSalt) {
         this.passwordSalt = passwordSalt;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
+    public UserVerificationStatus getUserVerificationStatus() {
+        return userVerificationStatus;
+    }
+
+    public void setUserVerificationStatus(UserVerificationStatus userVerificationStatus) {
+        this.userVerificationStatus = userVerificationStatus;
+    }
+
+    public TokenDto getTokenDto() {
+        return tokenDto;
+    }
+
+    public void setTokenDto(TokenDto tokenDto) {
+        this.tokenDto = tokenDto;
     }
 }

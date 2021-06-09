@@ -1,14 +1,14 @@
 package de.dedede.model.persistence.util;
 
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
-import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
 
 /**
  * A singleton utility class for returning system-wide property values.
@@ -30,7 +30,7 @@ public class ConfigReader {
 	/**
 	 * Holds the Properties Object with system configurations.
 	 */
-	private Properties systemConfigurations;
+	private Properties systemConfigurations = new Properties();
 	
 	/**
 	 * Needed as basis for loading config with webapp-relative path.

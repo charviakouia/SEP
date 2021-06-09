@@ -34,7 +34,7 @@ public class DeleteUserTest {
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException,
             InvalidConfigurationException, LostConnectionException, MaxConnectionsException {
-        ConnectionPool.setUpConnectionPool(true);
+        ConnectionPool.setUpConnectionPool();
         Connection conn = getConnection();
         try {
             PreparedStatement createStmt = conn.prepareStatement(
