@@ -20,12 +20,12 @@ import de.dedede.model.persistence.util.ConnectionPool;
 class ConnectionPoolTest {
 
 	private static ConnectionPool poolInstance;
-	private static final long connectionTimeout = ConnectionPool.ACQUIRING_CONNECTION_PERIOD * 5;
+	private static final long connectionTimeout = ConnectionPool.getAcquiringConnectionPeriod() * 5;
 	private static ApplicationDto dto;
 	
 	@BeforeAll
 	public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
-		ConnectionPool.setUpConnectionPool(true);
+		ConnectionPool.setUpConnectionPool();
 		poolInstance = ConnectionPool.getInstance();
 		initializeDto();
 	}

@@ -5,6 +5,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd">
 
+	<!-- https://github.com/eclipse-ee4j/faces-api/blob/master/spec/src/main/asciidoc/FacesMetadata.adoc -->
+	<faces-config-extension>
+		<facelets-processing>
+			<process-as>xml</process-as>
+		</facelets-processing>
+	</faces-config-extension>
+
 	<application>
 
 		<locale-config>
@@ -20,10 +27,12 @@
 			<system-event-listener-class>de.dedede.model.logic.util.SystemStartStop</system-event-listener-class>
 			<system-event-class>jakarta.faces.event.PostConstructApplicationEvent</system-event-class>
 		</system-event-listener>
+
 		<system-event-listener>
 			<system-event-listener-class>de.dedede.model.logic.util.SystemStartStop</system-event-listener-class>
 			<system-event-class>jakarta.faces.event.PreDestroyApplicationEvent</system-event-class>
 		</system-event-listener>
+
 	</application>
 
 </faces-config>

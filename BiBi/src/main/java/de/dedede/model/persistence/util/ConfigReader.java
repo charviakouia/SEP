@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
@@ -19,12 +20,17 @@ import jakarta.faces.context.FacesContext;
 public class ConfigReader {
 	
 	/**
-	 * Implicitly synchronized singleton-pattern to avoid 'synchronized' 
+	 * Implicitly synchronized singleton-pattern to avoid 'synchronized' 		
 	 * bottleneck on getInstance(). 
 	 */
-	private static final class InnerInstance {
-		static final ConfigReader InnerInstance = new ConfigReader();
+	private static final class InnerInstance {									//Changed to runtimeexception?!
+		static final ConfigReader InnerInstance = new ConfigReader();			//Bonus: default values behandeln?
 	}
+	
+	/**
+	 * Holds the Properties Object with system configurations.
+	 */
+	private Properties systemConfigurations;
 	
 	/**
 	 * Needed as basis for loading config with webapp-relative path.
@@ -38,15 +44,26 @@ public class ConfigReader {
 	private Path relativeFilePath = Paths.get("WEB-INF", "config.properties");
 	
 	/**
-	 * Singleton with private constructor.
+	 * Singleton with private constructor. Initializes the ConfigReader by 
+	 * reading the config-File.
+	 * 
+	 * @throws InvalidConfigurationException if the file couldn't be read
 	 */
-	private ConfigReader() {}
-
-	private FacesContext findContext() {
-		
-		return FacesContext.getCurrentInstance();
+	private ConfigReader() {
+		String pathString = relativeFilePath.toString();
+		InputStream stream = ext.getResourceAsStream(pathString);
+		try {
+			systemConfigurations.load(stream);
+			stream.close();	
+		} catch (IOException e) {
+			System.out.println("Couldn't read config-File.");
+			throw new InvalidConfigurationException("Critical Error while "
+					+ "reading config File", e);
+		}		
+		System.out.println("System Configurations initialized.");
 	}
 
+	
 	/**
 	 * Returns the single instance of the ConfigReader. Synchronized implicitly 
 	 * by the ClassLoader.
@@ -58,34 +75,34 @@ public class ConfigReader {
 		return InnerInstance.InnerInstance;
 	}
 	
-	public void setupConfigReader() throws IOException {
-		Properties testProperties = new Properties();
-		String pathString = relativeFilePath.toString();
-		InputStream stream = ext.getResourceAsStream(pathString);
-		testProperties.load(stream);		
-		stream.close();	
-		System.out.println("Testreading configuration file successful.");
+	/**
+	 * Returns a String containing the system configuration under the specified
+	 * key.
+	 * 
+	 * @param String key the name of the config variable key.
+	 * @return The value for the key
+	 */
+	public String getKey(String key) {
+		
+		return systemConfigurations.getProperty(key);
 	}
 	
 	/**
-	 * Returns a properties-object containing the system configurations.
-	 * This properties-object permits read-only operations.
+	 * Returns a String containing the system configuration under the specified
+	 * key.
 	 * 
-	 * @return The system configurations
+	 * @param String key the name of the config variable key.
+	 * @return The value for the key or the default value if the original 
+	 * 			value is empty
 	 */
-	public Properties getSystemConfigurations() {
-		Properties config = new Properties();
-		try {
-			String pathString = relativeFilePath.toString();
-			InputStream stream = ext.getResourceAsStream(pathString);
-			config.load(stream);		
-			stream.close();			
-		} catch (Exception e) {
-			Logger.severe("Failed to read system configurations.");
-			System.out.println("Unable to read system configuration file.");
-		}
+	public String getKey(String key, String defaultValue)  {
 		
-		return config;
+		return systemConfigurations.getProperty(key, defaultValue);
 	}
 	
+	private FacesContext findContext() {
+		
+		return FacesContext.getCurrentInstance();
+	}
+
 }

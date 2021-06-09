@@ -26,7 +26,7 @@ class ApplicationDaoTest {
 	@BeforeAll
 	public static void setUp() throws ClassNotFoundException, SQLException, MaxConnectionsException,
 			LostConnectionException, InvalidConfigurationException {
-		ConnectionPool.setUpConnectionPool(true);
+		ConnectionPool.setUpConnectionPool();
 		initializeFirstDto();
 		initializeSecondDto();
 		ApplicationDao.createCustomization(current);

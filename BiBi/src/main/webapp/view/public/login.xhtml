@@ -1,17 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
-	template="/view/templates/template.xhtml">
-	
-	<ui:param name="page" value="login" />
+				xmlns:h="http://xmlns.jcp.org/jsf/html"
+				xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
+				template="/view/templates/template.xhtml">
+	<!-- Author Mohamad-->
+
+	<ui:param name="page" value="login"/>
 
 	<ui:define name="content">
+		<h:form>
 
-		UNIMPLEMENTED
+			<h:outputLabel for="email" value="Email:"/>
+			<h:inputText id="email" type="text" styleClass="" value="#{login.email}" required="true"/><br/>
+			<h:outputLabel for="password" value="Password:"/>
+			<h:inputSecret id="password" type="text" styleClass="" value="#{login.password}" required="true"/><br/><br/>
+			<h:commandButton id="login-button" value="login" action="#{login.logIn()}"/>
 
+		</h:form>
 	</ui:define>
-	
+
 </ui:composition>

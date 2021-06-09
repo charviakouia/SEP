@@ -24,7 +24,6 @@ public class Contact  implements Serializable {
 
 	@PostConstruct
 	public void init() {
-
 	}
 
 	public ApplicationDto getApplication() {
@@ -39,4 +38,8 @@ public class Contact  implements Serializable {
 
 	}
 
+	
+	public String getStuff() {
+		return "stuff";
+	}
 }

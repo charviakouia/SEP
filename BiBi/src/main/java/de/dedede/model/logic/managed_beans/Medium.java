@@ -1,5 +1,9 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -11,10 +15,8 @@ import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
-
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Backing bean for the medium facelet. This page provides information about a
@@ -32,20 +34,12 @@ public class Medium implements Serializable {
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private MediumDto medium;
-
-	private List<CopyDto> copies;
-
-	/**
-	 * A copy to be created.
-	 */
-	private CopyDto copy;
-
-	private UserDto user;
+	private MediumDto mediumDto;
 
 	@PostConstruct
+
 	private void init() {
-		medium = new MediumDto();
+		mediumDto = new MediumDto();
 	}
 
 	/**
@@ -63,22 +57,23 @@ public class Medium implements Serializable {
 
 	/**
 	 * Insert a new copy of this medium.
-	 *
-	 * @author Sergei Pravdin
 	 */
+
 	public void createCopy() throws BusinessException {
+		CopyDto newCopyDto = new CopyDto();
 		try {
-			MediumDao.createCopy(copy, medium);
+			MediumDao.createCopy(newCopyDto, mediumDto);
 		} catch (LostConnectionException e) {
-			String msg = "Database error occurred while creating copy with id: " + copy.getId();
+			String msg = "Database error occurred while creating copy with id: " + newCopyDto.getId();
 			throw new BusinessException(msg, e);
 		} catch (MaxConnectionsException e) {
-			String msg = "Connection is not available while creating copy with id: " + copy.getId();
+			String msg = "Connection is not available while creating copy with id: " + newCopyDto.getId();
 			throw new BusinessException(msg, e);
 		} catch (EntityInstanceNotUniqueException e) {
-			String msg = "A copy with this ID already exists: " + copy.getId();
+			String msg = "A copy with this ID already exists: " + newCopyDto.getId();
 			throw new BusinessException(msg, e);
 		}
+
 	}
 
 	/**
@@ -155,19 +150,11 @@ public class Medium implements Serializable {
 	public void pickUpCopy(int index, UserDto user) throws IllegalStateException {
 	}
 
-	public MediumDto getMedium() {
-		return medium;
+	public MediumDto getMediumDto() {
+		return mediumDto;
 	}
 
-	public void setMedium(MediumDto medium) {
-		this.medium = medium;
-	}
-
-	public CopyDto getCopy() {
-		return copy;
-	}
-
-	public void setCopy(CopyDto copy) {
-		this.copy = copy;
+	public void setMediumDto(MediumDto mediumDto) {
+		this.mediumDto = mediumDto;
 	}
 }

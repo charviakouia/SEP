@@ -1,10 +1,10 @@
 package de.dedede.model.data.dtos;
 
-import de.dedede.model.logic.util.AttributeModifiability;
-
-import java.awt.*;
+import java.awt.Image;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.List;
+
+import de.dedede.model.logic.util.AttributeModifiability;
 
 /**
  * This DTO (data transfer object) is responsible for aggregating and
@@ -20,11 +20,11 @@ public class AttributeDto {
 
     private String name;
 
-    private LinkedList<String> textValue;
+    private List<String> textValue;
 
-    private LinkedList<Image> imageValue;
+    private List<Image> imageValue;
 
-    private LinkedList<URL> urlValue;
+    private List<URL> urlValue;
 
 	private AttributeModifiability attributeModifiability;
 
@@ -139,7 +139,7 @@ public class AttributeDto {
      * @return A list of text values for the attribute.
      * @see AttributeMultiplicity
      */
-    public LinkedList<String> getTextValue() {
+    public List<String> getTextValue() {
         return textValue;
     }
 
@@ -150,7 +150,7 @@ public class AttributeDto {
      * @param textValue A list of text values for the attribute.
      * @see AttributeMultiplicity
      */
-    public void setTextValue(LinkedList<String> textValue) {
+    public void setTextValue(List<String> textValue) {
         this.textValue = textValue;
     }
 
@@ -161,7 +161,7 @@ public class AttributeDto {
      * @return A list of image values for the attribute.
      * @see AttributeMultiplicity
      */
-    public LinkedList<Image> getImageValue() {
+    public List<Image> getImageValue() {
         return imageValue;
     }
 
@@ -172,7 +172,7 @@ public class AttributeDto {
      * @param imageValue A list of image values for the attribute.
      * @see AttributeMultiplicity
      */
-    public void setImageValue(LinkedList<Image> imageValue) {
+    public void setImageValue(List<Image> imageValue) {
         this.imageValue = imageValue;
     }
 
@@ -183,7 +183,7 @@ public class AttributeDto {
      * @return A list of URL values for the attribute.
      * @see AttributeMultiplicity
      */
-    public LinkedList<URL> getUrlValue() {
+    public List<URL> getUrlValue() {
         return urlValue;
     }
 
@@ -194,7 +194,7 @@ public class AttributeDto {
      * @param urlValue A list of URL values for the attribute.
      * @see AttributeMultiplicity
      */
-    public void setUrl(LinkedList<URL> urlValue) {
+    public void setUrl(List<URL> urlValue) {
         this.urlValue = urlValue;
     }
 

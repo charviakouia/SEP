@@ -3,9 +3,11 @@ package de.dedede.model.persistence.daos;
 import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
+import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.util.ConnectionPool;
+import de.dedede.model.persistence.util.Logger;
 import org.postgresql.util.PGInterval;
 
 import java.sql.*;
@@ -43,11 +45,10 @@ public final class ApplicationDao {
 			PreparedStatement createStmt = conn.prepareStatement(
 					"INSERT INTO Application (bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, " +
 							"bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, " +
-							"lookAndFeel, anonRights, userLendStatus) VALUES " +
+							"lookAndFeel, ananRights, userLendStatus) VALUES " +
 							"(?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), CAST(? AS INTERVAL), CAST(? AS INTERVAL)," +
-							"CAST(? AS systemRegistrationStatus), ?, CAST(? AS systemAnonAccess), " +
-							"CAST(? AS registeredUserLendStatus));",
-					Statement.RETURN_GENERATED_KEYS
+							"CAST(? AS systemRegistrationStatus), CAST(? AS systemLookAndFeel)," +
+							"CAST(? AS systemAnonRights), CAST(? AS userLendStatus));"
 			);
 			populateStatement(createStmt, appDTO);
 			int numAffectedRows = createStmt.executeUpdate();
@@ -55,7 +56,7 @@ public final class ApplicationDao {
 			conn.commit();
 		} catch (SQLException e){
 			String msg = "Database error occurred while creating application entity with id: " + appDTO.getId();
-			// Logger.severe(msg);
+			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -85,7 +86,7 @@ public final class ApplicationDao {
 			return readCustomizationHelper(conn, appDTO);
 		} catch (SQLException e){
 			String msg = "Database error occurred while reading application entity with id: " + appDTO.getId();
-			// Logger.severe(msg);
+			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -116,22 +117,21 @@ public final class ApplicationDao {
 							"bibLogo = ?, globalLendLimit = CAST(? AS INTERVAL), " +
 							"globalMarkingLimit = CAST(? AS INTERVAL), reminderOffset = CAST(? AS INTERVAL), " +
 							"registrationStatus = CAST(? AS systemRegistrationStatus), " +
-							"lookAndFeel = ?, anonRights = CAST(? AS systemAnonAccess), " +
-							"userLendStatus = CAST(? AS registeredUserLendStatus) " +
+							"lookAndFeel = CAST(? AS systemLookAndFeel), anonRights = CAST(? AS systemAnonRights), " +
+							"userLendStatus = CAST(? AS userLendStatus) " +
 							"WHERE one = ?;"
 			);
 			populateStatement(updateStmt, appDTO);
-			updateStmt.setLong(14, appDTO.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0){
 				String msg = String.format("No entity with the id: %d exists", appDTO.getId());
-				// Logger.severe(msg);
+				Logger.severe(msg);
 				throw new EntityInstanceDoesNotExistException(msg);
 			}
 		} catch (SQLException e){
 			String msg = "Database error occurred while updating application entity with id: " + appDTO.getId();
-			// Logger.severe(msg);
+			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -164,12 +164,12 @@ public final class ApplicationDao {
 				return appDTO;
 			} else {
 				String msg = String.format("No entity with the id: %d exists", appDTO.getId());
-				// Logger.severe(msg);
+				Logger.severe(msg);
 				throw new EntityInstanceDoesNotExistException(msg);
 			}
 		} catch (SQLException e) {
 			String msg = "Database error occurred while deleting application entity with id: " + appDTO.getId();
-			// Logger.severe(msg);
+			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -185,7 +185,7 @@ public final class ApplicationDao {
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 		} catch (SQLException e){
-			// Logger.severe("Couldn't configure the connection");
+			Logger.severe("Couldn't configure the connection");
 			ConnectionPool.getInstance().releaseConnection(conn);
 			throw new LostConnectionException("Couldn't configure the connection");
 		}
@@ -200,7 +200,7 @@ public final class ApplicationDao {
 						"ELSE false " +
 						"END AS entityExists;"
 		);
-		checkingStmt.setLong(1, appDTO.getId());
+		checkingStmt.setString(1, String.valueOf(appDTO.getId()));
 		ResultSet resultSet = checkingStmt.executeQuery();
 		resultSet.next();
 		return resultSet.getBoolean(1);

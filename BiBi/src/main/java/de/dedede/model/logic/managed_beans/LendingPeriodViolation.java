@@ -4,7 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import de.dedede.model.data.dtos.CopyMediumUser;
+import de.dedede.model.data.dtos.MediumCopyAttributeUserDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
@@ -21,7 +21,7 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private List<CopyMediumUser> items;
+	private List<MediumCopyAttributeUserDto> items;
 
 	@PostConstruct
 	public void init() {
@@ -29,7 +29,7 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 	}
 	
 	@Override
-	public List<CopyMediumUser> getItems() {
+	public List<MediumCopyAttributeUserDto> getItems() {
 		return items;
 	}
 }
