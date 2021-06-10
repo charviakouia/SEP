@@ -1,17 +1,34 @@
 package de.dedede.model.persistence.daos;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import de.dedede.model.data.dtos.*;
-import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 import org.postgresql.util.PGInterval;
-
-import java.sql.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import de.dedede.model.logic.util.AttributeModifiability;
+import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
+import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
+import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
+import javax.imageio.ImageIO;
 
 /**
  * This DAO (data access object) manages data pertaining to a medium or a copy.
@@ -31,18 +48,116 @@ public final class MediumDao {
 
 	/**
 	 * Enters new medium data into the persistent data store. Any copies associated
-	 * with this medium are not entered automatically. The enclosed ID must not be
-	 * associated with an existing data entry in the data store. Otherwise, an
-	 * exception is thrown.
+	 * with this medium are not entered automatically.
 	 *
-	 * @param mediumDto A DTO container with the new medium data
-	 * @throws EntityInstanceNotUniqueException Is thrown when the enclosed ID is
-	 *                                          already associated with an existing
-	 *                                          data entry.
+	 * @param mediumDto						A DTO container with the new medium data
+	 * @throws LostConnectionException		Is thrown when the insertion operation
+	 * 										couldn't be completed due to a faulty connection
 	 * @see MediumDto
 	 */
-	public static void createMedium(MediumDto mediumDto) throws EntityInstanceNotUniqueException {
-		// TODO: MS2 von Ivan
+	public static void createMedium(MediumDto mediumDto) throws LostConnectionException {
+		Connection conn = getConnection();
+		try {
+			PreparedStatement createStmt = conn.prepareStatement(
+					"INSERT INTO Medium (mediumLendPeriod, hasCategory) VALUES " +
+							"(CAST(? AS INTERVAL), ?);",
+					Statement.RETURN_GENERATED_KEYS
+			);
+			populateMediumStatement(createStmt, mediumDto);
+			int numAffectedRows = createStmt.executeUpdate();
+			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(mediumDto, createStmt); }
+			createAttributes(conn, mediumDto, mediumDto.getAttributes().values());
+			conn.commit();
+		} catch (SQLException e){
+			String msg = "Database error occurred while creating medium entity with id: " + mediumDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} catch (IOException e) {
+			String msg = "Error occurred while writing byte array for an image";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) throws SQLException {
+		stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
+		stmt.setInt(2, mediumDto.getCategory().getId());
+	}
+
+	private static void createAttributes(Connection conn, MediumDto mediumDto,
+			Collection<AttributeDto> attributeDtos) throws SQLException, IOException {
+		PreparedStatement createStmt1 = conn.prepareStatement(
+				"INSERT INTO CustomAttribute (mediumId, attributeName, attributeValue) VALUES " +
+						"(?, ?, ?);",
+				Statement.RETURN_GENERATED_KEYS
+		);
+		PreparedStatement createStmt2 = conn.prepareStatement(
+				"INSERT INTO AttributeType (attributeId, mediumId, previewPosition, multiplicity, " +
+						"modifiability, attributeDataType) VALUES " +
+						"(?, ?, CAST(? AS mediumpreviewposition), CAST(? AS attributemultiplicity), " +
+						"CAST(? AS attributemodifiability), CAST(? AS attributedatatype));"
+		);
+		for (AttributeDto attributeDto : attributeDtos){
+			AttributeType type = attributeDto.getType();
+			switch (type){
+				case LINK:
+					for (URL url : attributeDto.getUrlValue()){
+						createAttribute(createStmt1, createStmt2, mediumDto, attributeDto, url.toString().getBytes());
+					}
+					break;
+				case TEXT:
+					for (String str : attributeDto.getTextValue()){
+						createAttribute(createStmt1, createStmt2, mediumDto, attributeDto, str.getBytes());
+					}
+					break;
+				case IMAGE:
+					for (Image image : attributeDto.getImageValue()){
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						ImageIO.write((BufferedImage) image, "jpg", baos);
+						createAttribute(createStmt1, createStmt2, mediumDto, attributeDto, baos.toByteArray());
+					}
+					break;
+			}
+		}
+	}
+
+	private static void createAttribute(PreparedStatement stmt1, PreparedStatement stmt2,
+			MediumDto mediumDto, AttributeDto attributeDto, byte[] bytes) throws SQLException {
+		populateAttributeStatements(stmt1, stmt2, mediumDto, attributeDto);
+		stmt1.setBytes(3, bytes);
+		stmt1.executeUpdate();
+		attemptToInsertGeneratedKey(attributeDto, stmt1);
+		stmt2.setLong(1, attributeDto.getId());
+		stmt2.executeUpdate();
+	}
+
+	private static void populateAttributeStatements(PreparedStatement stmt1, PreparedStatement stmt2,
+			MediumDto mediumDto, AttributeDto attributeDto) throws SQLException {
+		stmt1.setLong(1, mediumDto.getId());
+		stmt1.setString(2, attributeDto.getName());
+		stmt2.setLong(2, mediumDto.getId());
+		stmt2.setString(3, attributeDto.getPosition().toString());
+		stmt2.setString(4, attributeDto.getAttributeMultiplicity().toString());
+		stmt2.setString(5, attributeDto.getAttributeModifiability().toString());
+		stmt2.setString(6, attributeDto.getType().toString());
+	}
+
+	private static void attemptToInsertGeneratedKey(MediumDto mediumDto, Statement stmt)
+			throws SQLException {
+		ResultSet resultSet = stmt.getGeneratedKeys();
+		if (resultSet.next()){
+			mediumDto.setId(Math.toIntExact(resultSet.getLong(1)));
+		}
+	}
+
+	private static void attemptToInsertGeneratedKey(AttributeDto attributeDto, Statement stmt)
+			throws SQLException {
+		ResultSet resultSet = stmt.getGeneratedKeys();
+		if (resultSet.next()){
+			attributeDto.setId(Math.toIntExact(resultSet.getLong(1)));
+		}
 	}
 
 	/**
@@ -339,8 +454,39 @@ public final class MediumDao {
 		// TODO: MS2 von Jonas
 	}
 
-	public static void readGlobalAttributes() {
-		// TODO: MS2 von Ivan
+	public static List<AttributeDto> readGlobalAttributes() {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement readStmt = conn.prepareStatement(
+					"SELECT attributeName, previewPosition, multiplicity, modifiability, attributeDataType " +
+							"FROM customAttribute AS c " +
+							"JOIN attributeType AS a " +
+							"ON c.attributeId = a.attributeId " +
+							"GROUP BY attributeName, previewPosition, multiplicity, modifiability, attributeDataType;"
+			);
+			ResultSet resultSet = readStmt.executeQuery();
+			List<AttributeDto> result = new LinkedList<>();
+			while (resultSet.next()){
+				AttributeDto attributeDto = new AttributeDto();
+				populateAttributeDto(resultSet, attributeDto);
+				result.add(attributeDto);
+			}
+			return result;
+		} catch (SQLException e){
+			String msg = "Database error occurred while reading global attributes";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	private static void populateAttributeDto(ResultSet resultSet, AttributeDto attributeDto) throws SQLException {
+		attributeDto.setName(resultSet.getString(1));
+		attributeDto.setPosition(MediumPreviewPosition.valueOf(resultSet.getString(2)));
+		attributeDto.setAttributeMultiplicity(AttributeMultiplicity.valueOf(resultSet.getString(3)));
+		attributeDto.setAttributeModifiability(AttributeModifiability.valueOf(resultSet.getString(4)));
+		attributeDto.setType(AttributeType.valueOf(resultSet.getString(5)));
 	}
 
 	public static void updateMediumAttributes(MediumDto mediumDto, Collection<AttributeDto> attributes) {

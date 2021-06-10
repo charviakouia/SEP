@@ -12,7 +12,64 @@
 
 	<ui:define name="content">
 
-		UNIMPLEMENTED
+		<h:outputLabel for="mediumForm" value="#{msg['title.medium_creator']}"/>
+		<h:form id="mediumForm">
+
+			<h:outputLabel for="strTable" value="#{msg['title.medium_attribute_type.text']}"/>
+			<h:dataTable id="strTable" value="#{mediumCreator.stringAttributeEntries}" var="entry">
+				<h:column>
+					<h:outputLabel value="#{entry.key.name}"/>
+				</h:column>
+				<h:column>
+					<h:inputText value="#{entry.value}"/>
+				</h:column>
+			</h:dataTable>
+
+			<h:outputLabel for="urlTable" value="#{msg['title.medium_attribute_type.url']}"/>
+			<h:dataTable id="urlTable" value="#{mediumCreator.urlAttributeEntries}" var="entry">
+				<h:column>
+					<h:outputLabel value="#{entry.key.name}"/>
+				</h:column>
+				<h:column>
+					<h:inputText value="#{entry.value}" converter="ListOfURLs"/>
+				</h:column>
+			</h:dataTable>
+
+			<h:outputLabel for="imageTable" value="#{msg['title.medium_attribute_type.image']}"/>
+			<h:dataTable id="imageTable" value="#{mediumCreator.imageAttributeEntries}" var="entry">
+				<h:column>
+					<h:outputLabel value="#{entry.key.name}"/>
+				</h:column>
+				<h:column>
+					<h:inputFile value="#{entry.value}">
+						<f:ajax listener="#{mediumCreator.upload(entry)}"/>
+					</h:inputFile>
+				</h:column>
+			</h:dataTable>
+
+			<h:outputLabel for="categorySearchTerm" value="#{msg['title.category_search']}"/>
+			<h:inputText id="categorySearchTerm" value="#{mediumCreator.categorySearchTerm}"/>
+
+			<h:outputLabel for="categoryInput" value="#{msg['title.category_browser']}"/>
+			<h:selectOneMenu id="categoryInput" value="#{mediumCreator.medium.category}">
+				<f:selectItems value="#{mediumCreator.searchedCategories}" var="category"
+							   itemLabel="#{category.name}" itemValue="#{category}"/>
+			</h:selectOneMenu>
+
+			<h:outputLabel for="lendingDuration" value="#{msg['title.medium_lending_duration']}"/>
+			<h:inputText id="lendingDuration" value="#{mediumCreator.medium.returnPeriod}"
+						 converter="DurationConverter"/>
+
+			<h:outputLabel for="copyLocation" value="#{msg['title.copyLocation']}"/>
+			<h:inputText id="copyLocation" value="#{mediumCreator.copy.location}"/>
+
+			<h:outputLabel for="copySignature" value="#{msg['title.copySignature']}"/>
+			<h:inputText id="copySignature" value="#{mediumCreator.copy.signature}"/>
+
+			<h:commandButton action="#{mediumCreator.searchForCategory}" value="#{msg['search']}"/>
+			<h:commandButton action="#{mediumCreator.save}" value="#{msg['save']}"/>
+
+		</h:form>
 
 	</ui:define>
 	

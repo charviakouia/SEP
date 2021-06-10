@@ -35,8 +35,7 @@ public class ConfigReader {
 	/**
 	 * Needed as basis for loading config with webapp-relative path.
 	 */
-	private ExternalContext ext = 
-			findContext().getExternalContext();
+	private ExternalContext ext = findContext().getExternalContext();
 	
 	/**
 	 * The path to the config-File starting from the webapp-Folder.
