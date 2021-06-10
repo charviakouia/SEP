@@ -1,8 +1,4 @@
-<<<<<<< HEAD:BiBiTest/src/test/java/TestsVonSergei/MediumDaoTest.java
-package TestsVonSergei;
-=======
-package test.java.tests;
->>>>>>> master:BiBiTest/src/test/java/tests/MediumDaoTest.java
+package tests;
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
@@ -69,13 +65,8 @@ public class MediumDaoTest {
         copyDto.setCopyStatus(CopyStatus.BORROWED);
         copyDto.setLocation("testLocation2");
         copyDto.setActor(333);
-<<<<<<< HEAD:BiBiTest/src/test/java/TestsVonSergei/MediumDaoTest.java
-        MediumDao.createCopy(copyDto);
-        Assertions.assertEquals("testSignature", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
-=======
         MediumDao.createCopy(copyDto, mediumDto);
         Assertions.assertEquals("testSignature2", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
->>>>>>> master:BiBiTest/src/test/java/tests/MediumDaoTest.java
     }
 
 }

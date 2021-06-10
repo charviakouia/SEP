@@ -20,7 +20,7 @@ import de.dedede.model.persistence.util.ConnectionPool;
 class ConnectionPoolTest {
 
 	private static ConnectionPool poolInstance;
-	private static final long connectionTimeout = ConnectionPool.getAcquiringConnectionPeriod() * 5;
+	private static final long CONNECTION_TIMEOUT = 5000;
 	private static ApplicationDto dto;
 	
 	@BeforeAll
@@ -37,7 +37,7 @@ class ConnectionPoolTest {
 	
 	@Test
 	public void testGettingAndReturningConnection() throws MaxConnectionsException {
-		Connection conn = poolInstance.fetchConnection(connectionTimeout);
+		Connection conn = poolInstance.fetchConnection(CONNECTION_TIMEOUT);
 		poolInstance.releaseConnection(conn);
 	}
 	

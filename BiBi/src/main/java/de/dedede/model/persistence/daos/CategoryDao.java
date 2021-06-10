@@ -3,6 +3,7 @@ package de.dedede.model.persistence.daos;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CategoryDto;
+import de.dedede.model.data.dtos.CategorySearchDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -58,7 +59,8 @@ public final class CategoryDao {
 	 * 		to the specified search term and pagination details.
 	 * @see CategoryDto
 	 */
-	public static List<PaginationDto> readCategoriesByName(PaginationDto paginationDetails) {
+	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearchDto,
+														 PaginationDto paginationDetails) {
 		return null;
 	}
 
