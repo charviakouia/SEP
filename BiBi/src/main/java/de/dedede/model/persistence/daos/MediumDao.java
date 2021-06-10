@@ -10,16 +10,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import de.dedede.model.data.dtos.*;
+import de.dedede.model.persistence.util.ConfigReader;
+import de.dedede.model.persistence.util.ConnectionPool;
+import de.dedede.model.persistence.util.Logger;
+import org.postgresql.util.PGInterval;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.dedede.model.data.dtos.*;
 import de.dedede.model.logic.util.AttributeModifiability;
-import org.postgresql.util.PGInterval;
-
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -27,10 +28,6 @@ import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
-import de.dedede.model.persistence.util.ConfigReader;
-import de.dedede.model.persistence.util.ConnectionPool;
-import de.dedede.model.persistence.util.Logger;
-
 import javax.imageio.ImageIO;
 
 /**
@@ -168,13 +165,12 @@ public final class MediumDao {
 	 * associated with an existing data entry. Otherwise, an exception is thrown.
 	 * 
 	 * @param mediumDto A DTO container with the ID of the medium data to be fetched
-	 * @throws EntityInstanceDoesNotExistException Is thrown when the passed ID
+	 * @throws MediumDoesNotExistException Is thrown when the passed ID
 	 * 		is not associated with any existing data entry.
 	 * @return A DTO container with the medium data referenced by the ID.
-	 * @throws MediumDoesNotExistException 
 	 */
 	public static MediumDto readMedium(MediumDto mediumDto)
-			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
+			throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		Connection conn = getConnection();
 		try {
 			return readMediumHelper(conn, mediumDto);
@@ -645,7 +641,6 @@ public final class MediumDao {
 	}
 
 	private static void populateMediumDto(ResultSet resultSet, MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
-		mediumDto.setId(resultSet.getInt(1));
 		long returnPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(2)).getSeconds());
 		mediumDto.setReturnPeriod(Duration.ofSeconds(returnPeriodSeconds));
 		mediumDto.getCategory().setId(resultSet.getInt(3));

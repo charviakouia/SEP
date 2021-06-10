@@ -1,15 +1,18 @@
 package de.dedede.model.persistence.util;
 
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
+import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-
-import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 
 /**
  * This pool manages the creation and distribution of connection-objects.

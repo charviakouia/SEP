@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Sergei Pravdin
  */
+
 public class MediumDaoTest {
 
     @BeforeAll
@@ -35,7 +36,7 @@ public class MediumDaoTest {
     }
 
     @Test
-    public void readMediumTest() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException, EntityInstanceDoesNotExistException {
+    public void readMediumTest() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
         MediumDto mediumDto = new MediumDto();
         mediumDto.setId(2);
         Assertions.assertTrue(MediumDao.readMedium(mediumDto).getCopies().containsKey(333));
@@ -56,7 +57,8 @@ public class MediumDaoTest {
     }
 
     @Test
-    public void testCreateCopy() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException, MediumDoesNotExistException, EntityInstanceDoesNotExistException {
+    public void testCreateCopy() throws LostConnectionException, MaxConnectionsException,
+            EntityInstanceNotUniqueException, MediumDoesNotExistException {
         MediumDto mediumDto = new MediumDto();
         CopyDto copyDto = new CopyDto();
         mediumDto.setId(2);

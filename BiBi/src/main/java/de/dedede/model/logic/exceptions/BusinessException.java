@@ -1,10 +1,7 @@
 package de.dedede.model.logic.exceptions;
 
-import de.dedede.model.logic.managed_beans.EmailConfirmation;
-import de.dedede.model.logic.managed_beans.PasswordReset;
-
 /**
- * The MyBusinessException wraps all checked standard Java exception and enriches them with a custom error code.
+ * Wraps all checked standard Java exception and enriches them with a custom error code.
  */
 public class BusinessException extends Exception {
 
