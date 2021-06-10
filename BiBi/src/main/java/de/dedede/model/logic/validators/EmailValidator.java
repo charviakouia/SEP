@@ -2,12 +2,15 @@ package de.dedede.model.logic.validators;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.FacesValidator;
+import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
 /**
  * Checks if the email address matches the specific domain.
  */
-public class EmailValidator {
+@FacesValidator("emailValidator")
+public class EmailValidator implements Validator<String> {
 
 	/**
 	 * Check if the given email address belongs to the domain of the system. If it

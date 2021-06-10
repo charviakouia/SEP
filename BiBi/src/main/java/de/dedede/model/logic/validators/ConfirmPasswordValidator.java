@@ -2,6 +2,7 @@ package de.dedede.model.logic.validators;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
@@ -9,6 +10,7 @@ import jakarta.faces.validator.ValidatorException;
  * Checks if a new password corresponds with the repeated input of the password
  * in order to ensure the user typed it in correctly.
  */
+@FacesValidator("confirmPasswordValidator")
 public class ConfirmPasswordValidator implements Validator<String> {
 
 	/**
