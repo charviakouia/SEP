@@ -9,6 +9,7 @@ import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
@@ -36,7 +37,6 @@ public class Lending implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		MediumDao.refreshCopyStatusIfMarked();
 		for(int i = 0; i < 5; i++) {
 			copies.add(new CopyDto());
 		}
@@ -46,17 +46,21 @@ public class Lending implements Serializable {
 	 * Lend the selected list of copies to the given user.
 	 */
 	public void lendCopies() {
-		if (user.getEmailAddress() == null) {Logger.development("email ist null");} else if (user.getEmailAddress().trim() == "") {Logger.development("leere String email");} 
+		MediumDao.refreshCopyStatusIfMarked();
 		for(CopyDto copy : copies) {
 			if (copy.getSignature() != null && copy.getSignature().trim() != "") {
 				try {
 					MediumDao.lendCopy(copy, user);
 				} catch (CopyDoesNotExistException e) {
-					String message = "An unexpected error occured during lending process, the copy didn't exist or the transaction was invalid.";
+					String message = "An unexpected error occured during lending process, the copy didn't exist.";
 					Logger.severe(message);
 					throw new BusinessException(message, e);
 				} catch (UserDoesNotExistException e) {
 					String message = "An unexpected error occured during lending process, the user wasn't found in the database.";
+					Logger.severe(message);
+					throw new BusinessException(message, e);
+				} catch (CopyIsNotAvailableException e) {
+					String message = "An unexpected error occured during lending process, the copy is not available for lending.";
 					Logger.severe(message);
 					throw new BusinessException(message, e);
 				}

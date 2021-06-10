@@ -211,8 +211,8 @@ public class DataLayerInitializer {
 		        	initializeIndependentTables(connection);
 		        	initializeMedium(connection);
 		        	initializeDependendTables(connection);
-		        	initializeDependendAndFunction(connection);
-		        	initializeTrigger(connection);
+		        	initializeAttributeType(connection);
+		 
 		        	Logger.detailed("New DB scheme initialized");
 		        	initializeStandartAttributes(connection);
 		        	insertDefaultAdminAndAppData(connection);
@@ -273,20 +273,6 @@ public class DataLayerInitializer {
 		dropTypes.close();
 		Logger.development("droptypes executed");
 		Logger.detailed("Previous tables and enums dropped.");
-		PreparedStatement dropTrigger = connection.prepareStatement(
-				"DROP TRIGGER IF EXISTS on_status_update ON MediumCopy "
-				+ "CASCADE;");
-		dropTrigger.execute();
-		connection.commit();
-		dropTrigger.close();
-		Logger.development("trigger dropped");
-		PreparedStatement dropFunction = connection.prepareStatement(
-				"DROP FUNCTION IF EXISTS check_status_validity() CASCADE;");
-		dropFunction.execute();
-		connection.commit();
-		dropFunction.close();
-		Logger.development("function dropped");
-		Logger.detailed("Previous function and trigger dropped.");
 	}
 	
 	private static void initializeEnums(Connection connection) throws 
@@ -518,7 +504,7 @@ public class DataLayerInitializer {
 				+ "DB initialization.");
 	}
 	
-	private static void initializeDependendAndFunction(Connection connection) 
+	private static void initializeAttributeType(Connection connection) 
 			throws SQLException {
 		String s16 = "CREATE TABLE AttributeType ("
 				+ "	typeID SERIAL,"
@@ -537,68 +523,12 @@ public class DataLayerInitializer {
 				+ " mediumID) REFERENCES CustomAttribute(attributeID, mediumID)"
 				+ " ON DELETE CASCADE"
 				+ ");";
-		String s18 = "CREATE FUNCTION check_status_validity() RETURNS "
-				+ "TRIGGER AS "
-				+ "$BODY$"
-				+ "	BEGIN			"
-				+ "		IF (OLD.status = 'BORROWED'::COPYSTATUS) AND "
-				+ "(NEW.status = 'READY_FOR_PICKUP'::COPYSTATUS) THEN "
-				+ "		RAISE EXCEPTION 'Cannot mark a lent copy' ;"
-				+ "		ELSEIF (OLD.status = 'BORROWED'::COPYSTATUS) AND "
-				+ "(NEW.status = 'BORROWED'::COPYSTATUS) THEN "
-				+ "		RAISE EXCEPTION 'Copy is already lent' ;"
-				+ "		ELSEIF (OLD.status = 'READY_FOR_PICKUP'::COPYSTATUS) AND "
-				+ "(NEW.status = 'READY_FOR_PICKUP'::COPYSTATUS) THEN "
-				+ "		RAISE EXCEPTION 'Copy is already marked' ;"
-				+ "		ELSEIF (NEW.status = 'AVAILABLE'::COPYSTATUS) AND "
-				+ "(NEW.actor IS NOT NULL) THEN "
-				+ "		RAISE EXCEPTION 'An available copys actor must be"
-				+ " NULL' ;"
-				+ "		ELSEIF NOT ((OLD.status = 'READY_FOR_PICKUP'::COPYSTATUS AND "
-				+ "NEW.status = 'BORROWED'::COPYSTATUS) AND "
-				+ "(OLD.actor = NEW.actor)) THEN "
-				+ "		RAISE EXCEPTION 'A marked copy can only be lent by the "
-				+ "marking user!' ;							"
-				+ "		ELSEIF NOT (	   ((OLD.status = "
-				+ "'AVAILABLE'::COPYSTATUS) AND (NEW.status = "
-				+ "'BORROWED'::COPYSTATUS)) "
-				+ "						OR ((OLD.status = "
-				+ "'READY_FOR_PICKUP'::COPYSTATUS) AND "
-				+ "(NEW.status = 'AVAILABLE'::COPYSTATUS)) "
-				+ "						OR "
-				+ "((OLD.status = 'AVAILABLE'::COPYSTATUS) AND (NEW.status ="
-				+ " 'AVAILABLE'::COPYSTATUS)) "
-				+ "					) THEN "
-				+ "		RAISE EXCEPTION 'Invalid operation' ;"
-				+ "		RETURN new ;"
-				+ "	END if ;"
-				+ "	end"
-				+ "$BODY$"
-				+ "LANGUAGE plpgsql;";
 		PreparedStatement createAttType = connection.prepareStatement(s16);
 		createAttType.execute();
 		connection.commit();
 		createAttType.close();
-		PreparedStatement createFunction = connection.prepareStatement(s18);
-		createFunction.execute();
-		connection.commit();
-		createFunction.close();
-		Logger.development("Executed fifth group (function + attrTypes) of "
+		Logger.development("Executed fifth group (attrTypes) of "
 				+ "statements on DB initialization.");
-	}
-	
-	private static void initializeTrigger(Connection connection) 
-			throws SQLException {
-		String s19 = "CREATE TRIGGER on_status_update"
-				+ "	BEFORE UPDATE OF status ON MediumCopy"
-				+ "	FOR EACH ROW"
-				+ "	EXECUTE PROCEDURE check_status_validity();";
-		PreparedStatement createTrigger = connection.prepareStatement(s19);
-		createTrigger.execute();
-		connection.commit();
-		createTrigger.close();
-		Logger.development("Executed last batch (trigger) of statements "
-				+ "on DB initialization.");
 	}
 		
 	private static void initializeStandartAttributes(Connection conn) 

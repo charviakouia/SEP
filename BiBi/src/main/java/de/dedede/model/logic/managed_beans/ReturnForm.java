@@ -9,6 +9,7 @@ import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
@@ -47,18 +48,25 @@ public class ReturnForm implements Serializable {
 	 * by the user.
 	 * @throws EntityInstanceDoesNotExistException 
 	 */
-	public void returnCopies() {     											//runtime?
+	public void returnCopies() {
+		
 		for(CopyDto copy : copies) {
-			try {
-				MediumDao.returnCopy(copy, user);
-			} catch (CopyDoesNotExistException e) {
-				String message = "An unexpected error occured during return process, the copy didn't exist or wasn't regiostered as lent by the system.";
-				Logger.severe(message);
-				throw new BusinessException(message, e);
-			} catch (UserDoesNotExistException e) {
-				String message = "An unexpected error occured during return process, the user wasn't found in the database or didn't lent this Copy.";
-				Logger.severe(message);
-				throw new BusinessException(message, e);
+			if (copy.getSignature() != null || copy.getSignature().trim() != "") {
+				try {
+					MediumDao.returnCopy(copy, user);
+				} catch (CopyDoesNotExistException e) {
+					String message = "An unexpected error occured during return process, the copy didn't exist.";
+					Logger.severe(message);
+					throw new BusinessException(message, e);
+				} catch (UserDoesNotExistException e) {
+					String message = "An unexpected error occured during return process, the user wasn't found in the database or didn't lent this Copy.";
+					Logger.severe(message);
+					throw new BusinessException(message, e);
+				} catch (CopyIsNotAvailableException e) {
+					String message = "An unexpected error occured during return process, the copy wasn't lent in the first place.";
+					Logger.severe(message);
+					throw new BusinessException(message, e);
+				}
 			}
 		}
 	}

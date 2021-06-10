@@ -1,6 +1,5 @@
 package de.dedede.model.persistence.daos;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -788,8 +787,9 @@ public final class MediumDao {
 	 * @throws UserDoesNotExistException if the User wasn't found in the 
 	 * 									 database or another user marked it
 	 * @author Jonas Picker
+	 * @throws CopyIsNotAvailableException 
 	 */
-	public static void lendCopy(CopyDto signatureContainer, UserDto userEmail) throws CopyDoesNotExistException, UserDoesNotExistException {
+	public static void lendCopy(CopyDto signatureContainer, UserDto userEmail) throws CopyDoesNotExistException, UserDoesNotExistException, CopyIsNotAvailableException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);										//ConnectionPool verbesserung abwarten!
 		String signature = signatureContainer.getSignature();
 		int userId = UserDao.getUserIdByEmail(userEmail);
@@ -802,7 +802,7 @@ public final class MediumDao {
 		if (copyIsLentBySignature(conn, signatureContainer)) {			
 			String msg = "Error during copy lending! Copy is already lent.";
 			Logger.severe(msg);
-			throw new CopyDoesNotExistException(msg);
+			throw new CopyIsNotAvailableException(msg);
 		} else if (invalidUserLendingAttempt(conn, signatureContainer, userEmail)) {
 			String msg = "Error during copy lending! The Copy wasn't marked for pickup by this user.";
 			Logger.severe(msg);
@@ -853,7 +853,7 @@ public final class MediumDao {
 			Logger.detailed(updated + " copies were made availabe because pickup deadline expired.");
 			refreshMarkedDeadlines.close();
 		} catch (SQLException e) {
-			String errorMessage = "Error occured with db communication whilerefreshing marked copies with expired deadline.";
+			String errorMessage = "Error occured with db communication while refreshing marked copies with expired deadline.";
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
 		} finally {
@@ -861,7 +861,7 @@ public final class MediumDao {
 		}
 	}
 
-	//returns smallest limit in milliseconds as long
+	//returns smallest limit in milliseconds as long, user and signature must exist
 	/* @author Jonas Picker */
 	private static long smallestLimitMillis(Connection conn, String signature, int userId) throws SQLException {
 		PreparedStatement getCopysMedium = conn.prepareStatement("SELECT mediumId FROM mediumCopy WHERE signature = ?;");
@@ -871,29 +871,30 @@ public final class MediumDao {
 		rs1.next();
 		int fromMedium = rs1.getInt(1);
 		getCopysMedium.close();
-		PreparedStatement getGlobalLimit = conn.prepareStatement("SELECT globalLendLimit FROM application WHERE one = 1;");
+		PreparedStatement getGlobalLimit = conn.prepareStatement("SELECT EXTRACT (EPOCH FROM (SELECT globalLendLimit FROM application WHERE one = 1));");
 		ResultSet rs2 = getGlobalLimit.executeQuery();
 		conn.commit();
 		rs2.next();
-		PGInterval globalLimit = new PGInterval(rs2.getString(1));
+		double globalSeconds = rs2.getDouble(1) ;
 		getGlobalLimit.close();
-		PreparedStatement getMediumLimit = conn.prepareStatement("SELECT mediumLendPeriod FROM medium WHERE mediumId = ?;");
+		PreparedStatement getMediumLimit = conn.prepareStatement("SELECT EXTRACT (EPOCH FROM (SELECT mediumLendPeriod FROM medium WHERE mediumId = ?));");
 		getMediumLimit.setInt(1, fromMedium);
 		ResultSet rs3 = getMediumLimit.executeQuery();
 		conn.commit();
 		rs3.next();
-		PGInterval mediumLimit = new PGInterval(rs3.getString(1));
+		double mediumSeconds = rs3.getDouble(1);
 		getMediumLimit.close();
-		PreparedStatement getUserLimit = conn.prepareStatement("SELECT userLendPeriod FROM users WHERE userId = ?;");
+		PreparedStatement getUserLimit = conn.prepareStatement("SELECT EXTRACT (EPOCH FROM (SELECT userLendPeriod FROM users WHERE userId = ?));");
 		getUserLimit.setInt(1, userId);
 		ResultSet rs4 = getUserLimit.executeQuery();
 		conn.commit();
 		rs4.next();
-		PGInterval userLimit = new PGInterval(rs4.getString(1));
+		double userSeconds = rs4.getDouble(1);
 		getUserLimit.close();
-		double[] intervals = new double[] {globalLimit.getSeconds(), userLimit.getSeconds(), mediumLimit.getSeconds()};
+		double[] intervals = new double[] {globalSeconds, mediumSeconds, userSeconds};
 		Arrays.sort(intervals);
 		long longTime = (long) (intervals[0] * 1000);
+		Logger.development("Calculated lend limit was " + longTime + "milliseconds.");
 		return longTime;
 	}
 	
@@ -911,8 +912,9 @@ public final class MediumDao {
 	 * @throws UserDoesNotExistException if the User wasn't found in the 
 	 * 									 database or he hasn't lent the copy
 	 * @author Jonas Picker
+	 * @throws CopyIsNotAvailableException 
 	 */
-	public static void returnCopy(CopyDto signatureContainer, UserDto userEmail) throws UserDoesNotExistException, CopyDoesNotExistException {
+	public static void returnCopy(CopyDto signatureContainer, UserDto userEmail) throws UserDoesNotExistException, CopyDoesNotExistException, CopyIsNotAvailableException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);									//ConnectionPool verbessert?
 		String signature = signatureContainer.getSignature();
 		int userId = UserDao.getUserIdByEmail(userEmail);
@@ -925,7 +927,7 @@ public final class MediumDao {
 			String msg = "Error during copy return! Copy wasn't lent in the first place.";
 			Logger.severe(msg);
 			ConnectionPool.getInstance().releaseConnection(conn);
-			throw new CopyDoesNotExistException(msg);
+			throw new CopyIsNotAvailableException(msg);
 		} else if (invalidActorReturnAttempt(conn, signatureContainer, userEmail)) {          
 			String msg = "Copy couldn't be returned. The copy wasn't lent (by this user).";
 			Logger.severe(msg);
