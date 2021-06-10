@@ -11,36 +11,44 @@
 	<ui:param name="page" value="return_form" />
 
 	<ui:define name="content">
-	
-   <!-- <bibi:reactiveInputText value="#{lending.user.emailAddress}">
-			<f:validator validatorId="userValidator"/>
-		</bibi:reactiveInputText> -->
-		<h:inputText value="#{returnForm.user.emailAddress}"> 
-			<f:validator validatorId="userValidator"/>
-		</h:inputText>
-		
-		
-		
-		
-			
-		<ui:repeat var="copy" value="#{returnForm.copies}" varStatus="status">
-	   <!-- <bibi:reactiveInputField id="field" value="#{copy.signature}"/>
-	   			<f:validator validatorId="returnFormSignatureValidator"/>
-	   		</bibi:reactiveInputField>
-				 -->
-			<h:inputText id="field" value="#{copy.signature}">
-				<f:validator validatorId="returnFormSignatureValidator"/>
-			</h:inputText>
-		</ui:repeat>
+	<h1>#{msg['returnForm.headline']}</h1>
+	<h:form id="form_return_form">
 
+   <!-- <bibi:reactiveInputText value="#{lending.user.emailAddress}"><f:validator validatorId="userValidator"/></bibi:reactiveInputText> -->
+		
+		<h:panelGroup layout="block" styleClass="form-group">
+			<h:outputLabel for="returnForm_mail_field" value="#{msg['returnForm.mail_field']}"/>
+			<h:inputText id="returnForm_mail_field" value="#{returnForm.user.emailAddress}" styleClass="form-control" required="true" onchange="submit()" valueChangelistener="#{returnForm.setUserEmail}"> 
+				<f:validator validatorId="userValidator"/>
+			</h:inputText>
+		</h:panelGroup>
+		
+		
+		
+	<h:panelGroup layout="block" styleClass="container">
+		<ui:repeat var="copy" value="#{returnForm.copies}" varStatus="status">
+		
+	   <!-- <bibi:reactiveInputField id="field" value="#{copy.signature}"/><f:validator validatorId="returnFormSignatureValidator"/></bibi:reactiveInputField>-->
+			
+			 <h:panelGroup layout="block" styleClass="form-group">
+				<h:outputLabel for="returnForm_signature_field" value="#{msg['returnForm.signature_field']}"/>
+				<h:inputText id="returnForm_signature_field" value="#{copy.signature}" styleClass="form-control">
+					<f:validator validatorId="returnFormSignatureValidator"/>
+				</h:inputText>
+			</h:panelGroup>
+		</ui:repeat>
+	</h:panelGroup>
+		
 		<h:commandButton id="button_add_signature_return_field"
 							action="#{returnForm.addSignatureInputField()}" 
-							label="msg['returnForm.add_input']"
+							value="#{msg['returnForm.add_input']}"
 							styleClass="btn btn-secondary"/>
 		<h:commandButton id="button_return_copies"
 							action="#{returnForm.returnCopies()}" 
-							label="#{'returnForm.return_copies'}"
+							value="#{msg['returnForm.return_copies']}"
 							styleClass="btn btn-primary"/>			
+
+	</h:form>
 	</ui:define>
 
 </ui:composition>

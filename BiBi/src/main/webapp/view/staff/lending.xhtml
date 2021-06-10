@@ -11,34 +11,46 @@
 	<ui:param name="page" value="lending" />
 
 	<ui:define name="content">
+	<h1>#{msg['lending.headline']}</h1>
 	
-   <!-- <bibi:reactiveInputText value="#{lending.user.emailAddress}">
-			<f:validator validatorId="userValidator"/>
-		</bibi:reactiveInputText> -->
-		<h:inputText value="#{lending.user.emailAddress}"> 
-			<f:validator validatorId="userValidator"/>
-		</h:inputText>
-
+	
+	
+	<h:form id="form_lending">
+	
+	<h:panelGroup layout="block" styleClass="form-group">
+			<h:outputLabel for="lending_mail_field" value="#{msg['lending.mail_field']}"/>
+			<h:inputText id="lending_mail_field"  value="#{lending.user.emailAddress}" styleClass="form-control" required="true" onchange="submit()" valueChangeListener="#{lending.setUserEmail}"> 
+				<!-- <f:validator validatorId="userValidator"/> -->
+			</h:inputText>
+		</h:panelGroup>
 		
+   	<!-- <bibi:reactiveInputText value="#{lending.user.emailAddress}"><f:validator validatorId="userValidator"/></bibi:reactiveInputText> -->
 		
-		<ui:repeat var="copy" value="#{lending.copies}" varStatus="status">
-	   <!-- <bibi:reactiveInputField id="field" value="#{copy.signature}">
+		<h:panelGroup layout="block" styleClass="container">
+		
+			<ui:repeat var="copy" value="#{lending.copies}" varStatus="status">
+	   <!-- <bibi:reactiveInputField id="field" value="#{copy.signature}" >
 	   			<f:validator validatorId="lendingProcessSignatureValidator"/>
 	   		</bibi:reactiveInputField>
 				 -->
-			<h:inputText id="field" value="#{copy.signature}">
-				<f:validator validatorId="lendingProcessSignatureValidator"/>
-			</h:inputText>                
-		</ui:repeat>
-
+				 <h:panelGroup layout="block" styleClass="form-group">
+				 <h:outputLabel for="lending_signature_field" value="#{msg['lending.signature_field']}"/>
+				<h:inputText id="lending_signature_field" value="#{copy.signature}" styleClass="form-control">
+					<f:validator validatorId="lendingProcessSignatureValidator"/>
+				</h:inputText>    
+				</h:panelGroup>            
+			</ui:repeat>
+		</h:panelGroup>
+		
 		<h:commandButton id="button_add_signature_lending_field"
 							action="#{lending.addSignatureInputField()}" 
-							label="msg['lending.add_input']"
+							value="#{msg['lending.add_input']}"
 							styleClass="btn btn-secondary"/>
 		<h:commandButton id="button_direct_lend_copies"
 							action="#{lending.lendCopies()}" 
-							label="#{'lending.lend_copies'}"
-							styleClass="btn btn-primary"/>
+							value="#{msg['lending.lend_copies']}"
+							styleClass="btn btn-primary"/>				
+	</h:form>
 	</ui:define>
 	
 </ui:composition>

@@ -7,6 +7,7 @@ import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistExceptio
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 import java.sql.Connection;
@@ -71,6 +72,27 @@ public final class UserDao {
 	public static List<UserDto> readUsersBySearchCriteria() {
 		return null;
 
+	}
+	
+	//checks if a user exists in the database and returns his id, exception if not found 
+	//lightweight duplicate of readUserByEmail() which doesn't work atm...
+	/* @author Jonas Picker */
+	public static int getUserIdByEmail(UserDto userEmail) throws UserDoesNotExistException  {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+			try {
+				
+			PreparedStatement readUserId = conn.prepareStatement("SELECT userId FROM users WHERE emailAddress = ?;");
+			readUserId.setString(1, userEmail.getEmailAddress());
+			ResultSet rs = readUserId.executeQuery();
+			rs.next();
+			int id = rs.getInt(1);
+			return id;
+		} catch (SQLException e) {
+			Logger.development("SQLException while overriting mohamads readUserByEmail().");
+			throw new UserDoesNotExistException("Specified email doesn't seem to match any user entry");
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		} 
 	}
 
 	/**

@@ -6,6 +6,10 @@ import java.util.ResourceBundle;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.logic.managed_beans.Lending;
 import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
+import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.enterprise.context.Dependent;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
@@ -27,34 +31,38 @@ public class LendingProcessSignatureValidator implements Validator<String> {
 	@Override
 	public void validate(FacesContext context, UIComponent component, String signature) throws ValidatorException {
 		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		String userEmail = lending.getUser().getEmailAddress();
 		CopyDto signatureContainer = new CopyDto();
 	    signatureContainer.setSignature(signature);
-	    if (userEmail.trim() == "" || userEmail == null) {
+	    	    
+	    if (lending.getUser().getEmailAddress() == null || lending.getUser().getEmailAddress().trim() == "" ) {
 	    	String shortMessage = messages.getString("lending.enter_user_first_short");
 	    	String longMessage = messages.getString("lending.enter_user_first_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
-	    } else if (!MediumDao.copySignatureExists(signatureContainer)) {
+	    }
+	    
+	    try {
+	    	MediumDao.validateLendingProcess(signatureContainer, lending.getUser());
+	    } catch (CopyDoesNotExistException e1) {
 	    	String shortMessage = messages.getString("lending.unknown_copy_short");
 	    	String longMessage = messages.getString("lending.unknown_copy_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg);
-	    } else if (MediumDao.copyIsLentBySignature(signatureContainer)) {
+	    	throw new ValidatorException(msg, e1);
+	    } catch (CopyIsNotAvailableException e2) {
 	    	String shortMessage = messages.getString("lending.already_lend_short");
 	    	String longMessage = messages.getString("lending.already_lend_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg);
-	    } else if (MediumDao.invalidUserLendingAttempt(signatureContainer, lending.getUser())) {
+	    	throw new ValidatorException(msg, e2);
+	    } catch (InvalidUserForCopyException e3) {
 	    	String shortMessage = messages.getString("lending.wrong_user_short");
 	    	String longMessage = messages.getString("lending.wrong_user_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg);
-	    }		
+	    	throw new ValidatorException(msg, e3);
+	    }
 	}
 	
 }

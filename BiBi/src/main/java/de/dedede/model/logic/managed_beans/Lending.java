@@ -13,6 +13,8 @@ import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 /**
@@ -22,15 +24,15 @@ import jakarta.inject.Named;
  * @author Jonas Picker
  */
 @Named
-@RequestScoped
+@ViewScoped
 public class Lending implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private UserDto user;
+	private UserDto user = new UserDto();
 
-	private ArrayList<CopyDto> copies;
+	private ArrayList<CopyDto> copies = new ArrayList<CopyDto>();
 
 	@PostConstruct
 	public void init() {
@@ -44,19 +46,26 @@ public class Lending implements Serializable {
 	 * Lend the selected list of copies to the given user.
 	 */
 	public void lendCopies() {
+		if (user.getEmailAddress() == null) {Logger.development("email ist null");} else if (user.getEmailAddress().trim() == "") {Logger.development("leere String email");} 
 		for(CopyDto copy : copies) {
-			try {
-				MediumDao.lendCopy(copy, user);
-			} catch (CopyDoesNotExistException e) {
-				String message = "An unexpected error occured during lending process, the copy didn't exist or the transaction was invalid.";
-				Logger.severe(message);
-				throw new BusinessException(message, e);
-			} catch (UserDoesNotExistException e) {
-				String message = "An unexpected error occured during lending process, the user wasn't found in the database.";
-				Logger.severe(message);
-				throw new BusinessException(message, e);
+			if (copy.getSignature() != null && copy.getSignature().trim() != "") {
+				try {
+					MediumDao.lendCopy(copy, user);
+				} catch (CopyDoesNotExistException e) {
+					String message = "An unexpected error occured during lending process, the copy didn't exist or the transaction was invalid.";
+					Logger.severe(message);
+					throw new BusinessException(message, e);
+				} catch (UserDoesNotExistException e) {
+					String message = "An unexpected error occured during lending process, the user wasn't found in the database.";
+					Logger.severe(message);
+					throw new BusinessException(message, e);
+				}
 			}
 		}
+	}
+	
+	public void setUserEmail(ValueChangeEvent change) {
+		user.setEmailAddress(change.getNewValue().toString());
 	}
 
 	/**

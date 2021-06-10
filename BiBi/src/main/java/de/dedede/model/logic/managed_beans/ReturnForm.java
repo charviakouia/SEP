@@ -13,7 +13,8 @@ import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistExceptio
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 /**
@@ -22,19 +23,21 @@ import jakarta.inject.Named;
  * @author Jonas Picker 
  */
 @Named
-@RequestScoped
+@ViewScoped
 public class ReturnForm implements Serializable {
 
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private UserDto user;
+	private UserDto user = new UserDto();
 
-	private ArrayList<CopyDto> copies;
+	private ArrayList<CopyDto> copies = new ArrayList<CopyDto>();
 
 	@PostConstruct
 	public void init() {
-
+		for(int i = 0; i < 5; i++) {
+			copies.add(new CopyDto());
+		}
 	}
 
 
@@ -58,6 +61,10 @@ public class ReturnForm implements Serializable {
 				throw new BusinessException(message, e);
 			}
 		}
+	}
+	
+	public void setUserEmail(ValueChangeEvent change) {
+		this.user.setEmailAddress(change.getNewValue().toString());
 	}
 
 	/**
