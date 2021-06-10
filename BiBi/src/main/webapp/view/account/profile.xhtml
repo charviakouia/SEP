@@ -12,7 +12,18 @@
 
 	<ui:define name="content">
 
-		UNIMPLEMENTED
+		<f:metadata>
+			<f:viewParam name="id" value="#{profile.user.id}" required="true"/>
+			<f:viewAction action="#{profile.onload}" /><br/>
+		</f:metadata>
+
+		<h:form id="form_profile">
+
+			<h:outputLabel value="#{msg.userFirstName}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="firstname#{profile.user.firstName}" value="#{profile.user.firstName}"/>
+
+		</h:form>
 
 	</ui:define>
 	

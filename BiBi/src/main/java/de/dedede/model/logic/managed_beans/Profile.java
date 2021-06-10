@@ -1,13 +1,15 @@
 package de.dedede.model.logic.managed_beans;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Backing bean for the profile page. This page is either the profile page of
@@ -34,7 +36,7 @@ public class Profile implements Serializable {
 
 	@PostConstruct
 	public void init() {
-
+		user = new UserDto();
 	}
 	
 	public UserDto getUser() {
@@ -74,5 +76,12 @@ public class Profile implements Serializable {
 	 */
 	public void save() {
 
+	}
+
+	/**
+	 * Loads user data from a database for viewAction.
+	 */
+	public void onload() throws UserDoesNotExistException {
+		user = UserDao.readUserForProfile(user);
 	}
 }

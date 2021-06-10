@@ -225,7 +225,7 @@ public final class UserDao {
 						" housenumber, token, tokencreation, userlendperiod," +
 						"lendstatus, verificationstatus, userrole " +
 						"FROM Users " +
-						"WHERE userid = ?)");
+						"WHERE userid = ?");
 		readStmt.setInt(1, Math.toIntExact(userDto.getId()));
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()) {
