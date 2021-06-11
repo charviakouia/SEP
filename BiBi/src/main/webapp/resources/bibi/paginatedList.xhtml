@@ -7,7 +7,8 @@
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi">
 
 	<cc:interface>
-		<cc:attribute name="items" />
+		<cc:attribute name="value"
+			type="de.dedede.model.logic.managed_beans.PaginatedList" />
 	</cc:interface>
 
 	<cc:implementation>
@@ -15,7 +16,7 @@
 		<h:form id="form_list_controls">
 
 			<h:commandButton id="button_previous_page"
-				value="#{msg['previous_page']}"
+				value="#{msg['previous_page']}" action="#{cc.attrs.value.goBack()}"
 				styleClass="btn btn-outline-primary btn-sm" />
 
 			<h:inputText id="input_current_page" value="CURRENT" />
@@ -23,11 +24,13 @@
 			<h:outputText value="TOTAL" />
 
 			<h:commandButton id="button_next_page" value="#{msg['next_page']}"
+				action="#{cc.attrs.value.goForward()}"
 				styleClass="btn btn-outline-primary btn-sm" />
 
 		</h:form>
 
-		<h:dataTable value="#{cc.attrs.items}" var="item" varStatus="status" styleClass="table">
+		<h:dataTable value="#{cc.attrs.value.items}" var="item" varStatus="status"
+			styleClass="table">
 
 			<cc:insertChildren />
 

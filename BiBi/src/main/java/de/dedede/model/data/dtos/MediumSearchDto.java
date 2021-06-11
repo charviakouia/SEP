@@ -33,7 +33,7 @@ public class MediumSearchDto {
 
 		private SearchOperator operator = SearchOperator.AND;
 
-		private AttributeOrCategory criterion;
+		private SearchCriterion criterion;
 
 		private String term;
 
@@ -45,11 +45,11 @@ public class MediumSearchDto {
 			this.operator = operator;
 		}
 
-		public AttributeOrCategory getCriterion() {
+		public SearchCriterion getCriterion() {
 			return criterion;
 		}
 
-		public void setCriterion(AttributeOrCategory criterion) {
+		public void setCriterion(SearchCriterion criterion) {
 			this.criterion = criterion;
 		}
 

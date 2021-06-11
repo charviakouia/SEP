@@ -12,49 +12,53 @@
 
 	<ui:define name="content">
 
-		<bibi:paginatedList items="#{copiesReadyForPickupAllUsers.items}">
-			
+		<bibi:paginatedList value="#{copiesReadyForPickupAllUsers}">
+
 			<h:column>
 				<f:facet name="header">#{msg['copy']}</f:facet>
 				<bibi:columnContent>
-					<!-- @Task commandLink -->		
-					<!-- <h:outputLink value="/BiBi/view/staff/lending.xhtml">…</h:outputLink> -->
-					#{item.copy.signature}
+					<!-- @Task commandLink, flash scope -->
+					<h:form id="form_go_to_lending">
+						<h:commandLink id="link_go_to_lending"
+							value="#{item.copy.signature}"
+							action="#{copiesReadyForPickupAllUsers.goToLending(item.copy.signature)}" />
+					</h:form>
 				</bibi:columnContent>
 			</h:column>
-			
+
 			<h:column>
 				<f:facet name="header">#{msg['location']}</f:facet>
 				<bibi:columnContent>
 					#{item.copy.location}
 				</bibi:columnContent>
 			</h:column>
-			
+
 			<h:column>
-				<f:facet name="header">#{msg['medium']}</f:facet>
+				<f:facet name="header">#{copiesReadyForPickupAllUsers.attributeName}</f:facet>
 				<bibi:columnContent>
 					<!-- @Task support other types, too! -->
-					<h:outputLink value="/BiBi/view/public/medium.xhtml?id=#{item.medium.id}">#{item.attribute.textValue[0]}</h:outputLink>
+					<h:link value="#{item.attribute.textValue[0]}"
+						outcome="/view/public/medium.xhtml?id=#{item.medium.id}" />
 				</bibi:columnContent>
 			</h:column>
-			
+
 			<h:column>
 				<f:facet name="header">#{msg['user']}</f:facet>
 				<bibi:columnContent>
 					<!-- @Task link only for admins -->
 					<!-- @Task display fullname in some cases -->
-					<h:outputLink value="/BiBi/view/account/profile.xhtml?id=#{item.user.id}">#{item.user.emailAddress}</h:outputLink>
+					<h:link value="#{item.user.emailAddress}"
+						outcome="/view/account/profile.xhtml?id=#{item.user.id}" />
 				</bibi:columnContent>
 			</h:column>
-			
+
 			<h:column>
-				<!-- Dauer bis zum Zeitpunkt der Fristüberschreitung -->
-				<f:facet name="header">TIME</f:facet>
+				<f:facet name="header">#{msg['end_of_lending_period']}</f:facet>
 				<bibi:columnContent>
 					#{item.copy.deadline}
 				</bibi:columnContent>
-			</h:column> -->
-			
+			</h:column>
+
 		</bibi:paginatedList>
 
 	</ui:define>

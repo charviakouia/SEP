@@ -33,12 +33,12 @@
 
 					<ui:repeat
 						value="#{mediumSearch.mediumSearch.nuancedSearchQueries}"
-						var="nuancedSearchQuery" varStatus="status">
+						var="nuancedSearchQuery">
 
 						<h:panelGroup layout="block"
 							styleClass="nuanced-search-query input-group">
 
-							<h:selectOneMenu id="select_search_operator_#{status.index}"
+							<h:selectOneMenu id="select_search_operator"
 								value="#{nuancedSearchQuery.operator}" styleClass="form-select">
 
 								<f:selectItems value="#{mediumSearch.allSearchOperators}"
@@ -47,9 +47,13 @@
 
 							</h:selectOneMenu>
 
-							<!-- TASK -->
-							<h:selectOneMenu id="select_search_criterion_#{status.index}"
+							<h:selectOneMenu id="select_search_criterion"
 								value="#{nuancedSearchQuery.criterion}" styleClass="form-select">
+
+								<f:selectItems value="#{mediumSearch.allSearchCriteria}"
+									var="criterion" itemValue="#{criterion}"
+									itemLabel="#{criterion.toString()}" />
+
 							</h:selectOneMenu>
 
 							<h:inputText id="input_nuanced_search_term_#{status.index}"
@@ -69,12 +73,9 @@
 
 			</h:panelGroup>
 
-			<!-- TASK: search results: paginated list -->
-
 		</h:form>
 
-		<!-- @Task -->
-		<!-- <bibi:paginatedList /> -->
+		<bibi:paginatedList value="#{mediumSearch}" />
 
 	</ui:define>
 

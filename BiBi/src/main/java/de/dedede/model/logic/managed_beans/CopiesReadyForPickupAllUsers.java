@@ -6,10 +6,10 @@ import java.util.List;
 import de.dedede.model.data.dtos.MediumCopyAttributeUserDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.persistence.daos.MediumDao;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -23,18 +23,26 @@ import jakarta.inject.Named;
 @RequestScoped
 public class CopiesReadyForPickupAllUsers extends PaginatedList {
 
+	@Inject
+	private ExternalContext ectx;
+	
 	@Serial
 	private List<MediumCopyAttributeUserDto> copies;
 
 	@PostConstruct
 	public void init() {
-		try {
-			copies = MediumDao.readCopiesReadyForPickup(new PaginationDto());
-		} catch (LostConnectionException | MaxConnectionsException e) {
-			// @Task enhance
-			throw new RuntimeException("database connection issue");
-		}
-
+		copies = MediumDao.readCopiesReadyForPickup(new PaginationDto());
+	}
+	
+	public String getAttributeName() {
+		// the name is the same for all copies
+		return copies.get(0).getAttribute().getName();
+	}
+	
+	public String goToLending(String signature) {
+		ectx.getFlash().put("signature", signature);
+		
+		return "lending?faces-redirect=true";
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -472,8 +473,7 @@ public final class MediumDao {
 		// TODO: MS2 von Sergej
 	}
 
-	public static List<MediumCopyAttributeUserDto> readCopiesReadyForPickup(PaginationDto paginationDetails)
-			throws LostConnectionException, MaxConnectionsException {
+	public static List<MediumCopyAttributeUserDto> readCopiesReadyForPickup(PaginationDto paginationDetails) {
 
 		final int entriesPerPage = Integer.parseInt(ConfigReader.getInstance().getKey("MAX_PAGES", "20"));
 		final var connection = getConnection();
@@ -481,35 +481,35 @@ public final class MediumDao {
 		try {
 
 			final var statement = connection.prepareStatement("""
-					SELECT
+					select
 						c.mediumid,
 						c.signature, c.bibposition, c.deadline,
 						a.attributename, a.attributevalue,
-						u.emailaddress, u.name, u.surname
-					FROM
+						u.userid, u.emailaddress, u.name, u.surname
+					from
 						mediumcopy c,
 						attributetype t,
 						customattribute a,
 						users u
-					WHERE
-						c.status = 'READY_FOR_PICKUP' AND
-						c.mediumid = t.mediumid AND
-						t.previewposition = 'SECOND' AND
-						t.attributeid = a.attributeid AND
+					where
+						c.status = 'READY_FOR_PICKUP' and
+						c.mediumid = t.mediumid and
+						t.previewposition = 'SECOND' and
+						t.attributeid = a.attributeid and
 						c.actor = u.userid
-					OFFSET ?
-					LIMIT ?
+					offset ?
+					limit ?
 					""");
 			// @Task sorting
-			statement.setInt(1, paginationDetails.getPageNumber() * entriesPerPage - 1);
-			statement.setInt(2, entriesPerPage);
+			statement.setInt(1, paginationDetails.getPageNumber() * entriesPerPage);
+			statement.setInt(2, entriesPerPage - 1);
 
 			final var resultSet = statement.executeQuery();
-			Logger.development("MediumDao/CRFPAU len=" + resultSet.getFetchSize());
 			final var results = new ArrayList<MediumCopyAttributeUserDto>();
 
 			// @Bug does not handle multi-valued attributes correctly!
 			while (resultSet.next()) {
+				
 				final var compound = new MediumCopyAttributeUserDto();
 
 				final var medium = new MediumDto();
@@ -524,18 +524,22 @@ public final class MediumDao {
 
 				final var attribute = new AttributeDto();
 				attribute.setName(resultSet.getString(5));
-				attribute.setTextValue(List.of(resultSet.getString(6)));
+				// @Task make dependent on type
+				attribute.setTextValue(List.of(new String(resultSet.getBytes(6), StandardCharsets.UTF_8)));
 				compound.setAttribute(attribute);
 
 				final var user = new UserDto();
-				user.setEmailAddress(resultSet.getString(7));
-				user.setFirstName(resultSet.getString(8));
-				user.setLastName(resultSet.getString(9));
+				user.setId(resultSet.getInt(7));
+				user.setEmailAddress(resultSet.getString(8));
+				user.setFirstName(resultSet.getString(9));
+				user.setLastName(resultSet.getString(10));
 				compound.setUser(user);
+				
+				results.add(compound);
 			}
 
 			connection.commit();
-
+			
 			return results;
 		} catch (SQLException exeption) {
 
@@ -547,6 +551,45 @@ public final class MediumDao {
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(connection);
 		}
+	}
+	
+	public static List<AttributeDto> readAllMediumAttributes() {
+		
+		final var connection = getConnection();
+		
+		try {
+
+			final var statement = connection.prepareStatement("""
+					select distinct
+						a.attributename
+					from
+						customattribute a
+					""");
+
+			final var resultSet = statement.executeQuery();
+			final var results = new ArrayList<AttributeDto>();
+
+			while (resultSet.next()) {
+				
+				final var attribute = new AttributeDto();
+				attribute.setName(resultSet.getString(1));
+				results.add(attribute);
+			}
+
+			connection.commit();
+			
+			return results;
+		} catch (SQLException exeption) {
+
+			final var message = "Database error occurred while reading copies ready for pickup: " + exeption.getMessage();
+			Logger.severe(message);
+
+			throw new LostConnectionException(message, exeption);
+
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(connection);
+		}
+		
 	}
 	
 
