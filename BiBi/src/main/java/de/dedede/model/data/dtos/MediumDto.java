@@ -24,6 +24,29 @@ public class MediumDto {
 
     private Duration returnPeriod;
 
+    private String title;
+
+    private String author1;
+    private String author2;
+    private String author3;
+    private String author4;
+    private String author5;
+
+    private String mediumType;
+
+    private String edition;
+
+    private String publisher;
+
+    private String releaseYear;
+
+    private String isbn;
+
+    private String mediumLink;
+
+    private String text;
+
+
     /**
      * Fetches the id of the medium.
      *
@@ -131,5 +154,109 @@ public class MediumDto {
 
     public Map<Integer, CopyDto> getCopies() {
         return copies;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor1() {
+        return author1;
+    }
+
+    public void setAuthor1(String author1) {
+        this.author1 = author1;
+    }
+
+    public String getAuthor2() {
+        return author2;
+    }
+
+    public void setAuthor2(String author2) {
+        this.author2 = author2;
+    }
+
+    public String getAuthor3() {
+        return author3;
+    }
+
+    public void setAuthor3(String author3) {
+        this.author3 = author3;
+    }
+
+    public String getAuthor4() {
+        return author4;
+    }
+
+    public void setAuthor4(String author4) {
+        this.author4 = author4;
+    }
+
+    public String getAuthor5() {
+        return author5;
+    }
+
+    public void setAuthor5(String author5) {
+        this.author5 = author5;
+    }
+
+    public String getMediumType() {
+        return mediumType;
+    }
+
+    public void setMediumType(String mediumType) {
+        this.mediumType = mediumType;
+    }
+
+    public String getEdition() {
+        return edition;
+    }
+
+    public void setEdition(String edition) {
+        this.edition = edition;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(String releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getMediumLink() {
+        return mediumLink;
+    }
+
+    public void setMediumLink(String mediumLink) {
+        this.mediumLink = mediumLink;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }
