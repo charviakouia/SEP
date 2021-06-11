@@ -1,13 +1,18 @@
 package de.dedede.model.logic.managed_beans;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.UserVerificationStatus;
+import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Backing bean for the profile page. This page is either the profile page of
@@ -32,9 +37,12 @@ public class Profile implements Serializable {
 	@Inject
 	private UserSession userSession;
 
+	@Inject
+	private FacesContext facesContext;
+
 	@PostConstruct
 	public void init() {
-
+		user = new UserDto();
 	}
 	
 	public UserDto getUser() {
@@ -60,13 +68,28 @@ public class Profile implements Serializable {
 	public void setConfirmedPassword(String confirmedPassword) {
 		this.confirmedPassword = confirmedPassword;
 	}
-	
+
+	public UserRole[] getAllUserRoles() {
+		return UserRole.values();
+	}
+
+	public UserVerificationStatus[] getAllUserStatus() {
+		return UserVerificationStatus.values();
+	}
+
 	/**
 	 * Close one's own account if this is the profile of the current user or delete
 	 * a user as an admin.
 	 */
-	public void delete() {
-
+	public String delete() throws UserDoesNotExistException {
+		UserDao.deleteUser(user);
+		if (userSession.getUser().getUserRole() == UserRole.ADMIN) {
+			String result = "administration?" + userSession.getUser().getId()
+					+ "&faces-redirect=true";
+			return result;
+		} else {
+			return "/view/public/login?faces-redirect=true";
+		}
 	}
 
 	/**
@@ -74,5 +97,21 @@ public class Profile implements Serializable {
 	 */
 	public void save() {
 
+	}
+
+	/**
+	 * Loads user data from a database for viewAction.
+	 */
+	public void onload() throws UserDoesNotExistException {
+
+		/*TODO: Mach besser, sobald logIn funktioniert.*/
+//		if (userSession.getUser().getUserRole() == UserRole.ADMIN
+//				|| userSession.getUser().getId() == user.getId()) {
+//		}
+
+		user = UserDao.readUserForProfile(user);
+
+		//nur für Facelet-debug, weil eine LogIn immer noch nicht funktioniert
+		userSession.setUser(user);
 	}
 }

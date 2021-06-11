@@ -3,7 +3,6 @@ package de.dedede.model.persistence.daos;
 import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.util.ConnectionPool;
@@ -40,7 +39,7 @@ public final class ApplicationDao {
 	 */
 	public static void createCustomization(ApplicationDto appDTO)
 			throws MaxConnectionsException, LostConnectionException {
-		Connection conn = getConnection();
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);;
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
 					"INSERT INTO Application (bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, " +
@@ -48,7 +47,8 @@ public final class ApplicationDao {
 							"lookAndFeel, ananRights, userLendStatus) VALUES " +
 							"(?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), CAST(? AS INTERVAL), CAST(? AS INTERVAL)," +
 							"CAST(? AS systemRegistrationStatus), CAST(? AS systemLookAndFeel)," +
-							"CAST(? AS systemAnonRights), CAST(? AS userLendStatus));"
+							"CAST(? AS systemAnonRights), CAST(? AS userLendStatus));",
+					Statement.RETURN_GENERATED_KEYS
 			);
 			populateStatement(createStmt, appDTO);
 			int numAffectedRows = createStmt.executeUpdate();
@@ -81,7 +81,7 @@ public final class ApplicationDao {
 	 */
 	public static ApplicationDto readCustomization(ApplicationDto appDTO)
 			throws LostConnectionException, MaxConnectionsException {
-		Connection conn = getConnection();
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);;
 		try {
 			return readCustomizationHelper(conn, appDTO);
 		} catch (SQLException e){
@@ -109,7 +109,7 @@ public final class ApplicationDao {
 	 */
 	public static void updateCustomization(ApplicationDto appDTO)
 			throws EntityInstanceDoesNotExistException, LostConnectionException, MaxConnectionsException {
-		Connection conn = getConnection();
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);;
 		try {
 			PreparedStatement updateStmt = conn.prepareStatement(
 					"UPDATE Application " +
@@ -155,7 +155,7 @@ public final class ApplicationDao {
 	 */
 	public static ApplicationDto deleteCustomization(ApplicationDto appDTO)
 			throws LostConnectionException, MaxConnectionsException, EntityInstanceDoesNotExistException {
-		Connection conn = getConnection();
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (customizationEntityExists(conn, appDTO)){
 				readCustomizationHelper(conn, appDTO);
@@ -177,20 +177,6 @@ public final class ApplicationDao {
 	}
 
 	// Helper methods:
-
-	private static Connection getConnection() throws LostConnectionException, MaxConnectionsException {
-		Connection conn = null;
-		try {
-			conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-			conn.setAutoCommit(false);
-			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-		} catch (SQLException e){
-			Logger.severe("Couldn't configure the connection");
-			ConnectionPool.getInstance().releaseConnection(conn);
-			throw new LostConnectionException("Couldn't configure the connection");
-		}
-		return conn;
-	}
 
 	private static boolean customizationEntityExists(Connection conn, ApplicationDto appDTO)
 			throws SQLException {

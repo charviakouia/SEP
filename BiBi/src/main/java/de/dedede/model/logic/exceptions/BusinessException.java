@@ -1,7 +1,7 @@
 package de.dedede.model.logic.exceptions;
 
 /**
- * The MyBusinessException wraps all checked standard Java exception and enriches them with a custom error code.
+ * Wraps all checked standard Java exception and enriches them with a custom error code.
  */
 public class BusinessException extends RuntimeException {
 	

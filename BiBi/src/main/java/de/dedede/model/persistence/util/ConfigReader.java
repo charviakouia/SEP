@@ -2,13 +2,10 @@ package de.dedede.model.persistence.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
+
 
 /**
  * A singleton utility class for returning system-wide property values.
@@ -90,9 +87,4 @@ public class ConfigReader {
 		return systemConfigurations.getProperty(key, defaultValue);
 	}
 	
-	private FacesContext findContext() {
-		
-		return FacesContext.getCurrentInstance();
-	}
-
 }

@@ -31,7 +31,7 @@ public class Login {
 	@Inject
 	private UserSession userSession;
 
-	private  UserDto userDto;
+	private UserDto userDto;
 
 	private String email;
 

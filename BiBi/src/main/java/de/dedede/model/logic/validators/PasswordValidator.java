@@ -11,7 +11,7 @@ import jakarta.faces.validator.ValidatorException;
  * and a capital letter. As well as the password length should be 6 characters
  * or more.
  */
-@FacesValidator
+@FacesValidator("passwordValidator")
 public class PasswordValidator implements Validator<String> {
 	/**
 	 * Checks if a new password fulfills the security constraints to have a digit
