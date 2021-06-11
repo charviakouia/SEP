@@ -1,3 +1,7 @@
 .nav-link.active {
 	color: var(--bs-gray);
 }
+
+.className td {
+    vertical-align: top;
+}

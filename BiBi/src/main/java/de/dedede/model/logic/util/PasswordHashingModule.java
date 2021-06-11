@@ -1,43 +1,61 @@
 package de.dedede.model.logic.util;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.persistence.util.Logger;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Random;
 
 /**
- * Hashes the Password of the {@link UserDto} with SHA-256, before it is stored
- * in the database.
+ * Hashes the password and salt of the {@link UserDto} with SHA3-256 into hex.
+ * Also capsules a generator method for new salts.
+ * 
+ * @author Jonas Picker
  */
 public final class PasswordHashingModule {
-	private PasswordHashingModule() {
-		throw new IllegalStateException();
-	}
+	
+	private static final Random RANDOM = new SecureRandom();
+	private static final int LENGTH = 20;
+	private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
 	/**
-	 * Hash a password with the SHA-256 hash function.
+	 * Hash a password with the SHA3-256 hash function.
 	 *
 	 * @param password The String which should be hashed.
-	 * @return password in a hash as String.
+	 * @param salt The salt the password is concatenated with before hashing
+	 * @return password and salt in a 64 sign long hexadecimal form as String.
 	 */
 	public static String hashPassword(String password, String salt) {
-		String hashedPassword = "";
+		String hashAsString = null;
+		String inputString = password + salt;
 		try {
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-			messageDigest.update(salt.getBytes(StandardCharsets.UTF_8));
-			byte[] encodedHash = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
-
-			StringBuilder sb = new StringBuilder(2 * encodedHash.length);
-			for (int i = 0; i < encodedHash.length; i++) {
-				sb.append(Integer.toString((encodedHash[i] & 0xff) + 0x100, 16).substring(1));
-			}
-			hashedPassword = sb.toString();
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA3-256");
+			byte[] hashAsBytes = messageDigest.digest(inputString.getBytes(UTF_8));
+			hashAsString = bytesToHexConverter(hashAsBytes);
 		} catch (NoSuchAlgorithmException e) {
-			//Logger.development("The SHA-256 does not exist");
-			e.printStackTrace();
+			Logger.development("The SHA3-256 algorithm doesn't seem to exist.");
 		}
 
-		return hashedPassword;
+		return hashAsString;
 	}
+	
+	public static String generateSalt(){
+	     byte[] result = new byte[LENGTH];
+	     RANDOM.nextBytes(result);
+	     return bytesToHexConverter(result);
+	}
+	
+	private static String bytesToHexConverter(byte[] bytes) {
+		StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        
+        return sb.toString();
+	}
+	
 }

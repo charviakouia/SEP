@@ -12,7 +12,7 @@ public final class EmailUtility {
 	 * @param subject   subject of the email.
 	 * @param body      content of the email.
 	 */
-	static void sendEmail(String recipient, String subject, String body) {
+	public static void sendEmail(String recipient, String subject, String body) {
 
 	}
 

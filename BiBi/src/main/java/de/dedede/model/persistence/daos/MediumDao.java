@@ -1117,17 +1117,7 @@ public final class MediumDao {
 			throw new InvalidUserForCopyException("Invalid user for lending process");
 		}
 	}
-	
-	/**
-	 * 
-	 * @param attributes
-	 * 
-	 * @author Jonas Picker
-	 */
-	public static void updateGlobalAttributes(Collection<AttributeDto> attributes) {
-		// TODO: MS2 von Jonas
-	}
-	
+		
 	/**
 	 * 
 	 * 
