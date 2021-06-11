@@ -7,7 +7,8 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
-	
+	<!-- Author Jonas Picker-->
+		
 	<ui:param name="page" value="lending" />
 
 	<ui:define name="content">
@@ -17,22 +18,16 @@
 	
 	<h:form id="form_lending">
 	
-	<h:panelGroup layout="block" styleClass="form-group">
+		<h:panelGroup layout="block" styleClass="form-group">
 			<h:outputLabel for="lending_mail_field" value="#{msg['lending.mail_field']}"/>
 			<h:inputText id="lending_mail_field"  value="#{lending.user.emailAddress}" styleClass="form-control" required="true" onchange="submit()" valueChangeListener="#{lending.setUserEmail}"> 
 				<!-- <f:validator validatorId="userValidator"/> -->
 			</h:inputText>
 		</h:panelGroup>
-		
-   	<!-- <bibi:reactiveInputText value="#{lending.user.emailAddress}"><f:validator validatorId="userValidator"/></bibi:reactiveInputText> -->
-		
+			
 		<h:panelGroup layout="block" styleClass="container">
 		
 			<ui:repeat var="copy" value="#{lending.copies}" varStatus="status">
-	   <!-- <bibi:reactiveInputField id="field" value="#{copy.signature}" >
-	   			<f:validator validatorId="lendingProcessSignatureValidator"/>
-	   		</bibi:reactiveInputField>
-				 -->
 				 <h:panelGroup layout="block" styleClass="form-group">
 				 <h:outputLabel for="lending_signature_field" value="#{msg['lending.signature_field']}"/>
 				<h:inputText id="lending_signature_field" value="#{copy.signature}" styleClass="form-control">

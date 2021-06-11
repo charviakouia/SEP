@@ -7,20 +7,34 @@
 				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 				xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 				template="/view/templates/template.xhtml">
-	<!-- Author Mohamad-->
+	<!-- Author Jonas Picker-->
 
 	<ui:param name="page" value="login"/>
 
 	<ui:define name="content">
+	<h1>#{msg['login.headline']}</h1>
+		<h:panelGrid columns="2" id="container" styleClass="className" style="display:block;">
+		<h:panelGroup layout="block" styleClass="d-flex justify-content-center">
 		<h:form>
-
-			<h:outputLabel for="email" value="Email:"/>
-			<h:inputText id="email" type="text" styleClass="" value="#{login.email}" required="true"/><br/>
-			<h:outputLabel for="password" value="Password:"/>
-			<h:inputSecret id="password" type="text" styleClass="" value="#{login.password}" required="true"/><br/><br/>
-			<h:commandButton id="login-button" value="login" action="#{login.logIn()}"/>
+		
+			<h:panelGroup layout="block" styleClass="d-flex justify-content-around">
+			<h:outputLabel for="login_email_field" value="#{msg['login.email']}"/>
+			<h:inputText id="login_email_field" type="text" value="#{login.userData.emailAddress}" required="true">
+			</h:inputText>
+			</h:panelGroup>
+			<h:panelGroup layout="block" styleClass="d-flex justify-content-around">
+			<h:outputLabel for="login_password_field" value="#{msg['login.password']}"/>
+			<h:inputSecret id="login_password_field" type="text" styleClass="" value="#{login.userData.passwordHash}" required="true">
+			</h:inputSecret>
+			</h:panelGroup>
+						
+			<h:panelGroup layout="block" styleClass="d-flex justify-content-around">
+			<h:commandButton id="login_login_button" value="#{msg['login.log_in']}" action="#{login.logIn()}" styleClass="btn btn-primary"/>
+			</h:panelGroup>
 
 		</h:form>
+		</h:panelGroup>
+		</h:panelGrid>
 	</ui:define>
 
 </ui:composition>

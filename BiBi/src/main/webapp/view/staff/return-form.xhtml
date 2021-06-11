@@ -7,14 +7,14 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
-
+	<!-- Author Jonas Picker-->
+	
 	<ui:param name="page" value="return_form" />
 
 	<ui:define name="content">
 	<h1>#{msg['returnForm.headline']}</h1>
 	<h:form id="form_return_form">
 
-   <!-- <bibi:reactiveInputText value="#{lending.user.emailAddress}"><f:validator validatorId="userValidator"/></bibi:reactiveInputText> -->
 		
 		<h:panelGroup layout="block" styleClass="form-group">
 			<h:outputLabel for="returnForm_mail_field" value="#{msg['returnForm.mail_field']}"/>
@@ -23,19 +23,16 @@
 			</h:inputText>
 		</h:panelGroup>
 		
-		
-		
 	<h:panelGroup layout="block" styleClass="container">
 		<ui:repeat var="copy" value="#{returnForm.copies}" varStatus="status">
-		
-	   <!-- <bibi:reactiveInputField id="field" value="#{copy.signature}"/><f:validator validatorId="returnFormSignatureValidator"/></bibi:reactiveInputField>-->
-			
+					
 			 <h:panelGroup layout="block" styleClass="form-group">
 				<h:outputLabel for="returnForm_signature_field" value="#{msg['returnForm.signature_field']}"/>
 				<h:inputText id="returnForm_signature_field" value="#{copy.signature}" styleClass="form-control">
 					<f:validator validatorId="returnFormSignatureValidator"/>
 				</h:inputText>
 			</h:panelGroup>
+			
 		</ui:repeat>
 	</h:panelGroup>
 		
