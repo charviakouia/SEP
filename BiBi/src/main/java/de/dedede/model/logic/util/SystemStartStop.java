@@ -1,5 +1,9 @@
 package de.dedede.model.logic.util;
 
+import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
 import de.dedede.model.persistence.exceptions.DriverNotFoundException;
 import de.dedede.model.persistence.exceptions.InvalidLogFileException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
@@ -12,6 +16,7 @@ import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
+import jakarta.servlet.ServletContext;
 
 /**
  *  Conducts and relays necessary actions before the system is shutdown 
@@ -21,9 +26,14 @@ import jakarta.faces.event.SystemEventListener;
  *  
  */
 public class SystemStartStop implements SystemEventListener {
-		
-   /** {@inheritDoc}
-   */
+	
+	/**
+	 * The config-files path relative to /webapp folder
+	 */
+	private String relative = "WEB-INF/config.properties";
+			
+	/** @inheritDoc
+	 */
 	@Override
 	public void processEvent(SystemEvent systemEvent) 							
 			throws AbortProcessingException {
@@ -47,9 +57,12 @@ public class SystemStartStop implements SystemEventListener {
 	 * 
 	 * @throws LostConnectionException If data layer failed to communicate to DB
 	 * @throws DriverNotFoundException If JDBC driver wasn't found 
+	 * @throws InvalidConfigurationException if config File couldn't be read
 	 */
-	private void initializeApplication() {
-		ConfigReader.getInstance();						
+	private void initializeApplication() { 
+		InputStream is = 
+				this.getClass().getClassLoader().getResourceAsStream(relative);
+		ConfigReader.getInstance().setUpConfigReader(is);;						
 		System.out.println("ConfigReader initialized");
 		try {
 			if (Logger.logSetup()) {

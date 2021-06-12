@@ -26,7 +26,6 @@ public class ConnectionPool {
 
 	private static ConnectionPool INSTANCE = null;
 	private static Queue<Connection> queue = new ConcurrentLinkedQueue<>();
-
 	private static Collection<Connection> backupList = new ConcurrentLinkedQueue<>();
 	private static volatile boolean isShutDown = true;
 	private static Semaphore lifecycleSemaphore = new Semaphore(2, true);

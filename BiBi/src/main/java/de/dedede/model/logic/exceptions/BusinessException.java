@@ -3,7 +3,9 @@ package de.dedede.model.logic.exceptions;
 /**
  * Wraps all checked standard Java exception and enriches them with a custom error code.
  */
-public class BusinessException extends Exception {
+public class BusinessException extends RuntimeException {
+	
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructs a new BusinessException.

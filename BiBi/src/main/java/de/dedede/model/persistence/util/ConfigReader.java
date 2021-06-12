@@ -1,14 +1,11 @@
 package de.dedede.model.persistence.util;
 
-import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
-import jakarta.faces.context.ExternalContext;
-import jakarta.faces.context.FacesContext;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
+
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
+
 
 /**
  * A singleton utility class for returning system-wide property values.
@@ -31,26 +28,18 @@ public class ConfigReader {
 	 * Holds the Properties Object with system configurations.
 	 */
 	private Properties systemConfigurations = new Properties();
-	
+			
 	/**
-	 * Needed as basis for loading config with webapp-relative path.
+	 * Singleton with private constructor.
 	 */
-	private ExternalContext ext = findContext().getExternalContext();
+	private ConfigReader() {}
 	
 	/**
-	 * The path to the config-File starting from the webapp-Folder.
-	 */
-	private Path relativeFilePath = Paths.get("WEB-INF", "config.properties");
-	
-	/**
-	 * Singleton with private constructor. Initializes the ConfigReader by 
-	 * reading the config-File.
+	 * Initial reading of the configuration file is done here
 	 * 
-	 * @throws InvalidConfigurationException if the file couldn't be read
+	 * @param stream an InputStream with the configurationFile
 	 */
-	private ConfigReader() {
-		String pathString = relativeFilePath.toString();
-		InputStream stream = ext.getResourceAsStream(pathString);
+	public void setUpConfigReader(InputStream stream) {
 		try {
 			systemConfigurations.load(stream);
 			stream.close();	
@@ -61,7 +50,6 @@ public class ConfigReader {
 		}		
 		System.out.println("System Configurations initialized.");
 	}
-
 	
 	/**
 	 * Returns the single instance of the ConfigReader. Synchronized implicitly 
@@ -99,9 +87,4 @@ public class ConfigReader {
 		return systemConfigurations.getProperty(key, defaultValue);
 	}
 	
-	private FacesContext findContext() {
-		
-		return FacesContext.getCurrentInstance();
-	}
-
 }

@@ -1,6 +1,5 @@
 package de.dedede.model.persistence.util;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -109,13 +108,11 @@ public final class Logger { //TO-DO: ExceptionHandling, Testing
 			String fileName = config.getKey("LOG_FILENAME", "BiBiLog");
 			FileWriter fw = new FileWriter(logDirectory + fileName 
 					+ ".txt", true);
-			BufferedWriter writer = new BufferedWriter(fw);
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			String messageFormat = level.toString() + ": " + 
 			timestampFormat.format(timestamp) + " ---> " + message + 
 			System.getProperty("line.separator");
-			writer.append(messageFormat);
-			writer.close();
+			fw.write(messageFormat);
 			fw.close();
 		} catch (IOException e) {
 			System.out.println("IOException while trying to log to file.");
