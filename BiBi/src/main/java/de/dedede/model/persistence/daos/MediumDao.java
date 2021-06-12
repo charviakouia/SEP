@@ -450,45 +450,6 @@ public final class MediumDao {
 		// TODO: MS3 von Jonas
 	}
 
-	public static void updateGlobalAttributes(Collection<AttributeDto> attributes) {
-		// TODO: MS2 von Jonas
-	}
-
-	public static List<AttributeDto> readGlobalAttributes() {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-		try {
-			PreparedStatement readStmt = conn.prepareStatement(
-					"SELECT attributeName, previewPosition, multiplicity, modifiability, attributeDataType " +
-							"FROM customAttribute AS c " +
-							"JOIN attributeType AS a " +
-							"ON c.attributeId = a.attributeId " +
-							"GROUP BY attributeName, previewPosition, multiplicity, modifiability, attributeDataType;"
-			);
-			ResultSet resultSet = readStmt.executeQuery();
-			List<AttributeDto> result = new LinkedList<>();
-			while (resultSet.next()){
-				AttributeDto attributeDto = new AttributeDto();
-				populateAttributeDto(resultSet, attributeDto);
-				result.add(attributeDto);
-			}
-			return result;
-		} catch (SQLException e){
-			String msg = "Database error occurred while reading global attributes";
-			Logger.severe(msg);
-			throw new LostConnectionException(msg, e);
-		} finally {
-			ConnectionPool.getInstance().releaseConnection(conn);
-		}
-	}
-
-	private static void populateAttributeDto(ResultSet resultSet, AttributeDto attributeDto) throws SQLException {
-		attributeDto.setName(resultSet.getString(1));
-		attributeDto.setPosition(MediumPreviewPosition.valueOf(resultSet.getString(2)));
-		attributeDto.setAttributeMultiplicity(AttributeMultiplicity.valueOf(resultSet.getString(3)));
-		attributeDto.setAttributeModifiability(AttributeModifiability.valueOf(resultSet.getString(4)));
-		attributeDto.setType(AttributeType.valueOf(resultSet.getString(5)));
-	}
-
 	public static void updateMediumAttributes(MediumDto mediumDto, Collection<AttributeDto> attributes) {
 		// TODO: MS2 von Sergej
 	}

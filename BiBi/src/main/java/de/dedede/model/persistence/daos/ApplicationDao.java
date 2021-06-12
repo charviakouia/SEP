@@ -83,7 +83,9 @@ public final class ApplicationDao {
 			throws LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);;
 		try {
-			return readCustomizationHelper(conn, appDTO);
+			ApplicationDto result = readCustomizationHelper(conn, appDTO);
+			conn.commit();
+			return result;
 		} catch (SQLException e){
 			String msg = "Database error occurred while reading application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
@@ -205,10 +207,8 @@ public final class ApplicationDao {
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()){
 			populateDto(resultSet, appDTO);
-			conn.commit();
 			return appDTO;
 		} else {
-			conn.commit();
 			return null;
 		}
 	}

@@ -2,6 +2,8 @@ package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
@@ -15,18 +17,13 @@ import jakarta.inject.Named;
 @RequestScoped
 public class PasswordReset {
 
-	private String password;
-
 	private TokenDto token;
-
+	private String password;
 	private String confirmedPassword;
-
 	private UserDto userDto;
 
 	@PostConstruct
-	public void init() {
-
-	}
+	public void init() {}
 
 	public String getPassword() {
 		return password;
@@ -36,7 +33,6 @@ public class PasswordReset {
 		this.password = password;
 	}
 
-
 	public String getConfirmedPassword() {
 		return confirmedPassword;
 	}
@@ -44,9 +40,7 @@ public class PasswordReset {
 	public void setConfirmedPassword(String confirmedPassword) {
 		this.confirmedPassword = confirmedPassword;
 	}
-	
-	
-	
+
 	public TokenDto getToken() {
 		return token;
 	}
@@ -55,10 +49,14 @@ public class PasswordReset {
 		this.token = token;
 	}
 
+	public void findUser() throws UserDoesNotExistException {
+		userDto = UserDao.readUserByToken(userDto);
+	}
+
 	/**
 	 * Reset the password when it is necessary to reset it.
 	 */
-	public void resetPassword(UserDto userDto) {
+	public void resetPassword() {
 
 	}
 }
