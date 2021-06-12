@@ -38,7 +38,7 @@ public class MediumDto {
 
     private String publisher;
 
-    private String releaseYear;
+    private int releaseYear;
 
     private String isbn;
 
@@ -228,11 +228,11 @@ public class MediumDto {
         this.publisher = publisher;
     }
 
-    public String getReleaseYear() {
+    public int getReleaseYear() {
         return releaseYear;
     }
 
-    public void setReleaseYear(String releaseYear) {
+    public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
     }
 

@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.IOException;
 import java.util.Base64;
 
 import de.dedede.model.data.dtos.ApplicationDto;
@@ -7,6 +8,8 @@ import de.dedede.model.data.dtos.MediumSearchDto;
 import de.dedede.model.data.dtos.UserRole;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -146,12 +149,14 @@ public class Header {
 	 * {@link Login}.
 	 * 
 	 * @return the String to the login page.
+	 * @throws IOException 
 	 */
-	public String logOut() {
+	public void logOut() throws IOException {
 		session.setUser(null);
-		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		externalContext.invalidateSession();
 
-		return "/BiBi/view/public/login.xhtml?faces-redirect=true";
+		externalContext.redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
 	}
 	
 	public String searchMedium() {

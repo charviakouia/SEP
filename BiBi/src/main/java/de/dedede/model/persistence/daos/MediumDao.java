@@ -721,12 +721,16 @@ public final class MediumDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-	public static boolean invalidCopyStatusReturnAttempt(Connection conn, CopyDto signatureContainer) {
+	public static boolean invalidCopyStatusReturnAttempt(Connection conn,
+			CopyDto signatureContainer) {
 		String signature = signatureContainer.getSignature();
 		boolean result = true;
 		try {
 			PreparedStatement checkingStmt = conn.prepareStatement(
-					"SELECT CASE WHEN (SELECT COUNT(signature) FROM mediumCopy WHERE ((signature = ?) AND (status = CAST('BORROWED' AS copyStatus)))) > 0 THEN false ELSE true END AS invalidCopyStatus;"
+					"SELECT CASE WHEN (SELECT COUNT(signature) FROM mediumCopy"
+					+ " WHERE ((signature = ?) AND (status = CAST('BORROWED'"
+					+ " AS copyStatus)))) > 0 THEN false ELSE true END"
+					+ " AS invalidCopyStatus;"
 					);
 			checkingStmt.setString(1, signature);
 			ResultSet resultSet = checkingStmt.executeQuery();
@@ -736,7 +740,8 @@ public final class MediumDao {
 			checkingStmt.close();
 			return result;
 		} catch (SQLException e) {
-			String errorMessage = "Error occured while with db communication checking for invalid actor on copy return.";
+			String errorMessage = "Error occured while with db communication"
+					+ " checking for invalid actor on copy return.";
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
 		}													
@@ -752,13 +757,17 @@ public final class MediumDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-	private static boolean invalidActorReturnAttempt(Connection conn, CopyDto signatureContainer, UserDto userEmail) {
+	private static boolean invalidActorReturnAttempt(Connection conn,
+			CopyDto signatureContainer, UserDto userEmail) {
 		String signature = signatureContainer.getSignature();
 		boolean result = true;
 		try {
 			int userId = UserDao.getUserIdByEmail(userEmail);
 			PreparedStatement checkingStmt = conn.prepareStatement(
-					"SELECT CASE WHEN (SELECT COUNT(actor) FROM mediumCopy WHERE ((actor = ?) AND (signature = ?) AND (status = CAST('BORROWED' AS copyStatus)))) > 0 THEN false ELSE true END AS invalidActor;"
+					"SELECT CASE WHEN (SELECT COUNT(actor) FROM mediumCopy"
+					+ " WHERE ((actor = ?) AND (signature = ?) AND (status ="
+					+ " CAST('BORROWED' AS copyStatus)))) > 0 THEN false"
+					+ " ELSE true END AS invalidActor;"
 					);
 			checkingStmt.setInt(1, userId);
 			checkingStmt.setString(2, signature);
@@ -769,11 +778,13 @@ public final class MediumDao {
 			checkingStmt.close();
 			return result;
 		} catch (SQLException e) {
-			String errorMessage = "Error occured with db communication while checking for invalid actor on copy return.";
+			String errorMessage = "Error occured with db communication while"
+					+ " checking for invalid actor on copy return.";
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
-		} catch (UserDoesNotExistException e) { 						//already checked by UserValidator at this point
-			String errorMessage = "User wasn't found in DB during check for invalid actor on copy return attempt.";
+		} catch (UserDoesNotExistException e) { 								//already checked by UserValidator at this point
+			String errorMessage = "User wasn't found in DB during check for"
+					+ " invalid actor on copy return attempt.";
 			Logger.severe(errorMessage);
 			return true;
 		}														
@@ -789,13 +800,18 @@ public final class MediumDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-	private static boolean invalidDeadlineReturnAttempt(Connection conn, CopyDto signatureContainer, UserDto userEmail) {
+	private static boolean invalidDeadlineReturnAttempt(Connection conn,
+			CopyDto signatureContainer, UserDto userEmail) {
 		String signature = signatureContainer.getSignature();
 		boolean result = true;
 		try {
 			int userId = UserDao.getUserIdByEmail(userEmail);
 			PreparedStatement checkingStmt = conn.prepareStatement(
-					"SELECT CASE WHEN (SELECT COUNT(actor) FROM mediumCopy WHERE ((actor = ?) AND (signature = ?) AND (status = CAST('BORROWED' AS copyStatus)) AND (deadline >= CURRENT_TIMESTAMP))) > 0 THEN false ELSE true END AS invalidDeadline;"
+					"SELECT CASE WHEN (SELECT COUNT(actor) FROM mediumCopy"
+					+ " WHERE ((actor = ?) AND (signature = ?) AND (status = "
+					+ "CAST('BORROWED' AS copyStatus)) AND (deadline >="
+					+ " CURRENT_TIMESTAMP))) > 0 THEN false ELSE true"
+					+ " END AS invalidDeadline;"
 					);
 			checkingStmt.setInt(1, userId);
 			checkingStmt.setString(2, signature);
@@ -806,11 +822,13 @@ public final class MediumDao {
 			checkingStmt.close();
 			return result;
 		} catch (SQLException e) {
-			String errorMessage = "Error occured with db communication while checking for valid copy return.";
+			String errorMessage = "Error occured with db communication while"
+					+ " checking for valid copy return.";
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
-		} catch (UserDoesNotExistException e) { 						//already checked by UserValidator at this point
-			String errorMessage = "User wasn't foud in DB during check for invalid copy return attempt.";
+		} catch (UserDoesNotExistException e) { 								//already checked by UserValidator at this point
+			String errorMessage = "User wasn't foud in DB during check"
+					+ " for invalid copy return attempt.";
 			Logger.severe(errorMessage);
 			return true;
 		}													
@@ -826,12 +844,15 @@ public final class MediumDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-	private static boolean copySignatureExists(Connection conn, CopyDto signatureContainer) {
+	private static boolean copySignatureExists(Connection conn,
+			CopyDto signatureContainer) {
 		String signature = signatureContainer.getSignature();
 		boolean result = false;
 		try {
 			PreparedStatement checkingStmt = conn.prepareStatement(
-				"SELECT CASE WHEN (SELECT COUNT(signature) FROM MediumCopy WHERE (signature = ?)) > 0 THEN true ELSE false END AS entityExists;");
+				"SELECT CASE WHEN (SELECT COUNT(signature) FROM MediumCopy"
+				+ " WHERE (signature = ?)) > 0 THEN true ELSE false END "
+				+ "AS entityExists;");
 			checkingStmt.setString(1, signature);
 			ResultSet resultSet = checkingStmt.executeQuery();
 			conn.commit();
@@ -840,7 +861,8 @@ public final class MediumDao {
 			checkingStmt.close();
 			return result;
 		} catch (SQLException e) {
-			String errorMessage = "Error occured with db communication while checking for Copy Signature existence.";
+			String errorMessage = "Error occured with db communication"
+					+ " while checking for Copy Signature existence.";
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
 		}
@@ -854,12 +876,16 @@ public final class MediumDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-	private static boolean copyIsLentBySignature(Connection conn, CopyDto signatureContainer) {
+	private static boolean copyIsLentBySignature(Connection conn,
+			CopyDto signatureContainer) {
 		String signature = signatureContainer.getSignature();
 		boolean result = true;
 		try {
 			PreparedStatement checkingStmt = conn.prepareStatement(
-					"SELECT CASE WHEN (SELECT COUNT(signature) FROM mediumCopy WHERE ((signature = ?) AND (status = CAST('BORROWED' AS copyStatus)))) > 0 THEN true ELSE false END AS invalidLendingStatus;"
+					"SELECT CASE WHEN (SELECT COUNT(signature) FROM"
+					+ " mediumCopy WHERE ((signature = ?) AND (status ="
+					+ " CAST('BORROWED' AS copyStatus)))) > 0 THEN true"
+					+ " ELSE false END AS invalidLendingStatus;"
 					);
 			checkingStmt.setString(1, signature);
 			ResultSet resultSet = checkingStmt.executeQuery();
@@ -869,7 +895,8 @@ public final class MediumDao {
 			checkingStmt.close();
 			return result;
 		} catch (SQLException e) {
-			String errorMessage = "Error occured with db communication while checking for copy status on lending attempt.";
+			String errorMessage = "Error occured with db communication"
+					+ " while checking for copy status on lending attempt.";
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
 		}										
@@ -885,13 +912,18 @@ public final class MediumDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-	private static boolean invalidUserLendingAttempt(Connection conn, CopyDto signatureContainer, UserDto userEmail) {
+	private static boolean invalidUserLendingAttempt(Connection conn,
+			CopyDto signatureContainer, UserDto userEmail) {
 		String signature = signatureContainer.getSignature();
 		boolean result = true;
 		try {
 			int userId = UserDao.getUserIdByEmail(userEmail);
 			PreparedStatement checkingStmt = conn.prepareStatement(
-					"SELECT CASE WHEN (SELECT COUNT(signature) FROM mediumCopy WHERE ((signature = ?) AND (((actor = ?) AND (status = CAST('READY_FOR_PICKUP' AS copyStatus))) OR (status = CAST('AVAILABLE' AS copyStatus))))) > 0 THEN false ELSE true END AS invalidUserLending;"
+					"SELECT CASE WHEN (SELECT COUNT(signature) FROM "
+					+ "mediumCopy WHERE ((signature = ?) AND (((actor = ?)"
+					+ " AND (status = CAST('READY_FOR_PICKUP' AS copyStatus)))"
+					+ " OR (status = CAST('AVAILABLE' AS copyStatus))))) > 0"
+					+ " THEN false ELSE true END AS invalidUserLending;"
 					);
 			checkingStmt.setString(1, signature);
 			checkingStmt.setInt(2, userId);
@@ -902,11 +934,13 @@ public final class MediumDao {
 			checkingStmt.close();
 			return result;
 		} catch (SQLException e) {
-			String errorMessage = "Error occured with db communication while checking for invalid user for copy on lending attempt.";
+			String errorMessage = "Error occured with db communication while "
+					+ "checking for invalid user for copy on lending attempt.";
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
-		} catch (UserDoesNotExistException e) { 						//already checked by UserValidator at this point
-			String errorMessage = "User wasn't found in DB during check for invalid user for copy on lending attempt.";
+		} catch (UserDoesNotExistException e) { 								//already checked by UserValidator at this point
+			String errorMessage = "User wasn't found in DB during check for"
+					+ " invalid user for copy on lending attempt.";
 			Logger.severe(errorMessage);
 			return true;
 		}											
@@ -925,11 +959,16 @@ public final class MediumDao {
 	 *                                   exist in the data store.
 	 * @throws UserDoesNotExistException if the User wasn't found in the 
 	 * 									 database or another user marked it
+	 * @throws CopyIsNotAvailableException if copy has invalid status for 
+	 * 										lending
 	 * @author Jonas Picker
-	 * @throws CopyIsNotAvailableException 
 	 */
-	public static void lendCopy(CopyDto signatureContainer, UserDto userEmail) throws CopyDoesNotExistException, UserDoesNotExistException, CopyIsNotAvailableException {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);										//ConnectionPool verbesserung abwarten!
+	public static void lendCopy(CopyDto signatureContainer, UserDto userEmail) 
+					throws CopyDoesNotExistException, 
+						InvalidUserForCopyException, 
+						CopyIsNotAvailableException, UserDoesNotExistException {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);										//ConnectionPool verbesserung abwarten!
 		String signature = signatureContainer.getSignature();
 		int userId = UserDao.getUserIdByEmail(userEmail);
 		if (!copySignatureExists(conn, signatureContainer)) {
@@ -942,22 +981,27 @@ public final class MediumDao {
 			String msg = "Error during copy lending! Copy is already lent.";
 			Logger.severe(msg);
 			throw new CopyIsNotAvailableException(msg);
-		} else if (invalidUserLendingAttempt(conn, signatureContainer, userEmail)) {
-			String msg = "Error during copy lending! The Copy wasn't marked for pickup by this user.";
+		} else if (invalidUserLendingAttempt(conn, signatureContainer,
+				userEmail)) {
+			String msg = "Error during copy lending! The Copy wasn't marked "
+					+ "for pickup by this user.";
 			Logger.severe(msg);
-			throw new UserDoesNotExistException(msg);
+			throw new InvalidUserForCopyException(msg);
 		} 
 		Timestamp limitTimestamp;
 		try {
-			limitTimestamp = new Timestamp(System.currentTimeMillis() + smallestLimitMillis(conn, signature, userId));
+			limitTimestamp = new Timestamp(System.currentTimeMillis()
+					+ smallestLimitMillis(conn, signature, userId));
 		} catch (SQLException e1) {
 			Logger.development("SQLException while comparing lend limits");
-			throw new CopyDoesNotExistException("SQLException while comparing lend limits");
+			throw new CopyDoesNotExistException("SQLException while comparing"
+					+ " lend limits");
 		}
 		try {
 		
 		PreparedStatement lendCopy = conn.prepareStatement(
-				"UPDATE mediumCopy SET status = CAST('BORROWED' AS copyStatus), actor = ?, deadline = ? WHERE signature = ?;"
+				"UPDATE mediumCopy SET status = CAST('BORROWED' AS copyStatus),"
+				+ " actor = ?, deadline = ? WHERE signature = ?;"
 				);
 		lendCopy.setInt(1, userId);
 		lendCopy.setTimestamp(2, limitTimestamp);
@@ -971,7 +1015,7 @@ public final class MediumDao {
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
 		} finally {
-			ConnectionPool.getInstance().releaseConnection(conn);
+			instance.releaseConnection(conn);
 		}
 	}
 	
@@ -982,58 +1026,73 @@ public final class MediumDao {
 	 * @author Jonas Picker
 	 */
 	public static void refreshCopyStatusIfMarked() {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);										//ConnectionPool verbesserung!
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);										
 		try {
 			PreparedStatement refreshMarkedDeadlines = conn.prepareStatement(
-					"UPDATE mediumCopy SET status = CAST('AVAILABLE' AS copyStatus) WHERE ((status = CAST('READY_FOR_PICKUP' AS copyStatus)) AND (deadline < CURRENT_TIMESTAMP));"
+					"UPDATE mediumCopy SET status = CAST('AVAILABLE' "
+					+ "AS copyStatus) WHERE ((status = CAST('READY_FOR_PICKUP' "
+					+ "AS copyStatus)) AND (deadline < CURRENT_TIMESTAMP));"
 					);
 			int updated = refreshMarkedDeadlines.executeUpdate();
 			conn.commit();
-			Logger.detailed(updated + " copies were made availabe because pickup deadline expired.");
+			Logger.detailed(updated + " copies were made availabe because"
+					+ " pickup deadline expired.");
 			refreshMarkedDeadlines.close();
 		} catch (SQLException e) {
-			String errorMessage = "Error occured with db communication while refreshing marked copies with expired deadline.";
+			String errorMessage = "Error occured with db communication while"
+					+ " refreshing marked copies with expired deadline.";
 			Logger.severe(errorMessage);
 			throw new LostConnectionException(errorMessage, e);
 		} finally {
-			ConnectionPool.getInstance().releaseConnection(conn);
+			instance.releaseConnection(conn);
 		}
 	}
 
 	//returns smallest limit in milliseconds as long, user and signature must exist
 	/* @author Jonas Picker */
-	private static long smallestLimitMillis(Connection conn, String signature, int userId) throws SQLException {
-		PreparedStatement getCopysMedium = conn.prepareStatement("SELECT mediumId FROM mediumCopy WHERE signature = ?;");
+	private static long smallestLimitMillis(Connection conn, String signature,
+			int userId) throws SQLException {
+		PreparedStatement getCopysMedium = conn.prepareStatement("SELECT"
+				+ " mediumId FROM mediumCopy WHERE signature = ?;");
 		getCopysMedium.setString(1, signature);
 		ResultSet rs1 = getCopysMedium.executeQuery();
 		conn.commit();
 		rs1.next();
 		int fromMedium = rs1.getInt(1);
 		getCopysMedium.close();
-		PreparedStatement getGlobalLimit = conn.prepareStatement("SELECT EXTRACT (EPOCH FROM (SELECT globalLendLimit FROM application WHERE one = 1));");
+		PreparedStatement getGlobalLimit = conn.prepareStatement("SELECT"
+				+ " EXTRACT (EPOCH FROM (SELECT globalLendLimit "
+				+ "FROM application WHERE one = 1));");
 		ResultSet rs2 = getGlobalLimit.executeQuery();
 		conn.commit();
 		rs2.next();
 		double globalSeconds = rs2.getDouble(1) ;
 		getGlobalLimit.close();
-		PreparedStatement getMediumLimit = conn.prepareStatement("SELECT EXTRACT (EPOCH FROM (SELECT mediumLendPeriod FROM medium WHERE mediumId = ?));");
+		PreparedStatement getMediumLimit = conn.prepareStatement("SELECT "
+				+ "EXTRACT (EPOCH FROM (SELECT mediumLendPeriod "
+				+ "FROM medium WHERE mediumId = ?));");
 		getMediumLimit.setInt(1, fromMedium);
 		ResultSet rs3 = getMediumLimit.executeQuery();
 		conn.commit();
 		rs3.next();
 		double mediumSeconds = rs3.getDouble(1);
 		getMediumLimit.close();
-		PreparedStatement getUserLimit = conn.prepareStatement("SELECT EXTRACT (EPOCH FROM (SELECT userLendPeriod FROM users WHERE userId = ?));");
+		PreparedStatement getUserLimit = conn.prepareStatement("SELECT "
+				+ "EXTRACT (EPOCH FROM (SELECT userLendPeriod "
+				+ "FROM users WHERE userId = ?));");
 		getUserLimit.setInt(1, userId);
 		ResultSet rs4 = getUserLimit.executeQuery();
 		conn.commit();
 		rs4.next();
 		double userSeconds = rs4.getDouble(1);
 		getUserLimit.close();
-		double[] intervals = new double[] {globalSeconds, mediumSeconds, userSeconds};
-		Arrays.sort(intervals);
-		long longTime = (long) (intervals[0] * 1000);
-		Logger.development("Calculated lend limit was " + longTime + "milliseconds.");
+		double[] d = new double[] {globalSeconds, mediumSeconds, userSeconds};
+		Arrays.sort(d);															//das kleinste Limit oder Hierarchie?
+		long longTime = (long) (d[0] * 1000);
+		Logger.development("Calculated lend limit was " 
+				+ longTime 
+				+ "milliseconds.");
 		return longTime;
 	}
 	
@@ -1050,71 +1109,115 @@ public final class MediumDao {
 	 *                                   exist in the data store.
 	 * @throws UserDoesNotExistException if the User wasn't found in the 
 	 * 									 database or he hasn't lent the copy
+	 * @throws CopyIsNotAvailableException if the copy wasn't marked as lent
+	 * 
 	 * @author Jonas Picker
-	 * @throws CopyIsNotAvailableException 
 	 */
-	public static void returnCopy(CopyDto signatureContainer, UserDto userEmail) throws UserDoesNotExistException, CopyDoesNotExistException, CopyIsNotAvailableException {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);									//ConnectionPool verbessert?
+	public static void returnCopy(CopyDto signatureContainer, UserDto userEmail)
+			throws UserDoesNotExistException, CopyDoesNotExistException,
+			CopyIsNotAvailableException {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);									
 		String signature = signatureContainer.getSignature();
 		int userId = UserDao.getUserIdByEmail(userEmail);
 		if (!copySignatureExists(conn, signatureContainer)) {
 			String msg = "Error during copy return! Signature doesn't exist.";
 			Logger.severe(msg);
-			ConnectionPool.getInstance().releaseConnection(conn);
+			instance.releaseConnection(conn);
 			throw new CopyDoesNotExistException(msg);
 		} else if (invalidCopyStatusReturnAttempt(conn, signatureContainer)) {
 			String msg = "Error during copy return! Copy wasn't lent in the first place.";
 			Logger.severe(msg);
-			ConnectionPool.getInstance().releaseConnection(conn);
+			instance.releaseConnection(conn);
 			throw new CopyIsNotAvailableException(msg);
 		} else if (invalidActorReturnAttempt(conn, signatureContainer, userEmail)) {          
 			String msg = "Copy couldn't be returned. The copy wasn't lent (by this user).";
 			Logger.severe(msg);
-			ConnectionPool.getInstance().releaseConnection(conn);
+			instance.releaseConnection(conn);
 			throw new UserDoesNotExistException(msg);
 		} 
 		try {
 			PreparedStatement returnCopy = conn.prepareStatement(
-					"UPDATE mediumCopy SET status = CAST('AVAILABLE' AS copyStatus), actor = null, deadline = null WHERE ((signature = ?) AND (actor = ?) AND (status = CAST('BORROWED' AS copyStatus)));"
+					"UPDATE mediumCopy SET status = CAST('AVAILABLE' "
+					+ "AS copyStatus), actor = null, deadline = null "
+					+ "WHERE ((signature = ?) AND (actor = ?) "
+					+ "AND (status = CAST('BORROWED' AS copyStatus)));"
 					);
 			returnCopy.setString(1, signature);
 			returnCopy.setInt(2, userId);
 			int updated = returnCopy.executeUpdate();
 			conn.commit();
-			Logger.development(updated + " copy was returned and became available.");
+			Logger.development(updated + " copy was returned and"
+					+ " became available.");
 			returnCopy.close();
 		} catch (SQLException e) {
-			String msg = "An Error occured during communication with database on copy returning process.";
+			String msg = "An Error occured during communication with"
+					+ " database on copy returning process.";
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
-			ConnectionPool.getInstance().releaseConnection(conn);
+			instance.releaseConnection(conn);
 		}	
 	}
 	
-	public static void validateReturnProcess(CopyDto signatureContainer, UserDto user)
-			throws CopyDoesNotExistException, CopyIsNotAvailableException, InvalidUserForCopyException, UserExceededDeadlineException{
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+	/**
+	 * Validates a return attempt by a given user with a given copysignature.
+	 * 
+	 * @param signatureContainer CopyDto with signature input
+	 * @param user UserDto with userEmail
+	 * @throws CopyDoesNotExistException if signature wasn't found
+	 * @throws CopyIsNotAvailableException if copystatus invalid for returning
+	 * @throws InvalidUserForCopyException if wrong user tries to return
+	 * @throws UserExceededDeadlineException if return deadline was exceeded
+	 * @author Jonas Picker
+	 */
+	public static void validateReturnProcess(CopyDto signatureContainer,
+			UserDto user) 
+					throws CopyDoesNotExistException, 
+							CopyIsNotAvailableException, 
+							InvalidUserForCopyException, 
+							UserExceededDeadlineException{
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		if (!copySignatureExists(conn, signatureContainer)) {
 			throw new CopyDoesNotExistException("Signature doesn't exist");
 		} else if (invalidCopyStatusReturnAttempt(conn, signatureContainer)) {
-			throw new CopyIsNotAvailableException("Invalid copy status for this return");
+			throw new CopyIsNotAvailableException("Invalid copy status for this"
+					+ " return");
 		} else if (invalidActorReturnAttempt(conn, signatureContainer, user)) {
-			throw new InvalidUserForCopyException("Invalid user for this return");
-		} else if (invalidDeadlineReturnAttempt(conn, signatureContainer, user)) {
-			throw new UserExceededDeadlineException("The return deadline was exceeded by this user");
+			throw new InvalidUserForCopyException("Invalid user for "
+					+ "this return");
+		} else if (invalidDeadlineReturnAttempt(conn, signatureContainer,
+				user)) {
+			throw new UserExceededDeadlineException("The return deadline was"
+					+ " exceeded by this user");
 		}
 	}
 	
-	public static void validateLendingProcess(CopyDto signatureContainer, UserDto user)
-			throws CopyDoesNotExistException, CopyIsNotAvailableException, InvalidUserForCopyException {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+	/**
+	 * Validates a lending attempt by a given user with a given copysignature.
+	 * 
+	 * @param signatureContainer CopyDto with signature input
+	 * @param user UserDto with userEmail
+	 * @throws CopyDoesNotExistException if signature wasn't found
+	 * @throws CopyIsNotAvailableException if copystatus invalid for lending
+	 * @throws InvalidUserForCopyException if wrong user tries to lend
+	 * @author Jonas Picker
+	 */
+	public static void validateLendingProcess(CopyDto signatureContainer,
+			UserDto user)
+			throws CopyDoesNotExistException, CopyIsNotAvailableException,
+			InvalidUserForCopyException {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		if (!copySignatureExists(conn, signatureContainer)) {
 			throw new CopyDoesNotExistException("Signature doesn't exist");
 		} else if (copyIsLentBySignature(conn, signatureContainer)) {
-			throw new CopyIsNotAvailableException("Invalid copy status, cannot lend copy");
+			throw new CopyIsNotAvailableException("Invalid copy status,"
+					+ " cannot lend copy");
 		} else if(invalidUserLendingAttempt(conn, signatureContainer, user)) {
-			throw new InvalidUserForCopyException("Invalid user for lending process");
+			throw new InvalidUserForCopyException("Invalid user for "
+					+ "lending process");
 		}
 	}
 		
