@@ -1,0 +1,38 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi">
+
+	<cc:interface>
+		<cc:attribute name="items" />
+	</cc:interface>
+
+	<cc:implementation>
+
+		<h:form id="form_list_controls">
+
+			<h:commandButton id="button_previous_page"
+				value="#{msg['previous_page']}"
+				styleClass="btn btn-outline-primary btn-sm" />
+
+			<h:inputText id="input_current_page" value="CURRENT" />
+				/
+			<h:outputText value="TOTAL" />
+
+			<h:commandButton id="button_next_page" value="#{msg['next_page']}"
+				styleClass="btn btn-outline-primary btn-sm" />
+
+		</h:form>
+
+		<h:dataTable value="#{cc.attrs.items}" var="item" varStatus="status" styleClass="table">
+
+			<cc:insertChildren />
+
+		</h:dataTable>
+
+	</cc:implementation>
+
+</ui:composition>
