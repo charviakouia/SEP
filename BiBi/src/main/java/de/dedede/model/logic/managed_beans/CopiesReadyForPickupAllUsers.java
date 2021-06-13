@@ -3,7 +3,7 @@ package de.dedede.model.logic.managed_beans;
 import java.io.Serial;
 import java.util.List;
 
-import de.dedede.model.data.dtos.MediumCopyAttributeUserDto;
+import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.persistence.daos.MediumDao;
 import jakarta.annotation.PostConstruct;
@@ -27,16 +27,11 @@ public class CopiesReadyForPickupAllUsers extends PaginatedList {
 	private ExternalContext ectx;
 	
 	@Serial
-	private List<MediumCopyAttributeUserDto> copies;
+	private List<MediumCopyUserDto> copies;
 
 	@PostConstruct
 	public void init() {
 		copies = MediumDao.readCopiesReadyForPickup(new PaginationDto());
-	}
-	
-	public String getAttributeName() {
-		// the name is the same for all copies
-		return copies.get(0).getAttribute().getName();
 	}
 	
 	public String goToLending(String signature) {
@@ -46,7 +41,7 @@ public class CopiesReadyForPickupAllUsers extends PaginatedList {
 	}
 
 	@Override
-	public List<MediumCopyAttributeUserDto> getItems() {
+	public List<MediumCopyUserDto> getItems() {
 		return copies;
 	}
 }

@@ -18,7 +18,7 @@
 
 				<h:inputText id="input_general_search_term"
 					value="#{mediumSearch.mediumSearch.generalSearchTerm}"
-					styleClass="form-control" />
+					styleClass="form-control" title="#{msg['search_term']}" />
 
 				<h:commandButton id="button_search" value="#{msg['search']}"
 					action="#{mediumSearch.searchMedium()}"
@@ -31,7 +31,15 @@
 				<h:panelGroup layout="block"
 					styleClass="nuanced-search-queries d-grid gap-2 my-2">
 
-					<ui:repeat
+					<h:selectOneMenu value="#{mediumSearch.tmp}">
+
+						<f:selectItems value="#{mediumSearch.allSearchCriteria}"
+							var="criterion" itemValue="#{criterion}"
+							itemLabel="#{criterion}" converter="#{mediumSearch.conv}" />
+
+					</h:selectOneMenu>
+
+					<!-- <ui:repeat
 						value="#{mediumSearch.mediumSearch.nuancedSearchQueries}"
 						var="nuancedSearchQuery">
 
@@ -39,7 +47,7 @@
 							styleClass="nuanced-search-query input-group">
 
 							<h:selectOneMenu id="select_search_operator"
-								value="#{nuancedSearchQuery.operator}" styleClass="form-select">
+								value="#{nuancedSearchQuery.operator}" styleClass="form-select" title="#{msg['search_operator']}">
 
 								<f:selectItems value="#{mediumSearch.allSearchOperators}"
 									var="operator" itemValue="#{operator}"
@@ -48,21 +56,24 @@
 							</h:selectOneMenu>
 
 							<h:selectOneMenu id="select_search_criterion"
-								value="#{nuancedSearchQuery.criterion}" styleClass="form-select">
+								value="#{nuancedSearchQuery.criterion}" styleClass="form-select" title="#{msg['search_criterion']}">
 
 								<f:selectItems value="#{mediumSearch.allSearchCriteria}"
 									var="criterion" itemValue="#{criterion}"
-									itemLabel="#{criterion.toString()}" />
+									itemLabel="#{msg[criterion.toString()]}" />
 
 							</h:selectOneMenu>
+							
+							TEMPORARY
+							<h:message for="select_search_criterion" />
 
 							<h:inputText id="input_nuanced_search_term_#{status.index}"
 								value="#{nuancedSearchQuery.term}"
-								styleClass="form-control w-50" />
+								styleClass="form-control w-50" title="#{msg['search_term']}" />
 
 						</h:panelGroup>
 
-					</ui:repeat>
+					</ui:repeat> -->
 
 				</h:panelGroup>
 

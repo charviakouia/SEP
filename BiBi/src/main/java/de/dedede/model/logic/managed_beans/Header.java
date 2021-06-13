@@ -8,6 +8,7 @@ import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.persistence.daos.ApplicationDao;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -21,10 +22,14 @@ import jakarta.inject.Named;
 public class Header {
 
 	@Inject
+	private ExternalContext ectx;
+	
+	@Inject
 	private UserSession session;
 
 	private ApplicationDto application;
 
+	// @Note we could also make it flat here!
 	private MediumSearchDto mediumSearch = new MediumSearchDto();
 
 	@PostConstruct
@@ -143,13 +148,14 @@ public class Header {
 	 */
 	public String logOut() {
 		session.setUser(null);
-		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		// ectx.invalidateSession();
 
-		return "/BiBi/view/public/login.xhtml?faces-redirect=true";
+		return "login?faces-redirect=true";
 	}
 
 	public String searchMedium() {
-		// @Task put the term into a flash scope
-		return "/BiBi/view/public/medium-search.xhtml?faces-redirect=true";
+		ectx.getFlash().put("medium_search_term", mediumSearch.getGeneralSearchTerm());
+		
+		return "medium-search?faces-redirect=true";
 	}
 }

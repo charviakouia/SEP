@@ -115,7 +115,7 @@
 				styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
 
 			<h:form id="form_medium_search_header"
-				action="#{pageHeader.searchMedium()}" styleClass="">
+				action="#{pageHeader.searchMedium()}" title="#{msg['search_term']}">
 				<h:inputText id="input_medium_search_term"
 					value="#{pageHeader.mediumSearch.generalSearchTerm}"
 					styleClass="nav-item form-control" />

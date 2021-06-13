@@ -1,12 +1,10 @@
 package de.dedede.model.data.dtos;
 
-public class MediumCopyAttributeUserDto {
+public class MediumCopyUserDto {
 
 	private CopyDto copy;
 	
 	private MediumDto medium;
-
-	private AttributeDto attribute;
 
 	private UserDto user;
 
@@ -24,14 +22,6 @@ public class MediumCopyAttributeUserDto {
 
 	public void setMedium(MediumDto medium) {
 		this.medium = medium;
-	}
-
-	public AttributeDto getAttribute() {
-		return attribute;
-	}
-
-	public void setAttribute(AttributeDto attribute) {
-		this.attribute = attribute;
 	}
 
 	public UserDto getUser() {

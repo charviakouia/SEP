@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.dedede.model.data.dtos.AttributeDto;
 import de.dedede.model.data.dtos.MediumDto;
+import de.dedede.model.data.dtos.MediumSearchCriterion;
 import de.dedede.model.data.dtos.MediumSearchDto;
 import de.dedede.model.data.dtos.MediumSearchDto.NuancedSearchQuery;
-import de.dedede.model.data.dtos.SearchCriterion;
 import de.dedede.model.data.dtos.SearchOperator;
-import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.logic.converters.SearchCriterionConverter;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
@@ -30,12 +30,17 @@ import jakarta.inject.Named;
 @RequestScoped
 public class MediumSearch extends PaginatedList implements Serializable {
 
+	private static final int DEFAULT_NUMBER_OF_NUANCED_SEARCH_QUERIES = 3;
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private MediumSearchDto mediumSearch = new MediumSearchDto();
 
-	private List<AttributeDto> attributes;
+	{
+		mediumSearch.setNuancedSearchQueries(Stream.generate(NuancedSearchQuery::new)
+				.limit(DEFAULT_NUMBER_OF_NUANCED_SEARCH_QUERIES).collect(Collectors.toList()));
+	}
 
 	private List<MediumDto> mediums;
 
@@ -43,7 +48,6 @@ public class MediumSearch extends PaginatedList implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		attributes = MediumDao.readAllMediumAttributes();
 	}
 
 	public MediumSearchDto getMediumSearch() {
@@ -58,20 +62,18 @@ public class MediumSearch extends PaginatedList implements Serializable {
 		return Arrays.asList(SearchOperator.values());
 	}
 
-	public List<SearchCriterion> getAllSearchCriteria() {
-		final var attributeCriteria = attributes.stream()
-				.map(attribute -> new SearchCriterion.Attribute(attribute.getName()));
-		final var criteria = Stream.concat(attributeCriteria, Stream.of(new SearchCriterion.Category()));
+	public List<MediumSearchCriterion> getAllSearchCriteria() {
+		final var criteria = MediumSearchCriterion.values();
 //		Collections.rotate(criteria, searchCriteriaRotation);
 //		searchCriteriaRotation += 1;
-		return criteria.collect(Collectors.toList());
+		return criteria;
 	}
 
 	/**
 	 * Search for the corresp. mediums.
 	 */
 	public void searchMedium() {
-
+		Logger.development("tmp = " + tmp + (tmp instanceof MediumSearchCriterion.Attribute));
 	}
 
 	/**
@@ -85,6 +87,20 @@ public class MediumSearch extends PaginatedList implements Serializable {
 	@Override
 	public List<MediumDto> getItems() {
 		return mediums;
+	}
+
+	private MediumSearchCriterion tmp = new MediumSearchCriterion.Category();
+
+	public MediumSearchCriterion getTmp() {
+		return tmp;
+	}
+
+	public void setTmp(MediumSearchCriterion tmp) {
+		this.tmp = tmp;
+	}
+
+	public SearchCriterionConverter getConv() {
+		return new SearchCriterionConverter();
 	}
 
 }

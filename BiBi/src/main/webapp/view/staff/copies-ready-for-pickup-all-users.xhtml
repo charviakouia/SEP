@@ -17,7 +17,6 @@
 			<h:column>
 				<f:facet name="header">#{msg['copy']}</f:facet>
 				<bibi:columnContent>
-					<!-- @Task commandLink, flash scope -->
 					<h:form id="form_go_to_lending">
 						<h:commandLink id="link_go_to_lending"
 							value="#{item.copy.signature}"
@@ -34,10 +33,9 @@
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{copiesReadyForPickupAllUsers.attributeName}</f:facet>
+				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
 				<bibi:columnContent>
-					<!-- @Task support other types, too! -->
-					<h:link value="#{item.attribute.textValue[0]}"
+					<h:link value="#{item.medium.title}"
 						outcome="/view/public/medium.xhtml?id=#{item.medium.id}" />
 				</bibi:columnContent>
 			</h:column>
