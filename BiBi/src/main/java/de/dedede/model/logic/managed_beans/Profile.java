@@ -6,11 +6,13 @@ import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -38,7 +40,7 @@ public class Profile implements Serializable {
 	private UserSession userSession;
 
 	@Inject
-	private FacesContext facesContext;
+	private FacesContext context;
 
 	@PostConstruct
 	public void init() {
@@ -101,17 +103,24 @@ public class Profile implements Serializable {
 
 	/**
 	 * Loads user data from a database for viewAction.
+	 * 
+	 * @throws IOException 
 	 */
-	public void onload() throws UserDoesNotExistException {
-
-		/*TODO: Mach besser, sobald logIn funktioniert.*/
-//		if (userSession.getUser().getUserRole() == UserRole.ADMIN
-//				|| userSession.getUser().getId() == user.getId()) {
-//		}
-
-		user = UserDao.readUserForProfile(user);
-
-		//nur für Facelet-debug, weil eine LogIn immer noch nicht funktioniert
-		userSession.setUser(user);
+	public void onload() throws IOException {
+		try {
+			if (userSession.getUser() != null) {
+				if (userSession.getUser().getUserRole().equals(UserRole.ADMIN)
+						|| userSession.getUser().getId() == user.getId()) {
+					user = UserDao.readUserForProfile(user);
+				} else {
+					context.addMessage(null, new FacesMessage("You do not have access to the user profile."));
+				}
+			} else {
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/login.xhtml");
+				context.addMessage(null, new FacesMessage("Please sign in."));
+			}
+		} catch (UserDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage("There is no user with this ID."));
+		}
 	}
 }

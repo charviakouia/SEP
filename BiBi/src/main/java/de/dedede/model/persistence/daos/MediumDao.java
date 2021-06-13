@@ -568,10 +568,10 @@ public final class MediumDao {
 		copyDto.setCopyStatus((CopyStatus) resultSet.getObject(5));
 		copyDto.setDeadline(resultSet.getTimestamp(6));
 		copyDto.setActor(resultSet.getInt(7));
-	}
-
-	private static void readAttributesHelper(MediumDto mediumDto) {
-		// TODO: MS2 von Sergej
+		copyDto.setActor(resultSet.getInt(7));
+		if (copyDto.getActor() == 0) {
+			copyDto.setActor(null);
+		}
 	}
 
 	/**
