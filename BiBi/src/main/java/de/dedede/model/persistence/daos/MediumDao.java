@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -27,13 +28,13 @@ import de.dedede.model.data.dtos.AttributeMultiplicity;
 import de.dedede.model.data.dtos.AttributeType;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
-import de.dedede.model.data.dtos.MediumAttribute;
 import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.MediumPreviewPosition;
 import de.dedede.model.data.dtos.MediumSearchCriterion;
 import de.dedede.model.data.dtos.MediumSearchDto;
 import de.dedede.model.data.dtos.PaginationDto;
+import de.dedede.model.data.dtos.SearchOperator;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.util.AttributeModifiability;
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
@@ -210,15 +211,18 @@ public final class MediumDao {
 	 * @return A list of DTO containers with the medium data.
 	 * @see MediumDto
 	 */
+	// @Beacon @Task handle stuff like "<title> <author>"
+	// i.e. split by whitespace and or those terms....kinda 
 	public static List<MediumDto> searchMedia(MediumSearchDto mediumSearch, PaginationDto pagination) {
-
+		
+		final var entriesPerPage = Integer.parseInt(ConfigReader.getInstance().getKey("MAX_PAGES", "20"));
 		final var searchQuery = new StringBuilder();
-		// @Temporary concept
 		final var parameters = new ArrayList<Object>();
 
+		// @Task select category too and year
 		searchQuery.append("""
-				select
-					m.mediumid
+				select distinct
+					m.mediumid, m.title, m.author1, m.author2, m.edition, m.publisher
 				from
 					medium m
 						left join
@@ -230,12 +234,21 @@ public final class MediumDao {
 						on
 					m.mediumid = cp.mediumid
 				where
-					true
 					""");
 		
+		translateGeneralSearchTerm(searchQuery, parameters, mediumSearch.getGeneralSearchTerm());
+
 		for (final var nuancedSearchQuery : mediumSearch.getNuancedSearchQueries()) {
 			translateNuancedSearchQuery(searchQuery, parameters, nuancedSearchQuery);
 		}
+		
+		searchQuery.append("""
+				offset ?
+				limit ?
+				""");
+		// @Task sorting
+		parameters.add(pagination.getPageNumber() * entriesPerPage);
+		parameters.add(entriesPerPage - 1);
 
 		final var connection = getConnection();
 
@@ -247,12 +260,22 @@ public final class MediumDao {
 				statement.setObject(index + 1, parameters.get(index));
 			}
 
+			Logger.development("statement = " + statement.toString());
+			
 			final var resultSet = statement.executeQuery();
 			final var results = new ArrayList<MediumDto>();
 
 			while (resultSet.next()) {
+
 				final var medium = new MediumDto();
 
+				medium.setId(resultSet.getInt(1));
+				medium.setTitle(resultSet.getString(2));
+				medium.setAuthor1(resultSet.getString(3));
+				medium.setAuthor2(resultSet.getString(4));
+				medium.setEdition(resultSet.getString(5));
+				medium.setPublisher(resultSet.getString(6));
+				
 				results.add(medium);
 			}
 
@@ -269,6 +292,33 @@ public final class MediumDao {
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(connection);
 		}
+	}
+	
+	// @Task needs a lotta love!!
+	private static void translateGeneralSearchTerm(StringBuilder query, List<Object> parameters, String generalSearchTerm) {
+		
+		if (generalSearchTerm == null || generalSearchTerm.trim().isEmpty()) {
+			query.append("true");
+			return;
+		}
+		
+		query.append("(false ");
+		
+		// @Question only search a subset of these?
+		for (final var searchCriterion : MediumSearchCriterion.values()) {
+			if (!searchCriterion.isGeneralSearchCriterion()) {
+				continue;
+			}
+			
+			final var nuancedSearchQuery = new MediumSearchDto.NuancedSearchQuery();
+			nuancedSearchQuery.setOperator(SearchOperator.OR);
+			nuancedSearchQuery.setCriterion(searchCriterion);
+			nuancedSearchQuery.setTerm(generalSearchTerm);
+			
+			translateNuancedSearchQuery(query, parameters, nuancedSearchQuery);
+		}
+		
+		query.append(") ");
 	}
 
 	private static void translateNuancedSearchQuery(StringBuilder query, List<Object> parameters,
@@ -288,75 +338,77 @@ public final class MediumDao {
 
 		query.append(" (");
 
-		query.append(nuancedQuery.getCriterion().accept(new MediumSearchCriterion.Visitor<String>() {
-
-			@Override
-			public String visitAttribute(MediumAttribute attribute) {
-				if (attribute == MediumAttribute.AUTHORS) {
-					// @Task use ranges or sth similar
-					for (var index = 0; index < 5; index += 1) {
-						// @Task escape % and _ in source
-						parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
-					}
-
-					return """
-							(  m.author1 ilike ?
-							or m.author2 ilike ?
-							or m.author3 ilike ?
-							or m.author4 ilike ?
-							or m.author5 ilike ?
-							)
-							""";
-				}
-
-				// @Note this could be way more intelligent (ranges, lists, …)
-				if (attribute == MediumAttribute.YEAR_OF_RELEASE) {
-					try {
-						parameters.add(Integer.parseInt(nuancedQuery.getTerm()));
-
-						return "m.releaseyear = ?";
-					} catch (NumberFormatException exception) {
-						return "";
-					}
-				}
-
-				final var column = switch (attribute) {
-				case TITLE -> "title";
-				case AUTHORS -> throw new IllegalStateException();
-				case TYPE -> "mediumtype";
-				case EDITION -> "edition";
-				case PUBLISHER -> "publisher";
-				case YEAR_OF_RELEASE -> throw new IllegalStateException();
-				case ISBN -> "isbn";
-				case URL -> "mediumlink";
-				case SUMMARY -> "demotext";
-				};
-
+		query.append(switch (nuancedQuery.getCriterion()) {
+		case AUTHORS -> {
+			// @Task use ranges or sth similar
+			for (var index = 0; index < 5; index += 1) {
 				// @Task escape % and _ in source
 				parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
-
-				return "m.%s ilike ?".formatted(column);
 			}
 
-			@Override
-			public String visitCategory() {
-				// @Task escape % and _ in source
-				parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
+			yield """
+					(  m.author1 ilike ?
+					or m.author2 ilike ?
+					or m.author3 ilike ?
+					or m.author4 ilike ?
+					or m.author5 ilike ?
+					)
+					""";
+		}
+		case YEAR_OF_RELEASE -> {
+			// cannot use try/catch inside here because of an
+			// internal compiler error (eclipse codegen)
+			final var year = parseInt(nuancedQuery.getTerm());
 
-				return "ct.title ilike ?";
+			if (year.isPresent()) {
+				parameters.add(year.get());
+				yield "m.releaseyear = ?";
+			} else {
+				yield "false";
 			}
+		}
+		case CATEGORY -> {
+			// @Task escape % and _ in source
+			parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
 
-			@Override
-			public String visitSignature() {
-				// @Task escape % and _ in source
-				parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
+			yield "ct.title ilike ?";
+		}
+		case SIGNATURE -> {
+			// @Task escape % and _ in source
+			parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
 
-				return "cp.signature ilike ?";
-			}
+			yield "cp.signature ilike ?";
+		}
+		default -> {
+			final var column = switch (nuancedQuery.getCriterion()) {
+			case TITLE -> "title";
+			case TYPE -> "mediumtype";
+			case EDITION -> "edition";
+			case PUBLISHER -> "publisher";
+			case ISBN -> "isbn";
+			case URL -> "mediumlink";
+			case SUMMARY -> "demotext";
+			default -> throw new IllegalStateException();
+			};
 
-		}));
+			// @Task escape % and _ in source
+			parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
+
+			yield "m.%s ilike ?".formatted(column);
+		}
+		});
 
 		query.append(") ");
+	}
+
+	// existence of this function necessitated by an internal compiler error
+	// (eclipse codegen)
+	private static Optional<Integer> parseInt(String source) {
+		try {
+			return Optional.of(Integer.parseInt(source));
+		} catch (NumberFormatException exception) {
+			return Optional.empty();
+		}
 	}
 
 	/**

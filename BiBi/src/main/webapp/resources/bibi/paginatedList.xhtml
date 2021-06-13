@@ -19,7 +19,7 @@
 				value="#{msg['previous_page']}" action="#{cc.attrs.value.goBack()}"
 				styleClass="btn btn-outline-primary btn-sm" />
 
-			<h:inputText id="input_current_page" value="CURRENT" />
+			<h:inputText id="input_current_page" value="#{cc.attrs.value.paginatedList.pageNumber}" />
 				/
 			<h:outputText value="TOTAL" />
 

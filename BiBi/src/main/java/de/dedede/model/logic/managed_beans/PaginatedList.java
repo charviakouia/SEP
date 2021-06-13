@@ -10,7 +10,7 @@ import de.dedede.model.persistence.util.Logger;
  */
 public abstract class PaginatedList {
 
-	private PaginationDto paginatedList;
+	private PaginationDto paginatedList = new PaginationDto();
 
 	public abstract List<?> getItems();
 

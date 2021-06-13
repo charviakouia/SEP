@@ -1,92 +1,30 @@
 package de.dedede.model.data.dtos;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+public enum MediumSearchCriterion {
 
-// @Beacon @Note alternatively, make this flat and inline MediumAttribute (removing it)
+	TITLE, AUTHORS, TYPE, EDITION, PUBLISHER, YEAR_OF_RELEASE, ISBN, URL, SUMMARY, CATEGORY, SIGNATURE;
 
-public abstract class MediumSearchCriterion {
-
-	public static final class Attribute extends MediumSearchCriterion {
-
-		private MediumAttribute value;
-
-		public Attribute(MediumAttribute value) {
-			this.value = value;
-		}
-
-		public MediumAttribute getValue() {
-			return value;
-		}
-
-		public void setValue(MediumAttribute value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return value.toString();
-		}
-
-		@Override
-		public <Result> Result accept(Visitor<Result> visitor) {
-			return visitor.visitAttribute(value);
-		}
-
-	}
-
-	public static final class Category extends MediumSearchCriterion {
-
-		@Override
-		public String toString() {
-			return "category";
-		}
-
-		@Override
-		public <Result> Result accept(Visitor<Result> visitor) {
-			return visitor.visitCategory();
-		}
-	}
-
-	public static final class Signature extends MediumSearchCriterion {
-		
-		@Override
-		public String toString() {
-			return "signature";
-		}
-
-		@Override
-		public <Result> Result accept(Visitor<Result> visitor) {
-			return visitor.visitSignature();
-		}
-	}
-
-	public static interface Visitor<Result> {
-
-		Result visitAttribute(MediumAttribute attribute);
-
-		Result visitCategory();
-		
-		Result visitSignature();
-
-	}
-
-	public static List<MediumSearchCriterion> values() {
-		return Stream.concat(Stream.of(MediumAttribute.values()).map(Attribute::new), Stream.of(new Category()))
-				.collect(Collectors.toList());
-	}
-
-	public static MediumSearchCriterion parse(String input) {
-		return switch (input) {
-		case "category" -> new Category();
-		// case "signature" -> new Signature();
-		default -> {
-			final var attribute = MediumAttribute.parse(input);
-			yield attribute == null ? null : new Attribute(attribute);
-		}
+	public boolean isGeneralSearchCriterion() {
+		return switch (this) {
+		case TYPE, EDITION, URL, SUMMARY, SIGNATURE -> false;
+			default -> true;
 		};
 	}
-
-	public abstract <Result> Result accept(Visitor<Result> visitor);
+	
+	@Override
+	public String toString() {
+		return switch (this) {
+		case TITLE -> "medium_attribute.title";
+		case AUTHORS -> "medium_attribute.authors";
+		case TYPE -> "medium_attribute.type";
+		case EDITION -> "medium_attribute.edition";
+		case PUBLISHER -> "medium_attribute.publisher";
+		case YEAR_OF_RELEASE -> "medium_attribute.year_of_release";
+		case ISBN -> "medium_attribute.isbn";
+		case URL -> "medium_attribute.url";
+		case SUMMARY -> "medium_attribute.summary";
+		case CATEGORY -> "category";
+		case SIGNATURE -> "signature";
+		};
+	}
 }
