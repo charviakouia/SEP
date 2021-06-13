@@ -9,7 +9,6 @@ import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
 import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
-import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.enterprise.context.Dependent;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;

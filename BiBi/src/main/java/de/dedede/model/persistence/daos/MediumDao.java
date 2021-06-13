@@ -13,7 +13,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,6 +59,7 @@ import de.dedede.model.persistence.util.Logger;
 public final class MediumDao {
 
 	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
+	private static final double DEFAULT_MAXIMUM_LEND_LIMIT_SECONDS = 15770000;
 
 	private MediumDao() {
 	}
@@ -762,7 +762,7 @@ public final class MediumDao {
 		String signature = signatureContainer.getSignature();
 		boolean result = true;
 		try {
-			int userId = UserDao.getUserIdByEmail(userEmail);
+			int userId = UserDao.getUserIdByEmail(conn, userEmail);
 			PreparedStatement checkingStmt = conn.prepareStatement(
 					"SELECT CASE WHEN (SELECT COUNT(actor) FROM mediumCopy"
 					+ " WHERE ((actor = ?) AND (signature = ?) AND (status ="
@@ -805,7 +805,7 @@ public final class MediumDao {
 		String signature = signatureContainer.getSignature();
 		boolean result = true;
 		try {
-			int userId = UserDao.getUserIdByEmail(userEmail);
+			int userId = UserDao.getUserIdByEmail(conn, userEmail);
 			PreparedStatement checkingStmt = conn.prepareStatement(
 					"SELECT CASE WHEN (SELECT COUNT(actor) FROM mediumCopy"
 					+ " WHERE ((actor = ?) AND (signature = ?) AND (status = "
@@ -917,7 +917,7 @@ public final class MediumDao {
 		String signature = signatureContainer.getSignature();
 		boolean result = true;
 		try {
-			int userId = UserDao.getUserIdByEmail(userEmail);
+			int userId = UserDao.getUserIdByEmail(conn, userEmail);
 			PreparedStatement checkingStmt = conn.prepareStatement(
 					"SELECT CASE WHEN (SELECT COUNT(signature) FROM "
 					+ "mediumCopy WHERE ((signature = ?) AND (((actor = ?)"
@@ -968,9 +968,9 @@ public final class MediumDao {
 						InvalidUserForCopyException, 
 						CopyIsNotAvailableException, UserDoesNotExistException {
 		ConnectionPool instance = ConnectionPool.getInstance();
-		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);										//ConnectionPool verbesserung abwarten!
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);										
 		String signature = signatureContainer.getSignature();
-		int userId = UserDao.getUserIdByEmail(userEmail);
+		int userId = UserDao.getUserIdByEmail(conn, userEmail);
 		if (!copySignatureExists(conn, signatureContainer)) {
 			String msg = "Error during copy lending! Signature doesn't exist.";
 			Logger.severe(msg);
@@ -991,7 +991,7 @@ public final class MediumDao {
 		Timestamp limitTimestamp;
 		try {
 			limitTimestamp = new Timestamp(System.currentTimeMillis()
-					+ smallestLimitMillis(conn, signature, userId));
+					+ getAppliedLendingLimit(conn, signature, userId));
 		} catch (SQLException e1) {
 			Logger.development("SQLException while comparing lend limits");
 			throw new CopyDoesNotExistException("SQLException while comparing"
@@ -1049,9 +1049,11 @@ public final class MediumDao {
 		}
 	}
 
-	//returns smallest limit in milliseconds as long, user and signature must exist
+	//returns applying limit in milliseconds as long, user and signature must
+	//exist, limit hierarchie is user > medium > global, non existing values are 
+	//filtered out
 	/* @author Jonas Picker */
-	private static long smallestLimitMillis(Connection conn, String signature,
+	private static long getAppliedLendingLimit(Connection conn, String signature,
 			int userId) throws SQLException {
 		PreparedStatement getCopysMedium = conn.prepareStatement("SELECT"
 				+ " mediumId FROM mediumCopy WHERE signature = ?;");
@@ -1087,18 +1089,39 @@ public final class MediumDao {
 		rs4.next();
 		double userSeconds = rs4.getDouble(1);
 		getUserLimit.close();
-		double[] d = new double[] {globalSeconds, mediumSeconds, userSeconds};
-		Arrays.sort(d);															//das kleinste Limit oder Hierarchie?
-		long longTime = (long) (d[0] * 1000);
-		Logger.development("Calculated lend limit was " 
-				+ longTime 
-				+ "milliseconds.");
+		double applyingLimit = 0;
+		if (globalSeconds == 0 && mediumSeconds == 0 && userSeconds == 0) {
+			applyingLimit = DEFAULT_MAXIMUM_LEND_LIMIT_SECONDS;
+		} else if (mediumSeconds == 0 && userSeconds == 0) {
+			applyingLimit = globalSeconds;
+		} else if (userSeconds == 0 && globalSeconds == 0) {
+			applyingLimit = mediumSeconds;
+		} else if (globalSeconds == 0 && mediumSeconds == 0) {
+			applyingLimit = userSeconds;
+		} else if (globalSeconds == 0) {
+			applyingLimit = userSeconds;
+		} else if (mediumSeconds == 0) {
+			applyingLimit = userSeconds;
+		} else if (userSeconds == 0) {
+			applyingLimit = mediumSeconds;
+		} else if (globalSeconds != 0 
+				&& mediumSeconds != 0 
+				&& userSeconds != 0) {
+			applyingLimit = userSeconds;
+		} else {
+			Logger.development("This is the dark basement of the ifElse-Tower, "
+					+ "noone should ever visit it.");
+		}											
+		long longTime = (long) (applyingLimit * 1000);
+		Timestamp ts = new Timestamp(System.currentTimeMillis() + longTime);
+		Logger.development("Calculated lend limit expires on " 
+				+ ts.toLocalDateTime().toString());
 		return longTime;
 	}
 	
 	/**
-	 * Registers that a specific medium-copy has been returned by a specific user.
-	 * It is then available to other users for check-out.
+	 * Registers that a specific medium-copy has been returned by a specific 
+	 * user. It is then available to other users for check-out.
 	 *
 	 * @param copyDto A DTO container with a signature that refers to the
 	 *                medium-copy.
@@ -1119,19 +1142,22 @@ public final class MediumDao {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);									
 		String signature = signatureContainer.getSignature();
-		int userId = UserDao.getUserIdByEmail(userEmail);
+		int userId = UserDao.getUserIdByEmail(conn, userEmail);
 		if (!copySignatureExists(conn, signatureContainer)) {
 			String msg = "Error during copy return! Signature doesn't exist.";
 			Logger.severe(msg);
 			instance.releaseConnection(conn);
 			throw new CopyDoesNotExistException(msg);
 		} else if (invalidCopyStatusReturnAttempt(conn, signatureContainer)) {
-			String msg = "Error during copy return! Copy wasn't lent in the first place.";
+			String msg = "Error during copy return! Copy wasn't lent in the "
+					+ "first place.";
 			Logger.severe(msg);
 			instance.releaseConnection(conn);
 			throw new CopyIsNotAvailableException(msg);
-		} else if (invalidActorReturnAttempt(conn, signatureContainer, userEmail)) {          
-			String msg = "Copy couldn't be returned. The copy wasn't lent (by this user).";
+		} else if (invalidActorReturnAttempt(conn, signatureContainer, 
+				userEmail)) {          
+			String msg = "Copy couldn't be returned. The copy wasn't lent "
+					+ "(by this user).";
 			Logger.severe(msg);
 			instance.releaseConnection(conn);
 			throw new UserDoesNotExistException(msg);

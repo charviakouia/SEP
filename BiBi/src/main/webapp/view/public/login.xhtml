@@ -15,31 +15,29 @@
 	<h1>#{msg['login.headline']}</h1>
 		<br></br>
 		<br></br>
-		<h:panelGrid columns="2" id="fluid-container" 
-					styleClass="className" 
-					style="display:block;">
-		<h:panelGroup layout="block" styleClass="d-flex justify-content-center">
-		<h:form>
-		
-			<h:panelGroup layout="block" 
-							styleClass="d-flex justify-content-around">
+
+
+		<h:form id="login_form">
+		<h:panelGrid id = "panel" columns = "3" border = "0" cellpadding = "10"  
+               cellspacing = "1">
+
 			<h:outputLabel for="login_email_field" 
 							value="#{msg['login.email']}"/>
 			<h:inputText id="login_email_field" type="text"
 						 value="#{login.userData.emailAddress}" required="true">
 			</h:inputText>
-			</h:panelGroup>
-			<br></br>
-			<h:panelGroup layout="block" 
-						styleClass="d-flex justify-content-around">
+			<h:message id="login_email_message" for="login_email_field" 
+						style="color:red"/>
+
+
 			<h:outputLabel for="login_password_field"
 							value="#{msg['login.password']}"/>
 			<h:inputSecret id="login_password_field" type="text" 
 						styleClass="" value="#{login.userData.passwordHash}">
 			</h:inputSecret>
-			</h:panelGroup>
-			<br></br>
-			<h:panelGroup layout="span" styleClass=".flex-row-reversed">						
+			<h:message id="login_password_message" for="login_password_field" 
+						style="color:red"/>
+		
 			<h:commandButton id="login_login_button" 
 							value="#{msg['login.log_in']}" 
 							action="#{login.logIn()}" 
@@ -48,11 +46,12 @@
 							value="#{msg['login.reset_password']}" 
 							action="#{login.resetPassword()}" 
 							styleClass="btn btn-secondary"/>
-			</h:panelGroup>
 
-		</h:form>
-		</h:panelGroup>
+		
 		</h:panelGrid>
+		</h:form>
+
+
 	</ui:define>
 
 </ui:composition>

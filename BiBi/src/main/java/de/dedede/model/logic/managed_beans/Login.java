@@ -92,7 +92,7 @@ public class Login {
 						+ "_password_short");
 				String longMessage = messages.getString("login.wrong"
 						+ "_password_long");
-				context.addMessage(null, 
+				context.addMessage("login_form:login_password_field", 
 						new FacesMessage(FacesMessage.SEVERITY_ERROR,
 								shortMessage, longMessage));
 			}
@@ -100,7 +100,7 @@ public class Login {
 			String shortMessage = messages.getString("login.unknown"
 					+ "_user_short");
 			String longMessage = messages.getString("login.unknown_user_long");
-			context.addMessage(null, 
+			context.addMessage("login_form:login_email_field", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							shortMessage, longMessage));
 		}		
@@ -140,7 +140,7 @@ public class Login {
 					+ "_sent_short");
 			String longMessage = messages.getString("login.email_was"
 					+ "_sent_long");
-			context.addMessage(null, 
+			context.addMessage("login_form:login_email_field", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							shortMessage, longMessage));
 		} catch (UserDoesNotExistException e) {
@@ -148,7 +148,7 @@ public class Login {
 					+ "_short");
 			String longMessage = messages.getString("login.unknown_user"
 					+ "_long");
-			context.addMessage(null, 
+			context.addMessage("login_email_message", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							shortMessage, longMessage));
 		}

@@ -2,7 +2,9 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -14,7 +16,9 @@ import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
@@ -58,11 +62,13 @@ public class Lending implements Serializable {
 	 * @throws BuisnessException if unknown copy, user or invalid lending action
 	 */
 	public void lendCopies() {
+		int lent = 0;
 		for(CopyDto copy : copies) {
 			if (copy.getSignature() != null 
 					&& copy.getSignature().trim() != "") {
 				try {
 					MediumDao.lendCopy(copy, user);
+					lent++;
 				} catch (CopyDoesNotExistException e) {
 					String message = "An unexpected error occured during "
 							+ "lending process, the copy didn't exist.";
@@ -88,6 +94,30 @@ public class Lending implements Serializable {
 					throw new BusinessException(message, e);
 				}
 			}
+		}
+		FacesContext context = FacesContext.getCurrentInstance();
+			Application application = context.getApplication();
+			ResourceBundle messages = application.evaluateExpressionGet(context,
+					"#{msg}", ResourceBundle.class);
+		if (lent == 0) {
+			String shortMessage = messages.getString("lending.enter_signature"
+					+ "_short");
+			String longMessage = messages.getString("lending.enter_signature"
+					+ "_long");
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
+		} else {
+			String shortContent = messages.getString("lending.copies_lent"
+					+ "_short");
+			String longContent = messages.getString("lending.copies_lent_long");
+			String emailAddress = user.getEmailAddress();
+			String lentCopies = String.valueOf(lent);
+			String shortMessage = insertParams(lentCopies, emailAddress, 
+					shortContent);
+			String longMessage = insertParams(lentCopies, emailAddress, 
+					longContent);
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_INFO, shortMessage, longMessage));
 		}
 	}
 	
@@ -126,6 +156,12 @@ public class Lending implements Serializable {
 		this.copies = copies;
 	}
 
-	
+	private String insertParams(String param1, String param2, String content) {
+		MessageFormat messageFormat = new MessageFormat(content);
+		Object[] args = {param1, param2};
+		String contentWithParam = messageFormat.format(args);
+		
+		return contentWithParam;
+	}
 
 }

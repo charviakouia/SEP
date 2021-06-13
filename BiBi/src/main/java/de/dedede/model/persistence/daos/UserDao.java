@@ -156,10 +156,10 @@ public final class UserDao {
 	public static UserDto readUserByEmail(UserDto userDto)
 			throws UserDoesNotExistException, MaxConnectionsException, 
 			LostConnectionException {
-		int id = getUserIdByEmail(userDto);	
-		userDto.setId(id);
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		int id = getUserIdByEmail(conn, userDto);
+		userDto.setId(id);	
 		try {
 			UserDto completeUser = readUserForProfileHelper(conn, userDto);
 			return completeUser;
@@ -182,10 +182,8 @@ public final class UserDao {
 	//checks if a user exists in the database and returns his id, exception 
 	//if not found.
 	/* @author Jonas Picker */
-	public static int getUserIdByEmail(UserDto userEmail) 
+	public static int getUserIdByEmail(Connection conn ,UserDto userEmail) 
 			throws UserDoesNotExistException  {
-		ConnectionPool instance = ConnectionPool.getInstance();
-		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 			try {
 			PreparedStatement readUserId = conn.prepareStatement("SELECT userId"
 					+ " FROM users WHERE emailAddress = ?;");
@@ -198,8 +196,6 @@ public final class UserDao {
 			Logger.development("UserId couldn't be retrieved for this email.");
 			throw new UserDoesNotExistException("Specified email doesn't seem"
 					+ " to match any user entry");
-		} finally {
-			instance.releaseConnection(conn);
 		} 
 	}
 

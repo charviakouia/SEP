@@ -26,6 +26,7 @@
 						valueChangelistener="#{returnForm.setUserEmail}"> 
 				<f:validator validatorId="userValidator"/><!--@IvanCharviakou-->
 			</h:inputText>
+			<h:message for="returnForm_mail_field" style="color:red"/>
 		</h:panelGroup>
 		
 	<h:panelGroup layout="block" styleClass="container">
@@ -35,9 +36,11 @@
 				<h:outputLabel for="returnForm_signature_field" 
 								value="#{msg['returnForm.signature_field']}"/>
 				<h:inputText id="returnForm_signature_field" 
-							value="#{copy.signature}" styleClass="form-control">
+							value="#{returnForm.copies[status.index].signature}" 
+							styleClass="form-control">
 					<f:validator validatorId="returnFormSignatureValidator"/>
 				</h:inputText>
+				<h:message for="returnForm_signature_field" style="color:red"/>
 			</h:panelGroup>
 			
 		</ui:repeat>
