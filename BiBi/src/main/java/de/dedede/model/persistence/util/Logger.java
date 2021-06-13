@@ -17,7 +17,7 @@ import de.dedede.model.persistence.exceptions.InvalidLogFileException;
  * @author Jonas Picker
  *
  */
-public final class Logger { //TO-DO: ExceptionHandling, Testing
+public final class Logger { 
 
 	private Logger() {}
 	

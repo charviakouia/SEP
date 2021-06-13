@@ -93,13 +93,13 @@
 			<h:outputLabel value="#{msg.userReturnPeriod}" rendered="#{userSession.user.role == 'ADMIN'}"/>
 			<h:outputText value="&#160;" />
 			<h:inputText id="returnPeriod" value="#{profile.user.lendingPeriod}"
-						 rendered="#{userSession.user.role == 'ADMIN'}"/>
+						 rendered="#{userSession.user.role == 'ADMIN'}" converter="DurationConverter"/>
 			<br/>
 			<br/>
 
 			<h:commandButton id="button_save"
 							 value="#{msg.saveProfile}"
-							 action="#{profile.save()}"
+							 action="#{profile.save}"
 							 styleClass="btn btn-secondary" />
 
 		</h:form>
@@ -118,7 +118,7 @@
 
 			<h:commandButton id="button_del_user"
 							 value="#{msg.toProfileDelete}"
-							 action="#{profile.delete()}"
+							 action="#{profile.delete}"
 							 styleClass="btn btn-secondary" />
 		</h:form>
 

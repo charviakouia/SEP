@@ -7,13 +7,56 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
-	
+
 	<ui:param name="page" value="registration" />
 
 	<ui:define name="content">
 
-		UNIMPLEMENTED
+		<h:outputLabel for="registrationForm"/>
+		<h:form id="registrationForm">
+
+			<h:outputLabel for="firstName" value="#{msg['registration.firstName']}"/>
+			<h:inputText id="firstName" value="#{registration.user.firstName}" required="true"/>
+
+			<h:outputLabel for="lastName" value="#{msg['registration.lastName']}"/>
+			<h:inputText id="lastName" value="#{registration.user.lastName}" required="true"/>
+
+			<h:outputLabel for="password" value="#{msg['registration.password']}"/>
+			<h:inputSecret id="password" value="#{registration.password}" required="true">
+				<f:validator validatorId="passwordValidator"/>
+			</h:inputSecret>
+
+			<h:outputLabel for="confirmedPassword" value="#{msg['registration.repeatPassword']}"/>
+			<h:inputSecret id="confirmedPassword" value="#{registration.repeatedPassword}" required="true">
+				<f:validator validatorId="confirmPasswordValidator"/>
+			</h:inputSecret>
+
+			<h:outputLabel for="email" value="#{msg['registration.email']}"/>
+			<h:inputText id="email" value="#{registration.user.emailAddress}" required="true">
+				<f:validator validatorId="userEmailValidator"/>
+			</h:inputText>
+
+			<h:outputLabel for="zip" value="#{msg['registration.zip']}"/>
+			<h:inputText id="zip" value="#{registration.user.zipCode}" required="true"/>
+
+			<h:outputLabel for="city" value="#{msg['registration.city']}"/>
+			<h:inputText id="city" value="#{registration.user.city}" required="true"/>
+
+			<h:outputLabel for="street" value="#{msg['registration.street']}"/>
+			<h:inputText id="street" value="#{registration.user.street}" required="true"/>
+
+			<h:outputLabel for="streetNumber" value="#{msg['registration.streetNr']}"/>
+			<h:inputText id="streetNumber" value="#{registration.user.streetNumber}" required="true"/>
+
+			<h:selectOneMenu value="#{registration.user.role}" required="true">
+				<f:selectItems value="#{registration.roles}" var="role"
+							   itemValue="#{role}" itemLabel="#{role.toString}"/>
+			</h:selectOneMenu>
+
+			<h:commandButton value="#{msg['save']}" action="#{registration.register}"/>
+
+		</h:form>
 
 	</ui:define>
-	
+
 </ui:composition>

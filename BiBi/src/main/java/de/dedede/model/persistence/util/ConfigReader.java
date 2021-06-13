@@ -20,8 +20,8 @@ public class ConfigReader {
 	 * Implicitly synchronized singleton-pattern to avoid 'synchronized' 		
 	 * bottleneck on getInstance(). 
 	 */
-	private static final class InnerInstance {									//Changed to runtimeexception?!
-		static final ConfigReader InnerInstance = new ConfigReader();			//Bonus: default values behandeln?
+	private static final class InnerInstance {									
+		static final ConfigReader InnerInstance = new ConfigReader();			
 	}
 	
 	/**

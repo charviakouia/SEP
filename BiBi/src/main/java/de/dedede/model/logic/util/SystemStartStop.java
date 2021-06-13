@@ -30,7 +30,7 @@ public class SystemStartStop implements SystemEventListener {
 	/**
 	 * The config-files path relative to /webapp folder
 	 */
-	private String relative = "WEB-INF/config.properties";
+	private static final String relative = "WEB-INF/config.properties";
 			
 	/** @inheritDoc
 	 */

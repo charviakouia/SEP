@@ -2,7 +2,9 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -10,16 +12,19 @@ import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 /**
- * Backing bean for the return form.
+ * Backing bean for the return form. Staff or higher can process returns of lent 
+ * copies here.
  * 
  * @author Jonas Picker 
  */
@@ -30,47 +35,93 @@ public class ReturnForm implements Serializable {
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
+	/**
+	 * Recieves the email address of the user to make the return after value 
+	 * change.
+	 */
 	private UserDto user = new UserDto();
 
+	/**
+	 * Holds one copy signature for each input field.
+	 */
 	private ArrayList<CopyDto> copies = new ArrayList<CopyDto>();
 
+	/**
+	 * Initializes the bean with 5 signature input fields.
+	 */
 	@PostConstruct
 	public void init() {
 		for(int i = 0; i < 5; i++) {
 			copies.add(new CopyDto());
 		}
 	}
-
-
 	
 	/**
-	 * As library staff let the system know that the given copies were returned 
-	 * by the user.
-	 * @throws EntityInstanceDoesNotExistException 
+	 * Return the list of existing signatures lent by the existing user into
+	 * the libraries inventory.
+	 * 
+	 * @throws BuisnessException if unknown copy, user or invalid return action
 	 */
 	public void returnCopies() {
-		
+		int returned = 0;
 		for(CopyDto copy : copies) {
-			if (copy.getSignature() != null || copy.getSignature().trim() != "") {
+			if (copy.getSignature() != null 
+					&& copy.getSignature().trim() != "") {
 				try {
 					MediumDao.returnCopy(copy, user);
-				} catch (CopyDoesNotExistException e) {
-					String message = "An unexpected error occured during return process, the copy didn't exist.";
+					returned++;
+				} catch (CopyDoesNotExistException e) {                   
+					String message = "An unexpected error occured during return"
+							+ " process, the copy wasn't found.";
 					Logger.severe(message);
 					throw new BusinessException(message, e);
 				} catch (UserDoesNotExistException e) {
-					String message = "An unexpected error occured during return process, the user wasn't found in the database or didn't lent this Copy.";
+					String message = "An unexpected error occured during return"
+							+ " process, the user wasn't found in the database"
+							+ " or didn't lent this Copy.";
 					Logger.severe(message);
 					throw new BusinessException(message, e);
 				} catch (CopyIsNotAvailableException e) {
-					String message = "An unexpected error occured during return process, the copy wasn't lent in the first place.";
+					String message = "An unexpected error occured during return"
+							+ " process, the copy wasn't lent in the"
+							+ " first place.";
 					Logger.severe(message);
 					throw new BusinessException(message, e);
 				}
 			}
 		}
+		FacesContext context = FacesContext.getCurrentInstance();
+		Application application = context.getApplication();
+		ResourceBundle messages = application.evaluateExpressionGet(context,
+				"#{msg}", ResourceBundle.class);
+		if (returned == 0) {
+			String shortMessage = messages.getString("returnForm.enter"
+					+ "_signature_short");
+			String longMessage = messages.getString("returnForm.enter_signature"
+					+ "_long");
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
+		} else {
+			String shortContent = messages.getString("returnForm.copies_lent"
+					+ "_short");
+			String longContent = messages.getString("returnForm.copies_lent"
+					+ "_long");
+			String emailAddress = user.getEmailAddress();
+			String lentCopies = String.valueOf(returned);
+			String shortMessage = insertParams(lentCopies, emailAddress, 
+					shortContent);
+			String longMessage = insertParams(lentCopies, emailAddress, 
+					longContent);
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_INFO, shortMessage, longMessage));
+		}
 	}
 	
+	/**
+	 * Called by a Listener for value change on email address input field
+	 * 
+	 * @param change The new email address input
+	 */
 	public void setUserEmail(ValueChangeEvent change) {
 		this.user.setEmailAddress(change.getNewValue().toString());
 	}
@@ -98,5 +149,13 @@ public class ReturnForm implements Serializable {
 
 	public void setCopies(ArrayList<CopyDto> copies) {
 		this.copies = copies;
+	}
+	
+	private String insertParams(String param1, String param2, String content) {
+		MessageFormat messageFormat = new MessageFormat(content);
+		Object[] args = {param1, param2};
+		String contentWithParam = messageFormat.format(args);
+		
+		return contentWithParam;
 	}
 }

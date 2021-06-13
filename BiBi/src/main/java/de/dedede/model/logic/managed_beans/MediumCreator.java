@@ -33,41 +33,11 @@ public class MediumCreator implements Serializable {
 	private MediumDto medium;
 	private CopyDto copy;
 
-	private Map<AttributeDto, String> stringAttributeEntries = new HashMap<>();
-	private Map<AttributeDto, List<URL>> urlAttributeEntries = new HashMap<>();
-	private Map<AttributeDto, Part> imageAttributeEntries = new HashMap<>();
-
 	private String categorySearchTerm;
 	private List<CategoryDto> categories = new LinkedList<>();
 
 	@PostConstruct
-	public void initializeBean(){
-		List<AttributeDto> dbAttributes = MediumDao.readGlobalAttributes();
-		for (AttributeDto attribute : dbAttributes){
-			switch (attribute.getType()) {
-				case LINK -> urlAttributeEntries.put(attribute, null);
-				case IMAGE -> imageAttributeEntries.put(attribute, null);
-				case TEXT -> stringAttributeEntries.put(attribute, null);
-			}
-		}
-	}
-
-	private void processStringAttributes(){
-		for (Map.Entry<AttributeDto, String> entry : stringAttributeEntries.entrySet()){
-			AttributeDto attributeDto = entry.getKey();
-			String inputValue = entry.getValue();
-			attributeDto.setTextValue(List.of(inputValue.trim().split("\\s*,\\s*")));
-			medium.addAttribute(attributeDto.getId(), attributeDto);
-		}
-	}
-
-	private void processUrlAttributes(){
-		for (Map.Entry<AttributeDto, List<URL>> entry : urlAttributeEntries.entrySet()){
-			AttributeDto attributeDto = entry.getKey();
-			List<URL> inputValue = entry.getValue();
-			attributeDto.setUrl(inputValue);
-			medium.addAttribute(attributeDto.getId(), attributeDto);
-		}
+	public void init(){
 	}
 
 	public MediumDto getMedium() {
@@ -84,18 +54,6 @@ public class MediumCreator implements Serializable {
 
 	public void setCopy(CopyDto copy) {
 		this.copy = copy;
-	}
-
-	public Set<Map.Entry<AttributeDto, String>> getStringAttributeEntries(){
-		return stringAttributeEntries.entrySet();
-	}
-
-	public Set<Map.Entry<AttributeDto, List<URL>>> getUrlAttributeEntries(){
-		return urlAttributeEntries.entrySet();
-	}
-
-	public Set<Map.Entry<AttributeDto, Part>> getImageAttributeEntries(){
-		return imageAttributeEntries.entrySet();
 	}
 
 	public List<CategoryDto> getSearchedCategories(){
@@ -116,8 +74,6 @@ public class MediumCreator implements Serializable {
 	 * Creates this medium and its first copy.
 	 */
 	public String save() throws IOException, EntityInstanceNotUniqueException {
-		processStringAttributes();
-		processUrlAttributes();
 		MediumDao.createMedium(medium);
 		return null;
 	}
@@ -130,15 +86,6 @@ public class MediumCreator implements Serializable {
 		categorySearchDto.setSearchTerm(categorySearchTerm);
 		categories = CategoryDao.readCategoriesByName(categorySearchDto, paginationDto);
 		return null;
-	}
-
-	// Helper methods:
-
-	public void upload(Map.Entry<AttributeDto, Part> entry) throws IOException {
-		AttributeDto attributeDto = entry.getKey();
-		Part inputValue = entry.getValue();
-		Image img = ImageIO.read(inputValue.getInputStream());
-		attributeDto.setImageValue(List.of(img));
 	}
 
 }

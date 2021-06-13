@@ -1,7 +1,6 @@
 package de.dedede.model.data.dtos;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * This DTO (data transfer object) is responsible for aggregating and
@@ -23,7 +22,7 @@ public class CopyDto {
 
 	private CopyStatus copyStatus;
 
-	private int actor;
+	private Integer actor;
 
 	/**
 	 * Fetches a physical location of the copy in a library.
@@ -126,7 +125,7 @@ public class CopyDto {
 	 * @return An unique ID of the user who performed the action on this copy.
 	 * @see UserDto
 	 */
-	public int getActor() {
+	public Integer getActor() {
 		return actor;
 	}
 
@@ -137,7 +136,7 @@ public class CopyDto {
 	 * @param actor An unique ID of the user who performed the action on this copy.
 	 * @see UserDto
 	 */
-	public void setActor(int actor) {
+	public void setActor(Integer actor) {
 		this.actor = actor;
 	}
 }
