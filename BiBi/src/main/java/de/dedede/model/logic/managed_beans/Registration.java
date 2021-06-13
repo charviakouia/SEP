@@ -1,14 +1,11 @@
 package de.dedede.model.logic.managed_beans;
 
-import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.FacesException;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;

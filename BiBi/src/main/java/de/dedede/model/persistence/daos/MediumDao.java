@@ -571,10 +571,7 @@ public final class MediumDao {
 		if (copyDto.getActor() == 0) {
 			copyDto.setActor(null);
 		}
-	}
 
-	private static void readAttributesHelper(MediumDto mediumDto) {
-		// TODO: MS2 von Sergej
 	}
 
 	/**
