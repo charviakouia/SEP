@@ -102,9 +102,9 @@ public class ReturnForm implements Serializable {
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
 		} else {
-			String shortContent = messages.getString("returnForm.copies_lent"
+			String shortContent = messages.getString("returnForm.copies_returned"
 					+ "_short");
-			String longContent = messages.getString("returnForm.copies_lent"
+			String longContent = messages.getString("returnForm.copies_returned"
 					+ "_long");
 			String emailAddress = user.getEmailAddress();
 			String lentCopies = String.valueOf(returned);

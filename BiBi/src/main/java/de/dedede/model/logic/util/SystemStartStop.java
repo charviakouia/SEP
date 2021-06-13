@@ -68,7 +68,7 @@ public class SystemStartStop implements SystemEventListener {
 			if (Logger.logSetup()) {
 				System.out.println("The log-File was newly created.");
 			} else {
-				System.out.println("Log-File already exsits.");
+				System.out.println("Log-File already exists.");
 			}
 		} catch (InvalidLogFileException e) {
 			System.out.println("System will proceed without a permanent log,"
