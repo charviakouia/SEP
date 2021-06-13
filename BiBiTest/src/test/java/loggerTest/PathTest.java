@@ -11,7 +11,9 @@ import java.nio.file.Path;
 import java.util.Properties;
 import java.util.Scanner;
 
+import de.dedede.model.persistence.exceptions.InvalidLogFileException;
 import de.dedede.model.persistence.util.ConfigReader;
+import de.dedede.model.persistence.util.Logger;
 
 public class PathTest {
 	
@@ -23,41 +25,17 @@ public class PathTest {
 			+ sep + "main" + sep + "webapp" + sep + "WEB-INF" 
 			+ sep + "config.txt";
 	
-	public static void main(String[] a) {
-		Properties testProperties = new Properties();
-		try {
-			InputStream stream = new FileInputStream(up + sep + "BiBi" + sep + "src" 
-					+ sep + "main" + sep + "webapp" + sep + "WEB-INF" 
-					+ sep + "config.properties");
-			testProperties.load(stream);
-			stream.close();
-		} catch (Exception ignored) {System.err.println(ignored);}
-		File configFile = new File(testProperties.getProperty("LOG_DIRECTORY") + 
-				testProperties.getProperty("LOG_FILENAME") + ".txt");
-		boolean created = false;
-		try {
-			created = configFile.createNewFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public static void main(String[] args) {
+		InputStream is = 
+				PathTest.class.getResourceAsStream("..\\BiBi\\src\\main"
+						+ "\\webapp\\WEB-INF\\config.properties");
+    	ConfigReader.getInstance().setUpConfigReader(is);
+    	try {
+			Logger.logSetup();
+		} catch (InvalidLogFileException e) {
+			System.out.println("InvalidLogFileException");
 		}
-		System.out.println(created);
-		System.out.println(configFile.getAbsolutePath());
-		String testMessage = "All required tables seem to be present.";
-		String result = "";
-		try {
-			Scanner scanner = new Scanner(configFile);
-			StringBuilder sb = new StringBuilder();
-			String line = "";
-			while( scanner.hasNext()) {
-				sb.append(line);
-				System.out.println(line);
-			}
-			scanner.close();
-			result = sb.toString();
-			System.out.println(result.contains(testMessage));
-		} catch (Exception ignored) {
-			System.err.println(ignored);
-		}
+    	System.out.println(ConfigReader.getInstance().getKey("LOG_DIRECTORY"));
+    	return;
 	}
 }

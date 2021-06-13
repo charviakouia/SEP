@@ -2,7 +2,11 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -20,7 +24,6 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -28,25 +31,46 @@ import jakarta.servlet.http.HttpServletRequest;
  * Backing bean for the login page. This page is the one users first face when
  * they are not already logged in. It allows them to log into the system to gain
  * the privilege to borrow copies. If a logged-in user accesses this page by
- * manually entering its URL, a message is shown instead of the login form and
- * they get automatically redirected to their profile page.						//<--Das macht der PhaseListener?!
+ * manually entering its URL, a message is shown instead of the login form					
  * 
  * @author Jonas Picker
  */
 @Named
 @RequestScoped
 public class Login {
-
+	
 	private UserDto userData = new UserDto();
-	
-	/**
-	 * The SessionScoped Bean that capsules user Data.
-	 */
-	@Inject
-	UserSession userSession;
-	
+		
 	@PostConstruct
 	public void init() {}
+	
+	private static void redirectToProfile() {
+		try {
+			ExternalContext externalContext = 
+					FacesContext.getCurrentInstance().getExternalContext();
+			Map<String, Object> sessionMap = externalContext.getSessionMap();
+			UserSession userSession = 
+					(UserSession) sessionMap.get("UserSession");
+			externalContext.redirect("/BiBi/view/account/profile.xhtml?id=" 
+			+ userSession.getUser().getId());
+			} catch (IOException ignored) {Logger.development("Couldn't "
+					+ "redirect to profile page");}
+	}
+	
+	public boolean renderLogin() {
+		ExternalContext externalContext = 
+				FacesContext.getCurrentInstance().getExternalContext();
+		Map<String, Object> sessionMap = externalContext.getSessionMap();
+		if (sessionMap.containsKey("UserSession")) {
+			ScheduledExecutorService executorService = //doesn't seem to work :(
+					Executors.newSingleThreadScheduledExecutor();
+		    executorService.schedule(Login::redirectToProfile,
+		    		5, TimeUnit.SECONDS);
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	/**
 	 * Log into the system and redirect to profile page if successful.
@@ -74,8 +98,11 @@ public class Login {
 				HttpServletRequest request = 
 						(HttpServletRequest) externalContext.getRequest();
 				request.changeSessionId();
-				userSession = new UserSession();
+				Map<String, Object> sessionMap =
+						externalContext.getSessionMap();
+				UserSession userSession = new UserSession();
 				userSession.setUser(completeUserData);
+				sessionMap.put("UserSession", userSession);
 				try {
 					externalContext.redirect(
 							"/BiBi/view/account/profile.xhtml?id=" 

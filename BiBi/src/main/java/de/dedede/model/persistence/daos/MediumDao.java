@@ -568,6 +568,9 @@ public final class MediumDao {
 		copyDto.setCopyStatus((CopyStatus) resultSet.getObject(5));
 		copyDto.setDeadline(resultSet.getTimestamp(6));
 		copyDto.setActor(resultSet.getInt(7));
+		if (copyDto.getActor() == 0) {
+			copyDto.setActor(null);
+		}
 	}
 
 	private static void readAttributesHelper(MediumDto mediumDto) {
@@ -1047,8 +1050,8 @@ public final class MediumDao {
 	 * Registers that a specific medium-copy has been returned by a specific 
 	 * user. It is then available to other users for check-out.
 	 *
-	 * @param signatureContainer A DTO container with a signature that refers to the
-	 *                medium-copy.
+	 * @param signatureContainer A DTO container with a signature that refers 
+	 * 							to the medium-copy.
 	 * @param userEmail A DTO container with an ID that refers to the user.
 	 * @throws CopyDoesNotExistException Is thrown when the either the
 	 *                                   medium-copy has invalid status
