@@ -160,12 +160,13 @@ public final class MediumDao {
 	 * @return A DTO container with the medium data referenced by the ID.
 	 */
 	public static MediumDto readMedium(MediumDto mediumDto)
-			throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
+			throws LostConnectionException, MaxConnectionsException,
+			MediumDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			return readMediumHelper(conn, mediumDto);
 		} catch (SQLException e){
-			String msg = "Database error occurred while reading application entity with id: " + mediumDto.getId();
+			String msg = "Database error occurred while reading medium entity with id: " + mediumDto.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
@@ -489,7 +490,8 @@ public final class MediumDao {
 	 * @author Sergei Pravdin
 	 */
 	private static MediumDto readMediumHelper(Connection conn, MediumDto mediumDto)
-			throws SQLException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
+			throws SQLException, LostConnectionException,
+			MaxConnectionsException, MediumDoesNotExistException {
 		PreparedStatement readStmt = conn.prepareStatement(
 				"SELECT mediumid, mediumlendperiod, hascategory, title, author1, author2, author3, author4," +
 						" author5, mediumtype, edition, publisher, releaseyear, isbn, mediumlink, demotext " +
@@ -499,7 +501,7 @@ public final class MediumDao {
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()) {
 			populateMediumDto(resultSet, mediumDto);
-			setDurationHelper(conn, mediumDto);
+//			setDurationHelper(conn, mediumDto);
 			conn.commit();
 			return mediumDto;
 		} else {
@@ -508,6 +510,7 @@ public final class MediumDao {
 			throw new MediumDoesNotExistException(msg);
 		}
 	}
+
 
 	private static void setDurationHelper(Connection conn, MediumDto mediumDto) throws SQLException {
 		PreparedStatement getMediumLimit = conn.prepareStatement("SELECT EXTRACT (EPOCH FROM (SELECT mediumLendPeriod FROM medium WHERE mediumId = ?));");
@@ -520,13 +523,9 @@ public final class MediumDao {
 		mediumDto.setReturnPeriod(duration);
 	}
 
-	private static void populateMediumDto(ResultSet resultSet, MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
-		mediumDto.getCategory().setId(resultSet.getInt(3));
-		try {
-			mediumDto.setCategory(CategoryDao.readCategory(mediumDto.getCategory()));
-		} catch (CategoryDoesNotExistException e) {
-			// ignore
-		}
+	private static void populateMediumDto(ResultSet resultSet, MediumDto mediumDto)
+			throws SQLException, LostConnectionException, MaxConnectionsException {
+//		setCategoryHelper(resultSet, mediumDto);
 		mediumDto.setTitle(resultSet.getString(4));
 		mediumDto.setAuthor1(resultSet.getString(5));
 		mediumDto.setAuthor2(resultSet.getString(6));
@@ -540,8 +539,24 @@ public final class MediumDao {
 		mediumDto.setIsbn(resultSet.getString(14));
 		mediumDto.setMediumLink(resultSet.getString(15));
 		mediumDto.setText(resultSet.getString(16));
-		readCopiesHelper(mediumDto);
+//		readCopiesHelper(mediumDto);
 	}
+
+	/*
+	private static void setCategoryHelper(ResultSet resultSet, MediumDto mediumDto) throws SQLException, CategoryDoesNotExistException {
+		if (resultSet.getInt(3) != 0) {
+			mediumDto.getCategory().setId(resultSet.getInt(3));
+			try {
+				mediumDto.setCategory(CategoryDao.readCategory(mediumDto.getCategory()));
+			} catch (CategoryDoesNotExistException e) {
+				// ignore
+			}
+		} else {
+			mediumDto.getCategory().setId(1);
+			mediumDto.setCategory(CategoryDao.readCategory(mediumDto.getCategory()));
+		}
+	}
+	 */
 
 	private static void readCopiesHelper(MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
