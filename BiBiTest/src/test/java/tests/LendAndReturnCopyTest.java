@@ -31,7 +31,6 @@ public class LendAndReturnCopyTest {
 	
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
-		
     	InputStream is = 
 				LendAndReturnCopyTest.class.getResourceAsStream("..\\BiBi\\src\\main\\webapp\\WEB-INF\\config.properties");
     	ConfigReader.getInstance().setUpConfigReader(is);

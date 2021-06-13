@@ -23,6 +23,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -43,32 +44,17 @@ import java.util.ResourceBundle;
 public class Login {
 	
 	private UserDto userData = new UserDto();
+	
+	@Inject
+	private UserSession userSession;
 		
 	@PostConstruct
 	public void init() {}
 	
-	private static void redirectToProfile() {
-		try {
-			ExternalContext externalContext = 
-					FacesContext.getCurrentInstance().getExternalContext();
-			Map<String, Object> sessionMap = externalContext.getSessionMap();
-			UserSession userSession = 
-					(UserSession) sessionMap.get("UserSession");
-			externalContext.redirect("/BiBi/view/account/profile.xhtml?id=" 
-			+ userSession.getUser().getId());
-			} catch (IOException ignored) {Logger.development("Couldn't "
-					+ "redirect to profile page");}
-	}
-	
 	public boolean renderLogin() {
-		ExternalContext externalContext = 
-				FacesContext.getCurrentInstance().getExternalContext();
-		Map<String, Object> sessionMap = externalContext.getSessionMap();
-		if (sessionMap.containsKey("UserSession")) {
-			ScheduledExecutorService executorService = //doesn't seem to work :(
-					Executors.newSingleThreadScheduledExecutor();
-		    executorService.schedule(Login::redirectToProfile,
-		    		5, TimeUnit.SECONDS);
+
+		if (userSession.getUser() != null) {
+			
 			return false;
 		} else {
 			return true;
@@ -101,11 +87,7 @@ public class Login {
 				HttpServletRequest request = 
 						(HttpServletRequest) externalContext.getRequest();
 				request.changeSessionId();
-				Map<String, Object> sessionMap =
-						externalContext.getSessionMap();
-				UserSession userSession = new UserSession();
 				userSession.setUser(completeUserData);
-				sessionMap.put("UserSession", userSession);
 				try {
 					externalContext.redirect(
 							"/BiBi/view/account/profile.xhtml?id=" 

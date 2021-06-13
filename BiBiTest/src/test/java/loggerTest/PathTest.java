@@ -20,15 +20,13 @@ public class PathTest {
 	private static String sep = File.separator;
 	private static String up = "..";
 	
-	private static String path = up + sep 
-			+ up + sep + up + sep + up + sep + up + sep + "BiBi" + sep + "src" 
+	private static String path =  up + sep + "BiBi" + sep + "src" 
 			+ sep + "main" + sep + "webapp" + sep + "WEB-INF" 
 			+ sep + "config.txt";
 	
 	public static void main(String[] args) {
 		InputStream is = 
-				PathTest.class.getResourceAsStream("..\\BiBi\\src\\main"
-						+ "\\webapp\\WEB-INF\\config.properties");
+				PathTest.class.getClassLoader().getResourceAsStream(path);
     	ConfigReader.getInstance().setUpConfigReader(is);
     	try {
 			Logger.logSetup();
