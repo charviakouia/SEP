@@ -1,6 +1,5 @@
 package de.dedede.model.persistence.daos;
 
-
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -14,11 +13,7 @@ import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 import org.postgresql.util.PGInterval;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,8 +30,7 @@ public final class UserDao {
 
 	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
 
-	private UserDao() {
-	}
+	private UserDao() {}
 
 	/**
 	 * Enters new user data into the persistent data store.
@@ -47,8 +41,101 @@ public final class UserDao {
 	 * @throws EntityInstanceNotUniqueException Is thrown when the enclosed ID
 	 *                                          is already associated with an existing data entry.
 	 */
-	public static void createUser(UserDto userDto)
-			throws EntityInstanceNotUniqueException {
+	public static void createUser(UserDto userDto) throws EntityInstanceNotUniqueException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement createStmt = conn.prepareStatement(
+					"INSERT INTO Users (emailAddress, passwordHashSalt, passwordHash, name, surname, " +
+							"postalCode, city, street, houseNumber, token, tokenCreation, userLendPeriod, " +
+							"lendStatus, verificationStatus, userRole) VALUES " +
+							"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), " +
+							"CAST(? AS userlendstatus), CAST(? AS userverificationstatus), " +
+							"CAST(? AS userrole);",
+					Statement.RETURN_GENERATED_KEYS
+			);
+			populateStatement(createStmt, userDto);
+			int numAffectedRows = createStmt.executeUpdate();
+			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(userDto, createStmt); }
+			conn.commit();
+		} catch (SQLException e){
+			String msg = "Database error occurred while creating user entity with id: " + userDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	private static void populateStatement(PreparedStatement stmt, UserDto userDto) throws SQLException {
+		stmt.setString(1, userDto.getEmailAddress());
+		stmt.setString(2, userDto.getPasswordSalt());
+		stmt.setString(3, userDto.getPasswordHash());
+		stmt.setString(4, userDto.getLastName());
+		stmt.setString(5, userDto.getFirstName());
+		stmt.setString(6, String.valueOf(userDto.getZipCode()));
+		stmt.setString(7, userDto.getCity());
+		stmt.setString(8, userDto.getStreet());
+		stmt.setString(9, userDto.getStreetNumber());
+		stmt.setString(10, userDto.getToken().getContent());
+		stmt.setTimestamp(11, Timestamp.valueOf(userDto.getToken().getCreationTime()));
+		stmt.setObject(12, toPGInterval(userDto.getLendingPeriod()));
+		stmt.setString(13, userDto.getUserLendStatus().toString());
+		stmt.setString(14, userDto.getUserVerificationStatus().toString());
+		stmt.setString(15, userDto.getRole().toString());
+	}
+
+	private static void attemptToInsertGeneratedKey(UserDto userDto, Statement stmt)
+			throws SQLException {
+		ResultSet resultSet = stmt.getGeneratedKeys();
+		if (resultSet.next()){
+			userDto.setId(Math.toIntExact(resultSet.getLong(1)));
+		}
+	}
+
+	private static PGInterval toPGInterval(Duration duration){
+		PGInterval result = new PGInterval();
+		result.setSeconds(duration.getSeconds());
+		return result;
+	}
+
+	public static UserDto readUserByToken(UserDto userDto) throws UserDoesNotExistException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			UserDto result = readUserByTokenHelper(conn, userDto);
+			conn.commit();
+			if (result != null){
+				return result;
+			} else {
+				String msg = "A medium does not exist with token: " + userDto.getToken().getContent();
+				Logger.severe(msg);
+				throw new UserDoesNotExistException(msg);
+			}
+		} catch (SQLException e){
+			String msg = "Database error occurred while reading application entity with id: " + userDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	private static UserDto readUserByTokenHelper(Connection conn, UserDto userDto)
+			throws SQLException {
+		PreparedStatement readStmt = conn.prepareStatement(
+				"SELECT userid, emailaddress, passwordhashsalt, " +
+						"passwordhash, name, surname, postalcode, city, street, " +
+						"housenumber, token, tokencreation, userlendperiod, " +
+						"lendstatus, verificationstatus, userrole " +
+						"FROM Users " +
+						"WHERE token = ?;");
+		readStmt.setString(1, userDto.getToken().getContent());
+		ResultSet resultSet = readStmt.executeQuery();
+		if (resultSet.next()) {
+			populateUserDto(resultSet, userDto);
+			return userDto;
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -161,6 +248,7 @@ public final class UserDao {
 		int id = getUserIdByEmail(conn, userDto);
 		userDto.setId(id);	
 		try {
+			userDto.setId(id);
 			UserDto completeUser = readUserForProfileHelper(conn, userDto);
 			return completeUser;
 		} catch (SQLException e){
@@ -210,7 +298,7 @@ public final class UserDao {
 	 *                                      ID does not exist in the data store.
 	 */
 	public static UserDto readUserForProfile(UserDto userDto) throws UserDoesNotExistException {
-		Connection conn = getConnection();
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			return readUserForProfileHelper(conn, userDto);
 		} catch (SQLException e){
@@ -248,7 +336,7 @@ public final class UserDao {
 	 */
 	public static UserDto deleteUser(UserDto userDto)
 			throws UserDoesNotExistException, LostConnectionException, MaxConnectionsException {
-		Connection conn = getConnection();
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (userEntityExists(conn, userDto)){
 				deleteUserHelper(conn, userDto);
@@ -267,23 +355,57 @@ public final class UserDao {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
-	
-	@Deprecated
-	private static Connection getConnection() throws LostConnectionException, MaxConnectionsException { 
-		Connection conn = null;
-		try {
-			conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-			conn.setAutoCommit(false);
-			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-		} catch (SQLException e){
-			Logger.severe("Couldn't configure the connection");
-			ConnectionPool.getInstance().releaseConnection(conn);
-			throw new LostConnectionException("Couldn't configure the connection");
+
+	private static UserDto readUserHelper(Connection conn, UserDto userDto)
+			throws SQLException {
+		PreparedStatement readStmt = conn.prepareStatement(
+				"select * from \"users\" where emailaddress = ?;"
+		);
+		readStmt.setString(1, userDto.getEmailAddress());
+		ResultSet resultSet = readStmt.executeQuery();
+
+		if (resultSet.next()) {
+			// Logger.development("hier i am  in if ResultSet::::...");
+			userDto.setId(resultSet.getInt(1));
+			userDto.setEmailAddress(resultSet.getString(2));
+			userDto.setPasswordSalt(resultSet.getString(3));
+			userDto.setPasswordHash(resultSet.getString(4));
+			userDto.setFirstName(resultSet.getString(5));
+			userDto.setLastName(resultSet.getString(6));
+			userDto.setZipCode(resultSet.getInt(10));
+			userDto.setCity(resultSet.getString(7));
+			userDto.setStreet(resultSet.getString(8));
+			userDto.setStreetNumber(resultSet.getString(11));
+			conn.commit();
+			return userDto;
+		} else {
+			conn.commit();
+			return null;
 		}
-		return conn;
 	}
-	
-	
+
+	public static boolean userEntityWithEmailExists(UserDto userDto) throws LostConnectionException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			return userEntityWithEmailExists(conn, userDto);
+		} catch (SQLException e) {
+			String msg = "Database error occurred while reading user entity with id: " + userDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	private static boolean userEntityWithEmailExists(Connection conn, UserDto userDto) throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE " + "WHEN (SELECT COUNT(userid) FROM Users WHERE emailAddress = ?) > 0 THEN true "
+						+ "ELSE false " + "END AS entityExists;");
+		checkingStmt.setString(1, userDto.getEmailAddress());
+		ResultSet resultSet = checkingStmt.executeQuery();
+		resultSet.next();
+		return resultSet.getBoolean(1);
+	}
 
 	/**
 	 * @author Sergei Pravdin
