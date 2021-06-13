@@ -86,14 +86,14 @@
 
 			<h:commandButton id="button_save"
 							 value="#{msg['medium.save']}"
-							 action="#{medium.saveAttributes()}"
+							 action="#{medium.saveAttributes}"
 							 styleClass="btn btn-secondary" />
 			<br/>
 			<br/>
 
 			<h:commandButton id="button_delete"
 							 value="#{msg['medium.delete']}"
-							 action="#{medium.saveAttributes()}"
+							 action="#{medium.delete}"
 							 styleClass="btn btn-secondary" />
 		</h:form>
 
@@ -148,7 +148,8 @@
 
 			<h:outputLabel value="#{msg['medium.returnPeriod']}"/>
 			<h:outputText value="&#160;" />
-			<h:outputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"/>
+			<h:outputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"
+						  converter="DurationConverter"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.hasCategory']}"/>

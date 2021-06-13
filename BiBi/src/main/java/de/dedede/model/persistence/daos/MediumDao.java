@@ -501,7 +501,7 @@ public final class MediumDao {
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()) {
 			populateMediumDto(resultSet, mediumDto);
-//			setDurationHelper(conn, mediumDto);
+			setDurationHelper(conn, mediumDto);
 			conn.commit();
 			return mediumDto;
 		} else {
@@ -539,7 +539,7 @@ public final class MediumDao {
 		mediumDto.setIsbn(resultSet.getString(14));
 		mediumDto.setMediumLink(resultSet.getString(15));
 		mediumDto.setText(resultSet.getString(16));
-//		readCopiesHelper(mediumDto);
+		readCopiesHelper(mediumDto);
 	}
 
 	/*
@@ -561,18 +561,18 @@ public final class MediumDao {
 	private static void readCopiesHelper(MediumDto mediumDto) throws SQLException, LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		PreparedStatement readStmt = conn.prepareStatement(
-				"SELECT copyid, mediumid = ?, signature, bibposition, status, deadline, actor " +
+				"SELECT copyid, mediumid, signature, bibposition, status, deadline, actor " +
 						"FROM Mediumcopy " +
 						"WHERE mediumid = ?;"
 		);
-		readStmt.setInt(2, Math.toIntExact(mediumDto.getId()));
+		readStmt.setInt(1, Math.toIntExact(mediumDto.getId()));
 		ResultSet resultSet = readStmt.executeQuery();
+		conn.commit();
 		while (resultSet.next()) {
 			CopyDto copyDto = new CopyDto();
 			populateCopyDto(copyDto, resultSet);
 			mediumDto.addCopy(copyDto.getId(), copyDto);
 		}
-		conn.commit();
 		ConnectionPool.getInstance().releaseConnection(conn);
 	}
 
@@ -580,13 +580,13 @@ public final class MediumDao {
 		copyDto.setId(resultSet.getInt(1));
 		copyDto.setSignature(resultSet.getString(3));
 		copyDto.setLocation(resultSet.getString(4));
-		copyDto.setCopyStatus((CopyStatus) resultSet.getObject(5));
+		CopyStatus copyStatus = CopyStatus.valueOf(resultSet.getString(5));
+		copyDto.setCopyStatus(copyStatus);
 		copyDto.setDeadline(resultSet.getTimestamp(6));
 		copyDto.setActor(resultSet.getInt(7));
 		if (copyDto.getActor() == 0) {
 			copyDto.setActor(null);
 		}
-
 	}
 
 	/**

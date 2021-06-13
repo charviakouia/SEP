@@ -170,7 +170,8 @@ public class Medium implements Serializable {
 		this.mediumDto = mediumDto;
 	}
 
-	public void delete() throws IllegalStateException, MediumDoesNotExistException {
+	public String delete() throws MediumDoesNotExistException {
 		MediumDao.deleteMedium(mediumDto);
+		return "/view/public/medium-search?faces-redirect=true";
 	}
 }
