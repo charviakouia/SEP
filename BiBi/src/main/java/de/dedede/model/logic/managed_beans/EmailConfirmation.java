@@ -27,10 +27,12 @@ public class EmailConfirmation implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private TokenDto token;
+	private UserDto user;
 
 	@PostConstruct
 	public void init() {
 		token = new TokenDto();
+		user = new UserDto();
 	}
 
 	public TokenDto getToken() {
@@ -42,11 +44,12 @@ public class EmailConfirmation implements Serializable {
 	}
 	
 	public String attemptToConfirm() throws UserDoesNotExistException, EntityInstanceDoesNotExistException {
-		UserDto user = new UserDto();
 		user.setToken(token);
 		UserDao.readUserByToken(user);
 		user.setUserVerificationStatus(UserVerificationStatus.VERIFIED);
-		UserDao.updateUserByToken(user);
+		user.setToken(null);
+		user.setTokenCreation(null);
+		UserDao.updateUser(user);
 		return "/view/public/medium?faces-redirect=true";
 	}
 

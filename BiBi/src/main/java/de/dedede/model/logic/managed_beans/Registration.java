@@ -1,7 +1,5 @@
 package de.dedede.model.logic.managed_beans;
 
-import de.dedede.model.data.dtos.ApplicationDto;
-import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
@@ -34,6 +32,8 @@ import java.util.Map;
 @ViewScoped
 public class Registration implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	@Inject private FacesContext context;
 	@Inject private UserSession session;
 	private UserDto user;
@@ -44,7 +44,6 @@ public class Registration implements Serializable {
 	@PostConstruct
 	public void init() {
 		user = new UserDto();
-		user.setEmailVerified(false);
 		user.setUserVerificationStatus(UserVerificationStatus.UNVERIFIED);
 		user.setUserLendStatus(UserLendStatus.ENABLED);
 	}

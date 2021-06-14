@@ -769,7 +769,7 @@ public final class MediumDao {
 		stmt.setString(4, copyDto.getLocation());
 		stmt.setString(5, copyDto.getCopyStatus().name());
 		stmt.setTimestamp(6, copyDto.getDeadline());
-		if (copyDto.getActor() != 0) {
+		if (copyDto.getActor() != null && copyDto.getActor() != 0) {
 			stmt.setInt(7, copyDto.getActor());
 		} else {
 			stmt.setObject(7, null);
