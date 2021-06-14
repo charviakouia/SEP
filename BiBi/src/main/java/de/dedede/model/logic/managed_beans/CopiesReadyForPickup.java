@@ -34,4 +34,10 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 		return items;
 	}
 
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

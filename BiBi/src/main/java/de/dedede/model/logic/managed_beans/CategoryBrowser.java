@@ -63,4 +63,10 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	public List<MediumDto> getItems() {
 		return mediums;
 	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
 }

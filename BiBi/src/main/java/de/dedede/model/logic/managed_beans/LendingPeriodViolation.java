@@ -32,6 +32,12 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 	public List<MediumCopyUserDto> getItems() {
 		return items;
 	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 
