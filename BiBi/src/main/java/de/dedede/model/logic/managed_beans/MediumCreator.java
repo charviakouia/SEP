@@ -15,6 +15,7 @@ import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
@@ -93,6 +94,8 @@ public class MediumCreator implements Serializable {
 		medium.setReleaseYear(releaseYear);
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
+		context.addMessage(null, new FacesMessage("Medium and copy created successfully"));
+		context.getExternalContext().getFlash().setKeepMessages(true);
 		return null;
 	}
 
@@ -104,7 +107,7 @@ public class MediumCreator implements Serializable {
 	
 	private void searchForCategory(String searchTerm) {
 		PaginationDto paginationDto = new PaginationDto();
-		paginationDto.setPageNumber(1);
+		paginationDto.setPageNumber(0);
 		paginationDto.setTotalAmountOfRows(NUM_DISPLAYED_CATEGORY_ENTRIES);
 		CategorySearchDto categorySearchDto = new CategorySearchDto();
 		categorySearchDto.setSearchTerm(searchTerm);

@@ -89,9 +89,6 @@ public class Medium implements Serializable {
 		} catch (MaxConnectionsException e) {
 			String msg = "Connection is not available while creating copy with id: " + newCopy.getId();
 			throw new BusinessException(msg, e);
-		} catch (EntityInstanceNotUniqueException e) {
-			String msg = "A copy with this ID already exists: " + newCopy.getId();
-			throw new BusinessException(msg, e);
 		}
 	}
 
@@ -115,9 +112,12 @@ public class Medium implements Serializable {
 	 * 
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
+	 * @throws MediumDoesNotExistException 
+	 * @throws MaxConnectionsException 
+	 * @throws LostConnectionException 
 	 */
 	public void deleteCopy(int index) throws IllegalArgumentException,
-			CopyDoesNotExistException {
+			CopyDoesNotExistException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
 		MediumDao.deleteCopy(mediumDto.getCopy(index));
 	}
 

@@ -1,5 +1,10 @@
 package de.dedede.model.persistence.daos;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CategoryDto;
@@ -8,6 +13,9 @@ import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
+import de.dedede.model.persistence.util.ConnectionPool;
+import de.dedede.model.persistence.util.Logger;
 
 /**
  * This DAO (data access object) manages data pertaining to a category.
@@ -18,6 +26,8 @@ import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
  *
  */
 public final class CategoryDao {
+	
+	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
 
 	private CategoryDao() {}
 
@@ -59,21 +69,39 @@ public final class CategoryDao {
 	 * 		to the specified search term and pagination details.
 	 * @see CategoryDto
 	 */
-	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearchDto,
-														 PaginationDto paginationDetails) {
-		// TODO: Implement, mocking function in place
-		if (categorySearchDto.getSearchTerm().contains("a")) {
-			CategoryDto categoryDto = new CategoryDto();
-			categoryDto.setId(178001);
-			categoryDto.setName("Gardening");
-			categoryDto.setParent(null);
-			return List.of(categoryDto);
-		} else {
-			CategoryDto categoryDto = new CategoryDto();
-			categoryDto.setId(178002);
-			categoryDto.setName("Pottery");
-			categoryDto.setParent(null);
-			return List.of(categoryDto);
+	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearchDto, PaginationDto paginationDetails) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"SELECT categoryId, title, description, parentCategoryId " +
+					"FROM category " +
+					"WHERE title LIKE ? " +
+					"ORDER BY title DESC " +
+					"LIMIT ? " +
+					"OFFSET ?;"
+			);
+			stmt.setString(1, "%" + categorySearchDto.getSearchTerm() + "%");
+			stmt.setInt(2, paginationDetails.getTotalAmountOfRows());
+			stmt.setInt(3, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfRows());
+			ResultSet res = stmt.executeQuery();
+			List<CategoryDto> list = new LinkedList<>();
+			while (res.next()) {
+				CategoryDto category = new CategoryDto();
+				category.setId(Math.toIntExact(res.getLong(1)));
+				category.setName(res.getString(2));
+				category.setDescription(res.getString(3));
+				CategoryDto parent = new CategoryDto();
+				parent.setId(Math.toIntExact(res.getLong(4)));
+				category.setParent(parent);
+				list.add(category);
+			}
+			return list;
+		} catch (SQLException e) {
+			String msg = "Database error occurred while reading category entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
 

@@ -95,6 +95,28 @@ public final class MediumDao {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
+	
+	public static boolean signatureExists(CopyDto copy) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement checkStmt = conn.prepareStatement(
+					"SELECT CASE " +
+						"WHEN (SELECT COUNT(DISTINCT signature) FROM MediumCopy WHERE signature = ?) > 0 THEN true " +
+						"ELSE false " +
+						"END AS entityExists;"
+			);
+			checkStmt.setString(1, copy.getSignature());
+			ResultSet resultSet = checkStmt.executeQuery();
+			resultSet.next();
+			return resultSet.getBoolean(1);
+		} catch (SQLException e) {
+			String msg = "Database error occured while checking for copy signatures";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
 
 	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) 
 			throws SQLException {
@@ -119,13 +141,6 @@ public final class MediumDao {
 		ResultSet resultSet = stmt.getGeneratedKeys();
 		if (resultSet.next()) {
 			mediumDto.setId(Math.toIntExact(resultSet.getLong(1)));
-		}
-	}
-
-	private static void attemptToInsertGeneratedKey(AttributeDto attributeDto, Statement stmt) throws SQLException {
-		ResultSet resultSet = stmt.getGeneratedKeys();
-		if (resultSet.next()) {
-			attributeDto.setId(Math.toIntExact(resultSet.getLong(1)));
 		}
 	}
 	

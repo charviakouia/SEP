@@ -12,6 +12,8 @@
 
 	<ui:define name="content">
 
+		<h:messages/>
+
 		<h:outputLabel for="mediumForm" value="#{msg['title.medium_creator']}"/>
 		<h:form id="mediumForm">
 			
@@ -75,7 +77,8 @@
 			<h:inputText id="copyLocation" value="#{mediumCreator.copy.location}" required="true"/><br/>
 
 			<h:outputLabel for="copySignature" value="#{msg['title.copySignature']}"/>
-			<h:inputText id="copySignature" value="#{mediumCreator.copy.signature}" required="true"/><br/>
+			<h:inputText id="copySignature" value="#{mediumCreator.copy.signature}" 
+				validator="mediumCreationSignatureValidator" required="true"/><br/>
 
 			<h:commandButton action="#{mediumCreator.save}" value="#{msg['save']}"/>
 

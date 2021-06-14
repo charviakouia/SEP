@@ -1,6 +1,8 @@
 package de.dedede.model.logic.managed_beans;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -14,6 +16,7 @@ import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
+import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
@@ -86,8 +89,7 @@ public class Login {
 		String salt = completeUserData.getPasswordSalt();
 		String passwordHash = completeUserData.getPasswordHash();
 		String inputHash = PasswordHashingModule.hashPassword(passwordInput, salt);
-		if (true) {
-			// if (inputHash.equals(passwordHash)) {
+		if (inputHash.equals(passwordHash)) {
 				ExternalContext externalContext = context.getExternalContext();
 				HttpServletRequest request = 
 						(HttpServletRequest) externalContext.getRequest();
@@ -136,40 +138,38 @@ public class Login {
 			UserDto completeUserData = UserDao.readUserByEmail(userData);
 			String subject = messages.getString("login.reset_email_subject");
 			String content = messages.getString("login.reset_email_content");
-			TokenDto newTokenContainer = new TokenDto();       					//TokenGenerator.generateToken(); wenn fertig
-			newTokenContainer.setContent("12345678901234567890");				//dummy
-			TokenDto userToken = UserDao.setOrRetrieveUserToken(
-					completeUserData, newTokenContainer);
-			String token = userToken.getContent();								//UNFINISHED
+			TokenDto newTokenContainer = TokenGenerator.generateToken();
+			completeUserData.setToken(newTokenContainer);
+			// TokenDto userToken = UserDao.setOrRetrieveUserToken(completeUserData, newTokenContainer);
 						
-			String userLink = "www.testlink.de/?token=" + token;				//@see format when PasswordReset Package is finished by Ivan
-			String firstname = completeUserData.getFirstName();
-			String lastname = completeUserData.getLastName();
-			String emailBody = insertParams(firstname, lastname, userLink, 
-					content);
-			String emailAddress = completeUserData.getEmailAddress();
-			
-			// Ivan begin
-			
 			try {
+				UserDao.updateUser(completeUserData);
+				String token = newTokenContainer.getContent();
+				String link = context.getApplication().getViewHandler().getResourceURL(
+						context, "/view/public/password-reset.xhtml?token=" 
+								+ URLEncoder.encode(token, "UTF-8"));
+				link = "http://localhost:8080" + link;
+				String firstname = completeUserData.getFirstName();
+				String lastname = completeUserData.getLastName();
+				String emailBody = insertParams(firstname, lastname, link, content);
+				String emailAddress = completeUserData.getEmailAddress();
 				EmailUtility.sendEmail(emailAddress, subject, emailBody);
-			} catch (MessagingException e) {
-				Logger.severe(e.getMessage()); // Handle
+				Logger.development("Aus der Loginseite wurde eine Passwortzurück"
+						+ "setzung angefordert, eine Email wurde versendet an: " 
+						+ emailAddress);
+				Logger.development("Inhalt der Email: " + emailBody);													
+				String shortMessage = messages.getString("login.email_was"
+						+ "_sent_short");
+				String longMessage = messages.getString("login.email_was"
+						+ "_sent_long");
+				context.addMessage("login_form:login_email_field", 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+								shortMessage, longMessage));
+			} catch (MessagingException | UnsupportedEncodingException | EntityInstanceDoesNotExistException e) {
+				Logger.severe("Couldn't send a verification email to user: " + completeUserData.getEmailAddress());
 			}
+		
 			
-			// Ivan end
-			
-			Logger.development("Aus der Loginseite wurde eine Passwortzurück"
-					+ "setzung angefordert, eine Email wurde versendet an: " 
-					+ emailAddress);
-			Logger.development("Inhalt der Email: " + emailBody);													
-			String shortMessage = messages.getString("login.email_was"
-					+ "_sent_short");
-			String longMessage = messages.getString("login.email_was"
-					+ "_sent_long");
-			context.addMessage("login_form:login_email_field", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-							shortMessage, longMessage));
 		} catch (UserDoesNotExistException e) {
 			String shortMessage = messages.getString("login.unknown_user"
 					+ "_short");

@@ -1,5 +1,11 @@
 package de.dedede.model.logic.validators;
 
+import java.util.regex.Pattern;
+
+import de.dedede.model.data.dtos.ApplicationDto;
+import de.dedede.model.persistence.daos.ApplicationDao;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
@@ -11,6 +17,8 @@ import jakarta.faces.validator.ValidatorException;
  */
 @FacesValidator("emailValidator")
 public class EmailValidator implements Validator<String> {
+	
+	private static final long DEFAULT_ID = 1;
 
 	/**
 	 * Check if the given email address belongs to the domain of the system. If it
@@ -26,7 +34,15 @@ public class EmailValidator implements Validator<String> {
 	 *                             appropriate message with the exception.
 	 */
 	public void validate(FacesContext ctx, UIComponent comp, String email) throws ValidatorException {
-
+		ApplicationDto appDto = new ApplicationDto();
+		appDto.setId(DEFAULT_ID);
+		ApplicationDao.readCustomization(appDto);
+		if (appDto != null && appDto.getEmailAddressSuffixRegEx() != null) {
+			if (!Pattern.matches(appDto.getEmailAddressSuffixRegEx(), email)){
+				throw new ValidatorException(new FacesMessage(
+						"Cannot create email with the pattern: " + appDto.getEmailAddressSuffixRegEx()));
+			}
+		}
 	}
 
 }

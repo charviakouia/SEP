@@ -12,7 +12,10 @@ import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistExceptio
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -25,6 +28,9 @@ import jakarta.inject.Named;
 public class PasswordReset implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	@Inject FacesContext context;
+	@Inject UserSession session;
 	
 	private TokenDto token;
 	private UserDto userDto;
@@ -91,6 +97,8 @@ public class PasswordReset implements Serializable {
 		userDto.setToken(null);
 		userDto.setTokenCreation(null);
 		UserDao.updateUser(userDto);
-		return "/view/public/medium?faces-redirect=true";
+		context.addMessage(null, new FacesMessage("Password changed successfully"));
+		context.getExternalContext().getFlash().setKeepMessages(true);
+		return "/view/public/login.xhtml?faces-redirect=true";
 	}
 }

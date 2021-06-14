@@ -16,6 +16,7 @@ import org.postgresql.util.PGInterval;
 import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
@@ -152,7 +153,8 @@ public final class UserDao {
 				int changed = updateToken.executeUpdate();
 				Logger.development(changed + " usertoken was newly generated");
 				updateToken.close();
-				token.setCreationTime(LocalDateTime.now());
+				token.setCreationTime(LocalDateTime.now().plus(5, ChronoUnit.MINUTES));
+				// The DB won't accept it if it was made even slightly in the past
 				return token;
 			} else {
 				PreparedStatement getToken = conn.prepareStatement(
@@ -199,8 +201,7 @@ public final class UserDao {
 	}
 	//reads an existing user by id and checks if his token is null
 	/* @author Jonas Picker */
-	private static boolean userTokenIsNull(Connection conn, UserDto userId) 
-			throws SQLException {
+	private static boolean userTokenIsNull(Connection conn, UserDto userId) throws SQLException {
 		PreparedStatement checkingStmt = conn.prepareStatement(
 				"SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
 				+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;"
