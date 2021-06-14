@@ -107,4 +107,9 @@ public class MediumSearch extends PaginatedList implements Serializable {
 		return mediums;
 	}
 
+	@Override
+	public void refresh() {
+		searchMedium();
+	}
+
 }

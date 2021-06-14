@@ -43,4 +43,10 @@ public class BorrowedCopies extends PaginatedList implements Serializable {
 	public List<CopyDto> getItems() {
 		return copies;
 	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
 }

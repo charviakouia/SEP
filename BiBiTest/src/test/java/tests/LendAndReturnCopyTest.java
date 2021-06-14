@@ -1,31 +1,23 @@
 package tests;
 
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
-import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
-import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
-import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
-import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
-import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
+import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class LendAndReturnCopyTest {
 	
@@ -54,7 +46,7 @@ public class LendAndReturnCopyTest {
     }
     
     @AfterAll
-    public static void tearDown() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException, UserDoesNotExistException {
+    public static void tearDown() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException, UserDoesNotExistException, CopyDoesNotExistException {
         CopyDto copyDto = new CopyDto();
         copyDto.setId(5);
         MediumDao.deleteCopy(copyDto);

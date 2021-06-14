@@ -49,4 +49,10 @@ public class UserSearch extends PaginatedList implements Serializable {
 		return users;
 	}
 
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
