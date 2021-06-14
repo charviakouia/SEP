@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
@@ -21,6 +22,8 @@ import jakarta.inject.Named;
 @ViewScoped
 public class PasswordReset implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private TokenDto token;
 	private String password;
 	private String confirmedPassword;
@@ -62,6 +65,10 @@ public class PasswordReset implements Serializable {
 	 * @throws EntityInstanceDoesNotExistException 
 	 */
 	public String resetPassword() throws EntityInstanceDoesNotExistException {
+		String salt = PasswordHashingModule.generateSalt();
+		String hash = PasswordHashingModule.hashPassword(password, salt);
+		userDto.setPasswordHash(hash);
+		userDto.setPasswordSalt(salt);
 		UserDao.updateUser(userDto);
 		return null;
 	}

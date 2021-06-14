@@ -5,6 +5,7 @@ import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.logic.util.UserVerificationStatus;
@@ -16,9 +17,14 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.mail.MessagingException;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.sun.org.slf4j.internal.Logger;
 
 /**
  * The backing bean for the registration page. On this page an anonymous user
@@ -84,6 +90,17 @@ public class Registration implements Serializable {
 			setPasswordHash();
 			user.setToken(TokenGenerator.generateToken());
 			UserDao.createUser(user);
+			/*
+			try {
+				Map<String, List<String>> map = new HashMap<>();
+				map.put("token", List.of(user.getToken().getContent()));
+				String link = context.getApplication().getViewHandler().getBookmarkableURL(
+						context, "/view/public/email-confirmation.xhtml", map, false);
+				EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", link);
+			} catch (MessagingException e) {
+				// Logger.severe("Couldn't send a verification email: " + e.getMessage());
+			}
+			*/
 			return switchUser();
 		} catch (EntityInstanceNotUniqueException e){
 			context.addMessage(null, new FacesMessage("The entered email is already taken"));
