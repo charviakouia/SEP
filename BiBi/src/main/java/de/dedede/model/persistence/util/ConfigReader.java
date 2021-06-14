@@ -74,6 +74,19 @@ public class ConfigReader {
 		return systemConfigurations.getProperty(key);
 	}
 	
+	
+	/**
+	 * Returns a String containing the system configuration under the specified
+	 * key.
+	 * 
+	 * @param String key the name of the config variable key.
+	 * @return The value for the key parsed and returned as an int
+	 */
+	public int getKeyAsInt(String key) {
+		
+		return Integer.parseInt(systemConfigurations.getProperty(key));
+	}
+	
 	/**
 	 * Returns a String containing the system configuration under the specified
 	 * key.

@@ -94,7 +94,8 @@ public class MediumCreator implements Serializable {
 		medium.setReleaseYear(releaseYear);
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
-		context.addMessage(null, new FacesMessage("Medium and copy created successfully"));
+		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		context.addMessage(null, new FacesMessage(messages.getString("mediumCreator.success")));
 		context.getExternalContext().getFlash().setKeepMessages(true);
 		return null;
 	}

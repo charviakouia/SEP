@@ -1,6 +1,7 @@
 package de.dedede.model.logic.managed_beans;
 
 import java.io.Serializable;
+import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -68,14 +69,15 @@ public class PasswordReset implements Serializable {
 	}
 
 	public void findUser() {
+		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			userDto.setToken(token);
 			UserDao.readUserByToken(userDto);
 			if (!userEligible()) {
-				throw new BusinessException("The given user is ineligible to change their password");
+				throw new BusinessException(messages.getString("passwordReset.userIneligible"));
 			}
 		} catch (UserDoesNotExistException e) {
-			throw new BusinessException("The given token doesn't match any user", e);
+			throw new BusinessException(messages.getString("passwordReset.noMatch"), e);
 		}
 	}
 	
@@ -97,7 +99,8 @@ public class PasswordReset implements Serializable {
 		userDto.setToken(null);
 		userDto.setTokenCreation(null);
 		UserDao.updateUser(userDto);
-		context.addMessage(null, new FacesMessage("Password changed successfully"));
+		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		context.addMessage(null, new FacesMessage(messages.getString("passwordReset.success")));
 		context.getExternalContext().getFlash().setKeepMessages(true);
 		return "/view/public/login.xhtml?faces-redirect=true";
 	}

@@ -2,6 +2,7 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -54,9 +55,10 @@ public class EmailConfirmation implements Serializable {
 		user.setToken(null);
 		user.setTokenCreation(null);
 		UserDao.updateUser(user);
-		context.addMessage(null, new FacesMessage("Successfully verified email"));
+		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		context.addMessage(null, new FacesMessage(messages.getString("emailConfirmation.success")));
 		context.getExternalContext().getFlash().setKeepMessages(true);
-		return "/view/account/profile.xhtml?faces-redirect=true";
+		return "/view/account/profile.xhtml?faces-redirect=true&id=" + user.getId();
 	}
 
 }

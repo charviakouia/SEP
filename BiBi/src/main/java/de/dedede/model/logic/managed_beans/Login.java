@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,24 +52,79 @@ import java.util.ResourceBundle;
 @RequestScoped
 public class Login {
 	
+	/**
+	 * Holds the form input.
+	 */
 	private UserDto userData = new UserDto();
 	
+	/**
+	 * The @SessionScoped Bean that hold userdata.
+	 */
 	@Inject
 	private UserSession userSession;
-		
+	
+	/**
+	 * No tasks here.
+	 */
 	@PostConstruct
 	public void init() {}
 	
+	/**
+	 * Checks for existing user session and decides if facelet renders login 
+	 * form.
+	 * 
+	 * @return true if the login form should be rendered
+	 */
 	public boolean renderLogin() {
-
 		if (userSession.getUser() != null) {
-			
 			return false;
 		} else {
 			return true;
 		}
 	}
+	
+	/**
+	 * Redirects the user to the profile page after 5 seconds, if he has a 
+	 * session already
+	 * 
+	 * @return true if the session already exists
+	 
+	public boolean redirectWhenLoggedIn() {
+		if (userSession.getUser() == null) {
+			return false;
+		} else {
+			ScheduledExecutorService scheduler = 
+					Executors.newSingleThreadScheduledExecutor();
+			scheduler.schedule(new CustomTask(userSession.getUser().getId()),
+					5, TimeUnit.SECONDS);
+			return true;
+		}
+	}*/
+	
+	/**
+	 * Capsules a callable thread by the ThreadSchedular
+	 
+	private class CustomTask extends TimerTask  {
+		
+		private int id;
+		
+		@Inject
+		private ExternalContext externalContext;
 
+		public CustomTask(int id){
+			this.id = id;
+		}
+
+		public void run() {
+			try {
+				externalContext.redirect("/BiBi/view/account/profile.xhtml?id="
+										+ this.id);
+		    } catch (Exception ex) {
+		    	Logger.development("Error while redirecting thread ran");
+		    }
+		}
+	}*/
+	
 	/**
 	 * Log into the system and redirect to profile page if successful.
 	 *
@@ -97,8 +153,7 @@ public class Login {
 				userSession.setUser(completeUserData);
 				try {
 					externalContext.redirect(
-							"/BiBi/view/account/profile.xhtml?id=" 
-							+ completeUserData.getId());
+							"/BiBi/view/public/medium-search.xhtml");
 					return;
 				} catch (IOException io) {
 					Logger.severe("IOException occured during redirection"
@@ -169,7 +224,6 @@ public class Login {
 				Logger.severe("Couldn't send a verification email to user: " + completeUserData.getEmailAddress());
 			}
 		
-			
 		} catch (UserDoesNotExistException e) {
 			String shortMessage = messages.getString("login.unknown_user"
 					+ "_short");
