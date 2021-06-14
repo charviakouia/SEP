@@ -18,4 +18,5 @@ public enum UserRole {
 		case ADMIN -> "user_role.admin";
 		};
 	}
+	
 }

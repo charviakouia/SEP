@@ -28,7 +28,7 @@ public class MediumDaoTest {
     }
 
     @AfterAll
-    public static void tearDown() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
+    public static void tearDown() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException, CopyDoesNotExistException {
         CopyDto copyDto = new CopyDto();
         copyDto.setId(555);
         MediumDao.deleteCopy(copyDto);

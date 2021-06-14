@@ -18,7 +18,7 @@
 
 				<h:inputText id="input_general_search_term"
 					value="#{mediumSearch.mediumSearch.generalSearchTerm}"
-					styleClass="form-control" />
+					styleClass="form-control" title="#{msg['search_term']}" />
 
 				<h:commandButton id="button_search" value="#{msg['search']}"
 					action="#{mediumSearch.searchMedium()}"
@@ -33,13 +33,14 @@
 
 					<ui:repeat
 						value="#{mediumSearch.mediumSearch.nuancedSearchQueries}"
-						var="nuancedSearchQuery" varStatus="status">
+						var="nuancedSearchQuery">
 
 						<h:panelGroup layout="block"
 							styleClass="nuanced-search-query input-group">
 
-							<h:selectOneMenu id="select_search_operator_#{status.index}"
-								value="#{nuancedSearchQuery.operator}" styleClass="form-select">
+							<h:selectOneMenu id="select_search_operator"
+								value="#{nuancedSearchQuery.operator}" styleClass="form-select"
+								title="#{msg['search_operator']}">
 
 								<f:selectItems value="#{mediumSearch.allSearchOperators}"
 									var="operator" itemValue="#{operator}"
@@ -47,14 +48,19 @@
 
 							</h:selectOneMenu>
 
-							<!-- TASK -->
-							<h:selectOneMenu id="select_search_criterion_#{status.index}"
-								value="#{nuancedSearchQuery.criterion}" styleClass="form-select">
+							<h:selectOneMenu id="select_search_criterion"
+								value="#{nuancedSearchQuery.criterion}" styleClass="form-select"
+								title="#{msg['search_criterion']}">
+
+								<f:selectItems value="#{mediumSearch.allSearchCriteria}"
+									var="criterion" itemValue="#{criterion}"
+									itemLabel="#{msg[criterion.toString()]}" />
+
 							</h:selectOneMenu>
 
-							<h:inputText id="input_nuanced_search_term_#{status.index}"
+							<h:inputText id="input_nuanced_search_term"
 								value="#{nuancedSearchQuery.term}"
-								styleClass="form-control w-50" />
+								styleClass="form-control w-50" title="#{msg['search_term']}" />
 
 						</h:panelGroup>
 
@@ -69,12 +75,46 @@
 
 			</h:panelGroup>
 
-			<!-- TASK: search results: paginated list -->
-
 		</h:form>
 
-		<!-- @Task -->
-		<!-- <bibi:paginatedList /> -->
+		<!-- @Task show the text "no results found" in such a case -->
+		<!-- @Task on initial site load, don't show it at all (unless we received a search term in flash -->
+		<!-- @Task (unrelated location) handle search from flash scope -->
+		<bibi:paginatedList value="#{mediumSearch}">
+
+			<h:column>
+				<f:facet name="header">TITLE</f:facet>
+
+				<bibi:columnContent>
+					#{item.title}
+				</bibi:columnContent>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">AUTHORS</f:facet>
+
+				<bibi:columnContent>
+					#{mediumSearch.formatAuthors(item)}
+				</bibi:columnContent>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">EDITION</f:facet>
+
+				<bibi:columnContent>
+					#{item.edition}
+				</bibi:columnContent>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">PUBLISHER</f:facet>
+
+				<bibi:columnContent>
+					#{item.publisher}
+				</bibi:columnContent>
+			</h:column>
+
+		</bibi:paginatedList>
 
 	</ui:define>
 

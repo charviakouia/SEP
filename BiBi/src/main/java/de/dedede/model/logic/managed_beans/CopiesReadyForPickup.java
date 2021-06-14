@@ -4,7 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import de.dedede.model.data.dtos.MediumCopyAttributeUserDto;
+import de.dedede.model.data.dtos.MediumCopyUserDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
@@ -22,7 +22,7 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private List<MediumCopyAttributeUserDto> items;
+	private List<MediumCopyUserDto> items;
 
 	@PostConstruct
 	public void init() {
@@ -30,8 +30,14 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 	}
 	
 	@Override
-	public List<MediumCopyAttributeUserDto> getItems() {
+	public List<MediumCopyUserDto> getItems() {
 		return items;
+	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -1,11 +1,18 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.Serializable;
+
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.util.PasswordHashingModule;
+import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 /**
@@ -14,16 +21,21 @@ import jakarta.inject.Named;
  * where he can order a verification link to set a new password.
  */
 @Named
-@RequestScoped
-public class PasswordReset {
+@ViewScoped
+public class PasswordReset implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private TokenDto token;
+	private UserDto userDto;
 	private String password;
 	private String confirmedPassword;
-	private UserDto userDto;
 
 	@PostConstruct
-	public void init() {}
+	public void init() {
+		token = new TokenDto();
+		userDto = new UserDto();
+	}
 
 	public String getPassword() {
 		return password;
@@ -49,14 +61,36 @@ public class PasswordReset {
 		this.token = token;
 	}
 
-	public void findUser() throws UserDoesNotExistException {
-		userDto = UserDao.readUserByToken(userDto);
+	public void findUser() {
+		try {
+			userDto.setToken(token);
+			UserDao.readUserByToken(userDto);
+			if (!userEligible()) {
+				throw new BusinessException("The given user is ineligible to change their password");
+			}
+		} catch (UserDoesNotExistException e) {
+			throw new BusinessException("The given token doesn't match any user", e);
+		}
+	}
+	
+	private boolean userEligible() {
+		boolean tokenValid = !userDto.getToken().getContent().isBlank();
+		boolean tokenForPassword = UserVerificationStatus.VERIFIED == userDto.getUserVerificationStatus();
+		return tokenValid && tokenForPassword;
 	}
 
 	/**
 	 * Reset the password when it is necessary to reset it.
+	 * @throws EntityInstanceDoesNotExistException 
 	 */
-	public void resetPassword() {
-
+	public String resetPassword() throws EntityInstanceDoesNotExistException {
+		String salt = PasswordHashingModule.generateSalt();
+		String hash = PasswordHashingModule.hashPassword(password, salt);
+		userDto.setPasswordHash(hash);
+		userDto.setPasswordSalt(salt);
+		userDto.setToken(null);
+		userDto.setTokenCreation(null);
+		UserDao.updateUser(userDto);
+		return "/view/public/medium?faces-redirect=true";
 	}
 }

@@ -50,7 +50,7 @@ public final class UserDao {
 							"lendStatus, verificationStatus, userRole) VALUES " +
 							"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), " +
 							"CAST(? AS userlendstatus), CAST(? AS userverificationstatus), " +
-							"CAST(? AS userrole);",
+							"CAST(? AS userrole));",
 					Statement.RETURN_GENERATED_KEYS
 			);
 			populateStatement(createStmt, userDto);
@@ -66,24 +66,6 @@ public final class UserDao {
 		}
 	}
 
-	private static void populateStatement(PreparedStatement stmt, UserDto userDto) throws SQLException {
-		stmt.setString(1, userDto.getEmailAddress());
-		stmt.setString(2, userDto.getPasswordSalt());
-		stmt.setString(3, userDto.getPasswordHash());
-		stmt.setString(4, userDto.getLastName());
-		stmt.setString(5, userDto.getFirstName());
-		stmt.setString(6, String.valueOf(userDto.getZipCode()));
-		stmt.setString(7, userDto.getCity());
-		stmt.setString(8, userDto.getStreet());
-		stmt.setString(9, userDto.getStreetNumber());
-		stmt.setString(10, userDto.getToken().getContent());
-		stmt.setTimestamp(11, Timestamp.valueOf(userDto.getToken().getCreationTime()));
-		stmt.setObject(12, toPGInterval(userDto.getLendingPeriod()));
-		stmt.setString(13, userDto.getUserLendStatus().toString());
-		stmt.setString(14, userDto.getUserVerificationStatus().toString());
-		stmt.setString(15, userDto.getRole().toString());
-	}
-
 	private static void attemptToInsertGeneratedKey(UserDto userDto, Statement stmt)
 			throws SQLException {
 		ResultSet resultSet = stmt.getGeneratedKeys();
@@ -94,8 +76,13 @@ public final class UserDao {
 
 	private static PGInterval toPGInterval(Duration duration){
 		PGInterval result = new PGInterval();
-		result.setSeconds(duration.getSeconds());
-		return result;
+		if (duration == null) {
+			result.setSeconds(0);
+			return result;
+		} else {
+			result.setSeconds(duration.getSeconds());
+			return result;
+		}
 	}
 
 	public static UserDto readUserByToken(UserDto userDto) throws UserDoesNotExistException {
@@ -119,8 +106,7 @@ public final class UserDao {
 		}
 	}
 
-	private static UserDto readUserByTokenHelper(Connection conn, UserDto userDto)
-			throws SQLException {
+	private static UserDto readUserByTokenHelper(Connection conn, UserDto userDto) throws SQLException {
 		PreparedStatement readStmt = conn.prepareStatement(
 				"SELECT userid, emailaddress, passwordhashsalt, " +
 						"passwordhash, name, surname, postalcode, city, street, " +
@@ -132,6 +118,7 @@ public final class UserDao {
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()) {
 			populateUserDto(resultSet, userDto);
+			userDto.setId(Math.toIntExact(resultSet.getLong(1)));
 			return userDto;
 		} else {
 			return null;
@@ -319,8 +306,53 @@ public final class UserDao {
 	 * @throws EntityInstanceDoesNotExistException Is thrown when the enclosed
 	 *                                             email address isn't associated with an existing data entry.
 	 */
-	public static void updateUser(UserDto userDto)
-			throws EntityInstanceDoesNotExistException {
+	public static void updateUser(UserDto userDto) throws EntityInstanceDoesNotExistException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);;
+		try {
+			PreparedStatement updateStmt = conn.prepareStatement(
+					"UPDATE Users " +
+							"SET emailaddress = ?, passwordhashsalt = ?, passwordhash = ?, name = ?, surname = ?, " +
+							"postalcode = ?, city = ?, street = ?, housenumber = ?, token = ?, tokencreation = ?, " +
+							"userlendperiod = CAST(? AS INTERVAL), lendstatus = CAST(? AS userlendstatus), " +
+							"verificationstatus = CAST(? AS userverificationstatus), userrole = CAST(? AS userrole) " +
+							"WHERE userid = ?;"
+			);
+			populateStatement(updateStmt, userDto);
+			updateStmt.setLong(16, userDto.getId());
+			int numAffectedRows = updateStmt.executeUpdate();
+			conn.commit();
+			if (numAffectedRows == 0){
+				String msg = String.format("No entity with the id: %d exists", userDto.getId());
+				Logger.severe(msg);
+				throw new EntityInstanceDoesNotExistException(msg);
+			}
+		} catch (SQLException e){
+			String msg = "Database error occurred while updating user entity with id: " + userDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	
+	private static void populateStatement(PreparedStatement stmt, UserDto userDto) throws SQLException {
+		stmt.setString(1, userDto.getEmailAddress());
+		stmt.setString(2, userDto.getPasswordSalt());
+		stmt.setString(3, userDto.getPasswordHash());
+		stmt.setString(4, userDto.getLastName());
+		stmt.setString(5, userDto.getFirstName());
+		stmt.setString(6, String.valueOf(userDto.getZipCode()));
+		stmt.setString(7, userDto.getCity());
+		stmt.setString(8, userDto.getStreet());
+		stmt.setString(9, userDto.getStreetNumber());
+		TokenDto tokenDto = userDto.getToken();
+		stmt.setString(10, (tokenDto == null ? null : tokenDto.getContent()));
+		stmt.setTimestamp(11, (tokenDto == null ? null : Timestamp.valueOf(tokenDto.getCreationTime())));
+		stmt.setObject(12, toPGInterval(userDto.getLendingPeriod()));
+		stmt.setString(13, userDto.getUserLendStatus().toString());
+		stmt.setString(14, userDto.getUserVerificationStatus().name());
+		stmt.setString(15, userDto.getRole().name());
 	}
 
 	/**
@@ -471,14 +503,11 @@ public final class UserDao {
 		userDto.setStreet(resultSet.getString(9));
 		userDto.setStreetNumber(resultSet.getString(10));
 		userDto.setTokenDto(prepareTokenDto(resultSet));
-		long lendingPeriod = Math.round(((PGInterval)
-				resultSet.getObject(13)).getSeconds());
+		long lendingPeriod = Math.round(((PGInterval) resultSet.getObject(13)).getSeconds());
 		userDto.setLendingPeriod(Duration.ofSeconds(lendingPeriod));
-		UserLendStatus userLendStatus = UserLendStatus.valueOf
-				(resultSet.getString(14));
+		UserLendStatus userLendStatus = UserLendStatus.valueOf(resultSet.getString(14));
 		userDto.setUserLendStatus(userLendStatus);
-		UserVerificationStatus verificationStatus =
-				UserVerificationStatus.valueOf(resultSet.getString(15));
+		UserVerificationStatus verificationStatus = UserVerificationStatus.valueOf(resultSet.getString(15));
 		userDto.setUserVerificationStatus(verificationStatus);
 		UserRole userRole = UserRole.valueOf(resultSet.getString(16));
 		userDto.setUserRole(userRole);
@@ -490,7 +519,8 @@ public final class UserDao {
 	private static TokenDto prepareTokenDto(ResultSet resultSet) throws SQLException {
 		TokenDto tokenDto = new TokenDto();
 		tokenDto.setContent(resultSet.getString(11));
-		LocalDateTime localDateTime = resultSet.getTimestamp(12).toLocalDateTime();
+		Timestamp timestamp = resultSet.getTimestamp(12);
+		LocalDateTime localDateTime = (timestamp == null ? null : timestamp.toLocalDateTime());
 		tokenDto.setCreationTime(localDateTime);
 		return tokenDto;
 	}

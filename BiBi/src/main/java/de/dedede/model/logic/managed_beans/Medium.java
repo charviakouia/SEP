@@ -1,22 +1,21 @@
 package de.dedede.model.logic.managed_beans;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.List;
-
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.exceptions.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Backing bean for the medium facelet. This page provides information about a
@@ -36,10 +35,26 @@ public class Medium implements Serializable {
 
 	private MediumDto mediumDto;
 
-	@PostConstruct
+	private CopyDto newCopy;
 
+	@Inject
+	private UserSession userSession;
+
+	@Inject
+	private FacesContext context;
+
+	@PostConstruct
 	private void init() {
 		mediumDto = new MediumDto();
+		newCopy = new CopyDto();
+	}
+
+	public void onload() {
+		try {
+			mediumDto = MediumDao.readMedium(mediumDto);
+		} catch (MediumDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage("There is no medium with this ID."));
+		}
 	}
 
 	/**
@@ -58,22 +73,26 @@ public class Medium implements Serializable {
 	/**
 	 * Insert a new copy of this medium.
 	 */
-
 	public void createCopy() throws BusinessException {
-		CopyDto newCopyDto = new CopyDto();
 		try {
-			MediumDao.createCopy(newCopyDto, mediumDto);
+			UUID idOne = UUID.randomUUID();
+			String str=""+idOne;
+			int uid = str.hashCode();
+			String filterStr=""+uid;
+			str = filterStr.replaceAll("-", "");
+			int newCopyID = Integer.parseInt(str);
+			newCopy.setId(newCopyID);
+			MediumDao.createCopy(newCopy, mediumDto);
 		} catch (LostConnectionException e) {
-			String msg = "Database error occurred while creating copy with id: " + newCopyDto.getId();
+			String msg = "Database error occurred while creating copy with id: " + newCopy.getId();
 			throw new BusinessException(msg, e);
 		} catch (MaxConnectionsException e) {
-			String msg = "Connection is not available while creating copy with id: " + newCopyDto.getId();
+			String msg = "Connection is not available while creating copy with id: " + newCopy.getId();
 			throw new BusinessException(msg, e);
 		} catch (EntityInstanceNotUniqueException e) {
-			String msg = "A copy with this ID already exists: " + newCopyDto.getId();
+			String msg = "A copy with this ID already exists: " + newCopy.getId();
 			throw new BusinessException(msg, e);
 		}
-
 	}
 
 	/**
@@ -97,8 +116,9 @@ public class Medium implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void deleteCopy(int index) throws IllegalArgumentException {
-
+	public void deleteCopy(int index) throws IllegalArgumentException,
+			CopyDoesNotExistException {
+		MediumDao.deleteCopy(mediumDto.getCopy(index));
 	}
 
 	/**
@@ -107,8 +127,9 @@ public class Medium implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void saveCopy(int index) throws IllegalArgumentException {
-
+	public void saveCopy(int index) throws IllegalArgumentException,
+			CopyDoesNotExistException {
+		MediumDao.updateCopy(mediumDto.getCopy(index));
 	}
 
 	/**
@@ -156,5 +177,34 @@ public class Medium implements Serializable {
 
 	public void setMediumDto(MediumDto mediumDto) {
 		this.mediumDto = mediumDto;
+	}
+
+	public String delete() throws MediumDoesNotExistException {
+		MediumDao.deleteMedium(mediumDto);
+		return "/view/public/medium-search?faces-redirect=true";
+	}
+
+	public CopyDto getNewCopy() {
+		return newCopy;
+	}
+
+	public void setNewCopy(CopyDto newCopy) {
+		this.newCopy = newCopy;
+	}
+
+	public UserSession getUserSession() {
+		return userSession;
+	}
+
+	public void setUserSession(UserSession userSession) {
+		this.userSession = userSession;
+	}
+
+	public FacesContext getContext() {
+		return context;
+	}
+
+	public void setContext(FacesContext context) {
+		this.context = context;
 	}
 }

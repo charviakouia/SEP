@@ -93,5 +93,16 @@ public class CategoryDto {
 	public void setParent(CategoryDto parent) {
 		this.parent = parent;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		} else if (!(o instanceof CategoryDto)) {
+			return false;
+		} else {
+			return ((CategoryDto) o).getId() == id;
+		}
+	}
 
 }

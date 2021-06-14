@@ -11,8 +11,11 @@
 	<ui:param name="page" value="email_confirmation" />
 
 	<ui:define name="content">
-
-		UNIMPLEMENTED
+	
+		<f:metadata>
+			<f:viewParam name="token" value="#{emailConfirmation.token.content}"/>
+			<f:viewAction action="#{emailConfirmation.attemptToConfirm}"/>
+		</f:metadata>
 
 	</ui:define>
 	

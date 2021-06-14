@@ -14,47 +14,69 @@
 
 		<h:outputLabel for="mediumForm" value="#{msg['title.medium_creator']}"/>
 		<h:form id="mediumForm">
-
-			<h:outputLabel for="strTable" value="#{msg['title.medium_attribute_type.text']}"/>
-			<h:dataTable id="strTable" value="#{mediumCreator.stringAttributeEntries}" var="entry">
-				<h:column>
-					<h:outputLabel value="#{entry.key.name}"/>
-				</h:column>
-				<h:column>
-					<h:inputText value="#{entry.value}"/>
-				</h:column>
-			</h:dataTable>
-
-			<h:outputLabel for="urlTable" value="#{msg['title.medium_attribute_type.url']}"/>
-			<h:dataTable id="urlTable" value="#{mediumCreator.urlAttributeEntries}" var="entry">
-				<h:column>
-					<h:outputLabel value="#{entry.key.name}"/>
-				</h:column>
-				<h:column>
-					<h:inputText value="#{entry.value}" converter="URLs"/>
-				</h:column>
-			</h:dataTable>
-
+			
 			<h:outputLabel for="categorySearchTerm" value="#{msg['title.category_search']}"/>
 			<h:inputText id="categorySearchTerm" value="#{mediumCreator.categorySearchTerm}"/>
-
-			<h:outputLabel for="categoryInput" value="#{msg['title.category_browser']}"/>
-			<h:selectOneMenu id="categoryInput" value="#{mediumCreator.medium.category}">
-				<f:selectItems value="#{mediumCreator.searchedCategories}" var="category"
-							   itemLabel="#{category.name}" itemValue="#{category}"/>
-			</h:selectOneMenu>
-
+			
+			<h:commandButton action="#{mediumCreator.searchForCategory}" value="#{msg['search']}" 
+				immediate="true"/><br/>
+			
+			<h:outputLabel for="categoryChoice" value="#{msg['title.category_browser']}"/>
+			<h:selectOneMenu id="categoryChoice" value="#{mediumCreator.medium.category}"
+				converter="CategoryConverter" required="true" immediate="true">
+				<f:selectItems value="#{mediumCreator.searchedCategories}" var="item"
+					itemValue="#{item}" itemLabel="#{item.name}" immediate="true"/>
+			</h:selectOneMenu><br/>
+						
+			<h:outputLabel for="mediumTitle" value="#{msg['title.medium_attribute_type.title']}"/>
+			<h:inputText id="mediumTitle" value="#{mediumCreator.medium.title}" required="true"/><br/> 
+			
 			<h:outputLabel for="lendingDuration" value="#{msg['title.medium_lending_duration']}"/>
 			<h:inputText id="lendingDuration" value="#{mediumCreator.medium.returnPeriod}"
-						 converter="DurationConverter"/>
+				converter="DurationConverter" required="true"/><br/>
+						 
+			<h:outputLabel for="author1" value="#{msg['title.medium_attribute_type.author']}"/>
+			<h:inputText id="author1" value="#{mediumCreator.medium.author1}"/><br/>
+						 
+			<h:outputLabel for="author2" value="#{msg['title.medium_attribute_type.author']}"/>
+			<h:inputText id="author2" value="#{mediumCreator.medium.author2}"/><br/>			 
+			
+			<h:outputLabel for="author3" value="#{msg['title.medium_attribute_type.author']}"/>
+			<h:inputText id="author3" value="#{mediumCreator.medium.author3}"/><br/>
+			
+			<h:outputLabel for="author4" value="#{msg['title.medium_attribute_type.author']}"/>
+			<h:inputText id="author4" value="#{mediumCreator.medium.author4}"/><br/>
+			
+			<h:outputLabel for="author5" value="#{msg['title.medium_attribute_type.author']}"/>
+			<h:inputText id="author5" value="#{mediumCreator.medium.author5}"/><br/> 
+						 
+			<h:outputLabel for="mediumType" value="#{msg['title.medium_attribute_type.type']}"/>
+			<h:inputText id="mediumType" value="#{mediumCreator.medium.mediumType}" required="true"/><br/> 
+						 
+			<h:outputLabel for="mediumEdition" value="#{msg['title.medium_attribute_type.edition']}"/>
+			<h:inputText id="mediumEdition" value="#{mediumCreator.medium.edition}" required="true"/><br/> 
+						 
+			<h:outputLabel for="mediumPublisher" value="#{msg['title.medium_attribute_type.publisher']}"/>
+			<h:inputText id="mediumPublisher" value="#{mediumCreator.medium.publisher}" required="true"/><br/> 
+						 
+			<h:outputLabel for="releaseYear" value="#{msg['title.medium_attribute_type.releaseYear']}"/>
+			<h:inputText id="releaseYear" value="#{mediumCreator.releaseYear}" required="true"/><br/>  
+						 
+			<h:outputLabel for="isbn" value="#{msg['title.medium_attribute_type.isbn']}"/>
+			<h:inputText id="isbn" value="#{mediumCreator.medium.isbn}" required="true"/><br/>  
+						
+			<h:outputLabel for="mediumLink" value="#{msg['title.medium_attribute_type.mediumLink']}"/>
+			<h:inputText id="mediumLink" value="#{mediumCreator.medium.mediumLink}"/><br/>  
+						 
+			<h:outputLabel for="demoText" value="#{msg['title.medium_attribute_type.demoText']}"/>
+			<h:inputText id="demoText" value="#{mediumCreator.medium.text}"/><br/> 		 
 
 			<h:outputLabel for="copyLocation" value="#{msg['title.copyLocation']}"/>
-			<h:inputText id="copyLocation" value="#{mediumCreator.copy.location}"/>
+			<h:inputText id="copyLocation" value="#{mediumCreator.copy.location}" required="true"/><br/>
 
 			<h:outputLabel for="copySignature" value="#{msg['title.copySignature']}"/>
-			<h:inputText id="copySignature" value="#{mediumCreator.copy.signature}"/>
+			<h:inputText id="copySignature" value="#{mediumCreator.copy.signature}" required="true"/><br/>
 
-			<h:commandButton action="#{mediumCreator.searchForCategory}" value="#{msg['search']}"/>
 			<h:commandButton action="#{mediumCreator.save}" value="#{msg['save']}"/>
 
 		</h:form>

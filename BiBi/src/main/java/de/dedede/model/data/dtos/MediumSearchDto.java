@@ -1,17 +1,13 @@
 package de.dedede.model.data.dtos;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MediumSearchDto {
 
-	private static final int DEFAULT_NUMBER_OF_NUANCED_SEARCH_QUERIES = 3;
+	private String generalSearchTerm = "";
 
-	private String generalSearchTerm;
-
-	private List<NuancedSearchQuery> nuancedSearchQueries = Stream.generate(NuancedSearchQuery::new)
-			.limit(DEFAULT_NUMBER_OF_NUANCED_SEARCH_QUERIES).collect(Collectors.toList());
+	private List<NuancedSearchQuery> nuancedSearchQueries = new ArrayList<>();
 
 	public String getGeneralSearchTerm() {
 		return generalSearchTerm;
@@ -33,7 +29,7 @@ public class MediumSearchDto {
 
 		private SearchOperator operator = SearchOperator.AND;
 
-		private AttributeOrCategory criterion;
+		private MediumSearchCriterion criterion;
 
 		private String term;
 
@@ -45,11 +41,11 @@ public class MediumSearchDto {
 			this.operator = operator;
 		}
 
-		public AttributeOrCategory getCriterion() {
+		public MediumSearchCriterion getCriterion() {
 			return criterion;
 		}
 
-		public void setCriterion(AttributeOrCategory criterion) {
+		public void setCriterion(MediumSearchCriterion criterion) {
 			this.criterion = criterion;
 		}
 
