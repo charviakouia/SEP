@@ -24,7 +24,7 @@
 						styleClass="form-control" required="true" 
 						onchange="submit()" 
 						valueChangeListener="#{lending.setUserEmail}">
-				<f:validator validatorId="userValidator"/><!--@IvanCharviakou-->
+				<f:validator validatorId="userExistsValidator"/>
 			</h:inputText>
 			<h:message for="lending_mail_field" style="color:red"/> 
 		</h:panelGroup>
@@ -46,15 +46,14 @@
 				</h:panelGroup>            
 			</ui:repeat>
 		</h:panelGroup>
-		<h:commandButton id="button_direct_lend_copies"
-							action="#{lending.lendCopies()}" 
-							value="#{msg['lending.lend_copies']}"
-							styleClass="btn btn-primary"/>
 		<h:commandButton id="button_add_signature_lending_field"
 							action="#{lending.addSignatureInputField()}" 
 							value="#{msg['lending.add_input']}"
 							styleClass="btn btn-secondary"/>	
-										
+		<h:commandButton id="button_direct_lend_copies"
+							action="#{lending.lendCopies()}" 
+							value="#{msg['lending.lend_copies']}"
+							styleClass="btn btn-primary"/>				
 	</h:form>
 	
 		

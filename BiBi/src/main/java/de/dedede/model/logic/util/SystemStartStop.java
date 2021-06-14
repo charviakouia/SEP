@@ -1,22 +1,22 @@
 package de.dedede.model.logic.util;
 
 import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 import de.dedede.model.persistence.exceptions.DriverNotFoundException;
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
 import de.dedede.model.persistence.exceptions.InvalidLogFileException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.DataLayerInitializer;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.faces.application.Application;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.PostConstructApplicationEvent;
 import jakarta.faces.event.PreDestroyApplicationEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
-import jakarta.servlet.ServletContext;
 
 /**
  *  Conducts and relays necessary actions before the system is shutdown 
@@ -60,9 +60,10 @@ public class SystemStartStop implements SystemEventListener {
 	 * @throws InvalidConfigurationException if config File couldn't be read
 	 */
 	private void initializeApplication() { 
-		InputStream is = 
-				this.getClass().getClassLoader().getResourceAsStream(relative);
-		ConfigReader.getInstance().setUpConfigReader(is);;						
+		FacesContext fctx = FacesContext.getCurrentInstance();
+		ExternalContext ctx = fctx.getExternalContext();
+		InputStream is = ctx.getResourceAsStream(relative);
+		ConfigReader.getInstance().setUpConfigReader(is);						
 		System.out.println("ConfigReader initialized");
 		try {
 			if (Logger.logSetup()) {

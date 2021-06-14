@@ -24,7 +24,7 @@
 						styleClass="form-control" required="true" 
 						onchange="submit()" 
 						valueChangelistener="#{returnForm.setUserEmail}"> 
-				<f:validator validatorId="userValidator"/><!--@IvanCharviakou-->
+				<f:validator validatorId="userExistsValidator"/>
 			</h:inputText>
 			<h:message for="returnForm_mail_field" style="color:red"/>
 		</h:panelGroup>

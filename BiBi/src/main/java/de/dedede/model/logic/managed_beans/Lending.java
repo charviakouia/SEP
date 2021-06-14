@@ -44,14 +44,14 @@ public class Lending implements Serializable {
 	/**
 	 * Reflects the input fields for signatures as an ArrayList
 	 */
-	private ArrayList<CopyDto> copies = new ArrayList<CopyDto>();
+	private ArrayList<CopyDto> copies = new ArrayList<CopyDto>(); //normale list
 
 	/**
 	 * Initializes the Backing Bean with 5 copy signature input fields.
 	 */
 	@PostConstruct
 	public void init() {
-		for(int i = 0; i < 5; i++) {
+		for(int i = 0; i < 5; i++) { 							//feld extrahieren
 			copies.add(new CopyDto());
 		}
 	}
@@ -99,25 +99,28 @@ public class Lending implements Serializable {
 			Application application = context.getApplication();
 			ResourceBundle messages = application.evaluateExpressionGet(context,
 					"#{msg}", ResourceBundle.class);
-		if (lent == 0) {
-			String shortMessage = messages.getString("lending.enter_signature"
-					+ "_short");
-			String longMessage = messages.getString("lending.enter_signature"
-					+ "_long");
-			context.addMessage(null, new FacesMessage(
+				if (lent == 0) {
+					String shortMessage = messages.getString("lending.enter_"
+							+ "signature_short");
+					String longMessage = messages.getString("lending.enter_"
+							+ "signature_long");
+					context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
-		} else {
-			String shortContent = messages.getString("lending.copies_lent"
-					+ "_short");
-			String longContent = messages.getString("lending.copies_lent_long");
-			String emailAddress = user.getEmailAddress();
-			String lentCopies = String.valueOf(lent);
-			String shortMessage = insertParams(lentCopies, emailAddress, 
+				} else {
+					String shortContent = messages.getString("lending.copies"
+							+ "_lent_short");
+					String longContent = messages.getString("lending.copies_"
+							+ "lent_long");
+					String emailAddress = user.getEmailAddress();
+					String lentCopies = String.valueOf(lent);
+					String shortMessage = insertParams(lentCopies, emailAddress, 
 					shortContent);
-			String longMessage = insertParams(lentCopies, emailAddress, 
+					String longMessage = insertParams(lentCopies, emailAddress, 
 					longContent);
-			context.addMessage(null, new FacesMessage(
+					context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_INFO, shortMessage, longMessage));
+					this.user.setEmailAddress("");
+					this.copies.clear();
 		}
 	}
 	

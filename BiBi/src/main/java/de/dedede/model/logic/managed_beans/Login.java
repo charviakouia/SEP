@@ -146,8 +146,7 @@ public class Login {
 				userSession.setUser(completeUserData);
 				try {
 					externalContext.redirect(
-							"/BiBi/view/account/profile.xhtml?id=" 
-							+ completeUserData.getId());
+							"/BiBi/view/public/medium-search.xhtml");
 					return;
 				} catch (IOException io) {
 					Logger.severe("IOException occured during redirection"
@@ -208,8 +207,8 @@ public class Login {
 					+ "_sent_short");
 			String longMessage = messages.getString("login.email_was"
 					+ "_sent_long");
-			context.addMessage("login_form:login_email_field", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+			context.addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_INFO, 
 							shortMessage, longMessage));
 		} catch (UserDoesNotExistException e) {
 			String shortMessage = messages.getString("login.unknown_user"

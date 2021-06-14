@@ -102,8 +102,8 @@ public class ReturnForm implements Serializable {
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
 		} else {
-			String shortContent = messages.getString("returnForm.copies_returned"
-					+ "_short");
+			String shortContent = messages.getString("returnForm.copies_returne"
+					+ "d_short");
 			String longContent = messages.getString("returnForm.copies_returned"
 					+ "_long");
 			String emailAddress = user.getEmailAddress();
@@ -114,6 +114,8 @@ public class ReturnForm implements Serializable {
 					longContent);
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_INFO, shortMessage, longMessage));
+			this.user.setEmailAddress("");
+			this.copies.clear();
 		}
 	}
 	
