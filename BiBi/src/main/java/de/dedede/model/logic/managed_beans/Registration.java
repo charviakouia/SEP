@@ -11,6 +11,7 @@ import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -23,8 +24,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.sun.org.slf4j.internal.Logger;
 
 /**
  * The backing bean for the registration page. On this page an anonymous user
@@ -90,21 +89,23 @@ public class Registration implements Serializable {
 			setPasswordHash();
 			user.setToken(TokenGenerator.generateToken());
 			UserDao.createUser(user);
-			/*
-			try {
-				Map<String, List<String>> map = new HashMap<>();
-				map.put("token", List.of(user.getToken().getContent()));
-				String link = context.getApplication().getViewHandler().getBookmarkableURL(
-						context, "/view/public/email-confirmation.xhtml", map, false);
-				EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", link);
-			} catch (MessagingException e) {
-				// Logger.severe("Couldn't send a verification email: " + e.getMessage());
-			}
-			*/
+			sendVerificationEmail();
 			return switchUser();
 		} catch (EntityInstanceNotUniqueException e){
 			context.addMessage(null, new FacesMessage("The entered email is already taken"));
 			return null;
+		}
+	}
+	
+	private void sendVerificationEmail() {
+		try {
+			Map<String, List<String>> map = new HashMap<>();
+			map.put("token", List.of(user.getToken().getContent()));
+			String link = context.getApplication().getViewHandler().getBookmarkableURL(
+					context, "/view/public/email-confirmation.xhtml", map, false);
+			EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", link);
+		} catch (MessagingException e) {
+			Logger.severe("Couldn't send a verification email to user: " + user.getEmailAddress());
 		}
 	}
 

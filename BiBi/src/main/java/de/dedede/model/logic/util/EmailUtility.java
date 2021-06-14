@@ -3,6 +3,7 @@ package de.dedede.model.logic.util;
 import java.util.Properties;
 
 import de.dedede.model.persistence.util.ConfigReader;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -52,16 +53,21 @@ public final class EmailUtility {
 		from = ConfigReader.getInstance().getKey("MAIL_SOURCE");
 		username = ConfigReader.getInstance().getKey("MAIL_USER");
 		password = ConfigReader.getInstance().getKey("MAIL_PASSWORD");
-		try {
-			return testSettings();
-		} catch (NoSuchProviderException e) {
-			return false;
-		}
+		return testSettings();
 	}
 	
-	private static boolean testSettings() throws NoSuchProviderException {
+	private static boolean testSettings() {
 		Session session = Session.getInstance(props, new CustomAuthenticator());
-		return session.getTransport("smtp").isConnected();
+		Transport transport = null;
+		try {
+			transport = session.getTransport("smtp");
+			transport.connect();
+			return transport.isConnected();
+		} catch (MessagingException e){
+			return false;
+		} finally {
+			if (transport != null) { try { transport.close(); } catch (MessagingException ignore) {} }
+		}
 	}
 	
 	private static class CustomAuthenticator extends Authenticator {

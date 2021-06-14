@@ -46,7 +46,7 @@ public class EmailConfirmation implements Serializable {
 		user.setToken(token);
 		UserDao.readUserByToken(user);
 		user.setUserVerificationStatus(UserVerificationStatus.VERIFIED);
-		UserDao.updateUser(user);
+		UserDao.updateUserByToken(user);
 		return "/view/public/medium?faces-redirect=true";
 	}
 

@@ -310,11 +310,11 @@ public final class UserDao {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);;
 		try {
 			PreparedStatement updateStmt = conn.prepareStatement(
-					"UPDATE User " +
+					"UPDATE Users " +
 							"SET emailaddress = ?, passwordhashsalt = ?, passwordhash = ?, name = ?, surname = ?, " +
 							"postalcode = ?, city = ?, street = ?, housenumber = ?, token = ?, tokencreation = ?, " +
 							"userlendperiod = CAST(? AS INTERVAL), lendstatus = CAST(? AS userlendstatus), " +
-							"verificationstatus = CAST(? AS userverificationstatus), userrole = CAST(? AS userrole), " +
+							"verificationstatus = CAST(? AS userverificationstatus), userrole = CAST(? AS userrole) " +
 							"WHERE userid = ?;"
 			);
 			populateStatement(updateStmt, userDto);
@@ -328,6 +328,33 @@ public final class UserDao {
 			}
 		} catch (SQLException e){
 			String msg = "Database error occurred while updating user entity with id: " + userDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+	
+	public static void updateUserByToken(UserDto userDto) throws EntityInstanceDoesNotExistException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);;
+		try {
+			PreparedStatement updateStmt = conn.prepareStatement(
+					"UPDATE Users " +
+							"SET verificationstatus = CAST(? AS userverificationstatus), tokencreation = ? " +
+							"WHERE token = ?;"
+			);
+			updateStmt.setString(1, userDto.getUserVerificationStatus().name());
+			updateStmt.setTimestamp(2, null);
+			updateStmt.setString(3, userDto.getToken().getContent());
+			int numAffectedRows = updateStmt.executeUpdate();
+			conn.commit();
+			if (numAffectedRows == 0){
+				String msg = String.format("No entity with the token: %s exists", userDto.getToken().getContent());
+				Logger.severe(msg);
+				throw new EntityInstanceDoesNotExistException(msg);
+			}
+		} catch (SQLException e){
+			String msg = "Database error occurred while updating user entity with token: " + userDto.getToken().getContent();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
