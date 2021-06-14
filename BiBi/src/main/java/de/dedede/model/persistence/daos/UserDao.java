@@ -136,12 +136,16 @@ public final class UserDao {
 	 * 
 	 *  @author Jonas Picker
 	 */
-	public static TokenDto setOrRetrieveUserToken(UserDto user, TokenDto token) throws UserDoesNotExistException, LostConnectionException, MaxConnectionsException {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+	public static TokenDto setOrRetrieveUserToken(UserDto user, TokenDto token)
+			throws UserDoesNotExistException, LostConnectionException,
+					MaxConnectionsException {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (userTokenIsNull(conn, user) || userTokenExpired(conn, user)) {
 				PreparedStatement updateToken = conn.prepareStatement(
-						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP, token = ? WHERE userid = ?;"
+						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP,"
+						+ " token = ? WHERE userid = ?;"
 						);
 				updateToken.setString(1, token.getContent());
 				updateToken.setInt(2, user.getId());
@@ -152,7 +156,8 @@ public final class UserDao {
 				return token;
 			} else {
 				PreparedStatement getToken = conn.prepareStatement(
-						"SELECT token, tokenCreation FROM users WHERE userid = ?;"
+						"SELECT token, tokenCreation "
+						+ "FROM users WHERE userid = ?;"
 						);
 				getToken.setInt(1, user.getId());
 				ResultSet rs = getToken.executeQuery();
@@ -166,18 +171,24 @@ public final class UserDao {
 				return result;
 			}
 		} catch (SQLException e) {
-			String message = "SQLException while checking or setting valid user token";
+			String message = "SQLException while checking or "
+					+ "setting valid user token";
 			Logger.development(message);
 			throw new LostConnectionException(message, e);
 		}
 		
 	}
 	
-	//reads an existing user by id and checks if his token expired but will falsely return false if token is null
+	//reads an existing user by id and checks if his token expired but will 
+	//falsely return false if token is null
 	/* @author Jonas Picker */
-	private static boolean userTokenExpired(Connection conn, UserDto userId) throws SQLException {
+	private static boolean userTokenExpired(Connection conn, UserDto userId) 
+			throws SQLException {
 		PreparedStatement checkingStmt = conn.prepareStatement(
-				"SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes') < (CURRENT_TIMESTAMP) THEN true ELSE false END AS tokenExpired;"
+				"SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
+				+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
+				+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END "
+				+ "AS tokenExpired;"
 				);
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
@@ -188,9 +199,11 @@ public final class UserDao {
 	}
 	//reads an existing user by id and checks if his token is null
 	/* @author Jonas Picker */
-	private static boolean userTokenIsNull(Connection conn, UserDto userId) throws SQLException {
+	private static boolean userTokenIsNull(Connection conn, UserDto userId) 
+			throws SQLException {
 		PreparedStatement checkingStmt = conn.prepareStatement(
-				"SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;"
+				"SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
+				+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;"
 				);
 			checkingStmt.setInt(1, userId.getId());
 			ResultSet rs = checkingStmt.executeQuery();
@@ -215,19 +228,23 @@ public final class UserDao {
 	 * @author Jonas Picker, but re-uses @author Sergei Pravdins's Code
 	 */
 	public static UserDto readUserByEmail(UserDto userDto)
-			throws UserDoesNotExistException, MaxConnectionsException, LostConnectionException {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+			throws UserDoesNotExistException, MaxConnectionsException, 
+			LostConnectionException {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		int id = getUserIdByEmail(conn, userDto);
+		userDto.setId(id);	
 		try {
-			int id = getUserIdByEmail(userDto);
 			userDto.setId(id);
 			UserDto completeUser = readUserForProfileHelper(conn, userDto);
 			return completeUser;
 		} catch (SQLException e){
-			String message = "Database error occurred while reading user entity with id: " + userDto.getId();
+			String message = "Database error occurred while reading user entity"
+					+ " with id: " + userDto.getId();
 			Logger.severe(message);
 			throw new LostConnectionException(message, e);
 		} finally {
-			ConnectionPool.getInstance().releaseConnection(conn);
+			instance.releaseConnection(conn);
 		}
 	}
 
@@ -237,13 +254,14 @@ public final class UserDao {
 
 	}
 	
-	//checks if a user exists in the database and returns his id, exception if not found 
-	//lightweight duplicate of mohamads readUserByEmail() which doesn't work atm...
+	//checks if a user exists in the database and returns his id, exception 
+	//if not found.
 	/* @author Jonas Picker */
-	public static int getUserIdByEmail(UserDto userEmail) throws UserDoesNotExistException  {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+	public static int getUserIdByEmail(Connection conn ,UserDto userEmail) 
+			throws UserDoesNotExistException  {
 			try {
-			PreparedStatement readUserId = conn.prepareStatement("SELECT userId FROM users WHERE emailAddress = ?;");
+			PreparedStatement readUserId = conn.prepareStatement("SELECT userId"
+					+ " FROM users WHERE emailAddress = ?;");
 			readUserId.setString(1, userEmail.getEmailAddress());
 			ResultSet rs = readUserId.executeQuery();
 			rs.next();
@@ -251,9 +269,8 @@ public final class UserDao {
 			return id;
 		} catch (SQLException e) {
 			Logger.development("UserId couldn't be retrieved for this email.");
-			throw new UserDoesNotExistException("Specified email doesn't seem to match any user entry");
-		} finally {
-			ConnectionPool.getInstance().releaseConnection(conn);
+			throw new UserDoesNotExistException("Specified email doesn't seem"
+					+ " to match any user entry");
 		} 
 	}
 

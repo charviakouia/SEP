@@ -1,5 +1,7 @@
 package de.dedede.model.data.dtos;
 
+import jakarta.annotation.PostConstruct;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +40,7 @@ public class MediumDto {
 
     private String publisher;
 
-    private String releaseYear;
+    private int releaseYear;
 
     private String isbn;
 
@@ -46,6 +48,11 @@ public class MediumDto {
 
     private String text;
 
+
+    @PostConstruct
+    private void init() {
+        category = new CategoryDto();
+    }
 
     /**
      * Fetches the id of the medium.
@@ -228,11 +235,11 @@ public class MediumDto {
         this.publisher = publisher;
     }
 
-    public String getReleaseYear() {
+    public int getReleaseYear() {
         return releaseYear;
     }
 
-    public void setReleaseYear(String releaseYear) {
+    public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
     }
 

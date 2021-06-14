@@ -1,4 +1,4 @@
-package test.java.tests;
+package tests;
 
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.daos.UserDao;

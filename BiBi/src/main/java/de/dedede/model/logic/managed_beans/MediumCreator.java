@@ -90,7 +90,7 @@ public class MediumCreator implements Serializable {
 	 * @throws LostConnectionException 
 	 */
 	public String save(){
-		medium.setReleaseYear(String.valueOf(releaseYear));
+		medium.setReleaseYear(releaseYear);
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
 		return null;

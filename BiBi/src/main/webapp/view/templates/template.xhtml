@@ -10,12 +10,13 @@
 
 <h:head>
 
-	<!-- TODO: add a suffix e.g. a dash followed by the name of the system -->
-	<title>#{msg['title.'.concat(page)]}</title>
+	<title>#{msg['title.'.concat(page)]} &#8226;
+		#{pageHeader.application.name}</title>
 
 	<h:outputStylesheet library="css" name="bootstrap-5.0.1.min.css" />
 	<h:outputStylesheet library="css" name="style.css" />
-	<!-- TODO: dynamic stylesheets -->
+
+	<!-- @Task favicon -->
 
 </h:head>
 
@@ -30,7 +31,7 @@
 	</h:panelGroup>
 
 	<ui:include src="footer.xhtml" />
-	
+
 	<h:outputScript library="js" name="bootstrap-5.0.1.bundle.min.js" />
 
 </h:body>

@@ -23,10 +23,11 @@ public final class PasswordHashingModule {
 	private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
 	/**
-	 * Hash a password with the SHA3-256 hash function.
+	 * Hash a password and salt with the SHA3-256 hash function.
 	 *
 	 * @param password The String which should be hashed.
 	 * @param salt The salt the password is concatenated with before hashing
+	 * 
 	 * @return password and salt in a 64 sign long hexadecimal form as String.
 	 */
 	public static String hashPassword(String password, String salt) {
@@ -34,7 +35,8 @@ public final class PasswordHashingModule {
 		String inputString = password + salt;
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance("SHA3-256");
-			byte[] hashAsBytes = messageDigest.digest(inputString.getBytes(UTF_8));
+			byte[] InputAsBytes = inputString.getBytes(UTF_8);
+			byte[] hashAsBytes = messageDigest.digest(InputAsBytes);
 			hashAsString = bytesToHexConverter(hashAsBytes);
 		} catch (NoSuchAlgorithmException e) {
 			Logger.development("The SHA3-256 algorithm doesn't seem to exist.");
@@ -43,9 +45,15 @@ public final class PasswordHashingModule {
 		return hashAsString;
 	}
 	
+	/**
+	 * Generates a new random hexadecimal
+	 * 
+	 * @return a 40 sign long String with the number
+	 */
 	public static String generateSalt(){
 	     byte[] result = new byte[LENGTH];
 	     RANDOM.nextBytes(result);
+	     
 	     return bytesToHexConverter(result);
 	}
 	

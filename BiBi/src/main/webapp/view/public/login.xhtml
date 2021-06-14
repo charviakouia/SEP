@@ -13,28 +13,49 @@
 
 	<ui:define name="content">
 	<h1>#{msg['login.headline']}</h1>
-		<h:panelGrid columns="2" id="container" styleClass="className" style="display:block;">
-		<h:panelGroup layout="block" styleClass="d-flex justify-content-center">
-		<h:form>
-		
-			<h:panelGroup layout="block" styleClass="d-flex justify-content-around">
-			<h:outputLabel for="login_email_field" value="#{msg['login.email']}"/>
-			<h:inputText id="login_email_field" type="text" value="#{login.userData.emailAddress}" required="true">
-			</h:inputText>
-			</h:panelGroup>
-			<h:panelGroup layout="block" styleClass="d-flex justify-content-around">
-			<h:outputLabel for="login_password_field" value="#{msg['login.password']}"/>
-			<h:inputSecret id="login_password_field" type="text" styleClass="" value="#{login.userData.passwordHash}" required="true">
-			</h:inputSecret>
-			</h:panelGroup>
-						
-			<h:panelGroup layout="block" styleClass="d-flex justify-content-around">
-			<h:commandButton id="login_login_button" value="#{msg['login.log_in']}" action="#{login.logIn()}" styleClass="btn btn-primary"/>
-			</h:panelGroup>
+		<br></br>
+		<br></br>
 
-		</h:form>
-		</h:panelGroup>
+		<h:outputText id="login_already_logged_in" 
+					rendered="#{not login.renderLogin()}"
+					styleClass="alert alert-warning" 
+					value="#{msg['login.already_logged_in']}"/>
+		
+		<h:form id="login_form" rendered="#{login.renderLogin()}">
+		<h:panelGrid id = "panel" columns = "3" border = "0" cellpadding = "10"  
+               cellspacing = "1">
+
+			<h:outputLabel for="login_email_field" 
+							value="#{msg['login.email']}"/>
+			<h:inputText id="login_email_field" type="text"
+						 value="#{login.userData.emailAddress}" required="true">
+			</h:inputText>
+			<h:message id="login_email_message" for="login_email_field" 
+						style="color:red"/>
+
+
+			<h:outputLabel for="login_password_field"
+							value="#{msg['login.password']}"/>
+			<h:inputSecret id="login_password_field" type="text" 
+						styleClass="" value="#{login.userData.passwordHash}">
+			</h:inputSecret>
+			<h:message id="login_password_message" for="login_password_field" 
+						style="color:red"/>
+		
+			<h:commandButton id="login_login_button" 
+							value="#{msg['login.log_in']}" 
+							action="#{login.logIn()}" 
+							styleClass="btn btn-primary"/>
+			<h:commandButton id="login_reset_password_button" 
+							value="#{msg['login.reset_password']}" 
+							action="#{login.resetPassword()}" 
+							styleClass="btn btn-secondary"/>
+
+		
 		</h:panelGrid>
+		</h:form>
+        
+
 	</ui:define>
 
 </ui:composition>

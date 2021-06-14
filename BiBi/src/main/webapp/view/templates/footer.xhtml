@@ -10,14 +10,14 @@
 	<h:panelGroup layout="block"
 		styleClass="footer text-center bg-dark text-white position-absolute bottom-0 w-100 p-5">
 
-		<h:outputLink value="/BiBi/view/public/privacy-policy.xhtml"
-			styleClass="text-reset">#{msg['privacy_policy']}</h:outputLink>
+		<h:link value="#{msg['privacy_policy']}"
+			outcome="/view/public/privacy-policy.xhtml" styleClass="text-reset" />
 				|
-			<h:outputLink value="/BiBi/view/public/site-notice.xhtml"
-			styleClass="text-reset">#{msg['site_notice']}</h:outputLink>
+		<h:link value="#{msg['site_notice']}"
+			outcome="/view/public/site-notice.xhtml" styleClass="text-reset" />
 				|
-			<h:outputLink value="/BiBi/view/public/contact.xhtml"
-			styleClass="text-reset">#{msg['contact']}</h:outputLink>
+		<h:link value="#{msg['contact']}" outcome="/view/public/contact.xhtml"
+			styleClass="text-reset" />
 
 	</h:panelGroup>
 

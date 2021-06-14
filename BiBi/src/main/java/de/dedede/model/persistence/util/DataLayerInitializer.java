@@ -34,8 +34,8 @@ public class DataLayerInitializer {
 	 * @throws LostConnectionException Is thrown if a connection could
 	 * 		not be established to the data store to perform the initialization.
 	 * @throws DriverNotFoundException if the JDBC driver was the problem source
-	 * @throws InvalidConfigurationException If a configuration in the application's 
-	 * 		configuration file is invalid
+	 * @throws InvalidConfigurationException If a configuration in the 
+	 * 			application's configuration file is invalid
 	 * @see ConnectionPool
 	 * @see MaintenanceProcess
 	 */
@@ -59,7 +59,6 @@ public class DataLayerInitializer {
 					+ "while starting...");
 			throw e;
 		}
-		
 		try {
 			setUpDatabase();
 		} catch (SQLException sqle) {
@@ -93,10 +92,18 @@ public class DataLayerInitializer {
 		
 		private Connection connection;
 		
+		/**
+		 * Constructs a new Object with an input
+		 * 
+		 * @param connection.
+		 */
 		public CloseConnThread(Connection connection) {
 			this.connection=connection;
 		}
 		
+		/**
+		 * Shuts down the Connection if the Thread is ordered to run.
+		 */
 		@Override
 		public void run() {
 		try {
@@ -431,7 +438,8 @@ public class DataLayerInitializer {
 				+ "	mediumlink VARCHAR(150),"
 				+ "	demotext TEXT,"
 				+ "	PRIMARY KEY(mediumID),"
-				+ "	CONSTRAINT fk_Category FOREIGN KEY(hasCategory) REFERENCES Category(categoryID) ON DELETE SET null"
+				+ "	CONSTRAINT fk_Category FOREIGN KEY(hasCategory) REFERENCES"
+				+ " Category(categoryID) ON DELETE SET null"
 				+ "	);";
 		PreparedStatement createMedium = connection.prepareStatement(s13);
 		createMedium.execute();

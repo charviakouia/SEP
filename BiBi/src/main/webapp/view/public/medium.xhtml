@@ -12,7 +12,165 @@
 
 	<ui:define name="content">
 
-		UNIMPLEMENTED
+		<f:metadata>
+			<f:viewParam name="id" value="#{medium.mediumDto.id}" required="true"/>
+			<f:viewAction action="#{medium.onload}" /><br/>
+		</f:metadata>
+
+		<h:form id="form_mediumAttributes_forStaff" rendered="#{userSession.user.role == 'STAFF'
+															or userSession.user.role == 'ADMIN'}">
+
+			<h:outputLabel value="#{msg['medium.title']}"/>
+			<h:inputText id="title" value="#{medium.mediumDto.title}" required="true"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.author']}"/>
+			<h:inputText id="author1" value="#{medium.mediumDto.author1}"/>
+			<h:outputText value=", " />
+			<h:inputText id="author2" value="#{medium.mediumDto.author2}"/>
+			<h:outputText value=", " />
+			<h:inputText id="author3" value="#{medium.mediumDto.author3}"/>
+			<h:outputText value=", " />
+			<h:inputText id="author4" value="#{medium.mediumDto.author4}"/>
+			<h:outputText value=", " />
+			<h:inputText id="author5" value="#{medium.mediumDto.author5}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.mediumType']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="type" value="#{medium.mediumDto.mediumType}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.edition']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="edition" value="#{medium.mediumDto.edition}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.publisher']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="publisher" value="#{medium.mediumDto.publisher}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.releaseYear']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="releaseYear" value="#{medium.mediumDto.releaseYear}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.isbn']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="isbn" value="#{medium.mediumDto.isbn}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.mediumLink']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="link" value="#{medium.mediumDto.mediumLink}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.returnPeriod']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.hasCategory']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText id="category" value="#{medium.mediumDto.category}"/>
+			<br/>
+			<br/>
+
+			<h:outputLabel value="#{msg['mediumDemotext']}"/>
+			<br/>
+			<h:outputText value="&#160;" />
+			<h:inputTextarea id="demoText" value="#{medium.mediumDto.text}"/>
+			<br/>
+			<br/>
+
+			<h:commandButton id="button_save"
+							 value="#{msg['medium.save']}"
+							 action="#{medium.saveAttributes}"
+							 styleClass="btn btn-secondary" />
+			<br/>
+			<br/>
+
+			<h:commandButton id="button_delete"
+							 value="#{msg['medium.delete']}"
+							 action="#{medium.delete}"
+							 styleClass="btn btn-secondary" />
+		</h:form>
+
+		<h:form id="form_mediumAttributes_forUsers" rendered="#{userSession.user.role != 'STAFF'
+														and userSession.user.role != 'ADMIN'}">
+
+			<h:outputLabel value="#{msg['medium.title']}"/>
+			<h:outputText id="title" value="#{medium.mediumDto.title}" required="true"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.author']}"/>
+			<h:outputText id="author1" value="#{medium.mediumDto.author1}"/>
+			<h:outputText value=", " />
+			<h:outputText id="author2" value="#{medium.mediumDto.author2}"/>
+			<h:outputText value=", " />
+			<h:outputText id="author3" value="#{medium.mediumDto.author3}"/>
+			<h:outputText value=", " />
+			<h:outputText id="author4" value="#{medium.mediumDto.author4}"/>
+			<h:outputText value=", " />
+			<h:outputText id="author5" value="#{medium.mediumDto.author5}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.mediumType']}"/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="type" value="#{medium.mediumDto.mediumType}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.edition']}"/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="edition" value="#{medium.mediumDto.edition}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.publisher']}"/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="publisher" value="#{medium.mediumDto.publisher}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.releaseYear']}"/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="releaseYear" value="#{medium.mediumDto.releaseYear}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.isbn']}"/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="isbn" value="#{medium.mediumDto.isbn}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.mediumLink']}"/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="link" value="#{medium.mediumDto.mediumLink}"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.returnPeriod']}"/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"
+						  converter="DurationConverter"/>
+			<br/>
+
+			<h:outputLabel value="#{msg['medium.hasCategory']}"/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="category" value="#{medium.mediumDto.category}"/>
+			<br/>
+			<br/>
+
+			<h:outputLabel value="#{msg['mediumDemotext']}"/>
+			<br/>
+			<h:outputText value="&#160;" />
+			<h:outputText id="demoText" value="#{medium.mediumDto.text}"/>
+			<br/>
+
+		</h:form>
+
+		<h:dataTable id="table_copies">
+
+
+
+		</h:dataTable>
 
 	</ui:define>
 	

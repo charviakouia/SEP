@@ -1,9 +1,5 @@
 package de.dedede.model.logic.managed_beans;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.List;
-
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.UserDto;
@@ -12,9 +8,14 @@ import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -36,10 +37,23 @@ public class Medium implements Serializable {
 
 	private MediumDto mediumDto;
 
-	@PostConstruct
+	@Inject
+	private UserSession userSession;
 
+	@Inject
+	private FacesContext context;
+
+	@PostConstruct
 	private void init() {
 		mediumDto = new MediumDto();
+	}
+
+	public void onload() {
+		try {
+			mediumDto = MediumDao.readMedium(mediumDto);
+		} catch (MediumDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage("There is no medium with this ID."));
+		}
 	}
 
 	/**
@@ -58,7 +72,6 @@ public class Medium implements Serializable {
 	/**
 	 * Insert a new copy of this medium.
 	 */
-
 	public void createCopy() throws BusinessException {
 		CopyDto newCopyDto = new CopyDto();
 		try {
@@ -73,7 +86,6 @@ public class Medium implements Serializable {
 			String msg = "A copy with this ID already exists: " + newCopyDto.getId();
 			throw new BusinessException(msg, e);
 		}
-
 	}
 
 	/**
@@ -156,5 +168,10 @@ public class Medium implements Serializable {
 
 	public void setMediumDto(MediumDto mediumDto) {
 		this.mediumDto = mediumDto;
+	}
+
+	public String delete() throws MediumDoesNotExistException {
+		MediumDao.deleteMedium(mediumDto);
+		return "/view/public/medium-search?faces-redirect=true";
 	}
 }
