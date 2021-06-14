@@ -361,7 +361,7 @@ public final class MediumDao {
 	 * @see CopyDto
 	 */
 
-	public static CopyDto deleteCopy(CopyDto copyDto) throws MediumDoesNotExistException, LostConnectionException, MaxConnectionsException {
+	public static CopyDto deleteCopy(CopyDto copyDto) throws CopyDoesNotExistException, LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (copyEntityExists(conn, copyDto)){
@@ -371,10 +371,10 @@ public final class MediumDao {
 			} else {
 				String msg = String.format("No entity with the id: %d exists", copyDto.getId());
 				// Logger.severe(msg);
-				throw new MediumDoesNotExistException(msg);
+				throw new CopyDoesNotExistException(msg);
 			}
 		} catch (SQLException e) {
-			String msg = "Database error occurred while deleting medium entity with id: " + copyDto.getId();
+			String msg = "Database error occurred while deleting copy entity with id: " + copyDto.getId();
 			// Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
@@ -607,9 +607,6 @@ public final class MediumDao {
 		stmt.setString(4, copyDto.getLocation());
 		stmt.setString(5, String.valueOf(copyDto.getCopyStatus()));
 		stmt.setTimestamp(6, copyDto.getDeadline());
-		if (copyDto.getActor() != 0) {
-			stmt.setInt(7, copyDto.getActor());
-		}
 	}
 
 	/**

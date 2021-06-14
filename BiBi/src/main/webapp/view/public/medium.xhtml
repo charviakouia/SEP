@@ -17,160 +17,214 @@
 			<f:viewAction action="#{medium.onload}" /><br/>
 		</f:metadata>
 
-		<h:form id="form_mediumAttributes_forStaff" rendered="#{userSession.user.role == 'STAFF'
-															or userSession.user.role == 'ADMIN'}">
+		<h:form id="form_mediumAttributes_forUsers">
 
-			<h:outputLabel value="#{msg['medium.title']}"/>
-			<h:inputText id="title" value="#{medium.mediumDto.title}" required="true"/>
-			<br/>
+			<h3>
+				<h:inputText id="title" value="#{medium.mediumDto.title}" required="true"
+							 readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
+			</h3>
 
 			<h:outputLabel value="#{msg['medium.author']}"/>
-			<h:inputText id="author1" value="#{medium.mediumDto.author1}"/>
+			<h:inputText id="author1" value="#{medium.mediumDto.author1}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<h:outputText value=", " />
-			<h:inputText id="author2" value="#{medium.mediumDto.author2}"/>
+			<h:inputText id="author2" value="#{medium.mediumDto.author2}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<h:outputText value=", " />
-			<h:inputText id="author3" value="#{medium.mediumDto.author3}"/>
+			<h:inputText id="author3" value="#{medium.mediumDto.author3}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<h:outputText value=", " />
-			<h:inputText id="author4" value="#{medium.mediumDto.author4}"/>
+			<h:inputText id="author4" value="#{medium.mediumDto.author4}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<h:outputText value=", " />
-			<h:inputText id="author5" value="#{medium.mediumDto.author5}"/>
+			<h:inputText id="author5" value="#{medium.mediumDto.author5}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.mediumType']}"/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="type" value="#{medium.mediumDto.mediumType}"/>
+			<h:inputText id="type" value="#{medium.mediumDto.mediumType}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.edition']}"/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="edition" value="#{medium.mediumDto.edition}"/>
+			<h:inputText id="edition" value="#{medium.mediumDto.edition}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.publisher']}"/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="publisher" value="#{medium.mediumDto.publisher}"/>
+			<h:inputText id="publisher" value="#{medium.mediumDto.publisher}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.releaseYear']}"/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="releaseYear" value="#{medium.mediumDto.releaseYear}"/>
+			<h:inputText id="releaseYear" value="#{medium.mediumDto.releaseYear}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.isbn']}"/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="isbn" value="#{medium.mediumDto.isbn}"/>
+			<h:inputText id="isbn" value="#{medium.mediumDto.isbn}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.mediumLink']}"/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="link" value="#{medium.mediumDto.mediumLink}"/>
+			<h:inputText id="link" value="#{medium.mediumDto.mediumLink}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.returnPeriod']}"/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"/>
+			<h:inputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"
+						  converter="DurationConverter"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 
 			<h:outputLabel value="#{msg['medium.hasCategory']}"/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="category" value="#{medium.mediumDto.category}"/>
+			<h:inputText id="category" value="#{medium.mediumDto.category}"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
 			<br/>
 
 			<h:outputLabel value="#{msg['mediumDemotext']}"/>
 			<br/>
 			<h:outputText value="&#160;" />
-			<h:inputTextarea id="demoText" value="#{medium.mediumDto.text}"/>
+			<h:inputText id="demoText" value="#{medium.mediumDto.text}" styleClass="text-input"
+						  readonly="#{userSession.user.role != 'ADMIN'
+								and userSession.user.role != 'STAFF'}"/>
 			<br/>
-			<br/>
-
-			<h:commandButton id="button_save"
+			<h:commandButton id="saveMedium"
 							 value="#{msg['medium.save']}"
 							 action="#{medium.saveAttributes}"
-							 styleClass="btn btn-secondary" />
-			<br/>
-			<br/>
-
-			<h:commandButton id="button_delete"
+							 rendered="#{userSession.user.role == 'ADMIN'
+									 or userSession.user.role == 'STAFF'}" />
+			<h:outputText value="&#160;" />
+			<h:outputText value="&#160;" />
+			<h:commandButton id="delMedium"
 							 value="#{msg['medium.delete']}"
 							 action="#{medium.delete}"
-							 styleClass="btn btn-secondary" />
-		</h:form>
-
-		<h:form id="form_mediumAttributes_forUsers" rendered="#{userSession.user.role != 'STAFF'
-														and userSession.user.role != 'ADMIN'}">
-
-			<h:outputLabel value="#{msg['medium.title']}"/>
-			<h:outputText id="title" value="#{medium.mediumDto.title}" required="true"/>
+							 rendered="#{userSession.user.role == 'ADMIN'
+									 or userSession.user.role == 'STAFF'}" />
 			<br/>
-
-			<h:outputLabel value="#{msg['medium.author']}"/>
-			<h:outputText id="author1" value="#{medium.mediumDto.author1}"/>
-			<h:outputText value=", " />
-			<h:outputText id="author2" value="#{medium.mediumDto.author2}"/>
-			<h:outputText value=", " />
-			<h:outputText id="author3" value="#{medium.mediumDto.author3}"/>
-			<h:outputText value=", " />
-			<h:outputText id="author4" value="#{medium.mediumDto.author4}"/>
-			<h:outputText value=", " />
-			<h:outputText id="author5" value="#{medium.mediumDto.author5}"/>
-			<br/>
-
-			<h:outputLabel value="#{msg['medium.mediumType']}"/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="type" value="#{medium.mediumDto.mediumType}"/>
-			<br/>
-
-			<h:outputLabel value="#{msg['medium.edition']}"/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="edition" value="#{medium.mediumDto.edition}"/>
-			<br/>
-
-			<h:outputLabel value="#{msg['medium.publisher']}"/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="publisher" value="#{medium.mediumDto.publisher}"/>
-			<br/>
-
-			<h:outputLabel value="#{msg['medium.releaseYear']}"/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="releaseYear" value="#{medium.mediumDto.releaseYear}"/>
-			<br/>
-
-			<h:outputLabel value="#{msg['medium.isbn']}"/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="isbn" value="#{medium.mediumDto.isbn}"/>
-			<br/>
-
-			<h:outputLabel value="#{msg['medium.mediumLink']}"/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="link" value="#{medium.mediumDto.mediumLink}"/>
-			<br/>
-
-			<h:outputLabel value="#{msg['medium.returnPeriod']}"/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"
-						  converter="DurationConverter"/>
-			<br/>
-
-			<h:outputLabel value="#{msg['medium.hasCategory']}"/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="category" value="#{medium.mediumDto.category}"/>
-			<br/>
-			<br/>
-
-			<h:outputLabel value="#{msg['mediumDemotext']}"/>
-			<br/>
-			<h:outputText value="&#160;" />
-			<h:outputText id="demoText" value="#{medium.mediumDto.text}"/>
 			<br/>
 
 		</h:form>
 
-		<h:dataTable id="table_copies">
+		<h:form id="copies">
+			<h3>
+				<h:outputText value="#{msg['medium.copies.title']}"/>
+			</h3>
+			<h:dataTable value="#{medium.mediumDto.copies.keySet().toArray()}" var="copy" varStatus="status">
 
+				<h:column id="column1">
+					<f:facet name="header">
+						<h:outputText value="#{msg['copy.id']}"/>
+					</f:facet>
+					<h:outputText value="#{copy}"/>
+				</h:column>
 
+				<h:column id="column2">
+					<f:facet name="header">
+						<h:outputText value="#{msg['copy.position']}"/>
+					</f:facet>
+					<h:inputText value="#{medium.mediumDto.copies.get(copy).location}"
+								 readonly="#{userSession.user.role != 'ADMIN'
+							  and userSession.user.role != 'STAFF'}"/>
+				</h:column>
 
-		</h:dataTable>
+				<h:column id="column3">
+					<f:facet name="header">
+						<h:outputText value="#{msg['copy.availability']}"/>
+					</f:facet>
+					<h:outputText value="#{medium.mediumDto.copies.get(copy).copyStatus}"/>
+				</h:column>
+
+				<h:column id="column4">
+					<f:facet name="header">
+						<h:outputText value="#{msg['copy.signature']}"/>
+					</f:facet>
+					<h:inputText value="#{medium.mediumDto.copies.get(copy).signature}" readonly="#{userSession.user.role != 'ADMIN'
+							  and userSession.user.role != 'STAFF'}"/>
+				</h:column>
+
+				<h:column id="column5" rendered="#{userSession.user.role == 'ADMIN'
+										 or userSession.user.role == 'STAFF'}">
+					<f:facet name="header">
+						<h:outputText value="#{msg['copy.action']}"/>
+					</f:facet>
+					<h:form>
+						<h:commandButton id="save"
+										 value="#{msg['save']}"
+										 action="#{medium.saveCopy(status.index)}"/>
+						<h:commandButton id="deleteCopy"
+										 value="#{msg['delete']}"
+										 action="#{medium.deleteCopy(status.index)}"/>
+						<h:commandButton id="cancelPickup"
+										 value="#{msg['copy.cancelPickup']}"
+										 action="#{medium.cancelPickup(status.index)}"
+										 rendered="#{medium.mediumDto.copies.get(copy).copyStatus == 'READY_FOR_PICKUP'}"/>
+						<h:commandButton id="lendCopy"
+										 value="#{msg['copy.lend']}"
+										 action="#{medium.lendCopy(status.index)}"
+										 rendered="#{medium.mediumDto.copies.get(copy).copyStatus == 'AVAILABLE'}"/>
+						<h:commandButton id="returnCopy"
+										 value="#{msg['copy.return']}"
+										 action="#{medium.returnCopy(status.index)}"
+										 rendered="#{medium.mediumDto.copies.get(copy).copyStatus == 'BORROWED'}"/>
+					</h:form>
+				</h:column>
+
+				<h:column id="column6" rendered="#{userSession.user != null
+										and userSession.user.userLendStatus == 'ENABLED'
+										and medium.mediumDto.copies.get(copy).copyStatus == 'AVAILABLE'}">
+					<f:facet name="header">
+						<h:outputText value="#{msg['copy.action']}"/>
+					</f:facet>
+					<h:form>
+						<h:commandButton id="copyPickup"
+										 value="#{msg['copy.pickup']}"
+										 action="#{medium.pickUpCopy(status.index, userSession.user)}"/>
+					</h:form>
+				</h:column>
+
+			</h:dataTable>
+		</h:form>
+		<br/>
+
+		<h:form id="createCopy" rendered="#{userSession.user.role == 'ADMIN'
+										 or userSession.user.role == 'STAFF'}">
+			<h:outputLabel value="#{msg['newCopy.location']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText value="#{medium.newCopy.location}"/>
+			<br/>
+			<h:outputLabel value="#{msg['newCopy.signatur']}"/>
+			<h:outputText value="&#160;" />
+			<h:inputText value="#{medium.newCopy.signature}"/>
+			<h:commandButton id="createCopyButton"
+							 value="#{msg['copy.create']}"
+							 action="#{medium.createCopy()}"/>
+		</h:form>
+		<br/>
+		<br/>
 
 	</ui:define>
 	
