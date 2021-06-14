@@ -3,13 +3,13 @@ package de.dedede.model.logic.managed_beans;
 import java.io.Serial;
 import java.util.List;
 
-import de.dedede.model.data.dtos.MediumCopyAttributeUserDto;
+import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.persistence.daos.MediumDao;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -23,22 +23,25 @@ import jakarta.inject.Named;
 @RequestScoped
 public class CopiesReadyForPickupAllUsers extends PaginatedList {
 
+	@Inject
+	private ExternalContext ectx;
+	
 	@Serial
-	private List<MediumCopyAttributeUserDto> copies;
+	private List<MediumCopyUserDto> copies;
 
 	@PostConstruct
 	public void init() {
-		try {
-			copies = MediumDao.readCopiesReadyForPickup(new PaginationDto());
-		} catch (LostConnectionException | MaxConnectionsException e) {
-			// @Task enhance
-			throw new RuntimeException("database connection issue");
-		}
-
+		copies = MediumDao.readCopiesReadyForPickup(new PaginationDto());
+	}
+	
+	public String goToLending(String signature) {
+		ectx.getFlash().put("signature", signature);
+		
+		return "lending?faces-redirect=true";
 	}
 
 	@Override
-	public List<MediumCopyAttributeUserDto> getItems() {
+	public List<MediumCopyUserDto> getItems() {
 		return copies;
 	}
 }

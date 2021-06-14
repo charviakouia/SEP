@@ -4,6 +4,9 @@
 
 * Erstelle die Validatoren `LendingProcessSignatureValidator`, `ReturnFormSignatureValidator` und `MediumCreationSignatureValidator`,
   welche bei manchen Facelets benötigt werden. 
+* `CopiesReadyForPickup.{getAttributeName,goToLending}`
+* `MediumDao.getAllMediumAttributes`
+* change `AttributeOrCategory{,Converter}` to `SearchCriterion{,Converter}`
 
 ## Feinspezifikation – 1. Meilenstein
 
