@@ -4,7 +4,6 @@ import java.io.Serial;
 import java.util.List;
 
 import de.dedede.model.data.dtos.MediumCopyUserDto;
-import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.persistence.daos.MediumDao;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -31,7 +30,7 @@ public class CopiesReadyForPickupAllUsers extends PaginatedList {
 
 	@PostConstruct
 	public void init() {
-		copies = MediumDao.readCopiesReadyForPickup(new PaginationDto());
+		fetchData();
 	}
 	
 	public String goToLending(String signature) {
@@ -43,5 +42,14 @@ public class CopiesReadyForPickupAllUsers extends PaginatedList {
 	@Override
 	public List<MediumCopyUserDto> getItems() {
 		return copies;
+	}
+
+	@Override
+	public void refresh() {
+		fetchData();
+	}
+	
+	private void fetchData() {
+		copies = MediumDao.readCopiesReadyForPickup(getPaginatedList());
 	}
 }

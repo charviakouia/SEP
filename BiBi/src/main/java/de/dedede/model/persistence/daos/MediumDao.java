@@ -243,7 +243,7 @@ public final class MediumDao {
 				limit ?
 				""");
 		// @Task sorting
-		parameters.add(pagination.getPageNumber() * entriesPerPage);
+		parameters.add(pagination.getPageNumber() * (entriesPerPage - 1));
 		parameters.add(entriesPerPage - 1);
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
@@ -255,8 +255,6 @@ public final class MediumDao {
 			for (var index = 0; index < parameters.size(); index += 1) {
 				statement.setObject(index + 1, parameters.get(index));
 			}
-
-			Logger.development("statement = " + statement.toString());
 
 			final var resultSet = statement.executeQuery();
 			final var results = new ArrayList<MediumDto>();
@@ -630,7 +628,7 @@ public final class MediumDao {
 					limit ?
 					""");
 			// @Task sorting
-			statement.setInt(1, paginationDetails.getPageNumber() * entriesPerPage);
+			statement.setInt(1, paginationDetails.getPageNumber() * (entriesPerPage - 1));
 			statement.setInt(2, entriesPerPage - 1);
 
 			final var resultSet = statement.executeQuery();
