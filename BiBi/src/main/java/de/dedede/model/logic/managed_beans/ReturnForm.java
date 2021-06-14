@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.CopyDto;
@@ -44,7 +45,7 @@ public class ReturnForm implements Serializable {
 	/**
 	 * Holds one copy signature for each input field.
 	 */
-	private ArrayList<CopyDto> copies = new ArrayList<CopyDto>();
+	private List<CopyDto> copies = new ArrayList<CopyDto>();
 
 	/**
 	 * Initializes the bean with 5 signature input fields.
@@ -145,7 +146,7 @@ public class ReturnForm implements Serializable {
 		this.user = user;
 	}
 
-	public ArrayList<CopyDto> getCopies() {
+	public List<CopyDto> getCopies() {
 		return copies;
 	}
 

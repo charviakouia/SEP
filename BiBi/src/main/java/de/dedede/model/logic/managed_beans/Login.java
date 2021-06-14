@@ -142,8 +142,7 @@ public class Login {
 		String salt = completeUserData.getPasswordSalt();
 		String passwordHash = completeUserData.getPasswordHash();
 		String inputHash = PasswordHashingModule.hashPassword(passwordInput, salt);
-		if (true) {
-			// if (inputHash.equals(passwordHash)) {
+		if (inputHash.equals(passwordHash)) {
 				ExternalContext externalContext = context.getExternalContext();
 				HttpServletRequest request = 
 						(HttpServletRequest) externalContext.getRequest();

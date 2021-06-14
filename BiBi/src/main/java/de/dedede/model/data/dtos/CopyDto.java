@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 public class CopyDto {
 
 	private int id;
+	
+	private int mediumId;
 
 	private String location;
 
@@ -138,5 +140,13 @@ public class CopyDto {
 	 */
 	public void setActor(Integer actor) {
 		this.actor = actor;
+	}
+
+	public int getMediumId() {
+		return mediumId;
+	}
+
+	public void setMediumId(int mediumId) {
+		this.mediumId = mediumId;
 	}
 }
