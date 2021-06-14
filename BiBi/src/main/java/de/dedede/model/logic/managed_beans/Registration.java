@@ -1,8 +1,12 @@
 package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.PasswordHashingModule;
+import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
@@ -38,7 +42,8 @@ public class Registration implements Serializable {
 	public void init() {
 		user = new UserDto();
 		user.setEmailVerified(false);
-		user.setUserVerificationStatus(UserVerificationStatus.VERIFIED);
+		user.setUserVerificationStatus(UserVerificationStatus.UNVERIFIED);
+		user.setUserLendStatus(UserLendStatus.ENABLED);
 	}
 
 	public UserDto getUser() {
@@ -50,7 +55,11 @@ public class Registration implements Serializable {
 	}
 
 	public List<UserRole> getRoles(){
-		return List.of(UserRole.values());
+		if (isAdmin()) {
+			return List.of(UserRole.values());
+		} else {
+			return List.of(UserRole.REGISTERED);
+		}
 	}
 
 	public String getPassword() {
@@ -74,7 +83,8 @@ public class Registration implements Serializable {
 	 */
 	public String register() {
 		try {
-			createPasswordHash();
+			setPasswordHash();
+			user.setToken(TokenGenerator.generateToken());
 			UserDao.createUser(user);
 			return switchUser();
 		} catch (EntityInstanceNotUniqueException e){
@@ -84,17 +94,25 @@ public class Registration implements Serializable {
 	}
 
 	private String switchUser(){
-		UserDto currentUser = session.getUser();
-		if (currentUser != null && currentUser.getRole() != null && currentUser.getRole().equals(UserRole.ADMIN)){
+		if (isAdmin()){
 			context.addMessage(null, new FacesMessage("User created successfully"));
 			return null;
 		} else {
 			session.setUser(user);
-			return "/view/profile?faces-redirect=true";
+			return "/view/account/profile?faces-redirect=true";
 		}
 	}
 
-	private void createPasswordHash(){
-		// TODO: Implement
+	private void setPasswordHash(){
+		String salt = PasswordHashingModule.generateSalt();
+		String hash = PasswordHashingModule.hashPassword(password, salt);
+		user.setPasswordHash(hash);
+		user.setPasswordSalt(salt);
 	}
+	
+	private boolean isAdmin() {
+		UserDto currentUser = session.getUser();
+		return currentUser != null && currentUser.getRole() != null && currentUser.getRole().equals(UserRole.ADMIN);
+	}
+	
 }

@@ -1,11 +1,15 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.Serializable;
+
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 /**
@@ -14,8 +18,8 @@ import jakarta.inject.Named;
  * where he can order a verification link to set a new password.
  */
 @Named
-@RequestScoped
-public class PasswordReset {
+@ViewScoped
+public class PasswordReset implements Serializable {
 
 	private TokenDto token;
 	private String password;
@@ -55,8 +59,10 @@ public class PasswordReset {
 
 	/**
 	 * Reset the password when it is necessary to reset it.
+	 * @throws EntityInstanceDoesNotExistException 
 	 */
-	public void resetPassword() {
-
+	public String resetPassword() throws EntityInstanceDoesNotExistException {
+		UserDao.updateUser(userDto);
+		return null;
 	}
 }

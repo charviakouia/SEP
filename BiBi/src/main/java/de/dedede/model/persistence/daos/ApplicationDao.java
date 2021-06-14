@@ -124,6 +124,7 @@ public final class ApplicationDao {
 							"WHERE one = ?;"
 			);
 			populateStatement(updateStmt, appDTO);
+			updateStmt.setLong(14, appDTO.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0){

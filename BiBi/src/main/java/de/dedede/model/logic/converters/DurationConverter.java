@@ -16,7 +16,11 @@ public class DurationConverter implements Converter<Duration> {
     public Duration getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
         try {
             int numDays = Integer.parseInt(s);
-            return Duration.of(Integer.toUnsignedLong(numDays), ChronoUnit.DAYS);
+            if (numDays < 0) {
+            	throw new ConverterException("Number of days cannot be negative");
+            } else {
+            	return Duration.of(Integer.toUnsignedLong(numDays), ChronoUnit.DAYS);
+            }
         } catch (NumberFormatException e){
             throw new ConverterException("Couldn't read the duration", e);
         }
