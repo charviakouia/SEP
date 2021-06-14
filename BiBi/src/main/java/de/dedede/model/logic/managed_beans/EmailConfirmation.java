@@ -4,6 +4,11 @@ import java.io.Serial;
 import java.io.Serializable;
 
 import de.dedede.model.data.dtos.TokenDto;
+import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.logic.util.UserVerificationStatus;
+import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
@@ -25,7 +30,7 @@ public class EmailConfirmation implements Serializable {
 
 	@PostConstruct
 	public void init() {
-
+		token = new TokenDto();
 	}
 
 	public TokenDto getToken() {
@@ -34,6 +39,15 @@ public class EmailConfirmation implements Serializable {
 
 	public void setToken(TokenDto token) {
 		this.token = token;
+	}
+	
+	public String attemptToConfirm() throws UserDoesNotExistException, EntityInstanceDoesNotExistException {
+		UserDto user = new UserDto();
+		user.setToken(token);
+		UserDao.readUserByToken(user);
+		user.setUserVerificationStatus(UserVerificationStatus.VERIFIED);
+		UserDao.updateUser(user);
+		return "/view/public/medium?faces-redirect=true";
 	}
 
 }

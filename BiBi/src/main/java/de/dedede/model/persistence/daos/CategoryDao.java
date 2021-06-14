@@ -61,7 +61,20 @@ public final class CategoryDao {
 	 */
 	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearchDto,
 														 PaginationDto paginationDetails) {
-		return null;
+		// TODO: Implement, mocking function in place
+		if (categorySearchDto.getSearchTerm().contains("a")) {
+			CategoryDto categoryDto = new CategoryDto();
+			categoryDto.setId(178001);
+			categoryDto.setName("Gardening");
+			categoryDto.setParent(null);
+			return List.of(categoryDto);
+		} else {
+			CategoryDto categoryDto = new CategoryDto();
+			categoryDto.setId(178002);
+			categoryDto.setName("Pottery");
+			categoryDto.setParent(null);
+			return List.of(categoryDto);
+		}
 	}
 
 	/**

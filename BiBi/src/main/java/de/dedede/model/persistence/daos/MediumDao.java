@@ -77,21 +77,18 @@ public final class MediumDao {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
-					"INSERT INTO Medium (mediumLendPeriod, hasCategory) VALUES " + "(CAST(? AS INTERVAL), ?);",
-					Statement.RETURN_GENERATED_KEYS);
+					"INSERT INTO Medium (mediumLendPeriod, hasCategory, title, author1, author2, " +
+							"author3, author4, author5, mediumType, edition, publisher, releaseYear, " +
+							"isbn, mediumLink, demoText) VALUES " +
+							"(CAST(? AS INTERVAL), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+					Statement.RETURN_GENERATED_KEYS
+			);
 			populateMediumStatement(createStmt, mediumDto);
 			int numAffectedRows = createStmt.executeUpdate();
-			if (numAffectedRows > 0) {
-				attemptToInsertGeneratedKey(mediumDto, createStmt);
-			}
-			createAttributes(conn, mediumDto, mediumDto.getAttributes().values());
+			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(mediumDto, createStmt); }
 			conn.commit();
 		} catch (SQLException e) {
 			String msg = "Database error occurred while creating medium entity with id: " + mediumDto.getId();
-			Logger.severe(msg);
-			throw new LostConnectionException(msg, e);
-		} catch (IOException e) {
-			String msg = "Error occurred while writing byte array for an image";
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
@@ -99,64 +96,23 @@ public final class MediumDao {
 		}
 	}
 
-	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) throws SQLException {
+	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) 
+			throws SQLException {
 		stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
 		stmt.setInt(2, mediumDto.getCategory().getId());
-	}
-
-	private static void createAttributes(Connection conn, MediumDto mediumDto, Collection<AttributeDto> attributeDtos)
-			throws SQLException, IOException {
-		PreparedStatement createStmt1 = conn.prepareStatement(
-				"INSERT INTO CustomAttribute (mediumId, attributeName, attributeValue) VALUES " + "(?, ?, ?);",
-				Statement.RETURN_GENERATED_KEYS);
-		PreparedStatement createStmt2 = conn
-				.prepareStatement("INSERT INTO AttributeType (attributeId, mediumId, previewPosition, multiplicity, "
-						+ "modifiability, attributeDataType) VALUES "
-						+ "(?, ?, CAST(? AS mediumpreviewposition), CAST(? AS attributemultiplicity), "
-						+ "CAST(? AS attributemodifiability), CAST(? AS attributedatatype));");
-		for (AttributeDto attributeDto : attributeDtos) {
-			AttributeType type = attributeDto.getType();
-			switch (type) {
-			case LINK:
-				for (URL url : attributeDto.getUrlValue()) {
-					createAttribute(createStmt1, createStmt2, mediumDto, attributeDto, url.toString().getBytes());
-				}
-				break;
-			case TEXT:
-				for (String str : attributeDto.getTextValue()) {
-					createAttribute(createStmt1, createStmt2, mediumDto, attributeDto, str.getBytes());
-				}
-				break;
-			case IMAGE:
-				for (Image image : attributeDto.getImageValue()) {
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					ImageIO.write((BufferedImage) image, "jpg", baos);
-					createAttribute(createStmt1, createStmt2, mediumDto, attributeDto, baos.toByteArray());
-				}
-				break;
-			}
-		}
-	}
-
-	private static void createAttribute(PreparedStatement stmt1, PreparedStatement stmt2, MediumDto mediumDto,
-			AttributeDto attributeDto, byte[] bytes) throws SQLException {
-		populateAttributeStatements(stmt1, stmt2, mediumDto, attributeDto);
-		stmt1.setBytes(3, bytes);
-		stmt1.executeUpdate();
-		attemptToInsertGeneratedKey(attributeDto, stmt1);
-		stmt2.setLong(1, attributeDto.getId());
-		stmt2.executeUpdate();
-	}
-
-	private static void populateAttributeStatements(PreparedStatement stmt1, PreparedStatement stmt2,
-			MediumDto mediumDto, AttributeDto attributeDto) throws SQLException {
-		stmt1.setLong(1, mediumDto.getId());
-		stmt1.setString(2, attributeDto.getName());
-		stmt2.setLong(2, mediumDto.getId());
-		stmt2.setString(3, attributeDto.getPosition().toString());
-		stmt2.setString(4, attributeDto.getAttributeMultiplicity().toString());
-		stmt2.setString(5, attributeDto.getAttributeModifiability().toString());
-		stmt2.setString(6, attributeDto.getType().toString());
+		stmt.setString(3, mediumDto.getTitle());
+		stmt.setString(4, mediumDto.getAuthor1());
+		stmt.setString(5, mediumDto.getAuthor2());
+		stmt.setString(6, mediumDto.getAuthor3());
+		stmt.setString(7, mediumDto.getAuthor4());
+		stmt.setString(8, mediumDto.getAuthor5());
+		stmt.setString(9, mediumDto.getMediumType());
+		stmt.setString(10, mediumDto.getEdition());
+		stmt.setString(11, mediumDto.getPublisher());
+		stmt.setInt(12, mediumDto.getReleaseYear());
+		stmt.setString(13, mediumDto.getIsbn());
+		stmt.setString(14, mediumDto.getMediumLink());
+		stmt.setString(15, mediumDto.getText());
 	}
 
 	private static void attemptToInsertGeneratedKey(MediumDto mediumDto, Statement stmt) throws SQLException {
@@ -172,7 +128,7 @@ public final class MediumDao {
 			attributeDto.setId(Math.toIntExact(resultSet.getLong(1)));
 		}
 	}
-
+	
 	/**
 	 * Fetches a medium from the persistent data store using an ID. The ID must be
 	 * associated with an existing data entry. Otherwise, an exception is thrown.
@@ -469,7 +425,7 @@ public final class MediumDao {
 	 */
 
 	public static void createCopy(CopyDto copyDto, MediumDto mediumDto)
-			throws EntityInstanceNotUniqueException, LostConnectionException, MaxConnectionsException {
+			throws LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
@@ -813,10 +769,12 @@ public final class MediumDao {
 		stmt.setInt(1, copyDto.getId());
 		stmt.setString(3, copyDto.getSignature());
 		stmt.setString(4, copyDto.getLocation());
-		stmt.setString(5, String.valueOf(copyDto.getCopyStatus()));
+		stmt.setString(5, copyDto.getCopyStatus().name());
 		stmt.setTimestamp(6, copyDto.getDeadline());
 		if (copyDto.getActor() != 0) {
 			stmt.setInt(7, copyDto.getActor());
+		} else {
+			stmt.setObject(7, null);
 		}
 	}
 

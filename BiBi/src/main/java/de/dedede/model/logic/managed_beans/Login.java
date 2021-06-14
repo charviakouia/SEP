@@ -25,6 +25,8 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
@@ -80,8 +82,7 @@ public class Login {
 		UserDto completeUserData = UserDao.readUserByEmail(userData);
 		String salt = completeUserData.getPasswordSalt();
 		String passwordHash = completeUserData.getPasswordHash();
-		String inputHash = PasswordHashingModule.hashPassword(passwordInput,
-				salt);
+		String inputHash = PasswordHashingModule.hashPassword(passwordInput, salt);
 			if (inputHash.equals(passwordHash)) {
 				ExternalContext externalContext = context.getExternalContext();
 				HttpServletRequest request = 
@@ -143,7 +144,11 @@ public class Login {
 			String emailBody = insertParams(firstname, lastname, userLink, 
 					content);
 			String emailAddress = completeUserData.getEmailAddress();
-			EmailUtility.sendEmail(emailAddress, subject, emailBody);
+			try {
+				EmailUtility.sendEmail(emailAddress, subject, emailBody);
+			} catch (MessagingException e) {
+				Logger.severe(e.getMessage());
+			}
 			Logger.development("Aus der Loginseite wurde eine Passwortzurück"
 					+ "setzung angefordert, eine Email wurde versendet an: " 
 					+ emailAddress);
