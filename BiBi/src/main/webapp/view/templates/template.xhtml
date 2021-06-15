@@ -22,15 +22,19 @@
 
 <h:body>
 
-	<ui:include src="header.xhtml" />
+	<h:panelGroup layout="block" styleClass="position-relative" style="min-height: 100vh;">
 
-	<h:panelGroup layout="block" styleClass="container p-4">
+		<ui:include src="header.xhtml" />
 
-		<ui:insert name="content" />
+		<h:panelGroup layout="block" styleClass="content container">
+
+			<ui:insert name="content" />
+
+		</h:panelGroup>
+
+		<ui:include src="footer.xhtml" />
 
 	</h:panelGroup>
-
-	<ui:include src="footer.xhtml" />
 
 	<h:outputScript library="js" name="bootstrap-5.0.1.bundle.min.js" />
 
