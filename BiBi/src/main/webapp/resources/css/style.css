@@ -6,10 +6,6 @@ html, body {
 	min-height: 100vh;
 }
 
-.content {
-	padding-bottom: calc(var(--footer-height) + 1rem);
-}
-
 .footer {
 	height: var(--footer-height);
 }

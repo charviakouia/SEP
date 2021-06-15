@@ -26,11 +26,13 @@
 
 		<ui:include src="header.xhtml" />
 
-		<h:panelGroup layout="block" styleClass="content container">
+		<h:panelGroup layout="block" styleClass="container p-5">
 
 			<ui:insert name="content" />
 
 		</h:panelGroup>
+		
+		<h:panelGroup layout="block" style="height: var(--footer-height);" />
 
 		<ui:include src="footer.xhtml" />
 
