@@ -23,6 +23,7 @@ import org.postgresql.util.PGInterval;
 
 import de.dedede.model.data.dtos.AttributeDto;
 import de.dedede.model.data.dtos.AttributeType;
+import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
 import de.dedede.model.data.dtos.MediumCopyUserDto;
@@ -121,7 +122,12 @@ public final class MediumDao {
 	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) 
 			throws SQLException {
 		stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
-		stmt.setInt(2, mediumDto.getCategory().getId());
+		CategoryDto category = mediumDto.getCategory();
+		if (category == null) {
+			stmt.setObject(2, null);
+		} else {
+			stmt.setInt(2, category.getId());
+		}
 		stmt.setString(3, mediumDto.getTitle());
 		stmt.setString(4, mediumDto.getAuthor1());
 		stmt.setString(5, mediumDto.getAuthor2());
@@ -438,7 +444,10 @@ public final class MediumDao {
 	 */
 
 	public static void createCopy(CopyDto copyDto, MediumDto mediumDto)
-			throws LostConnectionException, MaxConnectionsException {
+			throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException {
+		if (copyExists(copyDto)) {
+			throw new EntityInstanceNotUniqueException("Signature already being used");
+		}
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
@@ -454,7 +463,7 @@ public final class MediumDao {
 			conn.commit();
 		} catch (SQLException e) {
 			String msg = "Database error occurred while creating mediumCopy entity with id: " + copyDto.getId();
-//			Logger.severe(msg);
+			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -645,6 +654,19 @@ public final class MediumDao {
 			ConnectionPool.getInstance().releaseConnection(connection);
 		}
 	}
+	
+	public static boolean mediumExists(MediumDto mediumDto) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			return mediumEntityExists(conn, mediumDto);
+		} catch (SQLException e) {
+			String msg = "Database error occurred while reading medium entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
 
 	// Helper methods:
 
@@ -652,7 +674,30 @@ public final class MediumDao {
 		PreparedStatement checkingStmt = conn.prepareStatement(
 				"SELECT CASE " + "WHEN (SELECT COUNT(mediumid) FROM Medium WHERE mediumid = ?) > 0 THEN true "
 						+ "ELSE false " + "END AS entityExists;");
-		checkingStmt.setString(1, String.valueOf(mediumDto.getId()));
+		checkingStmt.setInt(1, mediumDto.getId());
+		ResultSet resultSet = checkingStmt.executeQuery();
+		resultSet.next();
+		return resultSet.getBoolean(1);
+	}
+	
+	public static boolean copyExists(CopyDto copyDto) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			return copyEntityExistsBySignature(conn, copyDto);
+		} catch (SQLException e) {
+			String msg = "Database error occurred while reading copy entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+	
+	private static boolean copyEntityExistsBySignature(Connection conn, CopyDto copyDto) throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE " + "WHEN (SELECT COUNT(signature) FROM MediumCopy WHERE signature = ?) > 0 THEN true "
+						+ "ELSE false " + "END AS entityExists;");
+		checkingStmt.setString(1, copyDto.getSignature());
 		ResultSet resultSet = checkingStmt.executeQuery();
 		resultSet.next();
 		return resultSet.getBoolean(1);
@@ -665,7 +710,7 @@ public final class MediumDao {
 		PreparedStatement checkingStmt = conn.prepareStatement(
 				"SELECT CASE " + "WHEN (SELECT COUNT(copyid) FROM MediumCopy WHERE copyid = ?) > 0 THEN true "
 						+ "ELSE false " + "END AS entityExists;");
-		checkingStmt.setString(1, String.valueOf(copyDto.getId()));
+		checkingStmt.setInt(1, copyDto.getId());
 		ResultSet resultSet = checkingStmt.executeQuery();
 		resultSet.next();
 		return resultSet.getBoolean(1);

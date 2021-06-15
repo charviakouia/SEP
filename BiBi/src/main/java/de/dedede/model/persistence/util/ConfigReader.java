@@ -51,6 +51,11 @@ public class ConfigReader {
 		System.out.println("System Configurations initialized.");
 	}
 	
+	// Ivan wrote this - workaround to make tests work
+	public void setUpConfigReader(Properties props) {
+		systemConfigurations = props;
+	}
+	
 	/**
 	 * Returns the single instance of the ConfigReader. Synchronized implicitly 
 	 * by the ClassLoader.

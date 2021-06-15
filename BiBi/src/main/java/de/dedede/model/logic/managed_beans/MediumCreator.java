@@ -90,7 +90,7 @@ public class MediumCreator implements Serializable {
 	 * @throws MaxConnectionsException 
 	 * @throws LostConnectionException 
 	 */
-	public String save(){
+	public String save() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException{
 		medium.setReleaseYear(releaseYear);
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
