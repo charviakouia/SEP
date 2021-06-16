@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CategorySearchDto;
 import de.dedede.model.data.dtos.PaginationDto;
@@ -82,8 +81,8 @@ public final class CategoryDao {
 					"OFFSET ?;"
 			);
 			stmt.setString(1, "%" + categorySearchDto.getSearchTerm() + "%");
-			stmt.setInt(2, paginationDetails.getTotalAmountOfRows());
-			stmt.setInt(3, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfRows());
+			stmt.setInt(2, paginationDetails.getTotalAmountOfPages());
+			stmt.setInt(3, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfPages());
 			ResultSet res = stmt.executeQuery();
 			List<CategoryDto> list = new LinkedList<>();
 			while (res.next()) {
