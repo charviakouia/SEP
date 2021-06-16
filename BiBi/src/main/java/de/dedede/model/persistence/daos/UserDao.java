@@ -1,5 +1,6 @@
 package de.dedede.model.persistence.daos;
 
+import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -16,6 +17,7 @@ import org.postgresql.util.PGInterval;
 import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
@@ -41,7 +43,7 @@ public final class UserDao {
 	 * @throws EntityInstanceNotUniqueException Is thrown when the enclosed ID
 	 *                                          is already associated with an existing data entry.
 	 */
-	public static void createUser(UserDto userDto) throws EntityInstanceNotUniqueException {
+	public static void createUser(UserDto userDto) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
@@ -105,6 +107,29 @@ public final class UserDao {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
+	
+	public static boolean userExists(UserDto userDto) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			return userExistsByEmail(conn, userDto);
+		} catch (SQLException e) {
+			String msg = "Database error occurred while reading user entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+	
+	private static boolean userExistsByEmail(Connection conn, UserDto userDto) throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE WHEN (SELECT COUNT(userid) FROM Users WHERE emailaddress = ?) > 0 THEN true "
+						+ "ELSE false " + "END AS entityExists;");
+		checkingStmt.setString(1, userDto.getEmailAddress());
+		ResultSet resultSet = checkingStmt.executeQuery();
+		resultSet.next();
+		return resultSet.getBoolean(1);
+	}
 
 	private static UserDto readUserByTokenHelper(Connection conn, UserDto userDto) throws SQLException {
 		PreparedStatement readStmt = conn.prepareStatement(
@@ -152,7 +177,8 @@ public final class UserDao {
 				int changed = updateToken.executeUpdate();
 				Logger.development(changed + " usertoken was newly generated");
 				updateToken.close();
-				token.setCreationTime(LocalDateTime.now());
+				token.setCreationTime(LocalDateTime.now().plus(5, ChronoUnit.MINUTES));
+				// The DB won't accept it if it was made even slightly in the past
 				return token;
 			} else {
 				PreparedStatement getToken = conn.prepareStatement(
@@ -199,8 +225,7 @@ public final class UserDao {
 	}
 	//reads an existing user by id and checks if his token is null
 	/* @author Jonas Picker */
-	private static boolean userTokenIsNull(Connection conn, UserDto userId) 
-			throws SQLException {
+	private static boolean userTokenIsNull(Connection conn, UserDto userId) throws SQLException {
 		PreparedStatement checkingStmt = conn.prepareStatement(
 				"SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
 				+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;"
@@ -257,20 +282,19 @@ public final class UserDao {
 	//checks if a user exists in the database and returns his id, exception 
 	//if not found.
 	/* @author Jonas Picker */
-	public static int getUserIdByEmail(Connection conn ,UserDto userEmail) 
+	public static int getUserIdByEmail(Connection conn, UserDto userEmail) 
 			throws UserDoesNotExistException  {
-			try {
+		try {
 			PreparedStatement readUserId = conn.prepareStatement("SELECT userId"
 					+ " FROM users WHERE emailAddress = ?;");
 			readUserId.setString(1, userEmail.getEmailAddress());
 			ResultSet rs = readUserId.executeQuery();
 			rs.next();
-			int id = rs.getInt(1);
-			return id;
+			return rs.getInt(1);
 		} catch (SQLException e) {
 			Logger.development("UserId couldn't be retrieved for this email.");
-			throw new UserDoesNotExistException("Specified email doesn't seem"
-					+ " to match any user entry");
+			throw new UserDoesNotExistException("Specified email " + userEmail.getEmailAddress()
+				+ " doesn't seem to match any user entry", e);
 		} 
 	}
 

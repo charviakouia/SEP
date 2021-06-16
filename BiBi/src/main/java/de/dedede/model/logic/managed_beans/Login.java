@@ -1,6 +1,8 @@
 package de.dedede.model.logic.managed_beans;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,6 +17,7 @@ import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
+import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
@@ -142,8 +145,7 @@ public class Login {
 		String salt = completeUserData.getPasswordSalt();
 		String passwordHash = completeUserData.getPasswordHash();
 		String inputHash = PasswordHashingModule.hashPassword(passwordInput, salt);
-		if (true) {
-			// if (inputHash.equals(passwordHash)) {
+		if (inputHash.equals(passwordHash)) {
 				ExternalContext externalContext = context.getExternalContext();
 				HttpServletRequest request = 
 						(HttpServletRequest) externalContext.getRequest();
@@ -179,70 +181,62 @@ public class Login {
 		
 	}
 
+	// Ivan reformatted the method resetPassword()
 	/**
 	 * Send an email to the user with a reset link inside.						
 	 */
-	public void resetPassword() { 												//Fehler behandlung wenn Email+TokenGenerator fertig										
+	public void resetPassword() {
+		//Fehler behandlung wenn Email+TokenGenerator fertig										
 		FacesContext context = FacesContext.getCurrentInstance();
 		Application application = context.getApplication();
-		ResourceBundle messages = application.evaluateExpressionGet(context, 
-				"#{msg}", ResourceBundle.class);
+		ResourceBundle messages = application.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		
+		UserDto completeUserData = null;
+		String subject = messages.getString("login.reset_email_subject");
+		String content = messages.getString("login.reset_email_content");
+		TokenDto newTokenContainer = TokenGenerator.generateToken();
+		
 		try {
-			UserDto completeUserData = UserDao.readUserByEmail(userData);
-			String subject = messages.getString("login.reset_email_subject");
-			String content = messages.getString("login.reset_email_content");
-			TokenDto newTokenContainer = new TokenDto();       					//TokenGenerator.generateToken(); wenn fertig
-			newTokenContainer.setContent("12345678901234567890");				//dummy
-			TokenDto userToken = UserDao.setOrRetrieveUserToken(
-					completeUserData, newTokenContainer);
-			String token = userToken.getContent();								//UNFINISHED
-						
-			String userLink = "www.testlink.de/?token=" + token;				//@see format when PasswordReset Package is finished by Ivan
+			String token = newTokenContainer.getContent();
+			String link = "http://localhost:8080" + 
+					context.getApplication().getViewHandler().getResourceURL(
+					context, "/view/public/password-reset.xhtml?token=" + URLEncoder.encode(token, "UTF-8"));
+			
+			completeUserData = UserDao.readUserByEmail(userData);
+			completeUserData.setToken(newTokenContainer);	
+			// TokenDto userToken = UserDao.setOrRetrieveUserToken(completeUserData, newTokenContainer);
+			UserDao.updateUser(completeUserData);
+			
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
-			String emailBody = insertParams(firstname, lastname, userLink, 
-					content);
+			String emailBody = insertParams(firstname, lastname, link, content);
 			String emailAddress = completeUserData.getEmailAddress();
-			
-			// Ivan begin
-			
-			try {
-				EmailUtility.sendEmail(emailAddress, subject, emailBody);
-			} catch (MessagingException e) {
-				Logger.severe(e.getMessage()); // Handle
-			}
-			
-			// Ivan end
+			EmailUtility.sendEmail(emailAddress, subject, emailBody);
 			
 			Logger.development("Aus der Loginseite wurde eine Passwortzurück"
-					+ "setzung angefordert, eine Email wurde versendet an: " 
-					+ emailAddress);
+					+ "setzung angefordert, eine Email wurde versendet an: " + emailAddress);
 			Logger.development("Inhalt der Email: " + emailBody);													
-			String shortMessage = messages.getString("login.email_was"
-					+ "_sent_short");
-			String longMessage = messages.getString("login.email_was"
-					+ "_sent_long");
-			context.addMessage(null, 
-					new FacesMessage(FacesMessage.SEVERITY_INFO, 
-							shortMessage, longMessage));
+			String shortMessage = messages.getString("login.email_was_sent_short");
+			String longMessage = messages.getString("login.email_was_sent_long");
+			context.addMessage("login_form:login_email_field", 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
+		
+		} catch (MessagingException | UnsupportedEncodingException | EntityInstanceDoesNotExistException e) {
+			String emailAddress = (completeUserData == null ? null : completeUserData.getEmailAddress());
+			Logger.severe("Couldn't send a verification email to user: " + emailAddress);	
 		} catch (UserDoesNotExistException e) {
-			String shortMessage = messages.getString("login.unknown_user"
-					+ "_short");
-			String longMessage = messages.getString("login.unknown_user"
-					+ "_long");
+			String shortMessage = messages.getString("login.unknown_user_short");
+			String longMessage = messages.getString("login.unknown_user_long");
 			context.addMessage("login_email_message", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-							shortMessage, longMessage));
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
 		}
 		
 	}
 	
-	private String insertParams(String param1, String param2, 
-			String param3, String content) {
+	private String insertParams(String param1, String param2, String param3, String content) {
 		MessageFormat messageFormat = new MessageFormat(content);
 		Object[] args = {param1, param2, param3};
 		String contentWithParam = messageFormat.format(args);
-		
 		return contentWithParam;
 	}
 	
