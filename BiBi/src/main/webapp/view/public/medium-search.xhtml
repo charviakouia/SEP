@@ -77,9 +77,6 @@
 
 		</h:form>
 
-		<!-- @Task show the text "no results found" in such a case -->
-		<!-- @Task on initial site load, don't show it at all (unless we received a search term in flash -->
-		<!-- @Task (unrelated location) handle search from flash scope -->
 		<bibi:paginatedList value="#{mediumSearch}" styleClass="mt-5">
 
 			<h:column>
@@ -111,6 +108,14 @@
 
 				<bibi:columnContent>
 					#{item.publisher}
+				</bibi:columnContent>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">#{msg['category']}</f:facet>
+				
+				<bibi:columnContent>
+					#{item.category.name}
 				</bibi:columnContent>
 			</h:column>
 

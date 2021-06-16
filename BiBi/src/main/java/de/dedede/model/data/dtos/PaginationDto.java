@@ -15,9 +15,9 @@ public class PaginationDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// zero-indexed
-	private int pageNumber;
+	private int pageNumber = 0;
 
-	private int totalAmountOfPages;
+	private int totalAmountOfPages = 1;
 
 	private String sortBy;
 

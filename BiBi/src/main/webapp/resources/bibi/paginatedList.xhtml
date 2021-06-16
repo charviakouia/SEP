@@ -18,6 +18,10 @@
 			styleClass="btn-toolbar justify-content-center #{cc.attrs.styleClass}">
 
 			<h:form id="form_go_back" styleClass="btn-group">
+				<!--
+				The large z-index is necessary to prevent a Boostrap bug where the the left border of the
+				input field #input_current_page overlaps the right border of the button.
+				-->
 				<h:commandButton id="button_go_back" value="#{msg['previous_page']}"
 					action="#{cc.attrs.value.goBack()}"
 					disabled="#{cc.attrs.value.firstPage}"
@@ -28,10 +32,9 @@
 				<h:inputText id="input_current_page"
 					value="#{cc.attrs.value.pageNumber}" styleClass="form-control" />
 
-				<h:panelGroup styleClass="input-group-text">
-					/
-				</h:panelGroup>
+				<h:panelGroup styleClass="input-group-text">/</h:panelGroup>
 
+				<!-- read-only input text for cosmetic reasons -->
 				<h:inputText
 					value="#{cc.attrs.value.paginatedList.totalAmountOfPages}"
 					styleClass="form-control" readonly="true" />
