@@ -87,16 +87,11 @@ public class Registration implements Serializable {
 	 * As an anonymous user register to the system.
 	 */
 	public String register() {
-		try {
-			setPasswordHash();
-			user.setToken(TokenGenerator.generateToken());
-			UserDao.createUser(user);
-			sendVerificationEmail();
-			return switchUser();
-		} catch (EntityInstanceNotUniqueException e){
-			context.addMessage(null, new FacesMessage("The entered email is already taken"));
-			return null;
-		}
+		setPasswordHash();
+		user.setToken(TokenGenerator.generateToken());
+		UserDao.createUser(user);
+		sendVerificationEmail();
+		return switchUser();
 	}
 	
 	private void sendVerificationEmail() {

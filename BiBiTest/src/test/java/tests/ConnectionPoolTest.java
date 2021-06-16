@@ -3,6 +3,7 @@ package tests;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Properties;
 
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
@@ -15,6 +16,7 @@ import de.dedede.model.persistence.daos.ApplicationDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
 
 class ConnectionPoolTest {
@@ -22,9 +24,12 @@ class ConnectionPoolTest {
 	private static ConnectionPool poolInstance;
 	private static final long CONNECTION_TIMEOUT = 5000;
 	private static ApplicationDto dto;
+	private static Properties props;
 	
 	@BeforeAll
 	public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
+		setUpProperties();
+		ConfigReader.getInstance().setUpConfigReader(props);
 		ConnectionPool.setUpConnectionPool();
 		poolInstance = ConnectionPool.getInstance();
 		initializeDto();
@@ -63,6 +68,20 @@ class ConnectionPoolTest {
 		dto.setLookAndFeel("css a");
 		dto.setAnonRights("OPAC");
 		dto.setLendingStatus("UNLOCKED");
+	}
+	
+	private static void setUpProperties() {
+		props = new Properties();
+		props.put("DB_USER", "sep21g01");
+		props.put("DB_PASSWORD", "fooZae4cuoSa");
+		props.put("DB_DRIVER", "org.postgresql.Driver");
+		props.put("DB_SSL", "TRUE");
+		props.put("DB_SSL_FACTORY", "org.postgresql.ssl.DefaultJavaSSLFactory");
+		props.put("DB_HOST", "bueno.fim.uni-passau.de");
+		props.put("DB_PORT", "5432");
+		props.put("DB_NAME", "sep21g01t");
+		props.put("DB_URL", "jdbc:postgresql://");
+		props.put("DB_CAPACITY", "20");
 	}
 
 }

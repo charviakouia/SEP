@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CategorySearchDto;
 import de.dedede.model.data.dtos.PaginationDto;
@@ -133,6 +134,28 @@ public final class CategoryDao {
 	 */
 	public static CategoryDto deleteCategory(CategoryDto categoryDto) {
 		return null;
+	}
+	
+	public static boolean categoryExists(CategoryDto categoryDto) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement checkingStmt = conn.prepareStatement(
+					"SELECT CASE " +
+							"WHEN (SELECT COUNT(categoryId) FROM Category WHERE categoryId = ?) > 0 THEN true " +
+							"ELSE false " +
+							"END AS entityExists;"
+			);
+			checkingStmt.setInt(1, categoryDto.getId());
+			ResultSet resultSet = checkingStmt.executeQuery();
+			resultSet.next();
+			return resultSet.getBoolean(1);
+		} catch (SQLException e) {
+			String msg = "Database error occurred while reading category entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 }

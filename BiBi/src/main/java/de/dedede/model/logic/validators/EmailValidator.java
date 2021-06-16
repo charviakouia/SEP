@@ -40,7 +40,7 @@ public class EmailValidator implements Validator<String> {
 		if (appDto != null && appDto.getEmailAddressSuffixRegEx() != null) {
 			if (!Pattern.matches(appDto.getEmailAddressSuffixRegEx(), email)){
 				throw new ValidatorException(new FacesMessage(
-						"Cannot create email with the pattern: " + appDto.getEmailAddressSuffixRegEx()));
+						"Given email doesn't match pattern:" + appDto.getEmailAddressSuffixRegEx()));
 			}
 		}
 	}
