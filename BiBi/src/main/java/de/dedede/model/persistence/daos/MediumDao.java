@@ -1,10 +1,5 @@
 package de.dedede.model.persistence.daos;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,16 +8,11 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import javax.imageio.ImageIO;
-
 import org.postgresql.util.PGInterval;
 
-import de.dedede.model.data.dtos.AttributeDto;
-import de.dedede.model.data.dtos.AttributeType;
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
@@ -46,6 +36,7 @@ import de.dedede.model.persistence.exceptions.UserExceededDeadlineException;
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
+import de.dedede.model.persistence.util.MathExtension;
 
 /**
  * This DAO (data access object) manages data pertaining to a medium or a copy.
@@ -78,15 +69,16 @@ public final class MediumDao {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
-					"INSERT INTO Medium (mediumLendPeriod, hasCategory, title, author1, author2, " +
-							"author3, author4, author5, mediumType, edition, publisher, releaseYear, " +
-							"isbn, mediumLink, demoText) VALUES " +
-							"(CAST(? AS INTERVAL), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-					Statement.RETURN_GENERATED_KEYS
-			);
+					"INSERT INTO Medium (mediumLendPeriod, hasCategory, title, author1, author2, "
+							+ "author3, author4, author5, mediumType, edition, publisher, releaseYear, "
+							+ "isbn, mediumLink, demoText) VALUES "
+							+ "(CAST(? AS INTERVAL), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+					Statement.RETURN_GENERATED_KEYS);
 			populateMediumStatement(createStmt, mediumDto);
 			int numAffectedRows = createStmt.executeUpdate();
-			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(mediumDto, createStmt); }
+			if (numAffectedRows > 0) {
+				attemptToInsertGeneratedKey(mediumDto, createStmt);
+			}
 			conn.commit();
 		} catch (SQLException e) {
 			String msg = "Database error occurred while creating medium entity with id: " + mediumDto.getId();
@@ -96,16 +88,13 @@ public final class MediumDao {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
-	
+
 	public static boolean signatureExists(CopyDto copy) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
-			PreparedStatement checkStmt = conn.prepareStatement(
-					"SELECT CASE " +
-						"WHEN (SELECT COUNT(DISTINCT signature) FROM MediumCopy WHERE signature = ?) > 0 THEN true " +
-						"ELSE false " +
-						"END AS entityExists;"
-			);
+			PreparedStatement checkStmt = conn.prepareStatement("SELECT CASE "
+					+ "WHEN (SELECT COUNT(DISTINCT signature) FROM MediumCopy WHERE signature = ?) > 0 THEN true "
+					+ "ELSE false " + "END AS entityExists;");
 			checkStmt.setString(1, copy.getSignature());
 			ResultSet resultSet = checkStmt.executeQuery();
 			resultSet.next();
@@ -119,8 +108,7 @@ public final class MediumDao {
 		}
 	}
 
-	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) 
-			throws SQLException {
+	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) throws SQLException {
 		stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
 		CategoryDto category = mediumDto.getCategory();
 		if (category == null) {
@@ -149,7 +137,7 @@ public final class MediumDao {
 			mediumDto.setId(Math.toIntExact(resultSet.getLong(1)));
 		}
 	}
-	
+
 	/**
 	 * Fetches a medium from the persistent data store using an ID. The ID must be
 	 * associated with an existing data entry. Otherwise, an exception is thrown.
@@ -179,23 +167,19 @@ public final class MediumDao {
 	 * search filters are applied to the name first. The order of the data and
 	 * concurrent read/write behavior in the underlying data store is unspecified.
 	 *
-	 * @param paginationDetails A container for the search terms, page size, and
-	 *                          page number.
+	 * @param mediumSearch A container for the search parameters.
+	 * @param pagination   A container for the search terms, page size, and page
+	 *                     number.
 	 * @return A list of DTO containers with the medium data.
 	 * @see MediumDto
 	 */
-	// @Beacon @Task handle stuff like "<title> <author>"
-	// i.e. split by whitespace and or those terms....kinda
 	public static List<MediumDto> searchMedia(MediumSearchDto mediumSearch, PaginationDto pagination) {
 
-		final var entriesPerPage = Integer.parseInt(ConfigReader.getInstance().getKey("MAX_PAGES", "20"));
-		final var searchQuery = new StringBuilder();
+		final var entriesPerPage = ConfigReader.getInstance().getKeyAsInt("MAX_PAGES");
+		final var queryBody = new StringBuilder();
 		final var parameters = new ArrayList<Object>();
 
-		// @Task select category too and year
-		searchQuery.append("""
-				select distinct
-					m.mediumid, m.title, m.author1, m.author2, m.edition, m.publisher
+		queryBody.append("""
 				from
 					medium m
 						left join
@@ -209,31 +193,52 @@ public final class MediumDao {
 				where
 					""");
 
-		translateGeneralSearchTerm(searchQuery, parameters, mediumSearch.getGeneralSearchTerm());
+		translateGeneralSearchTerm(queryBody, parameters, mediumSearch.getGeneralSearchTerm());
 
 		for (final var nuancedSearchQuery : mediumSearch.getNuancedSearchQueries()) {
-			translateNuancedSearchQuery(searchQuery, parameters, nuancedSearchQuery);
+			translateNuancedSearchQuery(queryBody, parameters, nuancedSearchQuery);
 		}
 
-		searchQuery.append("""
+		final var itemsQuery = """
+				select distinct
+					m.mediumid, m.title, m.author1, m.author2, m.edition, m.publisher,
+					ct.title
+				%s
 				offset ?
 				limit ?
-				""");
-		// @Task sorting
-		parameters.add(pagination.getPageNumber() * (entriesPerPage - 1));
-		parameters.add(entriesPerPage - 1);
+				""".formatted(queryBody);
+
+		final var countQuery = "select count(distinct m.mediumid) " + queryBody;
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
 
-			final var statement = connection.prepareStatement(searchQuery.toString());
+			{
+				final var countStatement = connection.prepareStatement(countQuery);
 
-			for (var index = 0; index < parameters.size(); index += 1) {
-				statement.setObject(index + 1, parameters.get(index));
+				for (var index = 0; index < parameters.size(); index += 1) {
+					countStatement.setObject(index + 1, parameters.get(index));
+				}
+
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+				
+				Logger.development("countResultSet #rows = " + resultSet.getInt(1));
+
+				pagination.setTotalAmountOfPages(MathExtension.ceilDiv(resultSet.getInt(1), entriesPerPage));
 			}
 
-			final var resultSet = statement.executeQuery();
+			final var itemsStatement = connection.prepareStatement(itemsQuery);
+
+			parameters.add(pagination.getPageNumber() * entriesPerPage);
+			parameters.add(entriesPerPage);
+
+			for (var index = 0; index < parameters.size(); index += 1) {
+				itemsStatement.setObject(index + 1, parameters.get(index));
+			}
+
+			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<MediumDto>();
 
 			while (resultSet.next()) {
@@ -246,6 +251,12 @@ public final class MediumDao {
 				medium.setAuthor2(resultSet.getString(4));
 				medium.setEdition(resultSet.getString(5));
 				medium.setPublisher(resultSet.getString(6));
+
+				final var category = new CategoryDto();
+
+				category.setName(resultSet.getString(7));
+
+				medium.setCategory(category);
 
 				results.add(medium);
 			}
@@ -581,19 +592,20 @@ public final class MediumDao {
 		}
 	}
 
-	public static List<MediumCopyUserDto> readCopiesReadyForPickup(PaginationDto paginationDetails)
-			throws LostConnectionException, MaxConnectionsException {
+	/**
+	 * Read all copies from the database that are ready to be picked up.
+	 * 
+	 * @param pagination A container defining the page size and the amount of pages.
+	 * @return The list of copies ready for pickup and some related data.
+	 */
+	public static List<MediumCopyUserDto> readCopiesReadyForPickup(PaginationDto pagination) {
 
-		final var entriesPerPage = Integer.parseInt(ConfigReader.getInstance().getKey("MAX_PAGES", "20"));
+		final var entriesPerPage = ConfigReader.getInstance().getKeyAsInt("MAX_PAGES");
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
 
-			final var statement = connection.prepareStatement("""
-					select
-						m.mediumid, m.title,
-						c.signature, c.bibposition, c.deadline,
-						u.userid, u.emailaddress, u.name, u.surname
+			final var statementBody = """
 					from
 						medium m,
 						mediumcopy c,
@@ -604,14 +616,32 @@ public final class MediumDao {
 						c.mediumid = m.mediumid
 							and
 						c.actor = u.userid
+					""";
+
+			{
+				final var countStatement = connection.prepareStatement("select count(c.copyid) " + statementBody);
+
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+
+				pagination.setTotalAmountOfPages(MathExtension.ceilDiv(resultSet.getInt(1), entriesPerPage));
+
+			}
+
+			final var itemsStatement = connection.prepareStatement("""
+					select
+						m.mediumid, m.title,
+						c.signature, c.bibposition, c.deadline,
+						u.userid, u.emailaddress, u.name, u.surname
+					%s
 					offset ?
 					limit ?
-					""");
+					""".formatted(statementBody));
 			// @Task sorting
-			statement.setInt(1, paginationDetails.getPageNumber() * (entriesPerPage - 1));
-			statement.setInt(2, entriesPerPage - 1);
+			itemsStatement.setInt(1, pagination.getPageNumber() * entriesPerPage);
+			itemsStatement.setInt(2, entriesPerPage);
 
-			final var resultSet = statement.executeQuery();
+			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<MediumCopyUserDto>();
 
 			while (resultSet.next()) {
@@ -643,6 +673,11 @@ public final class MediumDao {
 
 			return results;
 		} catch (SQLException exeption) {
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				throw new LostConnectionException("Failed to rollback database transaction");
+			}
 
 			final var message = "Database error occurred while reading copies ready for pickup: "
 					+ exeption.getMessage();
@@ -654,7 +689,7 @@ public final class MediumDao {
 			ConnectionPool.getInstance().releaseConnection(connection);
 		}
 	}
-	
+
 	public static boolean mediumExists(MediumDto mediumDto) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
@@ -679,7 +714,7 @@ public final class MediumDao {
 		resultSet.next();
 		return resultSet.getBoolean(1);
 	}
-	
+
 	public static boolean copyExists(CopyDto copyDto) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
@@ -692,7 +727,7 @@ public final class MediumDao {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
-	
+
 	private static boolean copyEntityExistsBySignature(Connection conn, CopyDto copyDto) throws SQLException {
 		PreparedStatement checkingStmt = conn.prepareStatement(
 				"SELECT CASE " + "WHEN (SELECT COUNT(signature) FROM MediumCopy WHERE signature = ?) > 0 THEN true "
@@ -1310,18 +1345,12 @@ public final class MediumDao {
 		try {
 			if (!copySignatureExists(conn, signatureContainer)) {
 				throw new CopyDoesNotExistException("Signature doesn't exist");
-			} else if (invalidCopyStatusReturnAttempt(conn, 
-					signatureContainer)) {
-				throw new CopyIsNotAvailableException("Invalid copy status"
-						+ " for this return");
-			} else if (invalidActorReturnAttempt(conn, signatureContainer,
-					user)) {
-				throw new InvalidUserForCopyException("Invalid user for "
-					+ "this return");
-			} else if (invalidDeadlineReturnAttempt(conn, signatureContainer,
-				user)) {
-				throw new UserExceededDeadlineException("The return deadline"
-						+ " was exceeded by this user");
+			} else if (invalidCopyStatusReturnAttempt(conn, signatureContainer)) {
+				throw new CopyIsNotAvailableException("Invalid copy status" + " for this return");
+			} else if (invalidActorReturnAttempt(conn, signatureContainer, user)) {
+				throw new InvalidUserForCopyException("Invalid user for " + "this return");
+			} else if (invalidDeadlineReturnAttempt(conn, signatureContainer, user)) {
+				throw new UserExceededDeadlineException("The return deadline" + " was exceeded by this user");
 			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -1346,15 +1375,13 @@ public final class MediumDao {
 			if (!copySignatureExists(conn, signatureContainer)) {
 				throw new CopyDoesNotExistException("Signature doesn't exist");
 			} else if (copyIsLentBySignature(conn, signatureContainer)) {
-				throw new CopyIsNotAvailableException("Invalid copy status,"
-					+ " cannot lend copy");
-			} else if(invalidUserLendingAttempt(conn, signatureContainer,
-					user)) {
-				throw new InvalidUserForCopyException("Invalid user for "
-					+ "lending process");
+				throw new CopyIsNotAvailableException("Invalid copy status," + " cannot lend copy");
+			} else if (invalidUserLendingAttempt(conn, signatureContainer, user)) {
+				throw new InvalidUserForCopyException("Invalid user for " + "lending process");
 			}
 		} finally {
-			ConnectionPool.getInstance().releaseConnection(conn);}
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**

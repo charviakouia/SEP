@@ -71,19 +71,16 @@
 				<h:commandButton id="button_add_nuanced_search_query"
 					value="#{msg['add_nuanced_search_query']}"
 					action="#{mediumSearch.addNuancedSearchQuery()}"
-					styleClass="btn btn-secondary" />
+					styleClass="btn btn-outline-secondary" />
 
 			</h:panelGroup>
 
 		</h:form>
 
-		<!-- @Task show the text "no results found" in such a case -->
-		<!-- @Task on initial site load, don't show it at all (unless we received a search term in flash -->
-		<!-- @Task (unrelated location) handle search from flash scope -->
-		<bibi:paginatedList value="#{mediumSearch}">
+		<bibi:paginatedList value="#{mediumSearch}" styleClass="mt-5">
 
 			<h:column>
-				<f:facet name="header">TITLE</f:facet>
+				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
 
 				<bibi:columnContent>
 					#{item.title}
@@ -91,7 +88,7 @@
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">AUTHORS</f:facet>
+				<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
 
 				<bibi:columnContent>
 					#{mediumSearch.formatAuthors(item)}
@@ -99,7 +96,7 @@
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">EDITION</f:facet>
+				<f:facet name="header">#{msg['medium_attribute.edition']}</f:facet>
 
 				<bibi:columnContent>
 					#{item.edition}
@@ -107,10 +104,18 @@
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">PUBLISHER</f:facet>
+				<f:facet name="header">#{msg['medium_attribute.publisher']}</f:facet>
 
 				<bibi:columnContent>
 					#{item.publisher}
+				</bibi:columnContent>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">#{msg['category']}</f:facet>
+				
+				<bibi:columnContent>
+					#{item.category.name}
 				</bibi:columnContent>
 			</h:column>
 
