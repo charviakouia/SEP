@@ -1,10 +1,5 @@
 package de.dedede.model.persistence.daos;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,16 +8,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import javax.imageio.ImageIO;
 
 import org.postgresql.util.PGInterval;
 
 import de.dedede.model.data.dtos.AttributeDto;
-import de.dedede.model.data.dtos.AttributeType;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
 import de.dedede.model.data.dtos.MediumCopyUserDto;
@@ -560,16 +551,12 @@ public final class MediumDao {
 	public static List<MediumCopyUserDto> readCopiesReadyForPickup(PaginationDto paginationDetails)
 			throws LostConnectionException, MaxConnectionsException {
 
-		final var entriesPerPage = Integer.parseInt(ConfigReader.getInstance().getKey("MAX_PAGES", "20"));
+		final var entriesPerPage = ConfigReader.getInstance().getKeyAsInt("MAX_PAGES");
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
-
-			final var statement = connection.prepareStatement("""
-					select
-						m.mediumid, m.title,
-						c.signature, c.bibposition, c.deadline,
-						u.userid, u.emailaddress, u.name, u.surname
+			
+			final var statementBody = """
 					from
 						medium m,
 						mediumcopy c,
@@ -580,14 +567,32 @@ public final class MediumDao {
 						c.mediumid = m.mediumid
 							and
 						c.actor = u.userid
+					""";
+			
+			{
+				final var countStatement = connection.prepareStatement("select count(c.copyid) " + statementBody);
+				
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+				
+				paginationDetails.setTotalAmountOfPages((resultSet.getInt(1) / entriesPerPage) + 1);
+				
+			}
+
+			final var itemsStatement = connection.prepareStatement("""
+					select
+						m.mediumid, m.title,
+						c.signature, c.bibposition, c.deadline,
+						u.userid, u.emailaddress, u.name, u.surname
+					%s
 					offset ?
 					limit ?
-					""");
+					""".formatted(statementBody));
 			// @Task sorting
-			statement.setInt(1, paginationDetails.getPageNumber() * (entriesPerPage - 1));
-			statement.setInt(2, entriesPerPage - 1);
+			itemsStatement.setInt(1, paginationDetails.getPageNumber() * entriesPerPage);
+			itemsStatement.setInt(2, entriesPerPage);
 
-			final var resultSet = statement.executeQuery();
+			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<MediumCopyUserDto>();
 
 			while (resultSet.next()) {
@@ -619,7 +624,12 @@ public final class MediumDao {
 
 			return results;
 		} catch (SQLException exeption) {
-
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				throw new LostConnectionException("Failed to rollback database transaction");
+			}
+			
 			final var message = "Database error occurred while reading copies ready for pickup: "
 					+ exeption.getMessage();
 			Logger.severe(message);

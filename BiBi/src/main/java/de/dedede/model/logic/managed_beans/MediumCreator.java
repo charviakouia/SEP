@@ -105,7 +105,7 @@ public class MediumCreator implements Serializable {
 	private void searchForCategory(String searchTerm) {
 		PaginationDto paginationDto = new PaginationDto();
 		paginationDto.setPageNumber(1);
-		paginationDto.setTotalAmountOfRows(NUM_DISPLAYED_CATEGORY_ENTRIES);
+		paginationDto.setTotalAmountOfPages(NUM_DISPLAYED_CATEGORY_ENTRIES);
 		CategorySearchDto categorySearchDto = new CategorySearchDto();
 		categorySearchDto.setSearchTerm(searchTerm);
 		categories = CategoryDao.readCategoriesByName(categorySearchDto, paginationDto);
