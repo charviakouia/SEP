@@ -1,10 +1,5 @@
 package de.dedede.model.persistence.daos;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,17 +8,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import javax.imageio.ImageIO;
-
 import org.postgresql.util.PGInterval;
 
-import de.dedede.model.data.dtos.ApplicationDto;
 import de.dedede.model.data.dtos.AttributeDto;
-import de.dedede.model.data.dtos.AttributeType;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
 import de.dedede.model.data.dtos.MediumCopyUserDto;
@@ -60,6 +50,7 @@ public final class MediumDao {
 
 	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
 	private static final double DEFAULT_MAXIMUM_LEND_LIMIT_SECONDS = 15770000;
+	private static final double DEFAULT_REMINDER_OFFSET_SECONDS = 3600;
 
 	private MediumDao() {
 	}
@@ -1118,7 +1109,7 @@ public final class MediumDao {
 
 	/**
 	 * Refreshes the copy status on all marked copies with expired pickup 
-	 * deadlines
+	 * deadlines. 
 	 * 
 	 * @author Jonas Picker
 	 */
@@ -1378,18 +1369,19 @@ public final class MediumDao {
 			double reminderOffset = rs1.getDouble(1);
 			getReminderOffset.close();
 			rs1.close();
+			if (reminderOffset == 0) {
+				reminderOffset = DEFAULT_REMINDER_OFFSET_SECONDS;
+			}
 			Timestamp offset = new Timestamp(System.currentTimeMillis() 
 					+ (((long) reminderOffset) * 1000));
 			PreparedStatement readAlmostDue = conn.prepareStatement(
-					"SELECT (copyid, mediumid, signature, bibposition, status,"
-					+ " deadline, actor)"
-					+ " FROM mediumcopy WHERE (deadline is not null)"
-					+ " AND (deadline <= ?);"
+					"SELECT copyid, mediumid, signature, bibposition, "
+					+ "status, deadline, actor FROM mediumcopy WHERE "
+					+ "(deadline is not null) AND (deadline <= ?);"
 					);
 			readAlmostDue.setTimestamp(1, offset);
 			ResultSet rs2 = readAlmostDue.executeQuery();
 			conn.commit();
-			readAlmostDue.close();
 			while (rs2.next()) {
 				CopyDto copy = new CopyDto();
 				populateCopyDto(copy, rs2);
@@ -1406,6 +1398,7 @@ public final class MediumDao {
 				result.add(entry);
 			}
 			rs2.close();
+			readAlmostDue.close();
 		} catch (SQLException e) {
 			String message = "An Error occured while trying to read due date "
 					+ "reminders";

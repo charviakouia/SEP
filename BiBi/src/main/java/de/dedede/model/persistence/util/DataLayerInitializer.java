@@ -39,7 +39,8 @@ public class DataLayerInitializer {
 	 * @see ConnectionPool
 	 * @see MaintenanceProcess
 	 */
-	public static void execute() throws LostConnectionException, 
+	public static void execute(String emailSubject, String emailBody) 
+			throws LostConnectionException, 
 			DriverNotFoundException, InvalidConfigurationException {
 		try {
 			ConnectionPool.setUpConnectionPool();								
@@ -70,7 +71,7 @@ public class DataLayerInitializer {
 		} catch (DriverNotFoundException dnfe) {
 			throw dnfe;
 		}
-		setUpMaintenanceProcess();		
+		setUpMaintenanceProcess(emailSubject, emailBody);		
 	}
 	
 	/**
@@ -176,9 +177,10 @@ public class DataLayerInitializer {
 		
 	}
 		
-	private static void setUpMaintenanceProcess() {
+	private static void setUpMaintenanceProcess(String emailSubject,
+			String emailBody) {
 		MaintenanceProcess mp = MaintenanceProcess.getInstance();
-		mp.setup();
+		mp.setup(emailSubject, emailBody);
 		mp.startup();
 	}
 	

@@ -26,7 +26,7 @@ import jakarta.mail.internet.AddressException;
  * store with a given frequency.
  *
  */
-public final class MaintenanceProcess extends TimerTask implements Runnable {  //To-Do : TESTING!
+public final class MaintenanceProcess extends TimerTask implements Runnable {  //To-Do: Innere Klasse statt superklasse
 		
 	private static MaintenanceProcess instance;
 	
@@ -39,9 +39,7 @@ public final class MaintenanceProcess extends TimerTask implements Runnable {  /
 	private static String reminderEmail;
 	
 	private MaintenanceProcess() {}
-	
-	
-	
+		
 	/**
 	 * Returns the single instance of the MaintenanceProcess.
 	 * 
@@ -85,8 +83,8 @@ public final class MaintenanceProcess extends TimerTask implements Runnable {  /
 			Logger.detailed(sent + " reminder e-mails have been sent during "
 					+ "scheduled service execution");
 		} catch (LostConnectionException e) {
-			String message = "Connection to database was lost during scheduled "
-					+ "service execution";
+			String message = "Error with database communication during "
+					+ "scheduled service execution";
 			Logger.severe(message);
 		} catch (MaxConnectionsException e) {
 			String message = "Too many connections to database while scheduled "
@@ -110,7 +108,7 @@ public final class MaintenanceProcess extends TimerTask implements Runnable {  /
 			String message = "An automatic email couldn't be sent.";
 			Logger.severe(message);
 		} finally {
-			Logger.detailed("Ended execution of automated tasks at"
+			Logger.detailed("Ended execution of automated tasks at "
 				+ LocalDateTime.now().toString());
 		}
 	}
@@ -123,10 +121,20 @@ public final class MaintenanceProcess extends TimerTask implements Runnable {  /
 	 */
 	public static void shutdown() {
 		timer.cancel();
+		Logger.detailed("Graceful shutdown of automatic processes initiated.");
 	}
 
+	/**
+	 * Instructs the thread to execute the urgent tasks immidiately
+	 * and schedules subsequent executions at a fixed rate.
+	 * Delay of one execution will not affect the schedule.
+	 * This should only be called after the setup-method!
+	 */
 	public void startup() {
-		timer.scheduleAtFixedRate(instance, 0, intervalInMillis);
+		timer.scheduleAtFixedRate(instance, 0, intervalInMillis);               //innere klasse
+		Logger.detailed("Automatic tasks started, subsequent executions "
+				+ "scheduled with a delay of " 
+				+ Math.round((intervalInMillis/1000)/60) + " minutes");
 	}
 
 	/**
@@ -136,19 +144,20 @@ public final class MaintenanceProcess extends TimerTask implements Runnable {  /
 	 * @param emailContent the body of the e-mail with 4 placeholders
 	 * @param emailSubject the subject to be displayed
 	 */
-	public void setup(String emailContent, String emailSubject) {
+	public void setup(String emailSubject, String emailBody) {
 		ConfigReader instance = ConfigReader.getInstance();
 		int keyAsIntInMinutes = instance.getKeyAsInt("SCAN_INTERVAL", 20);
 		intervalInMillis = keyAsIntInMinutes * 60 * 1000;
-		reminderEmail = emailContent;
+		reminderEmail = emailBody;
 		reminderSubject = emailSubject;
-		timer = new Timer("MaintenanceProcess");
+		timer = new Timer("MaintenanceProcess", true);
+		Logger.detailed("MaintenanceProcess setup completed.");
 	}
 	
 	private String insertParams(String param1, String param2, 
 			String param3, String param4, String content) {
 		MessageFormat messageFormat = new MessageFormat(content);
-		Object[] args = {param1, param2, param3};
+		Object[] args = {param1, param2, param3, param4};
 		String contentWithParam = messageFormat.format(args);
 		
 		return contentWithParam;
