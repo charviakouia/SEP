@@ -33,6 +33,7 @@ public final class Pagination {
 	 */
 	public static void updatePagination(PaginationDto pagination, int pageCount) {
 		pagination.setTotalAmountOfPages(ceilDiv(pageCount, getEntriesPerPage()));
+		// in general not entirely "correct"
 		pagination.setPageNumber(Math.min(pagination.getPageNumber(), pagination.getTotalAmountOfPages() - 1));
 	}
 	

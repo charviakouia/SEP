@@ -249,8 +249,7 @@ public final class UserDao {
 	 * 
 	 * @author Jonas Picker, but re-uses @author Sergei Pravdins's Code
 	 */
-	public static UserDto readUserByEmail(UserDto userDto)
-			throws UserDoesNotExistException {
+	public static UserDto readUserByEmail(UserDto userDto) throws UserDoesNotExistException {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		int id = getUserIdByEmail(conn, userDto);
@@ -260,8 +259,7 @@ public final class UserDao {
 			UserDto completeUser = readUserForProfileHelper(conn, userDto);
 			return completeUser;
 		} catch (SQLException e) {
-			String message = "Database error occurred while reading user entity"
-		+ " with id: " + userDto.getId();
+			String message = "Database error occurred while reading user entity" + " with id: " + userDto.getId();
 			Logger.severe(message);
 			throw new LostConnectionException(message, e);
 		} finally {
@@ -278,27 +276,46 @@ public final class UserDao {
 	 */
 	public static List<UserDto> searchUsers(UserSearchDto userSearch, PaginationDto pagination) {
 
+		// @Task search by email address or name
+
 		// TEMPORARY CODE AHEAD!!
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
 
-			final var statementBody = ""; // @Task
+			final var statementBody = """
+					from
+						users u
+					where
+						position(lower(?) in lower(u.emailaddress)) > 0
+					""";
 
 			{
-				final var countStatement = connection.prepareStatement("" + statementBody); // @Task
+				final var countStatement = connection
+						.prepareStatement("select count(distinct u.userid) " + statementBody);
 
+				countStatement.setString(1,  userSearch.getSearchTerm());
+				
 				final var resultSet = countStatement.executeQuery();
 				resultSet.next();
 
 				Pagination.updatePagination(pagination, resultSet.getInt(1));
 			}
 
-			final var itemsStatement = connection.prepareStatement("".formatted(statementBody)); // @Task
+			final var itemsStatement = connection.prepareStatement("""
+					select distinct
+						u.userid, u.emailaddress, u.name, u.surname
+					%s
+					offset ?
+					limit ?
+					""".formatted(statementBody));
+			
+			itemsStatement.setString(1, userSearch.getSearchTerm());
+			
 			// @Task sorting
-			itemsStatement.setInt(1, Pagination.pageOffset(pagination));
-			itemsStatement.setInt(2, Pagination.getEntriesPerPage());
+			itemsStatement.setInt(2, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(3, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<UserDto>();
@@ -307,7 +324,10 @@ public final class UserDao {
 
 				final var user = new UserDto();
 
-				// @Task
+				user.setId(resultSet.getInt(1));
+				user.setEmailAddress(resultSet.getString(2));
+				user.setFirstName(resultSet.getString(3));
+				user.setLastName(resultSet.getString(4));
 
 				results.add(user);
 			}
@@ -335,31 +355,28 @@ public final class UserDao {
 
 	}
 
-	
 	/**
-	 * Checks if a user exists in the database and returns his id, public 
-	 * helper method, since outside access is required.
+	 * Checks if a user exists in the database and returns his id, public helper
+	 * method, since outside access is required.
 	 * 
-	 * @param conn the connection the operations are performed on
+	 * @param conn      the connection the operations are performed on
 	 * @param userEmail the container for the users email in a dto.
 	 * @return the user id for the corresponding email
 	 * @throws UserDoesNotExistException if the user email wasn't found
-	 * @author Jonas Picker 
+	 * @author Jonas Picker
 	 */
-	public static int getUserIdByEmail(Connection conn ,UserDto userEmail) 
-			throws UserDoesNotExistException  {
-			try {
-			PreparedStatement readUserId = conn.prepareStatement("SELECT userId"
-					+ " FROM users WHERE emailAddress = ?;");
+	public static int getUserIdByEmail(Connection conn, UserDto userEmail) throws UserDoesNotExistException {
+		try {
+			PreparedStatement readUserId = conn
+					.prepareStatement("SELECT userId" + " FROM users WHERE emailAddress = ?;");
 			readUserId.setString(1, userEmail.getEmailAddress());
 			ResultSet rs = readUserId.executeQuery();
 			rs.next();
 			return rs.getInt(1);
 		} catch (SQLException e) {
 			Logger.development("UserId couldn't be retrieved for this email.");
-			throw new UserDoesNotExistException("Specified email " 
-					+ userEmail.getEmailAddress() 
-					+ " doesn't seem to match any user entry", e);
+			throw new UserDoesNotExistException(
+					"Specified email " + userEmail.getEmailAddress() + " doesn't seem to match any user entry", e);
 		}
 	}
 
@@ -373,8 +390,7 @@ public final class UserDao {
 	 * @throws UserDoesNotExistException Is thrown when the enclosed ID does not
 	 *                                   exist in the data store.
 	 */
-	public static UserDto readUserForProfile(UserDto userDto)
-			throws UserDoesNotExistException {
+	public static UserDto readUserForProfile(UserDto userDto) throws UserDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			return readUserForProfileHelper(conn, userDto);
