@@ -6,6 +6,11 @@ import de.dedede.model.data.dtos.PaginationDto;
 
 /**
  * An abstraction over paginated lists for multiple backing beans.
+ * 
+ * The backing bean has to be at least {@link jakarta.enterprise.context.ViewScoped}
+ * for the pagination system to be able to keep track of the current page.
+ * 
+ * @author León Liehr
  */
 public abstract class PaginatedList {
 
@@ -19,7 +24,7 @@ public abstract class PaginatedList {
 	public abstract List<?> getItems();
 
 	/**
-	 * Re-send the query to the lower layer with the updated {@link PaginationDto paginated details}.
+	 * Re-send the query to the lower layer with the updated {@link PaginationDto pagination details}.
 	 */
 	public abstract void refresh();
 

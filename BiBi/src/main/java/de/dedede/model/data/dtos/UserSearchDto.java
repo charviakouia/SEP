@@ -4,7 +4,9 @@ public class UserSearchDto {
 
 	private String searchTerm;
 
-	private UserLendStatus userLendStatus;
+	private UserLendStatus lendStatus;
+	
+	private UserRole role;
 
 	public String getSearchTerm() {
 		return searchTerm;
@@ -14,13 +16,20 @@ public class UserSearchDto {
 		this.searchTerm = searchTerm;
 	}
 
-	public UserLendStatus getUserLendStatus() {
-		return userLendStatus;
+	public UserLendStatus getLendStatus() {
+		return lendStatus;
 	}
 
-	public void setUserLendStatus(UserLendStatus userLendStatus) {
-		this.userLendStatus = userLendStatus;
+	public void setLendStatus(UserLendStatus userStatus) {
+		this.lendStatus = userStatus;
 	}
-	
+
+	public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
 	
 }

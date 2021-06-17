@@ -7,13 +7,77 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
-	
+
 	<ui:param name="page" value="user_search" />
 
 	<ui:define name="content">
 
-		UNIMPLEMENTED
+		<h:form id="form_user_search">
+
+			<h:panelGroup layout="block" styleClass="input-group">
+
+				<h:inputText id="input_user_search_term"
+					value="#{userSearch.userSearch.searchTerm}"
+					styleClass="form-control" title="#{msg['search_term']}" />
+
+				<h:commandButton id="button_search" value="#{msg['search']}"
+					action="#{userSearch.searchUsers()}" styleClass="btn btn-primary" />
+
+			</h:panelGroup>
+
+			<h:panelGroup layout="block">
+				<h:selectBooleanCheckbox id="check_user_lend_status"
+					value="#{userSearch.userSearch.lendStatus}"
+					styleClass="form-check-input" />
+				<h:outputLabel value="!USER_LEND_STATUS!"
+					for="check_user_lend_status" styleClass="form-check-label" />
+
+				<!-- @Task has to support the option "any user" -->
+				<!-- <h:selectOneMenu id="select_user_role"
+					value="#{userSearch.userSearch.role}" title="#{msg['user_role']}"
+					styleClass="form-select">
+
+					<f:selectItems value="#{userSearch.allUserRoles}" var="role"
+						itemValue="#{role}" itemLabel="#{msg[role.toString()]}" />
+
+				</h:selectOneMenu> -->
+			</h:panelGroup>
+
+		</h:form>
+
+		<bibi:paginatedList value="#{userSearch}" styleClass="mt-5">
+
+			<h:column>
+				<f:facet name="header">!EMAIL!</f:facet>
+
+				<bibi:columnContent>
+					<h:link value="#{item.emailAddress}"
+						outcome="/view/account/profile.xhtml?id=#{item.id}" />
+				</bibi:columnContent>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">!FIRST_NAME!</f:facet>
+
+				<bibi:columnContent>
+					#{item.firstName}
+				</bibi:columnContent>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">!LAST_NAME!</f:facet>
+
+				<bibi:columnContent>
+					#{item.lastName}
+				</bibi:columnContent>
+			</h:column>
+
+			<!-- @Task user lend status -->
+
+			<!-- @Task user role -->
+
+		</bibi:paginatedList>
 
 	</ui:define>
-	
+
 </ui:composition>

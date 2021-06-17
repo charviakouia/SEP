@@ -42,6 +42,8 @@ public class PaginationDto implements Serializable {
 	/**
 	 * Get the total amount of pages of the paginated list.
 	 * 
+	 * The amount is always larger than zero.
+	 * 
 	 * @return The total amount of pages.
 	 */
 	public int getTotalAmountOfPages() {

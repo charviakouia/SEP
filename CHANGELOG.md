@@ -1,5 +1,14 @@
 # Changelog
 
+## Feinspezifikation - 3. Meilenstein
+
+* Erstellung der Klasse `Pagination`
+* Umbennung von `UserDao`s `readUserBySearchCriteria` zu `searchUsers`
+* rename `UserSearch.searchUser` -> `UserSearch.searchUsers`
+* rename `MediumSearch.searchMedium` -> `MediumSearch.searchMedia`
+* user search: filter by user role
+* `UserSearchDto#userLendStatus` -> `UserSearchDto#lendStatus`
+
 ## Feinspezifikation – 2. Meilenstein
 
 * Erstelle die Validatoren `LendingProcessSignatureValidator`, `ReturnFormSignatureValidator` und `MediumCreationSignatureValidator`,
