@@ -72,8 +72,9 @@ public class Medium implements Serializable {
 
 	/**
 	 * Insert a new copy of this medium.
+	 * @throws EntityInstanceNotUniqueException 
 	 */
-	public void createCopy() throws BusinessException {
+	public void createCopy() throws BusinessException, EntityInstanceNotUniqueException {
 		try {
 			UUID idOne = UUID.randomUUID();
 			String str=""+idOne;

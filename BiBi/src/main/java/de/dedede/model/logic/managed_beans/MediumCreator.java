@@ -15,6 +15,7 @@ import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
@@ -89,10 +90,13 @@ public class MediumCreator implements Serializable {
 	 * @throws MaxConnectionsException 
 	 * @throws LostConnectionException 
 	 */
-	public String save(){
+	public String save() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException{
 		medium.setReleaseYear(releaseYear);
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
+		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		context.addMessage(null, new FacesMessage(messages.getString("mediumCreator.success")));
+		context.getExternalContext().getFlash().setKeepMessages(true);
 		return null;
 	}
 
@@ -104,8 +108,9 @@ public class MediumCreator implements Serializable {
 	
 	private void searchForCategory(String searchTerm) {
 		PaginationDto paginationDto = new PaginationDto();
-		paginationDto.setPageNumber(1);
-		paginationDto.setTotalAmountOfRows(NUM_DISPLAYED_CATEGORY_ENTRIES);
+
+		paginationDto.setPageNumber(0);
+		paginationDto.setTotalAmountOfPages(NUM_DISPLAYED_CATEGORY_ENTRIES);
 		CategorySearchDto categorySearchDto = new CategorySearchDto();
 		categorySearchDto.setSearchTerm(searchTerm);
 		categories = CategoryDao.readCategoriesByName(categorySearchDto, paginationDto);

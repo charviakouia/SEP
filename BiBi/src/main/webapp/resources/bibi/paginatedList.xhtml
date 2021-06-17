@@ -9,28 +9,57 @@
 	<cc:interface>
 		<cc:attribute name="value"
 			type="de.dedede.model.logic.managed_beans.PaginatedList" />
+		<cc:attribute name="styleClass" />
 	</cc:interface>
 
 	<cc:implementation>
 
-		<h:form id="form_list_controls">
+		<h:panelGroup layout="block"
+			styleClass="btn-toolbar justify-content-center #{cc.attrs.styleClass}">
 
-			<h:commandButton id="button_previous_page"
-				value="#{msg['previous_page']}" action="#{cc.attrs.value.goBack()}"
-				styleClass="btn btn-outline-primary btn-sm" />
+			<h:form id="form_go_back" styleClass="btn-group">
+				<!--
+				The large z-index is necessary to prevent a Boostrap bug where the the left border of the
+				input field #input_current_page overlaps the right border of the button.
+				-->
+				<h:commandButton id="button_go_back" value="#{msg['previous_page']}"
+					action="#{cc.attrs.value.goBack()}"
+					disabled="#{cc.attrs.value.firstPage}"
+					styleClass="btn btn-outline-secondary" style="z-index: 1000" />
+			</h:form>
 
-			<h:inputText id="input_current_page" value="#{cc.attrs.value.paginatedList.pageNumber}" />
-				/
-			<h:outputText value="TOTAL" />
+			<h:form id="form_page_number" styleClass="input-group">
+				<h:inputText id="input_current_page"
+					value="#{cc.attrs.value.pageNumber}" styleClass="form-control" />
 
-			<h:commandButton id="button_next_page" value="#{msg['next_page']}"
-				action="#{cc.attrs.value.goForward()}"
-				styleClass="btn btn-outline-primary btn-sm" />
+				<h:panelGroup styleClass="input-group-text">/</h:panelGroup>
 
-		</h:form>
+				<!-- read-only input text for cosmetic reasons -->
+				<h:inputText
+					value="#{cc.attrs.value.paginatedList.totalAmountOfPages}"
+					styleClass="form-control" readonly="true" />
+				<!--
+				Indeed, the button below is not displayed to the user but it is triggered when a user presses
+				the enter key inside of the input field. Not showing a button is a stylistic choice of mine.
+				Unfortunately, I have to fall back to this hack since "action" is not an attribute of a form
+				element and the attribute "valueChangeListener" on input fields fires *before* the setter which
+				breaks the logic in the backing bean and "actionListener" does not work either.
+				-->
+				<h:commandButton id="button_current_page"
+					action="#{cc.attrs.value.goToPage()}" style="display: none;" />
+			</h:form>
 
-		<h:dataTable value="#{cc.attrs.value.items}" var="item" varStatus="status"
-			styleClass="table">
+			<h:form id="form_go_forward" styleClass="btn-group">
+				<h:commandButton id="button_go_forward" value="#{msg['next_page']}"
+					action="#{cc.attrs.value.goForward()}"
+					disabled="#{cc.attrs.value.lastPage}"
+					styleClass="btn btn-outline-secondary" />
+			</h:form>
+
+		</h:panelGroup>
+
+		<h:dataTable value="#{cc.attrs.value.items}" var="item"
+			varStatus="status" styleClass="table">
 
 			<cc:insertChildren />
 

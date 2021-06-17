@@ -1,5 +1,7 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
@@ -13,7 +15,6 @@ import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -120,68 +121,72 @@ public class Login {
 	 * Send an email to the user with a reset link inside, shows confirmation
 	 * or failure messages depending on the outcome.						
 	 */
-	public void resetPassword() { 																				
+	public void resetPassword() {									
 		FacesContext context = FacesContext.getCurrentInstance();
 		Application application = context.getApplication();
 		ResourceBundle messages = application.evaluateExpressionGet(context, 
 				"#{msg}", ResourceBundle.class);
+		String subject = messages.getString("login.reset_email_subject");
+		String content = messages.getString("login.reset_email_content");
+		String shortMessageFail = messages.getString("login.email_failure"
+				+ "_short");
+		String longMessageFail = messages.getString("login.email_failure"
+				+ "_long");
+		TokenDto newTokenContainer = TokenGenerator.generateToken();
 		try {
-			UserDto completeUserData = UserDao.readUserByEmail(userData);
-			String subject = messages.getString("login.reset_email_subject");
-			String content = messages.getString("login.reset_email_content");
-			TokenDto newTokenContainer = TokenGenerator.generateToken();  						
+			UserDto completeUserData = UserDao.readUserByEmail(userData); 						
 			TokenDto userToken = UserDao.setOrRetrieveUserToken(
 					completeUserData, newTokenContainer);
 			String token = userToken.getContent();		
-			String userLink = "www.testlink.de/?token=" + token;				//@see format when PasswordReset Package is finished by Ivan
+			String link = "http://localhost:8080" + 
+					context.getApplication().getViewHandler().getResourceURL(
+					context, "/view/public/password-reset.xhtml?token=" 
+					+ URLEncoder.encode(token, "UTF-8"));
+			completeUserData.setToken(userToken);
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
-			String emailBody = insertParams(firstname, lastname, userLink, 
-					content);
+			String emailBody = insertParams(firstname, lastname, link, content);
 			String emailAddress = completeUserData.getEmailAddress();
 			try {
 				EmailUtility.sendEmail(emailAddress, subject, emailBody);
 			} catch (MessagingException e) {
 				Logger.severe("An error occured while trying to send reset"
 						+ " email: " + e.getMessage());
-				String shortMessage = messages.getString("login.email_failure"
-						+ "_short");
-				String longMessage = messages.getString("login.email_failure"
-						+ "_long");
 				context.addMessage("login_email_message", 
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-								shortMessage, longMessage));
+								shortMessageFail, longMessageFail));
 				
 			}
 			Logger.development("A password reset was requested from the "
 					+ "login page, an email was sent to: " 
-					+ emailAddress);
-			Logger.development("Inhalt der Email: " + emailBody);													
+					+ emailAddress);												
 			String shortMessage = messages.getString("login.email_was"
 					+ "_sent_short");
 			String longMessage = messages.getString("login.email_was"
 					+ "_sent_long");
-			context.addMessage(null, 
-					new FacesMessage(FacesMessage.SEVERITY_INFO, 
-							shortMessage, longMessage));
-		} catch (UserDoesNotExistException e) {
-			String shortMessage = messages.getString("login.unknown_user"
-					+ "_short");
-			String longMessage = messages.getString("login.unknown_user"
-					+ "_long");
-			context.addMessage("login_email_message", 
+			context.addMessage("login_form:login_email_field", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							shortMessage, longMessage));
+		} catch (UserDoesNotExistException e) {
+			String shortMessage = messages.getString("login.unknown_user_short");
+			String longMessage = messages.getString("login.unknown_user_long");
+			context.addMessage("login_email_message", 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMessage,
+							longMessage));
+		} catch (UnsupportedEncodingException e1) {
+			Logger.development("An unexpected error occured during "
+					+ "token encoding on password reset.");
+			context.addMessage("login.email_message", new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, shortMessageFail, 
+					longMessageFail));
 		}
 		
 	}
 	
-	private String insertParams(String param1, String param2, 
-			String param3, String content) {
+	private String insertParams(String param1, String param2, String param3, String content) {
 		MessageFormat messageFormat = new MessageFormat(content);
 		Object[] args = {param1, param2, param3};
 		String contentWithParam = messageFormat.format(args);
-		
 		return contentWithParam;
 	}
 	

@@ -1,13 +1,14 @@
 package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.persistence.daos.MediumDao;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.ExternalContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -19,13 +20,15 @@ import jakarta.inject.Named;
  *
  */
 @Named
-@RequestScoped
-public class CopiesReadyForPickupAllUsers extends PaginatedList {
+@ViewScoped
+public class CopiesReadyForPickupAllUsers extends PaginatedList implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private ExternalContext ectx;
 	
-	@Serial
 	private List<MediumCopyUserDto> copies;
 
 	@PostConstruct

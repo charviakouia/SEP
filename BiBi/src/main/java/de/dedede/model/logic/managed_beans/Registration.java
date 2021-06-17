@@ -17,8 +17,11 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,26 +87,20 @@ public class Registration implements Serializable {
 	 * As an anonymous user register to the system.
 	 */
 	public String register() {
-		try {
-			setPasswordHash();
-			user.setToken(TokenGenerator.generateToken());
-			UserDao.createUser(user);
-			sendVerificationEmail();
-			return switchUser();
-		} catch (EntityInstanceNotUniqueException e){
-			context.addMessage(null, new FacesMessage("The entered email is already taken"));
-			return null;
-		}
+		setPasswordHash();
+		user.setToken(TokenGenerator.generateToken());
+		UserDao.createUser(user);
+		sendVerificationEmail();
+		return switchUser();
 	}
 	
 	private void sendVerificationEmail() {
 		try {
-			Map<String, List<String>> map = new HashMap<>();
-			map.put("token", List.of(user.getToken().getContent()));
-			String link = context.getApplication().getViewHandler().getBookmarkableURL(
-					context, "/view/public/email-confirmation.xhtml", map, false);
-			EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", link);
-		} catch (MessagingException e) {
+			String link = context.getApplication().getViewHandler().getResourceURL(
+					context, "/view/public/email-confirmation.xhtml?token=" 
+							+ URLEncoder.encode(user.getToken().getContent(), "UTF-8"));
+			EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", "http://localhost:8080" + link);
+		} catch (MessagingException | UnsupportedEncodingException e) {
 			Logger.severe("Couldn't send a verification email to user: " + user.getEmailAddress());
 		}
 	}
@@ -111,10 +108,13 @@ public class Registration implements Serializable {
 	private String switchUser(){
 		if (isAdmin()){
 			context.addMessage(null, new FacesMessage("User created successfully"));
-			return null;
+			context.getExternalContext().getFlash().setKeepMessages(true);
+			return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
 		} else {
+			context.addMessage(null, new FacesMessage("Registration successful"));
+			context.getExternalContext().getFlash().setKeepMessages(true);
 			session.setUser(user);
-			return "/view/account/profile?faces-redirect=true";
+			return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
 		}
 	}
 

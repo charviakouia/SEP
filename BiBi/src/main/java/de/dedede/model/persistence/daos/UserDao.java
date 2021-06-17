@@ -1,23 +1,34 @@
 package de.dedede.model.persistence.daos;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.postgresql.util.PGInterval;
+
+import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserLendStatus;
+import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.data.dtos.UserSearchDto;
+import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
-import de.dedede.model.data.dtos.UserLendStatus;
-import de.dedede.model.data.dtos.UserRole;
-import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
-import org.postgresql.util.PGInterval;
-import java.sql.*;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
-
+import de.dedede.model.persistence.util.Pagination;
 
 /**
  * This DAO (data access object) manages data and privileges for users, who are
@@ -30,34 +41,36 @@ public final class UserDao {
 
 	private static final long ACQUIRING_CONNECTION_PERIOD = 5000;
 
-	private UserDao() {}
+	private UserDao() {
+	}
 
 	/**
-	 * Enters new user data into the persistent data store.
-	 * The enclosed email address must not be associated with an existing
-	 * user in the data store. Otherwise, an exception is thrown.
+	 * Enters new user data into the persistent data store. The enclosed email
+	 * address must not be associated with an existing user in the data store.
+	 * Otherwise, an exception is thrown.
 	 *
 	 * @param userDto A DTO container with the new user data.
-	 * @throws EntityInstanceNotUniqueException Is thrown when the enclosed ID
-	 *                                          is already associated with an existing data entry.
+	 * @throws EntityInstanceNotUniqueException Is thrown when the enclosed ID is
+	 *                                          already associated with an existing
+	 *                                          data entry.
 	 */
-	public static void createUser(UserDto userDto) throws EntityInstanceNotUniqueException {
+	public static void createUser(UserDto userDto) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
-			PreparedStatement createStmt = conn.prepareStatement(
-					"INSERT INTO Users (emailAddress, passwordHashSalt, passwordHash, name, surname, " +
-							"postalCode, city, street, houseNumber, token, tokenCreation, userLendPeriod, " +
-							"lendStatus, verificationStatus, userRole) VALUES " +
-							"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), " +
-							"CAST(? AS userlendstatus), CAST(? AS userverificationstatus), " +
-							"CAST(? AS userrole));",
-					Statement.RETURN_GENERATED_KEYS
-			);
+			PreparedStatement createStmt = conn
+					.prepareStatement("INSERT INTO Users (emailAddress, passwordHashSalt, passwordHash, name, surname, "
+							+ "postalCode, city, street, houseNumber, token, tokenCreation, userLendPeriod, "
+							+ "lendStatus, verificationStatus, userRole) VALUES "
+							+ "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), "
+							+ "CAST(? AS userlendstatus), CAST(? AS userverificationstatus), "
+							+ "CAST(? AS userrole));", Statement.RETURN_GENERATED_KEYS);
 			populateStatement(createStmt, userDto);
 			int numAffectedRows = createStmt.executeUpdate();
-			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(userDto, createStmt); }
+			if (numAffectedRows > 0) {
+				attemptToInsertGeneratedKey(userDto, createStmt);
+			}
 			conn.commit();
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			String msg = "Database error occurred while creating user entity with id: " + userDto.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -66,15 +79,14 @@ public final class UserDao {
 		}
 	}
 
-	private static void attemptToInsertGeneratedKey(UserDto userDto, Statement stmt)
-			throws SQLException {
+	private static void attemptToInsertGeneratedKey(UserDto userDto, Statement stmt) throws SQLException {
 		ResultSet resultSet = stmt.getGeneratedKeys();
-		if (resultSet.next()){
+		if (resultSet.next()) {
 			userDto.setId(Math.toIntExact(resultSet.getLong(1)));
 		}
 	}
 
-	private static PGInterval toPGInterval(Duration duration){
+	private static PGInterval toPGInterval(Duration duration) {
 		PGInterval result = new PGInterval();
 		if (duration == null) {
 			result.setSeconds(0);
@@ -90,14 +102,14 @@ public final class UserDao {
 		try {
 			UserDto result = readUserByTokenHelper(conn, userDto);
 			conn.commit();
-			if (result != null){
+			if (result != null) {
 				return result;
 			} else {
 				String msg = "A medium does not exist with token: " + userDto.getToken().getContent();
 				Logger.severe(msg);
 				throw new UserDoesNotExistException(msg);
 			}
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			String msg = "Database error occurred while reading application entity with id: " + userDto.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -106,14 +118,34 @@ public final class UserDao {
 		}
 	}
 
+	public static boolean userExists(UserDto userDto) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			return userExistsByEmail(conn, userDto);
+		} catch (SQLException e) {
+			String msg = "Database error occurred while reading user entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	private static boolean userExistsByEmail(Connection conn, UserDto userDto) throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE WHEN (SELECT COUNT(userid) FROM Users WHERE emailaddress = ?) > 0 THEN true "
+						+ "ELSE false " + "END AS entityExists;");
+		checkingStmt.setString(1, userDto.getEmailAddress());
+		ResultSet resultSet = checkingStmt.executeQuery();
+		resultSet.next();
+		return resultSet.getBoolean(1);
+	}
+
 	private static UserDto readUserByTokenHelper(Connection conn, UserDto userDto) throws SQLException {
-		PreparedStatement readStmt = conn.prepareStatement(
-				"SELECT userid, emailaddress, passwordhashsalt, " +
-						"passwordhash, name, surname, postalcode, city, street, " +
-						"housenumber, token, tokencreation, userlendperiod, " +
-						"lendstatus, verificationstatus, userrole " +
-						"FROM Users " +
-						"WHERE token = ?;");
+		PreparedStatement readStmt = conn.prepareStatement("SELECT userid, emailaddress, passwordhashsalt, "
+				+ "passwordhash, name, surname, postalcode, city, street, "
+				+ "housenumber, token, tokencreation, userlendperiod, " + "lendstatus, verificationstatus, userrole "
+				+ "FROM Users " + "WHERE token = ?;");
 		readStmt.setString(1, userDto.getToken().getContent());
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()) {
@@ -124,41 +156,37 @@ public final class UserDao {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Reads an existing user by id and retrieves his token or sets a newly 
+	 * Reads an existing user by id and retrieves his token or sets a newly
 	 * generated one if it expired
 	 * 
-	 * @param user in a userDto
+	 * @param user  in a userDto
 	 * @param token the new token to be set if the old one expired
 	 * @return The token that was set or retrieved as String
 	 * @throws LostConnectionException, MaxConnectionsException
 	 * 
-	 *  @author Jonas Picker
+	 * @author Jonas Picker
 	 */
 	public static TokenDto setOrRetrieveUserToken(UserDto user, TokenDto token)
-			throws UserDoesNotExistException, LostConnectionException,
-					MaxConnectionsException {
+			throws UserDoesNotExistException, LostConnectionException, MaxConnectionsException {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (userTokenIsNull(conn, user) || userTokenExpired(conn, user)) {
 				PreparedStatement updateToken = conn.prepareStatement(
-						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP,"
-						+ " token = ? WHERE userid = ?;"
-						);
+						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP," + " token = ? WHERE userid = ?;");
 				updateToken.setString(1, token.getContent());
 				updateToken.setInt(2, user.getId());
 				int changed = updateToken.executeUpdate();
 				Logger.development(changed + " usertoken was newly generated");
 				updateToken.close();
-				token.setCreationTime(LocalDateTime.now());
+				token.setCreationTime(LocalDateTime.now().plus(5, ChronoUnit.MINUTES));
+				// The DB won't accept it if it was made even slightly in the past
 				return token;
 			} else {
-				PreparedStatement getToken = conn.prepareStatement(
-						"SELECT token, tokenCreation "
-						+ "FROM users WHERE userid = ?;"
-						);
+				PreparedStatement getToken = conn
+						.prepareStatement("SELECT token, tokenCreation " + "FROM users WHERE userid = ?;");
 				getToken.setInt(1, user.getId());
 				ResultSet rs = getToken.executeQuery();
 				rs.next();
@@ -171,25 +199,21 @@ public final class UserDao {
 				return result;
 			}
 		} catch (SQLException e) {
-			String message = "SQLException while checking or "
-					+ "setting valid user token";
+			String message = "SQLException while checking or " + "setting valid user token";
 			Logger.development(message);
 			throw new LostConnectionException(message, e);
 		}
-		
+
 	}
-	
-	//reads an existing user by id and checks if his token expired but will 
-	//falsely return false if token is null
+
+	// reads an existing user by id and checks if his token expired but will
+	// falsely return false if token is null
 	/* @author Jonas Picker */
-	private static boolean userTokenExpired(Connection conn, UserDto userId) 
-			throws SQLException {
-		PreparedStatement checkingStmt = conn.prepareStatement(
-				"SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
-				+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
-				+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END "
-				+ "AS tokenExpired;"
-				);
+	private static boolean userTokenExpired(Connection conn, UserDto userId) throws SQLException {
+		PreparedStatement checkingStmt = conn
+				.prepareStatement("SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
+						+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
+						+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END " + "AS tokenExpired;");
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
 		rs.next();
@@ -197,34 +221,32 @@ public final class UserDao {
 		checkingStmt.close();
 		return result;
 	}
-	//reads an existing user by id and checks if his token is null
+
+	// reads an existing user by id and checks if his token is null
 	/* @author Jonas Picker */
-	private static boolean userTokenIsNull(Connection conn, UserDto userId) 
-			throws SQLException {
-		PreparedStatement checkingStmt = conn.prepareStatement(
-				"SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
-				+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;"
-				);
-			checkingStmt.setInt(1, userId.getId());
-			ResultSet rs = checkingStmt.executeQuery();
-			rs.next();
-			boolean result = rs.getBoolean(1);
-			checkingStmt.close();
-			return result;
+	private static boolean userTokenIsNull(Connection conn, UserDto userId) throws SQLException {
+		PreparedStatement checkingStmt = conn
+				.prepareStatement("SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
+						+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;");
+		checkingStmt.setInt(1, userId.getId());
+		ResultSet rs = checkingStmt.executeQuery();
+		rs.next();
+		boolean result = rs.getBoolean(1);
+		checkingStmt.close();
+		return result;
 	}
 
 	/**
-	 * Fetches user data associated with a given email. The email address
-	 * must be associated with a user in the data store. Otherwise,
-	 * an exception is thrown.
+	 * Fetches user data associated with a given email. The email address must be
+	 * associated with a user in the data store. Otherwise, an exception is thrown.
 	 *
 	 * @param userDto A DTO container with the email address that identifies the
 	 *                user to be fetched.
 	 * @return A DTO container with the fetched user.
-	 * @throws UserDoesNotExistException Is thrown when the enclosed
-	 *                                   email address isn't associated with an 
-	 *                                   existing data entry.
-	 *                                             
+	 * @throws UserDoesNotExistException Is thrown when the enclosed email address
+	 *                                   isn't associated with an existing data
+	 *                                   entry.
+	 * 
 	 * @author Jonas Picker, but re-uses @author Sergei Pravdins's Code
 	 */
 	public static UserDto readUserByEmail(UserDto userDto)
@@ -232,14 +254,14 @@ public final class UserDao {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		int id = getUserIdByEmail(conn, userDto);
-		userDto.setId(id);	
+		userDto.setId(id);
 		try {
 			userDto.setId(id);
 			UserDto completeUser = readUserForProfileHelper(conn, userDto);
 			return completeUser;
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			String message = "Database error occurred while reading user entity"
-					+ " with id: " + userDto.getId();
+		+ " with id: " + userDto.getId();
 			Logger.severe(message);
 			throw new LostConnectionException(message, e);
 		} finally {
@@ -247,11 +269,72 @@ public final class UserDao {
 		}
 	}
 
+	/**
+	 * Search for users in the system.
+	 * 
+	 * @param userSearch The search parameters.
+	 * @param pagination The container of current and total page number.
+	 * @return The list of users found by the search.
+	 */
+	public static List<UserDto> searchUsers(UserSearchDto userSearch, PaginationDto pagination) {
 
-	public static List<UserDto> readUsersBySearchCriteria() {
-		return null;
+		// TEMPORARY CODE AHEAD!!
+
+		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+
+		try {
+
+			final var statementBody = ""; // @Task
+
+			{
+				final var countStatement = connection.prepareStatement("" + statementBody); // @Task
+
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+
+				Pagination.updatePagination(pagination, resultSet.getInt(1));
+			}
+
+			final var itemsStatement = connection.prepareStatement("".formatted(statementBody)); // @Task
+			// @Task sorting
+			itemsStatement.setInt(1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(2, Pagination.getEntriesPerPage());
+
+			final var resultSet = itemsStatement.executeQuery();
+			final var results = new ArrayList<UserDto>();
+
+			while (resultSet.next()) {
+
+				final var user = new UserDto();
+
+				// @Task
+
+				results.add(user);
+			}
+
+			connection.commit();
+
+			return results;
+		} catch (SQLException exeption) {
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while searching for users: " + exeption.getMessage();
+			Logger.severe(message);
+
+			throw new LostConnectionException(message, exeption);
+
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(connection);
+		}
 
 	}
+
 	
 	/**
 	 * Checks if a user exists in the database and returns his id, public 
@@ -271,30 +354,31 @@ public final class UserDao {
 			readUserId.setString(1, userEmail.getEmailAddress());
 			ResultSet rs = readUserId.executeQuery();
 			rs.next();
-			int id = rs.getInt(1);
-			return id;
+			return rs.getInt(1);
 		} catch (SQLException e) {
 			Logger.development("UserId couldn't be retrieved for this email.");
-			throw new UserDoesNotExistException("Specified email doesn't seem"
-					+ " to match any user entry");
-		} 
+			throw new UserDoesNotExistException("Specified email " 
+					+ userEmail.getEmailAddress() 
+					+ " doesn't seem to match any user entry", e);
+		}
 	}
 
 	/**
-	 * Fetches user data associated with a given ID. The ID
-	 * must be existed in the data store. Otherwise, an exception is thrown.
+	 * Fetches user data associated with a given ID. The ID must be existed in the
+	 * data store. Otherwise, an exception is thrown.
 	 *
-	 * @param userDto A DTO container with the ID that identifies the
-	 *                user to be fetched.
+	 * @param userDto A DTO container with the ID that identifies the user to be
+	 *                fetched.
 	 * @return A DTO container with the fetched user.
-	 * @throws UserDoesNotExistException Is thrown when the enclosed
-	 *                                      ID does not exist in the data store.
+	 * @throws UserDoesNotExistException Is thrown when the enclosed ID does not
+	 *                                   exist in the data store.
 	 */
-	public static UserDto readUserForProfile(UserDto userDto) throws UserDoesNotExistException {
+	public static UserDto readUserForProfile(UserDto userDto)
+			throws UserDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			return readUserForProfileHelper(conn, userDto);
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			String message = "Database error occurred while reading user entity with id: " + userDto.getId();
 			Logger.severe(message);
 			throw new LostConnectionException(message, e);
@@ -304,35 +388,34 @@ public final class UserDao {
 	}
 
 	/**
-	 * Overwrites user data associated with a given email. The email address
-	 * must be associated with a user in the data store. Otherwise,
-	 * an exception is thrown.
+	 * Overwrites user data associated with a given email. The email address must be
+	 * associated with a user in the data store. Otherwise, an exception is thrown.
 	 *
 	 * @param userDto A DTO container with the overwriting user data.
-	 * @throws EntityInstanceDoesNotExistException Is thrown when the enclosed
-	 *                                             email address isn't associated with an existing data entry.
+	 * @throws EntityInstanceDoesNotExistException Is thrown when the enclosed email
+	 *                                             address isn't associated with an
+	 *                                             existing data entry.
 	 */
 	public static void updateUser(UserDto userDto) throws EntityInstanceDoesNotExistException {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);;
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		;
 		try {
-			PreparedStatement updateStmt = conn.prepareStatement(
-					"UPDATE Users " +
-							"SET emailaddress = ?, passwordhashsalt = ?, passwordhash = ?, name = ?, surname = ?, " +
-							"postalcode = ?, city = ?, street = ?, housenumber = ?, token = ?, tokencreation = ?, " +
-							"userlendperiod = CAST(? AS INTERVAL), lendstatus = CAST(? AS userlendstatus), " +
-							"verificationstatus = CAST(? AS userverificationstatus), userrole = CAST(? AS userrole) " +
-							"WHERE userid = ?;"
-			);
+			PreparedStatement updateStmt = conn.prepareStatement("UPDATE Users "
+					+ "SET emailaddress = ?, passwordhashsalt = ?, passwordhash = ?, name = ?, surname = ?, "
+					+ "postalcode = ?, city = ?, street = ?, housenumber = ?, token = ?, tokencreation = ?, "
+					+ "userlendperiod = CAST(? AS INTERVAL), lendstatus = CAST(? AS userlendstatus), "
+					+ "verificationstatus = CAST(? AS userverificationstatus), userrole = CAST(? AS userrole) "
+					+ "WHERE userid = ?;");
 			populateStatement(updateStmt, userDto);
 			updateStmt.setLong(16, userDto.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
-			if (numAffectedRows == 0){
+			if (numAffectedRows == 0) {
 				String msg = String.format("No entity with the id: %d exists", userDto.getId());
 				Logger.severe(msg);
 				throw new EntityInstanceDoesNotExistException(msg);
 			}
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			String msg = "Database error occurred while updating user entity with id: " + userDto.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -341,7 +424,6 @@ public final class UserDao {
 		}
 	}
 
-	
 	private static void populateStatement(PreparedStatement stmt, UserDto userDto) throws SQLException {
 		stmt.setString(1, userDto.getEmailAddress());
 		stmt.setString(2, userDto.getPasswordSalt());
@@ -362,21 +444,22 @@ public final class UserDao {
 	}
 
 	/**
-	 * Deletes user data associated with a given email address. The email
-	 * address must be associated with a user in the data store. Otherwise,
-	 * an exception is thrown.
+	 * Deletes user data associated with a given email address. The email address
+	 * must be associated with a user in the data store. Otherwise, an exception is
+	 * thrown.
 	 *
-	 * @param userDto A DTO container with an email address identifying the user
-	 *                to be deleted.
+	 * @param userDto A DTO container with an email address identifying the user to
+	 *                be deleted.
 	 * @return A DTO container with data from the deleted user.
-	 * @throws UserDoesNotExistException Is thrown when the enclosed
-	 *                                             email address isn't associated with an existing data entry.
+	 * @throws UserDoesNotExistException Is thrown when the enclosed email address
+	 *                                   isn't associated with an existing data
+	 *                                   entry.
 	 */
 	public static UserDto deleteUser(UserDto userDto)
 			throws UserDoesNotExistException, LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
-			if (userEntityExists(conn, userDto)){
+			if (userEntityExists(conn, userDto)) {
 				deleteUserHelper(conn, userDto);
 				conn.commit();
 				return userDto;
@@ -394,16 +477,13 @@ public final class UserDao {
 		}
 	}
 
-	private static UserDto readUserHelper(Connection conn, UserDto userDto)
-			throws SQLException {
-		PreparedStatement readStmt = conn.prepareStatement(
-				"select * from \"users\" where emailaddress = ?;"
-		);
+	private static UserDto readUserHelper(Connection conn, UserDto userDto) throws SQLException {
+		PreparedStatement readStmt = conn.prepareStatement("select * from \"users\" where emailaddress = ?;");
 		readStmt.setString(1, userDto.getEmailAddress());
 		ResultSet resultSet = readStmt.executeQuery();
 
 		if (resultSet.next()) {
-			// Logger.development("hier i am  in if ResultSet::::...");
+			// Logger.development("hier i am in if ResultSet::::...");
 			userDto.setId(resultSet.getInt(1));
 			userDto.setEmailAddress(resultSet.getString(2));
 			userDto.setPasswordSalt(resultSet.getString(3));
@@ -462,10 +542,7 @@ public final class UserDao {
 	 * @author Sergei Pravdin
 	 */
 	private static void deleteUserHelper(Connection conn, UserDto userDto) throws SQLException {
-		PreparedStatement deleteStmt = conn.prepareStatement(
-				"DELETE FROM Users " +
-						"WHERE userid = ?;"
-		);
+		PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM Users " + "WHERE userid = ?;");
 		deleteStmt.setInt(1, Math.toIntExact(userDto.getId()));
 		deleteStmt.executeUpdate();
 		conn.commit();
@@ -474,14 +551,12 @@ public final class UserDao {
 	/**
 	 * @author Sergei Pravdin
 	 */
-	public static UserDto readUserForProfileHelper(Connection conn, UserDto userDto) throws SQLException, UserDoesNotExistException {
-		PreparedStatement readStmt = conn.prepareStatement(
-				"SELECT userid, emailaddress, passwordhashsalt," +
-						" passwordhash, name, surname, postalcode, city, street," +
-						" housenumber, token, tokencreation, userlendperiod," +
-						"lendstatus, verificationstatus, userrole " +
-						"FROM Users " +
-						"WHERE userid = ?");
+	public static UserDto readUserForProfileHelper(Connection conn, UserDto userDto)
+			throws SQLException, UserDoesNotExistException {
+		PreparedStatement readStmt = conn.prepareStatement("SELECT userid, emailaddress, passwordhashsalt,"
+				+ " passwordhash, name, surname, postalcode, city, street,"
+				+ " housenumber, token, tokencreation, userlendperiod," + "lendstatus, verificationstatus, userrole "
+				+ "FROM Users " + "WHERE userid = ?");
 		readStmt.setInt(1, Math.toIntExact(userDto.getId()));
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()) {
