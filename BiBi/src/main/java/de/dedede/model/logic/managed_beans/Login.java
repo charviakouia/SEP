@@ -47,13 +47,7 @@ public class Login {
 	 */
 	@Inject
 	private UserSession userSession;
-	
-	/**
-	 * No tasks here.
-	 */
-	@PostConstruct
-	public void init() {}
-	
+		
 	/**
 	 * Checks for existing user session and decides if facelet renders login 
 	 * form.
@@ -69,7 +63,9 @@ public class Login {
 	}
 	
 	/**
-	 * Log into the system and redirect to profile page if successful.
+	 * Log into the system and redirect to profile page if successful while
+	 * switching out the HttpSession Id and initializing the users data in the
+	 * session scope.
 	 *
 	 * @throws MaxConnectionsException If there are no more available database
 	 *                                 connections.
@@ -98,7 +94,7 @@ public class Login {
 				NavigationHandler navigationHandler = 
 						application.getNavigationHandler();
 				navigationHandler.handleNavigation(context, null,
-						"medium-search.xhtml");
+						"medium-search.xhtml?faces-redirect=true");
 				return;
 			} else {
 				String shortMessage = messages.getString("login.wrong"
@@ -121,7 +117,8 @@ public class Login {
 	}
 
 	/**
-	 * Send an email to the user with a reset link inside.						
+	 * Send an email to the user with a reset link inside, shows confirmation
+	 * or failure messages depending on the outcome.						
 	 */
 	public void resetPassword() { 																				
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -145,7 +142,16 @@ public class Login {
 			try {
 				EmailUtility.sendEmail(emailAddress, subject, emailBody);
 			} catch (MessagingException e) {
-				Logger.severe(e.getMessage());
+				Logger.severe("An error occured while trying to send reset"
+						+ " email: " + e.getMessage());
+				String shortMessage = messages.getString("login.email_failure"
+						+ "_short");
+				String longMessage = messages.getString("login.email_failure"
+						+ "_long");
+				context.addMessage("login_email_message", 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+								shortMessage, longMessage));
+				
 			}
 			Logger.development("A password reset was requested from the "
 					+ "login page, an email was sent to: " 
@@ -179,11 +185,20 @@ public class Login {
 		return contentWithParam;
 	}
 	
-	//getters and setters
+	/**
+	 * Grants the facelet access to the UserDto.
+	 * 
+	 * @return the inputContainer
+	 */
 	public UserDto getUserData() {
 		return userData;
 	}
-
+	
+	/**
+	 * Grants the facelet access to the UserDto.
+	 * 
+	 * @param the new user input
+	 */
 	public void setUserData(UserDto user) {
 		this.userData = user;
 	}

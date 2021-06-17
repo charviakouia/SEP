@@ -27,18 +27,27 @@ import jakarta.inject.Inject;
  * 
  * @author Jonas Picker
  */
-public class TrespassListener implements PhaseListener, Serializable{ //To-Do: Navigation-Probleme lösen und ausgiebig testen
+public class TrespassListener implements PhaseListener, Serializable{ //redirection evtl zu (statischen) Fehlerseiten statt Profil bei eingeloggten Nutzern
 	
 	@Serial
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * The user data corresponding to the request source injected manually.
+	 */
 	@Inject
-	private UserSession userSession = CDI.current().select(UserSession.class).get();
+	private UserSession userSession = 
+						CDI.current().select(UserSession.class).get();
 	
+	/**
+	 * The system wide rights for anonymous users.
+	 */
 	private static SystemAnonAccess accessMode;                          //nicht schön evtl db selber anfragen oder applicationscoped bean
 		
 	/**
 	 * The processes the TrespassListener performs after the phase is executed.
+	 * Filters url-patterns against the users login-status, role and the systems
+	 * access mode
 	 *
 	 * @param phaseEvent The event on which the listener is triggered.
 	 */
@@ -58,7 +67,6 @@ public class TrespassListener implements PhaseListener, Serializable{ //To-Do: N
         if (userSession != null && userSession.getUser() != null) {
         	isLoggedIn = true;
         	userRole = userSession.getUser().getRole();
-        	Logger.development("User '" + userSession.getUser().getEmailAddress() + "' is logged in...");
         }
         boolean isOnFreeForAll = false;
         if (url.endsWith("login.xhtml") 
@@ -77,54 +85,68 @@ public class TrespassListener implements PhaseListener, Serializable{ //To-Do: N
         		|| url.endsWith("medium.xhtml")) {
         	isOnFreeForOpac = true;
         }
-        Logger.development("isLoggedIn: " + isLoggedIn + " | isOnFreeForAll: " + isOnFreeForAll + " | isOnFreeForOpac: " + isOnFreeForOpac);
-    	String shortMessageLogin = messages.getString("trespassListener.login_or_register_short");
-    	String longMessageLogin = messages.getString("trespassListener.login_or_register_long");
-    	String shortMessage404 = messages.getString("trespassListener.not_for_your_eyes_short");
-        String longMessage404 = messages.getString("trespassListener.not_for_your_eyes_long");
-        if (!isLoggedIn && !isOnFreeForAll && (accessMode == SystemAnonAccess.REGISTRATION)) {
-        	redirectToLogin(facesCtx, externalCtx, navigationHandler, shortMessageLogin, longMessageLogin);
-        	Logger.development("PhaseListener if 1");
-        } else if (!isLoggedIn && !isOnFreeForAll && !isOnFreeForOpac && (accessMode == SystemAnonAccess.OPAC)) {
-           	Logger.development("PhaseListener if 2");
+        //Logger.development("isLoggedIn: " + isLoggedIn + " | isOnFreeForAll: " + isOnFreeForAll + " | isOnFreeForOpac: " + isOnFreeForOpac);
+    	String shortMessageLogin = messages.getString("trespassListener.login"
+    			+ "_or_register_short");
+    	String longMessageLogin = messages.getString("trespassListener.login"
+    			+ "_or_register_long");
+    	String shortMessage404 = messages.getString("trespassListener.not_for"
+    			+ "_your_eyes_short");
+        String longMessage404 = messages.getString("trespassListener.not_for"
+        		+ "_your_eyes_long");
+        if (!isLoggedIn && !isOnFreeForAll 
+        		&& (accessMode == SystemAnonAccess.REGISTRATION)) {
+        	redirectToLogin(facesCtx, externalCtx, navigationHandler,
+        			shortMessageLogin, longMessageLogin);
+        } else if (!isLoggedIn && !isOnFreeForAll && !isOnFreeForOpac 
+        		&& (accessMode == SystemAnonAccess.OPAC)) {
         	if (!url.startsWith("/view/public/")) {
-               	Logger.development("PhaseListener if 2-1");
-        		redirectToLogin(facesCtx, externalCtx, navigationHandler, shortMessageLogin, longMessageLogin);
+        		redirectToLogin(facesCtx, externalCtx, navigationHandler,
+        				shortMessageLogin, longMessageLogin);
         	}
-        } else if (isLoggedIn && !isOnFreeForAll && (userRole == UserRole.REGISTERED)) {
-           	Logger.development("PhaseListener if 3");
-        	if (!url.startsWith("/view/public/") && !url.startsWith("/view/account/")) {
-               	Logger.development("PhaseListener if 3-1");
-        		redirectToProfile(facesCtx, externalCtx, navigationHandler, shortMessage404, longMessage404, userSession);
+        } else if (isLoggedIn && !isOnFreeForAll 
+        		&& (userRole == UserRole.REGISTERED)) {
+        	if (!url.startsWith("/view/public/")
+        			&& !url.startsWith("/view/account/")) {
+        		redirectToProfile(facesCtx, externalCtx, navigationHandler,
+        				shortMessage404, longMessage404);
         	}
-        } else if (isLoggedIn && !isOnFreeForAll && (userRole == UserRole.STAFF)) {
-           	Logger.development("PhaseListener if 4");
-        	if(!url.startsWith("/view/public/") && !url.startsWith("/view/account/") && !url.startsWith("/view/staff/")) {
-               	Logger.development("PhaseListener if 4-1");
-        		redirectToProfile(facesCtx, externalCtx, navigationHandler, shortMessage404, longMessage404, userSession);
+        } else if (isLoggedIn && !isOnFreeForAll 
+        		&& (userRole == UserRole.STAFF)) {
+        	if(!url.startsWith("/view/public/") 
+        			&& !url.startsWith("/view/account/") 
+        			&& !url.startsWith("/view/staff/")) {
+        		redirectToProfile(facesCtx, externalCtx, navigationHandler,
+        				shortMessage404, longMessage404);
         	}
         }      
         
 	}
 
-
-	private void redirectToProfile(FacesContext facesCtx, ExternalContext externalCtx,
-			NavigationHandler navigationHandler, String shortMsg, String longMsg, UserSession userSession) {
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMsg, longMsg);
+	private void redirectToProfile(FacesContext facesCtx,
+			ExternalContext externalCtx,
+			NavigationHandler navigationHandler, String shortMsg,
+			String longMsg) {
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+				shortMsg, longMsg);
 		facesCtx.addMessage(null, msg);
 		externalCtx.getFlash().setKeepMessages(true);
 		int userId = userSession.getUser().getId();
-		navigationHandler.handleNavigation(facesCtx, null, "profile.xhtml?faces-redirect=true&id=" + userId);
-		//facesCtx.responseComplete();
+		navigationHandler.handleNavigation(facesCtx, null,
+				"/view/account/profile.xhtml?faces-redirect=true&id=" + userId);
+		facesCtx.responseComplete();
 	}
 
-	private void redirectToLogin(FacesContext facesCtx, ExternalContext externalCtx,
-			NavigationHandler navigationHandler, String shortMessage, String longMessage) {
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMessage, longMessage);
+	private void redirectToLogin(FacesContext facesCtx,
+			ExternalContext externalCtx, NavigationHandler navigationHandler,
+			String shortMessage, String longMessage) {
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+				shortMessage, longMessage);
 		facesCtx.addMessage(null, msg);
 		externalCtx.getFlash().setKeepMessages(true);
-		navigationHandler.handleNavigation(facesCtx, null, "login.xhtml?faces-redirect=true");          
-		//facesCtx.responseComplete();
+		navigationHandler.handleNavigation(facesCtx, null,
+				"/view/public/login.xhtml?faces-redirect=true");          
+		facesCtx.responseComplete();
 	}
 	
 	/**
@@ -151,7 +173,7 @@ public class TrespassListener implements PhaseListener, Serializable{ //To-Do: N
 	 * 
 	 * @param accessMode the desired access mode
 	 */
-	public static void setAccessMode(SystemAnonAccess accessMode) {
+	public static void setAccessMode(SystemAnonAccess accessMode) {       		 //unschön
 		TrespassListener.accessMode = accessMode;
 	}
 	

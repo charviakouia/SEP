@@ -22,8 +22,8 @@ import jakarta.faces.event.SystemEvent;
 import jakarta.faces.event.SystemEventListener;
 
 /**
- *  Conducts and relays necessary actions before the system is shutdown 
- *  or after it was started. Is registered in the faces-config.xml.
+ * Conducts and relays necessary actions before the system is shutdown 
+ * or after it was started. Is registered in the faces-config.xml.
  *  
  *  @author Jonas Picker
  *  
@@ -35,6 +35,9 @@ public class SystemStartStop implements SystemEventListener {
 	 */
 	private static final String relative = "WEB-INF/config.properties";
 	
+	/**
+	 * The id of the database entry used to hold the application configuration.
+	 */
 	private static final long appDataId = 1;
 			
 	/** @inheritDoc
@@ -58,7 +61,8 @@ public class SystemStartStop implements SystemEventListener {
 
 	/**
 	 * Turns on first ConfigReader, then Logger followed by EmailUtility and 
-	 * finally passes on the event to the data layer on system start.
+	 * access controls after finally passing on the event to the 
+	 * data layer on system start.
 	 * 
 	 * @throws LostConnectionException If data layer failed to communicate to DB
 	 * @throws DriverNotFoundException If JDBC driver wasn't found 
@@ -111,8 +115,7 @@ public class SystemStartStop implements SystemEventListener {
 	}
 	
 	/**
-	 *{@inheritDoc}
-	 *
+	 *@inheritDoc
 	 */
 	@Override
 	public boolean isListenerForSource(Object source) {

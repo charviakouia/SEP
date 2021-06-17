@@ -228,8 +228,7 @@ public final class UserDao {
 	 * @author Jonas Picker, but re-uses @author Sergei Pravdins's Code
 	 */
 	public static UserDto readUserByEmail(UserDto userDto)
-			throws UserDoesNotExistException, MaxConnectionsException, 
-			LostConnectionException {
+			throws UserDoesNotExistException {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		int id = getUserIdByEmail(conn, userDto);
@@ -254,9 +253,16 @@ public final class UserDao {
 
 	}
 	
-	//checks if a user exists in the database and returns his id, exception 
-	//if not found.
-	/* @author Jonas Picker */
+	/**
+	 * Checks if a user exists in the database and returns his id, public 
+	 * helper method, since outside access is required.
+	 * 
+	 * @param conn the connection the operations are performed on
+	 * @param userEmail the container for the users email in a dto.
+	 * @return the user id for the corresponding email
+	 * @throws UserDoesNotExistException if the user email wasn't found
+	 * @author Jonas Picker 
+	 */
 	public static int getUserIdByEmail(Connection conn ,UserDto userEmail) 
 			throws UserDoesNotExistException  {
 			try {

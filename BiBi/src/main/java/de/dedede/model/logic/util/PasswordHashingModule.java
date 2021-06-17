@@ -18,7 +18,15 @@ import java.util.Random;
  */
 public final class PasswordHashingModule {
 	
+	/**
+	 * The generator used to spew out pseudo-random numbers.
+	 */
 	private static final Random RANDOM = new SecureRandom();
+	
+	/**
+	 * The desired number of characters the password salt should have, 
+	 * divided by 2. 
+	 */
 	private static final int LENGTH = 20;
 	private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
@@ -27,7 +35,6 @@ public final class PasswordHashingModule {
 	 *
 	 * @param password The String which should be hashed.
 	 * @param salt The salt the password is concatenated with before hashing
-	 * 
 	 * @return password and salt in a 64 sign long hexadecimal form as String.
 	 */
 	public static String hashPassword(String password, String salt) {
@@ -48,7 +55,7 @@ public final class PasswordHashingModule {
 	/**
 	 * Generates a new random hexadecimal
 	 * 
-	 * @return a 40 sign long String with the number
+	 * @return a String with the number twice the size of @see LENGTH
 	 */
 	public static String generateSalt(){
 	     byte[] result = new byte[LENGTH];

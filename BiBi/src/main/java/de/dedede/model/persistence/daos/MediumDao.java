@@ -823,6 +823,7 @@ public final class MediumDao {
 			resultSet.next();
 			result = resultSet.getBoolean(1);
 			checkingStmt.close();
+			
 			return result;
 		} catch (SQLException e) {
 			String errorMessage = "Error occured while with db communication"
@@ -862,6 +863,7 @@ public final class MediumDao {
 			resultSet.next();
 			result = resultSet.getBoolean(1);
 			checkingStmt.close();
+			
 			return result;
 		} catch (SQLException e) {
 			String errorMessage = "Error occured with db communication while"
@@ -872,6 +874,7 @@ public final class MediumDao {
 			String errorMessage = "User wasn't found in DB during check for" 
 					+ " invalid actor on copy return attempt.";
 			Logger.severe(errorMessage);
+			
 			return true;
 		}
 	}
@@ -910,6 +913,7 @@ public final class MediumDao {
 			resultSet.next();
 			result = resultSet.getBoolean(1);
 			checkingStmt.close();
+			
 			return result;
 		} catch (SQLException e) {
 			String errorMessage = "Error occured with db communication while" 
@@ -920,6 +924,7 @@ public final class MediumDao {
 			String errorMessage = "User wasn't foud in DB during check" 
 					+ " for invalid copy return attempt.";
 			Logger.severe(errorMessage);
+			
 			return true;
 		}
 	}
@@ -952,6 +957,7 @@ public final class MediumDao {
 			resultSet.next();
 			result = resultSet.getBoolean(1);
 			checkingStmt.close();
+			
 			return result;
 		} catch (SQLException e) {
 			String errorMessage = "Error occured with db communication"
@@ -985,6 +991,7 @@ public final class MediumDao {
 			resultSet.next();
 			result = resultSet.getBoolean(1);
 			checkingStmt.close();
+			
 			return result;
 		} catch (SQLException e) {
 			String errorMessage = "Error occured with db communication"
@@ -1023,6 +1030,7 @@ public final class MediumDao {
 			resultSet.next();
 			result = resultSet.getBoolean(1);
 			checkingStmt.close();
+			
 			return result;
 		} catch (SQLException e) {
 			String errorMessage = "Error occured with db communication while "
@@ -1033,6 +1041,7 @@ public final class MediumDao {
 			String errorMessage = "User wasn't found in DB during check for"
 					+ " invalid user for copy on lending attempt.";
 			Logger.severe(errorMessage);
+			
 			return true;
 		}
 	}
@@ -1137,8 +1146,8 @@ public final class MediumDao {
 	}
 
 	// returns applying limit in milliseconds as long, user and signature must
-	// exist, limit hierarchie is user > medium > global, non existing values are
-	// filtered out
+	// exist, limit hierarchie is user > medium > global, non existing values 
+	// are filtered out
 	/* @author Jonas Picker */
 	private static long getAppliedLendingLimit(Connection conn,
 			String signature, int userId) throws SQLException {
@@ -1347,8 +1356,6 @@ public final class MediumDao {
 	 * belongs to. Uses @author Sergei Pravdins helper methods.
 	 *  
 	 * @throws MediumDoesNotExistException if a mediumid couldn't be found
-	 * @throws MaxConnectionsException if the ConnectionPool is overloaded
-	 * @throws LostConnectionException if an error with db communication occured
 	 * @throws UserDoesNotExistException if the userid wasn't found in db
 	 * @author Jonas Picker
 	 */
@@ -1360,7 +1367,7 @@ public final class MediumDao {
 				instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		List<MediumCopyUserDto> result = new ArrayList<MediumCopyUserDto>();
 		try {
-			PreparedStatement getReminderOffset = conn.prepareStatement(		//Auslagern in AppDao?
+			PreparedStatement getReminderOffset = conn.prepareStatement(		//Auslagern in AppDao? -> Ivan fragen
 					"SELECT EXTRACT (EPOCH FROM (SELECT reminderoffset " 
 							+ "FROM application WHERE one = 1));");
 			ResultSet rs1 = getReminderOffset.executeQuery();

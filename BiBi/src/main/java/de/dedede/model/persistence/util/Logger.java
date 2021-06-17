@@ -19,6 +19,9 @@ import de.dedede.model.persistence.exceptions.InvalidLogFileException;
  */
 public final class Logger { 
 
+	/**
+	 * Static class shouldn't be instanciated.
+	 */
 	private Logger() {}
 	
 	/**
