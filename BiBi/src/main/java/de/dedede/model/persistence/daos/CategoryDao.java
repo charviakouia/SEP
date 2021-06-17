@@ -36,13 +36,18 @@ public final class CategoryDao {
 	public static void createCategory(CategoryDto categoryDto)
 			throws ParentCategoryDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-		try {
-			int parentCategoryId = getCategoryIdByName(conn, categoryDto.getParent().getName());
-			categoryDto.getParent().setId(parentCategoryId);
-		} catch (CategoryDoesNotExistException e) {
-			throw new ParentCategoryDoesNotExistException("Specified name "
-					+ categoryDto.getParent().getName()
-					+ " doesn't seem to match any parent category entry", e);
+		if (categoryDto.getParent().getId() == 0) {
+			try {
+				if (categoryDto.getParent().getName().isEmpty()) {
+					throw new ParentCategoryDoesNotExistException("Parent category name cannot be empty.");
+				}
+				int parentCategoryId = getCategoryIdByName(conn, categoryDto.getParent());
+				categoryDto.getParent().setId(parentCategoryId);
+			} catch (CategoryDoesNotExistException e) {
+				throw new ParentCategoryDoesNotExistException("Specified name "
+						+ categoryDto.getParent().getName()
+						+ " doesn't seem to match any parent category entry", e);
+			}
 		}
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
@@ -152,8 +157,10 @@ public final class CategoryDao {
 	 */
 	public static CategoryDto deleteCategory(CategoryDto categoryDto) throws CategoryDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-		int categoryId = getCategoryIdByName(conn, categoryDto.getName());
-		categoryDto.setId(categoryId);
+		if (categoryDto.getId() == 0) {
+			int categoryId = getCategoryIdByName(conn, categoryDto);
+			categoryDto.setId(categoryId);
+		}
 		try {
 			deleteCategoryHelper(conn, categoryDto);
 			return categoryDto;
@@ -189,19 +196,19 @@ public final class CategoryDao {
 	}
 
 	/** @author Sergei Pravdin */
-	private static int getCategoryIdByName(Connection conn, String name)
+	private static int getCategoryIdByName(Connection conn, CategoryDto categoryDto)
 			throws CategoryDoesNotExistException {
 		try {
 			PreparedStatement readCategoryId = conn.prepareStatement("SELECT categoryid"
 					+ " FROM category WHERE title = ?;");
-			readCategoryId.setString(1, name);
+			readCategoryId.setString(1, categoryDto.getName());
 			ResultSet rs = readCategoryId.executeQuery();
 			rs.next();
 			conn.commit();
 			return rs.getInt(1);
 		} catch (SQLException e) {
 			Logger.development("CategoryId couldn't be retrieved for this name.");
-			throw new CategoryDoesNotExistException("Specified name " + name
+			throw new CategoryDoesNotExistException("Specified name " + categoryDto.getName()
 					+ " doesn't seem to match any category entry", e);
 		}
 	}
