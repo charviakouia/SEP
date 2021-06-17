@@ -9,7 +9,7 @@ import de.dedede.model.data.dtos.PaginationDto;
  * @author León Liehr
  *
  */
-public class Pagination {
+public final class Pagination {
 
 	private Pagination() {
 		throw new IllegalStateException("Attempt to construct the utility class Pagination");
