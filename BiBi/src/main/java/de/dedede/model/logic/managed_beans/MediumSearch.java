@@ -66,7 +66,7 @@ public class MediumSearch extends PaginatedList implements Serializable {
 	/**
 	 * Search for the corresp. mediums.
 	 */
-	public void searchMedium() {
+	public void searchMedia() {
 		mediums = MediumDao.searchMedia(mediumSearch, getPaginatedList());
 	}
 
@@ -109,7 +109,7 @@ public class MediumSearch extends PaginatedList implements Serializable {
 
 	@Override
 	public void refresh() {
-		searchMedium();
+		searchMedia();
 	}
 
 }

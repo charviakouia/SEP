@@ -33,10 +33,9 @@ import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserExceededDeadlineException;
-import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
-import de.dedede.model.persistence.util.MathExtension;
+import de.dedede.model.persistence.util.Pagination;
 
 /**
  * This DAO (data access object) manages data pertaining to a medium or a copy.
@@ -175,7 +174,6 @@ public final class MediumDao {
 	 */
 	public static List<MediumDto> searchMedia(MediumSearchDto mediumSearch, PaginationDto pagination) {
 
-		final var entriesPerPage = ConfigReader.getInstance().getKeyAsInt("MAX_PAGES");
 		final var queryBody = new StringBuilder();
 		final var parameters = new ArrayList<Object>();
 
@@ -223,16 +221,14 @@ public final class MediumDao {
 
 				final var resultSet = countStatement.executeQuery();
 				resultSet.next();
-				
-				Logger.development("countResultSet #rows = " + resultSet.getInt(1));
 
-				pagination.setTotalAmountOfPages(MathExtension.ceilDiv(resultSet.getInt(1), entriesPerPage));
+				Pagination.updatePagination(pagination, resultSet.getInt(1));
 			}
 
 			final var itemsStatement = connection.prepareStatement(itemsQuery);
 
-			parameters.add(pagination.getPageNumber() * entriesPerPage);
-			parameters.add(entriesPerPage);
+			parameters.add(Pagination.pageOffset(pagination));
+			parameters.add(Pagination.getEntriesPerPage());
 
 			for (var index = 0; index < parameters.size(); index += 1) {
 				itemsStatement.setObject(index + 1, parameters.get(index));
@@ -266,9 +262,16 @@ public final class MediumDao {
 			return results;
 		} catch (SQLException exeption) {
 
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
 			final var message = "Database error occurred while search for mediums: " + exeption.getMessage();
 			Logger.severe(message);
-
 			throw new LostConnectionException(message, exeption);
 
 		} finally {
@@ -323,18 +326,16 @@ public final class MediumDao {
 
 		query.append(switch (nuancedQuery.getCriterion()) {
 		case AUTHORS -> {
-			// @Task use ranges or sth similar
 			for (var index = 0; index < 5; index += 1) {
-				// @Task escape % and _ in source
-				parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
+				parameters.add(nuancedQuery.getTerm());
 			}
 
 			yield """
-					(  m.author1 ilike ?
-					or m.author2 ilike ?
-					or m.author3 ilike ?
-					or m.author4 ilike ?
-					or m.author5 ilike ?
+					(  position(lower(?) in lower(m.author1)) > 0
+					or position(lower(?) in lower(m.author2)) > 0
+					or position(lower(?) in lower(m.author3)) > 0
+					or position(lower(?) in lower(m.author4)) > 0
+					or position(lower(?) in lower(m.author5)) > 0
 					)
 					""";
 		}
@@ -351,16 +352,14 @@ public final class MediumDao {
 			}
 		}
 		case CATEGORY -> {
-			// @Task escape % and _ in source
-			parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
+			parameters.add(nuancedQuery.getTerm());
 
-			yield "ct.title ilike ?";
+			yield "position(lower(?) in lower(ct.title)) > 0";
 		}
 		case SIGNATURE -> {
-			// @Task escape % and _ in source
-			parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
+			parameters.add(nuancedQuery.getTerm());
 
-			yield "cp.signature ilike ?";
+			yield "position(lower(?) in lower(cp.signature)) > 0";
 		}
 		default -> {
 			final var column = switch (nuancedQuery.getCriterion()) {
@@ -374,10 +373,9 @@ public final class MediumDao {
 			default -> throw new IllegalStateException();
 			};
 
-			// @Task escape % and _ in source
-			parameters.add("%%%s%%".formatted(nuancedQuery.getTerm()));
+			parameters.add(nuancedQuery.getTerm());
 
-			yield "m.%s ilike ?".formatted(column);
+			yield "position(lower(?) in lower(m.%s)) > 0".formatted(column);
 		}
 		});
 
@@ -600,7 +598,6 @@ public final class MediumDao {
 	 */
 	public static List<MediumCopyUserDto> readCopiesReadyForPickup(PaginationDto pagination) {
 
-		final var entriesPerPage = ConfigReader.getInstance().getKeyAsInt("MAX_PAGES");
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
@@ -623,9 +620,8 @@ public final class MediumDao {
 
 				final var resultSet = countStatement.executeQuery();
 				resultSet.next();
-
-				pagination.setTotalAmountOfPages(MathExtension.ceilDiv(resultSet.getInt(1), entriesPerPage));
-
+				
+				Pagination.updatePagination(pagination, resultSet.getInt(1));
 			}
 
 			final var itemsStatement = connection.prepareStatement("""
@@ -638,8 +634,8 @@ public final class MediumDao {
 					limit ?
 					""".formatted(statementBody));
 			// @Task sorting
-			itemsStatement.setInt(1, pagination.getPageNumber() * entriesPerPage);
-			itemsStatement.setInt(2, entriesPerPage);
+			itemsStatement.setInt(1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(2, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<MediumCopyUserDto>();
@@ -676,7 +672,9 @@ public final class MediumDao {
 			try {
 				connection.rollback();
 			} catch (SQLException e) {
-				throw new LostConnectionException("Failed to rollback database transaction");
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
 			}
 
 			final var message = "Database error occurred while reading copies ready for pickup: "
