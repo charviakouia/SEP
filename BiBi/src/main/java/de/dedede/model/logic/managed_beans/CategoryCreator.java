@@ -16,9 +16,10 @@ import jakarta.inject.Named;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 /**
- *Backing bean for creating an category.
+ * Backing bean for creating an category.
  */
 @Named
 @RequestScoped
@@ -26,7 +27,7 @@ public class CategoryCreator {
 
     private CategoryDto category;
 
-    private CategoryDto parentCategory;
+    private static final String defaultParentCategory = "SampleParentCategory";
 
     @Inject
     FacesContext context;
@@ -35,14 +36,15 @@ public class CategoryCreator {
     UserSession userSession;
 
     @PostConstruct
-	public void init() {
+    public void init() {
         category = new CategoryDto();
-        parentCategory = new CategoryDto();
+        CategoryDto parentCategory = new CategoryDto();
         category.setParent(parentCategory);
-	}
+    }
 
     /**
      * fetching this category.
+     *
      * @return the category.
      */
     public CategoryDto getCategory() {
@@ -52,42 +54,57 @@ public class CategoryCreator {
     public void setCategory(CategoryDto category) {
         this.category = category;
     }
-    
+
     /**
      * creating this category.
+     * TODO: Überprüfen, ob eine Kategorie mit dieser Name schon existiert.
      */
-    public void createCategory(){
+    public void createCategory() throws IOException {
         ResourceBundle messages =
                 context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
         try {
+            category.setId(generateId());
             CategoryDao.createCategory(category);
+            context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.success")));
+            context.getExternalContext().getFlash().setKeepMessages(true);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/category-browser.xhtml?faces-redirect=true");
         } catch (ParentCategoryDoesNotExistException e) {
             context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notParentMatch")));
         }
 
     }
 
-    public void onload() throws IOException  {
+    public void onload() throws IOException {
         ResourceBundle messages =
                 context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-        if (parentCategory.getId() != 0) {
-            try {
-                if (userSession.getUser() != null) {
-                    if (userSession.getUser().getUserRole().equals(UserRole.ADMIN)
-                            || userSession.getUser().getUserRole().equals(UserRole.STAFF)) {
-                        parentCategory = CategoryDao.readCategory(parentCategory);
+        try {
+            if (userSession.getUser() != null) {
+                if (userSession.getUser().getUserRole().equals(UserRole.ADMIN)
+                        || userSession.getUser().getUserRole().equals(UserRole.STAFF)) {
+                    if (category.getParent().getId() != 0) {
+                        category.setParent(CategoryDao.readCategory(category));
+                    } else {
+                        category.getParent().setName(defaultParentCategory);
                     }
-                } else {
-                    context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notLogin")));
-                    context.getExternalContext().getFlash().setKeepMessages(true);
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
                 }
-            } catch (CategoryDoesNotExistException e) {
-                context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.invalidID")));
+            } else {
+                context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notLogin")));
                 context.getExternalContext().getFlash().setKeepMessages(true);
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/staff/category-creator.xhtml?faces-redirect=true");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
             }
+        } catch (CategoryDoesNotExistException e) {
+            context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.invalidID")));
+            context.getExternalContext().getFlash().setKeepMessages(true);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/staff/category-creator.xhtml?faces-redirect=true");
         }
+    }
 
+    private static int generateId() {
+        UUID idOne = UUID.randomUUID();
+        String str = "" + idOne;
+        int uid = str.hashCode();
+        String filterStr = "" + uid;
+        str = filterStr.replaceAll("-", "");
+        return Integer.parseInt(str);
     }
 }
