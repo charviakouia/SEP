@@ -26,7 +26,7 @@ public class UserExistsValidator implements Validator<String> {
 	 *
 	 * @param context 		the FacesContext the listener is registered in
 	 * @param uiComponent  	the UIComponent for this listener
-	 * @param s         	the fields value as String
+	 * @param email         the fields value as String
 	 * @throws ValidatorException if the user doesn't exist
 	 */
 	@Override

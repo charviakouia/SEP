@@ -1,20 +1,12 @@
 package de.dedede.model.logic.managed_beans;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.TokenGenerator;
@@ -24,21 +16,16 @@ import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 /**
  * Backing bean for the login page. This page is the one users first face when
@@ -62,13 +49,7 @@ public class Login {
 	 */
 	@Inject
 	private UserSession userSession;
-	
-	/**
-	 * No tasks here.
-	 */
-	@PostConstruct
-	public void init() {}
-	
+		
 	/**
 	 * Checks for existing user session and decides if facelet renders login 
 	 * form.
@@ -84,49 +65,9 @@ public class Login {
 	}
 	
 	/**
-	 * Redirects the user to the profile page after 5 seconds, if he has a 
-	 * session already
-	 * 
-	 * @return true if the session already exists
-	 
-	public boolean redirectWhenLoggedIn() {
-		if (userSession.getUser() == null) {
-			return false;
-		} else {
-			ScheduledExecutorService scheduler = 
-					Executors.newSingleThreadScheduledExecutor();
-			scheduler.schedule(new CustomTask(userSession.getUser().getId()),
-					5, TimeUnit.SECONDS);
-			return true;
-		}
-	}*/
-	
-	/**
-	 * Capsules a callable thread by the ThreadSchedular
-	 
-	private class CustomTask extends TimerTask  {
-		
-		private int id;
-		
-		@Inject
-		private ExternalContext externalContext;
-
-		public CustomTask(int id){
-			this.id = id;
-		}
-
-		public void run() {
-			try {
-				externalContext.redirect("/BiBi/view/account/profile.xhtml?id="
-										+ this.id);
-		    } catch (Exception ex) {
-		    	Logger.development("Error while redirecting thread ran");
-		    }
-		}
-	}*/
-	
-	/**
-	 * Log into the system and redirect to profile page if successful.
+	 * Log into the system and redirect to profile page if successful while
+	 * switching out the HttpSession Id and initializing the users data in the
+	 * session scope.
 	 *
 	 * @throws MaxConnectionsException If there are no more available database
 	 *                                 connections.
@@ -144,23 +85,19 @@ public class Login {
 		UserDto completeUserData = UserDao.readUserByEmail(userData);
 		String salt = completeUserData.getPasswordSalt();
 		String passwordHash = completeUserData.getPasswordHash();
-		String inputHash = PasswordHashingModule.hashPassword(passwordInput, salt);
+		String inputHash = PasswordHashingModule.hashPassword(passwordInput,
+				salt);
 		if (inputHash.equals(passwordHash)) {
 				ExternalContext externalContext = context.getExternalContext();
 				HttpServletRequest request = 
 						(HttpServletRequest) externalContext.getRequest();
 				request.changeSessionId();
 				userSession.setUser(completeUserData);
-				try {
-					externalContext.redirect(
-							"/BiBi/view/public/medium-search.xhtml");
-					return;
-				} catch (IOException io) {
-					Logger.severe("IOException occured during redirection"
-							+ " attempt from correct login.");
-					throw new BusinessException("An unexpected error "
-							+ "occured during Login", io);						
-				}
+				NavigationHandler navigationHandler = 
+						application.getNavigationHandler();
+				navigationHandler.handleNavigation(context, null,
+						"medium-search.xhtml?faces-redirect=true");
+				return;
 			} else {
 				String shortMessage = messages.getString("login.wrong"
 						+ "_password_short");
@@ -181,52 +118,72 @@ public class Login {
 		
 	}
 
-	// Ivan reformatted the method resetPassword()
 	/**
-	 * Send an email to the user with a reset link inside.						
+	 * Send an email to the user with a reset link inside, shows confirmation
+	 * or failure messages depending on the outcome.						
 	 */
-	public void resetPassword() {
-		//Fehler behandlung wenn Email+TokenGenerator fertig										
+	public void resetPassword() {									
 		FacesContext context = FacesContext.getCurrentInstance();
 		Application application = context.getApplication();
-		ResourceBundle messages = application.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		
-		UserDto completeUserData = null;
+		ResourceBundle messages = application.evaluateExpressionGet(context, 
+				"#{msg}", ResourceBundle.class);
 		String subject = messages.getString("login.reset_email_subject");
 		String content = messages.getString("login.reset_email_content");
+		String shortMessageFail = messages.getString("login.email_failure"
+				+ "_short");
+		String longMessageFail = messages.getString("login.email_failure"
+				+ "_long");
 		TokenDto newTokenContainer = TokenGenerator.generateToken();
 		
 		try {
+			
 			String token = newTokenContainer.getContent();
 			String link = EmailUtility.getLink("/view/public/password-reset.xhtml", token);
 			
-			completeUserData = UserDao.readUserByEmail(userData);
+			UserDto completeUserData = UserDao.readUserByEmail(userData);
 			completeUserData.setToken(newTokenContainer);	
 			// TokenDto userToken = UserDao.setOrRetrieveUserToken(completeUserData, newTokenContainer);
 			UserDao.updateUser(completeUserData);
-			
+
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
 			String emailBody = insertParams(firstname, lastname, link, content);
 			String emailAddress = completeUserData.getEmailAddress();
-			EmailUtility.sendEmail(emailAddress, subject, emailBody);
-			
-			Logger.development("Aus der Loginseite wurde eine Passwortzurück"
-					+ "setzung angefordert, eine Email wurde versendet an: " + emailAddress);
-			Logger.development("Inhalt der Email: " + emailBody);													
-			String shortMessage = messages.getString("login.email_was_sent_short");
-			String longMessage = messages.getString("login.email_was_sent_long");
+			try {
+				EmailUtility.sendEmail(emailAddress, subject, emailBody);
+			} catch (MessagingException e) {
+				Logger.severe("An error occured while trying to send reset"
+						+ " email: " + e.getMessage());
+				context.addMessage("login_email_message", 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+								shortMessageFail, longMessageFail));
+				
+			}
+			Logger.development("A password reset was requested from the "
+					+ "login page, an email was sent to: " 
+					+ emailAddress);												
+			String shortMessage = messages.getString("login.email_was"
+					+ "_sent_short");
+			String longMessage = messages.getString("login.email_was"
+					+ "_sent_long");
 			context.addMessage("login_form:login_email_field", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
-		
-		} catch (MessagingException | UnsupportedEncodingException | EntityInstanceDoesNotExistException e) {
-			String emailAddress = (completeUserData == null ? null : completeUserData.getEmailAddress());
-			Logger.severe("Couldn't send a verification email to user: " + emailAddress);	
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+							shortMessage, longMessage));
 		} catch (UserDoesNotExistException e) {
 			String shortMessage = messages.getString("login.unknown_user_short");
 			String longMessage = messages.getString("login.unknown_user_long");
 			context.addMessage("login_email_message", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMessage,
+							longMessage));
+		} catch (UnsupportedEncodingException e1) {
+			Logger.development("An unexpected error occured during "
+					+ "token encoding on password reset.");
+			context.addMessage("login.email_message", new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, shortMessageFail, 
+					longMessageFail));
+		} catch (EntityInstanceDoesNotExistException e1) {
+			// Critical line: UserDao.updateUser(completeUserData)
+			e1.printStackTrace();
 		}
 		
 	}
@@ -238,11 +195,20 @@ public class Login {
 		return contentWithParam;
 	}
 	
-	//getters and setters
+	/**
+	 * Grants the facelet access to the UserDto.
+	 * 
+	 * @return the inputContainer
+	 */
 	public UserDto getUserData() {
 		return userData;
 	}
-
+	
+	/**
+	 * Grants the facelet access to the UserDto.
+	 * 
+	 * @param the new user input
+	 */
 	public void setUserData(UserDto user) {
 		this.userData = user;
 	}

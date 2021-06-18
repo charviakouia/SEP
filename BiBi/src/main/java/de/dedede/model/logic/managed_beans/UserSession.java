@@ -17,12 +17,26 @@ public class UserSession implements Serializable {
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
+	/**
+	 * holds the users data, this evaluates to null if the bean was instanziated
+	 *  prior to the user being logged in.
+	 */
 	private UserDto user;
 
+	/**
+	 * Allows the user data to be retrieved programmatically.
+	 * 
+	 * @return the data in a Dto.
+	 */
 	public UserDto getUser() {
 		return user;
 	}
 
+	/**
+	 * Allows the user data to be modified programmatically.
+	 * 
+	 * @param user the Dto containing the new data.
+	 */
 	public void setUser(UserDto user) {
 		this.user = user;
 	}

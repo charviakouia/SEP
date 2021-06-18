@@ -16,7 +16,7 @@ import jakarta.inject.Named;
  */
 @Named
 @ViewScoped
-public class Administration implements Serializable {
+public class Administration implements Serializable { //TrespassListener accessMode nicht vergessen
 
 	@Serial
 	private static final long serialVersionUID = 1L;

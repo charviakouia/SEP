@@ -39,4 +39,8 @@
 		<exception-handler-factory>de.dedede.model.logic.exceptions.CustomExceptionHandlerFactory</exception-handler-factory>
 	</factory>
 
+	<lifecycle>
+		<phase-listener>de.dedede.model.logic.util.TrespassListener</phase-listener>
+	</lifecycle>
+
 </faces-config>
