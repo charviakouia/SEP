@@ -34,5 +34,9 @@
 		</system-event-listener>
 
 	</application>
+	
+	<factory>
+		<exception-handler-factory>de.dedede.model.logic.exceptions.CustomExceptionHandlerFactory</exception-handler-factory>
+	</factory>
 
 </faces-config>

@@ -198,9 +198,7 @@ public class Login {
 		
 		try {
 			String token = newTokenContainer.getContent();
-			String link = "http://localhost:8080" + 
-					context.getApplication().getViewHandler().getResourceURL(
-					context, "/view/public/password-reset.xhtml?token=" + URLEncoder.encode(token, "UTF-8"));
+			String link = EmailUtility.getLink("/view/public/password-reset.xhtml", token);
 			
 			completeUserData = UserDao.readUserByEmail(userData);
 			completeUserData.setToken(newTokenContainer);	
@@ -247,6 +245,11 @@ public class Login {
 
 	public void setUserData(UserDto user) {
 		this.userData = user;
+	}
+	
+	// Authored by Ivan to test global exception handler functionality
+	public String throwsError() {
+		throw new IllegalStateException("Doing a bit of testing here...");
 	}
 
 }

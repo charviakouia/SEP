@@ -123,4 +123,10 @@ public class Profile implements Serializable {
 			context.addMessage(null, new FacesMessage("There is no user with this ID."));
 		}
 	}
+	
+	// Authored by Ivan to test global exception handler functionality
+	public String throwsError() {
+		throw new IllegalStateException("Doing a bit of testing here...");
+	}
+	
 }
