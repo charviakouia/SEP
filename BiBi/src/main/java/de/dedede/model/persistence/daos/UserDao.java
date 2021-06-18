@@ -23,6 +23,7 @@ import de.dedede.model.data.dtos.UserSearchDto;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
+import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
@@ -156,6 +157,34 @@ public final class UserDao {
 			return null;
 		}
 	}
+	
+	/**
+	 * Checks if the user email exists and then if the user is allowed to lend
+	 * copies. 
+	 * 
+	 * @param userEmail the users email in a dto.
+	 * @throws UserDoesNotExistException if the useremail wasn't found in db.
+	 * @throws InvalidUserForCopyException if the user isn't allowed to lend.
+	 * @author Jonas Picker
+	 */
+	public static void validateUserLending(UserDto userEmail) 
+			throws UserDoesNotExistException, InvalidUserForCopyException {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			userEntityWithEmailExists(conn, userEmail);
+			UserDto userId = new UserDto();
+			userId.setId(getUserIdByEmail(conn, userEmail));
+			UserDto userData = readUserForProfileHelper(conn, userId);
+			if (userData.getUserLendStatus() == UserLendStatus.DISABLED) {
+				throw new InvalidUserForCopyException();
+			}
+		} catch (SQLException e) {
+			String message = "Error while validating userEmail for lending";
+			Logger.development(message);
+			throw new LostConnectionException(message, e);
+		}
+	}
 
 	/**
 	 * Reads an existing user by id and retrieves his token or sets a newly
@@ -169,24 +198,26 @@ public final class UserDao {
 	 * @author Jonas Picker
 	 */
 	public static TokenDto setOrRetrieveUserToken(UserDto user, TokenDto token)
-			throws UserDoesNotExistException, LostConnectionException, MaxConnectionsException {
+			throws UserDoesNotExistException {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (userTokenIsNull(conn, user) || userTokenExpired(conn, user)) {
 				PreparedStatement updateToken = conn.prepareStatement(
-						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP," + " token = ? WHERE userid = ?;");
+						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP,"
+						+ " token = ? WHERE userid = ?;");
 				updateToken.setString(1, token.getContent());
 				updateToken.setInt(2, user.getId());
 				int changed = updateToken.executeUpdate();
 				Logger.development(changed + " usertoken was newly generated");
 				updateToken.close();
-				token.setCreationTime(LocalDateTime.now().plus(5, ChronoUnit.MINUTES));
-				// The DB won't accept it if it was made even slightly in the past
+				token.setCreationTime(LocalDateTime.now().plus(5,
+						ChronoUnit.MINUTES));
 				return token;
 			} else {
 				PreparedStatement getToken = conn
-						.prepareStatement("SELECT token, tokenCreation " + "FROM users WHERE userid = ?;");
+						.prepareStatement("SELECT token, tokenCreation "
+								+ "FROM users WHERE userid = ?;");
 				getToken.setInt(1, user.getId());
 				ResultSet rs = getToken.executeQuery();
 				rs.next();
@@ -199,7 +230,8 @@ public final class UserDao {
 				return result;
 			}
 		} catch (SQLException e) {
-			String message = "SQLException while checking or " + "setting valid user token";
+			String message = "SQLException while checking or "
+					+ "setting valid user token";
 			Logger.development(message);
 			throw new LostConnectionException(message, e);
 		}
@@ -216,6 +248,7 @@ public final class UserDao {
 						+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END " + "AS tokenExpired;");
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
+		conn.commit();
 		rs.next();
 		boolean result = rs.getBoolean(1);
 		checkingStmt.close();
@@ -230,6 +263,7 @@ public final class UserDao {
 						+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;");
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
+		conn.commit();
 		rs.next();
 		boolean result = rs.getBoolean(1);
 		checkingStmt.close();

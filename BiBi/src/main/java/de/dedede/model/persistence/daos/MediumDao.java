@@ -1403,12 +1403,18 @@ public final class MediumDao {
 		try {
 			if (!copySignatureExists(conn, signatureContainer)) {
 				throw new CopyDoesNotExistException("Signature doesn't exist");
-			} else if (invalidCopyStatusReturnAttempt(conn, signatureContainer)) {
-				throw new CopyIsNotAvailableException("Invalid copy status" + " for this return");
-			} else if (invalidActorReturnAttempt(conn, signatureContainer, user)) {
-				throw new InvalidUserForCopyException("Invalid user for " + "this return");
-			} else if (invalidDeadlineReturnAttempt(conn, signatureContainer, user)) {
-				throw new UserExceededDeadlineException("The return deadline" + " was exceeded by this user");
+			} else if (invalidCopyStatusReturnAttempt(conn, 
+					signatureContainer)) {
+				throw new CopyIsNotAvailableException("Invalid copy status"
+						+ " for this return");
+			} else if (invalidActorReturnAttempt(conn, 
+					signatureContainer, user)) {
+				throw new InvalidUserForCopyException("Invalid user for "
+						+ "this return");
+			} else if (invalidDeadlineReturnAttempt(conn, 
+					signatureContainer, user)) {
+				throw new UserExceededDeadlineException("The return deadline"
+						+ " was exceeded by this user");
 			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -1434,9 +1440,12 @@ public final class MediumDao {
 			if (!copySignatureExists(conn, signatureContainer)) {
 				throw new CopyDoesNotExistException("Signature doesn't exist");
 			} else if (copyIsLentBySignature(conn, signatureContainer)) {
-				throw new CopyIsNotAvailableException("Invalid copy status," + " cannot lend copy");
-			} else if (invalidUserLendingAttempt(conn, signatureContainer, user)) {
-				throw new InvalidUserForCopyException("Invalid user for " + "lending process");
+				throw new CopyIsNotAvailableException("Invalid copy status," 
+												+ " cannot lend copy");
+			} else if (invalidUserLendingAttempt(conn, 
+					signatureContainer, user)) {
+				throw new InvalidUserForCopyException("Invalid user for " 
+												+ "lending process");
 			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);

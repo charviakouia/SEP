@@ -56,7 +56,7 @@ class ConnectionPoolTest {
 	private static void initializeDto() {
 		dto = new ApplicationDto();
 		dto.setName("Luigi's library");
-		dto.setEmailAddressSuffixRegEx("mushroomKingdom");
+		dto.setEmailSuffixRegEx("mushroomKingdom");
 		dto.setContactInfo("1-800-FIRE-FLOWER");
 		dto.setSiteNotice("For legal matters, contact Dr. E. Gadd");
 		dto.setPrivacyPolicy("For privacy concerns, contact King Boo");

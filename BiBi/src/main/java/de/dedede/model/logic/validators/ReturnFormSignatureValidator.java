@@ -77,7 +77,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    			+ "_copy_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg, e1);
+	    	throw new ValidatorException(msg);
 	    } catch (CopyIsNotAvailableException e2) {
 	    	String shortMessage = messages.getString("returnForm.invalid"
 	    			+ "_copy_status_short");
@@ -85,7 +85,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    			+ "_copy_status_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg, e2);
+	    	throw new ValidatorException(msg);
 	    } catch (InvalidUserForCopyException e3) {
 	    	String shortMessage = messages.getString("returnForm.invalid"
 	    			+ "_actor_return_short");
@@ -93,7 +93,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    			+ "_actor_return_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg, e3);
+	    	throw new ValidatorException(msg);
 	    } catch (UserExceededDeadlineException e4) {							//soll man hier die Nachricht ausgeben, 
 	    	String shortMessage = messages.getString("returnForm.invalid"		//aber trotzdem das Exemplar als 'avaliable' markieren im DAO?
 	    			+ "_deadline_return_short");							
@@ -101,7 +101,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    			+ "_deadline_return_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg, e4);
+	    	throw new ValidatorException(msg);
 	    }
 		
 	}

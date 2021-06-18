@@ -1,6 +1,7 @@
 package de.dedede.model.persistence.daos;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import de.dedede.model.logic.util.RegisteredUserLendStatus;
 import de.dedede.model.logic.util.SystemAnonAccess;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -120,12 +121,12 @@ public final class ApplicationDao {
 							"bibLogo = ?, globalLendLimit = CAST(? AS INTERVAL), " +
 							"globalMarkingLimit = CAST(? AS INTERVAL), reminderOffset = CAST(? AS INTERVAL), " +
 							"registrationStatus = CAST(? AS systemRegistrationStatus), " +
-							"lookAndFeel = CAST(? AS systemLookAndFeel), anonRights = CAST(? AS systemAnonRights), " +
+							"anonRights = CAST(? AS systemAnonRights), " +
 							"userLendStatus = CAST(? AS userLendStatus) " +
 							"WHERE one = ?;"
 			);
 			populateStatement(updateStmt, appDTO);
-			updateStmt.setLong(14, appDTO.getId());
+			updateStmt.setLong(13, appDTO.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0){
@@ -235,7 +236,7 @@ public final class ApplicationDao {
 
 	private static void populateStatement(PreparedStatement stmt, ApplicationDto appDto) throws SQLException {
 		stmt.setString(1, appDto.getName());
-		stmt.setString(2, appDto.getEmailAddressSuffixRegEx());
+		stmt.setString(2, appDto.getEmailSuffixRegEx());
 		stmt.setString(3, appDto.getContactInfo());
 		stmt.setString(4, appDto.getSiteNotice());
 		stmt.setString(5, appDto.getPrivacyPolicy());
@@ -244,15 +245,14 @@ public final class ApplicationDao {
 		stmt.setObject(8, toPGInterval(appDto.getPickupPeriod()));
 		stmt.setObject(9, toPGInterval(appDto.getWarningPeriod()));
 		stmt.setString(10, appDto.getSystemRegistrationStatus().toString());
-		stmt.setString(11, appDto.getLookAndFeel());
-		stmt.setString(12, appDto.getAnonRights().toString());
-		stmt.setString(13, appDto.getLendingStatus());
+		stmt.setString(11, appDto.getAnonRights().toString());
+		stmt.setString(12, appDto.getLendingStatus().toString());
 	}
 
 	private static void populateDto(ResultSet resultSet, ApplicationDto appDTO) throws SQLException {
 		appDTO.setId(resultSet.getInt(1));
 		appDTO.setName(resultSet.getString(2));
-		appDTO.setEmailAddressSuffixRegEx(resultSet.getString(3));
+		appDTO.setEmailSuffixRegEx(resultSet.getString(3));
 		appDTO.setContactInfo(resultSet.getString(4));
 		appDTO.setSiteNotice(resultSet.getString(5));
 		appDTO.setPrivacyPolicy(resultSet.getString(6));
@@ -265,9 +265,8 @@ public final class ApplicationDao {
 		appDTO.setWarningPeriod(Duration.ofSeconds(remindPeriodSeconds));
 		SystemRegistrationStatus status = SystemRegistrationStatus.valueOf(resultSet.getString(11));
 		appDTO.setSystemRegistrationStatus(status);
-		appDTO.setLookAndFeel(resultSet.getString(12));
 		appDTO.setAnonRights(SystemAnonAccess.valueOf(resultSet.getString(13)));
-		appDTO.setLendingStatus(resultSet.getString(14));
+		appDTO.setLendingStatus(RegisteredUserLendStatus.valueOf(resultSet.getString(14)));
 	}
 
 	private static PGInterval toPGInterval(Duration duration){

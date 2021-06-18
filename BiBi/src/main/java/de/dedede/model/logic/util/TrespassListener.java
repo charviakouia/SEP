@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.managed_beans.UserSession;
-import de.dedede.model.persistence.util.Logger;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -61,7 +60,6 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
 				"#{msg}", ResourceBundle.class);
 		UIViewRoot viewRoot = facesCtx.getViewRoot();  
         String url = viewRoot.getViewId();
-        Logger.development("viewRoot was: " + url);
         boolean isLoggedIn = false;
         UserRole userRole = null;
         if (userSession != null && userSession.getUser() != null) {
