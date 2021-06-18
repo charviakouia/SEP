@@ -1,5 +1,10 @@
 package de.dedede.model.data.dtos;
 
+import java.util.Map;
+
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+
 /**
  * This DTO (data transfer object) is responsible for aggregating and
  * encapsulating data about a error for transfer.
@@ -11,6 +16,7 @@ package de.dedede.model.data.dtos;
 public class ErrorDto {
 
     private String message;
+    private StackTraceElement[] stackTraceElements;
 
     /**
      * Fetches an error message to the user explaining what went wrong.
@@ -29,4 +35,13 @@ public class ErrorDto {
     public void setMessage(String message) {
         this.message = message;
     }
+    
+	public StackTraceElement[] getStackTraceElements() {
+		return stackTraceElements;
+	}
+
+	public void setStackTraceElements(StackTraceElement[] stackTraceElements) {
+		this.stackTraceElements = stackTraceElements;
+	}
+	
 }

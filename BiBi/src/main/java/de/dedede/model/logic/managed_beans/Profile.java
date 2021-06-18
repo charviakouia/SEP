@@ -168,4 +168,10 @@ public class Profile implements Serializable {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
 		}
 	}
+	
+	// Authored by Ivan to test global exception handler functionality
+	public String throwsError() {
+		throw new IllegalStateException("Doing a bit of testing here...");
+	}
+	
 }

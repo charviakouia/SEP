@@ -96,10 +96,8 @@ public class Registration implements Serializable {
 	
 	private void sendVerificationEmail() {
 		try {
-			String link = context.getApplication().getViewHandler().getResourceURL(
-					context, "/view/public/email-confirmation.xhtml?token=" 
-							+ URLEncoder.encode(user.getToken().getContent(), "UTF-8"));
-			EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", "http://localhost:8080" + link);
+			EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", 
+					EmailUtility.getLink("/view/public/email-confirmation.xhtml", user.getToken().getContent()));
 		} catch (MessagingException | UnsupportedEncodingException e) {
 			Logger.severe("Couldn't send a verification email to user: " + user.getEmailAddress());
 		}

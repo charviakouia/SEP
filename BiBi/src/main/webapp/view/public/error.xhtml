@@ -12,7 +12,31 @@
 
 	<ui:define name="content">
 
-		UNIMPLEMENTED
+		<h:form>
+
+			<h:outputLabel value="Coming from: '#{error.urlWithParameters}'"/><br/><br/>
+		
+			<h:button value="Go back with parameters" outcome="#{error.urlWithParameters}"/>
+
+			<h:button value="Go back without parameters" outcome="#{error.urlWithoutParameters}"/>
+
+			<h:button value="Go to home page" outcome="#{error.homeUrl}"/>
+
+		</h:form><br/><br/>
+		
+		<h:outputLabel value="Exception details:"/><br/><br/>
+	
+		<ui:repeat value="#{error.errorDtos}" var="dto">
+			
+			<h:outputText value="Message: '#{dto.message}'"/><br/>
+			
+			<ui:repeat value="#{dto.stackTraceElements}" var="e">
+			
+				<h:outputText value="- '#{e.fileName}' >> '#{e.className}' >> '#{e.methodName}' >> Line #{e.lineNumber}"/><br/>
+			
+			</ui:repeat>
+			
+		</ui:repeat>
 
 	</ui:define>
 	
