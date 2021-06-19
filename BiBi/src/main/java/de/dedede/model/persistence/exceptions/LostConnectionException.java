@@ -1,6 +1,10 @@
 package de.dedede.model.persistence.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
 import de.dedede.model.persistence.util.ConnectionPool;
+import jakarta.faces.context.FacesContext;
 
 /**
  * This checked exception is used for situations in which a connection
@@ -9,7 +13,7 @@ import de.dedede.model.persistence.util.ConnectionPool;
  * <p>
  * See the {@link ConnectionPool} class for the connection pool implementation.
  */
-public class LostConnectionException extends RuntimeException {
+public class LostConnectionException extends RuntimeException implements AnnotatedException {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,5 +45,12 @@ public class LostConnectionException extends RuntimeException {
     public LostConnectionException(String msg, Throwable cause) {
         super(msg, cause);
     }
+    
+    @Override
+	public String getPersonalizedMessage() {
+		FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.lostConnection");
+	}
 
 }

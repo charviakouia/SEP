@@ -1,9 +1,14 @@
 package de.dedede.model.logic.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
+import jakarta.faces.context.FacesContext;
+
 /**
  * Wraps all checked standard Java exception and enriches them with a custom error code.
  */
-public class BusinessException extends RuntimeException {
+public class BusinessException extends RuntimeException implements AnnotatedException {
 	
     private static final long serialVersionUID = 1L;
 
@@ -35,4 +40,11 @@ public class BusinessException extends RuntimeException {
     public BusinessException(String message, Throwable cause) {
         super(message, cause);
     }
+    
+    public String getPersonalizedMessage() {
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.business");
+    }
+    
 }

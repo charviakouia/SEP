@@ -1,13 +1,17 @@
 package de.dedede.model.logic.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
 import de.dedede.model.logic.managed_beans.EmailConfirmation;
 import de.dedede.model.logic.managed_beans.PasswordReset;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Thrown if the server could not send the {@link EmailConfirmation} or
  * {@link PasswordReset}.
  */
-public class MailException extends Exception {
+public class MailException extends Exception implements AnnotatedException {
 
     /**
      * Constructs a new MailException.
@@ -37,4 +41,11 @@ public class MailException extends Exception {
     public MailException(String message, Throwable cause) {
         super(message, cause);
     }
+    
+    public String getPersonalizedMessage() {
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.mail");
+    }
+    
 }

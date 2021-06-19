@@ -15,10 +15,12 @@ import java.util.concurrent.TimeUnit;
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.exceptions.CustomExceptionHandler;
 import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
@@ -249,7 +251,7 @@ public class Login {
 	
 	// Authored by Ivan to test global exception handler functionality
 	public String throwsError() {
-		throw new IllegalStateException("Doing a bit of testing here...");
+		throw new BusinessException("Testing...", new CopyDoesNotExistException("More testing..."));
 	}
 
 }
