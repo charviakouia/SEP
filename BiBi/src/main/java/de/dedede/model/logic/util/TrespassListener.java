@@ -27,7 +27,7 @@ import jakarta.inject.Inject;
  * 
  * @author Jonas Picker
  */
-public class TrespassListener implements PhaseListener, Serializable{ //redirection evtl zu (statischen) Fehlerseiten statt Profil bei eingeloggten Nutzern?
+public class TrespassListener implements PhaseListener, Serializable{ 
 	
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -39,6 +39,10 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
 	private UserSession userSession = 
 					CDI.current().select(UserSession.class).get();
 	
+	/**
+	 * The applicationscoped managed bean that holds the database customizations
+	 * in order to prevent system access mode queries for each request.
+	 */
 	@Inject
 	private ApplicationCustomization customs = 
 					CDI.current().select(ApplicationCustomization.class).get();
@@ -109,7 +113,7 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
         		&& (userRole == UserRole.REGISTERED)) {
         	if (!url.startsWith("/view/public/")
         			&& !url.startsWith("/view/account/")) {
-        		redirectToProfile(facesCtx, externalCtx, navigationHandler,
+        		redirectToError404(facesCtx, externalCtx, navigationHandler,
         				shortMessage404, longMessage404);
         	}
         } else if (isLoggedIn && !isOnFreeForAll 
@@ -117,13 +121,13 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
         	if(!url.startsWith("/view/public/") 
         			&& !url.startsWith("/view/account/") 
         			&& !url.startsWith("/view/staff/")) {
-        		redirectToProfile(facesCtx, externalCtx, navigationHandler,
+        		redirectToError404(facesCtx, externalCtx, navigationHandler,
         				shortMessage404, longMessage404);
         	}
         }      
 	}
 
-	private void redirectToProfile(FacesContext facesCtx,
+	private void redirectToError404(FacesContext facesCtx,
 			ExternalContext externalCtx,
 			NavigationHandler navigationHandler, String shortMsg,
 			String longMsg) {
@@ -131,9 +135,9 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
 				shortMsg, longMsg);
 		facesCtx.addMessage(null, msg);
 		externalCtx.getFlash().setKeepMessages(true);
-		int userId = userSession.getUser().getId();
+
 		navigationHandler.handleNavigation(facesCtx, null,
-				"/view/account/profile.xhtml?faces-redirect=true&id=" + userId);
+				"/view/error/error404.xhtml?faces-redirect=true");
 		facesCtx.responseComplete();
 	}
 

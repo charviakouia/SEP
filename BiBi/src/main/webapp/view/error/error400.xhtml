@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="utf-8"?>
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
@@ -9,13 +8,13 @@
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
 	
-	<ui:param name="page" value="error_page_404" />
+	<ui:param name="page" value="error_page_400" />
 
 	<ui:define name="content">
-	<h1>#{msg['static_error_404.headline']}</h1>
+	<h1>#{msg['static_error_400.headline']}</h1>
 	<br></br>
 	<br></br>
-	<h:outputText id="404_text" value="#{msg['static_error_404.text']}"/>
+	<h:outputText id="400_text" value="#{msg['static_error_400.text']}"/>
 	
 	</ui:define>
 	
