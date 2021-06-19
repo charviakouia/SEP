@@ -22,7 +22,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
- * Backing bean for the facelet containg a list of copies ready for pickup for
+ * Backing bean for the facelet contain a list of copies ready for pickup for
  * the current user. On this page a user gets to know which copies they want to
  * pick up from the library and borrow thereafter and how much time they have
  * left to do so until they exceed the lending period.
@@ -59,6 +59,11 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 		onload();
 	}
 
+	/**
+	 * Loads a page with a list of copies according to the given viewParam.
+	 * If the user is not logged in or sends a viewParam from someone other than his own,
+	 * the page will not be loaded and the user will see an error message.
+	 */
 	public void onload() throws BusinessException {
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
@@ -83,18 +88,32 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 		}
 	}
 
+	/**
+	 * @return Fetches a list of copies that the user can pick up.
+	 */
 	public List<MediumCopyUserDto> getCopies() {
 		return copies;
 	}
 
+	/**
+	 * Sets a list of copies that the user can pick up.
+	 * @param copies a list of copies
+	 */
 	public void setCopies(List<MediumCopyUserDto> copies) {
 		this.copies = copies;
 	}
 
+	/**
+	 * @return Fetches the userDto for which the copy list will be loaded, ready for pick up.
+	 */
 	public UserDto getUserDto() {
 		return userDto;
 	}
 
+	/**
+	 * Sets the userDto for which the copy list will be loaded, ready for pick up.
+	 * @param userDto container
+	 */
 	public void setUserDto(UserDto userDto) {
 		this.userDto = userDto;
 	}
