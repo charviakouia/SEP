@@ -1261,15 +1261,9 @@ public final class MediumDao {
 		conn.commit();
 		rs1.next();
 		int fromMedium = rs1.getInt(1);
+		rs1.close();
 		getCopysMedium.close();
-		PreparedStatement getGlobalLimit = conn.prepareStatement(
-				"SELECT EXTRACT (EPOCH FROM (SELECT globalLendLimit " 			//Auslagern in AppDao?
-						+ "FROM application WHERE one = 1));");
-		ResultSet rs2 = getGlobalLimit.executeQuery();
-		conn.commit();
-		rs2.next();
-		double globalSeconds = rs2.getDouble(1);
-		getGlobalLimit.close();
+		double globalSeconds = ApplicationDao.getLendingPeriodSeconds(conn);
 		PreparedStatement getMediumLimit = conn.prepareStatement(
 				"SELECT EXTRACT (EPOCH FROM (SELECT mediumLendPeriod " 
 						+ "FROM medium WHERE mediumId = ?));");
@@ -1278,6 +1272,7 @@ public final class MediumDao {
 		conn.commit();
 		rs3.next();
 		double mediumSeconds = rs3.getDouble(1);
+		rs3.close();
 		getMediumLimit.close();
 		PreparedStatement getUserLimit = conn.prepareStatement(
 				"SELECT EXTRACT (EPOCH FROM (SELECT userLendPeriod "            //Auslagern in UserDao?
@@ -1287,6 +1282,7 @@ public final class MediumDao {
 		conn.commit();
 		rs4.next();
 		double userSeconds = rs4.getDouble(1);
+		rs4.close();
 		getUserLimit.close();
 		double applyingLimit = 0;
 		if (globalSeconds == 0 && mediumSeconds == 0 && userSeconds == 0) {

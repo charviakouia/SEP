@@ -46,10 +46,10 @@ public final class ApplicationDao {
 			PreparedStatement createStmt = conn.prepareStatement(
 					"INSERT INTO Application (bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, " +
 							"bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, " +
-							"lookAndFeel, ananRights, userLendStatus) VALUES " +
+							"lookAndFeel, anonRights, userLendStatus) VALUES " +
 							"(?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), CAST(? AS INTERVAL), CAST(? AS INTERVAL)," +
-							"CAST(? AS systemRegistrationStatus), CAST(? AS systemLookAndFeel)," +
-							"CAST(? AS systemAnonRights), CAST(? AS userLendStatus));",
+							"CAST(? AS systemregistrationstatus), ?, CAST(? AS systemanonaccess), " +
+							"CAST(? AS registereduserlendstatus));",
 					Statement.RETURN_GENERATED_KEYS
 			);
 			populateStatement(createStmt, appDTO);
@@ -57,6 +57,7 @@ public final class ApplicationDao {
 			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(appDTO, createStmt); }
 			conn.commit();
 		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while creating application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -89,6 +90,7 @@ public final class ApplicationDao {
 			conn.commit();
 			return result;
 		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while reading application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -120,9 +122,9 @@ public final class ApplicationDao {
 							"SET bibName = ?, emailRegEx = ?, contactInfo = ?, imprintInfo = ?, privacyPolicy = ?, " +
 							"bibLogo = ?, globalLendLimit = CAST(? AS INTERVAL), " +
 							"globalMarkingLimit = CAST(? AS INTERVAL), reminderOffset = CAST(? AS INTERVAL), " +
-							"registrationStatus = CAST(? AS systemRegistrationStatus), " +
-							"anonRights = CAST(? AS systemAnonRights), " +
-							"userLendStatus = CAST(? AS userLendStatus) " +
+							"registrationStatus = CAST(? AS systemregistrationstatus), " +
+							"anonRights = CAST(? AS systemanonaccess), " +
+							"userLendStatus = CAST(? AS registereduserlendstatus) " +
 							"WHERE one = ?;"
 			);
 			populateStatement(updateStmt, appDTO);
@@ -130,11 +132,13 @@ public final class ApplicationDao {
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0){
+				try { conn.rollback(); } catch (SQLException ignore) {}
 				String msg = String.format("No entity with the id: %d exists", appDTO.getId());
 				Logger.severe(msg);
 				throw new EntityInstanceDoesNotExistException(msg);
 			}
 		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while updating application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -168,11 +172,13 @@ public final class ApplicationDao {
 				conn.commit();
 				return appDTO;
 			} else {
+				try { conn.rollback(); } catch (SQLException ignore) {}
 				String msg = String.format("No entity with the id: %d exists", appDTO.getId());
 				Logger.severe(msg);
 				throw new EntityInstanceDoesNotExistException(msg);
 			}
 		} catch (SQLException e) {
+			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while deleting application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -209,7 +215,7 @@ public final class ApplicationDao {
 		readStmt.setInt(1, Math.toIntExact(appDTO.getId()));
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()){
-			populateDto(resultSet, appDTO);
+			populateDto(conn, resultSet, appDTO);
 			return appDTO;
 		} else {
 			return null;
@@ -249,7 +255,7 @@ public final class ApplicationDao {
 		stmt.setString(12, appDto.getLendingStatus().toString());
 	}
 
-	private static void populateDto(ResultSet resultSet, ApplicationDto appDTO) throws SQLException {
+	private static void populateDto(Connection conn, ResultSet resultSet, ApplicationDto appDTO) throws SQLException {
 		appDTO.setId(resultSet.getInt(1));
 		appDTO.setName(resultSet.getString(2));
 		appDTO.setEmailSuffixRegEx(resultSet.getString(3));
@@ -257,11 +263,11 @@ public final class ApplicationDao {
 		appDTO.setSiteNotice(resultSet.getString(5));
 		appDTO.setPrivacyPolicy(resultSet.getString(6));
 		appDTO.setLogo(resultSet.getBytes(7));
-		long lendingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(8)).getSeconds());
+		long lendingPeriodSeconds = (long) getLendingPeriodSeconds(conn);
 		appDTO.setReturnPeriod(Duration.ofSeconds(lendingPeriodSeconds));
-		long markingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(9)).getSeconds());
+		long markingPeriodSeconds = (long) getPickupPeriodSeconds(conn);
 		appDTO.setPickupPeriod(Duration.ofSeconds(markingPeriodSeconds));
-		long remindPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(10)).getSeconds());
+		long remindPeriodSeconds = (long) getWarningPeriodSeconds(conn);
 		appDTO.setWarningPeriod(Duration.ofSeconds(remindPeriodSeconds));
 		SystemRegistrationStatus status = SystemRegistrationStatus.valueOf(resultSet.getString(11));
 		appDTO.setSystemRegistrationStatus(status);
@@ -273,6 +279,51 @@ public final class ApplicationDao {
 		PGInterval result = new PGInterval();
 		result.setSeconds(duration.getSeconds());
 		return result;
+	}
+	
+	/*@author Jonas Picker */
+	private static double getPickupPeriodSeconds(Connection conn) throws SQLException {
+		PreparedStatement getMarkingLimit = conn.prepareStatement(
+				"SELECT EXTRACT (EPOCH FROM (SELECT globalMarkingLimit " 			
+						+ "FROM application WHERE one = 1));");
+		ResultSet rs = getMarkingLimit.executeQuery();
+		conn.commit();
+		rs.next();
+		double markingLimitSeconds = rs.getDouble(1);
+		rs.close();
+		getMarkingLimit.close();
+		
+		return markingLimitSeconds;
+	}
+	
+	/*@author Jonas Picker */
+	private static double getWarningPeriodSeconds(Connection conn) throws SQLException {
+		PreparedStatement getReminder = conn.prepareStatement(
+				"SELECT EXTRACT (EPOCH FROM (SELECT reminderOffset " 			
+						+ "FROM application WHERE one = 1));");
+		ResultSet rs = getReminder.executeQuery();
+		conn.commit();
+		rs.next();
+		double reminderSeconds = rs.getDouble(1);
+		rs.close();
+		getReminder.close();
+		
+		return reminderSeconds;
+	}
+	
+	/*@author Jonas Picker */
+	public static double getLendingPeriodSeconds(Connection conn) throws SQLException {
+		PreparedStatement getGlobalLimit = conn.prepareStatement(
+				"SELECT EXTRACT (EPOCH FROM (SELECT globalLendLimit " 			
+						+ "FROM application WHERE one = 1));");
+		ResultSet rs = getGlobalLimit.executeQuery();
+		conn.commit();
+		rs.next();
+		double globalSeconds = rs.getDouble(1);
+		rs.close();
+		getGlobalLimit.close();
+		
+		return globalSeconds;
 	}
 
 }

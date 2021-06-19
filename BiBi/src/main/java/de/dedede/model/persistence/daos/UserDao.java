@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,6 +158,36 @@ public final class UserDao {
 	}
 	
 	/**
+	 * Used to enable or disable all registered users lending rights.
+	 * 
+	 * @param status either en- or disable lending.
+	 * @return the number of rows affected by the update.
+	 * @author Jonas Picker
+	 */
+	public static int setLendStatusOnRegisteredUsers(UserLendStatus status) {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		int affected = 0;
+		try { 
+			PreparedStatement stmt = conn.prepareStatement("UPDATE users "
+					+ "SET lendstatus = CAST(? AS userlendstatus) "
+					+ "WHERE userrole = CAST('REGISTERED' AS userrole);"
+					);
+			String statusString = status.toString();
+			stmt.setString(1, statusString);
+			affected = stmt.executeUpdate();
+			conn.commit();
+			stmt.close();
+		} catch (SQLException e) {
+			String message = "A db communication error occured while "
+					+ "trying to disable user lend status";
+			Logger.severe(message);
+			throw new LostConnectionException(message, e);
+		}
+		return affected;
+	}
+	
+	/**
 	 * Checks if the user email exists and then if the user is allowed to lend
 	 * copies. 
 	 * 
@@ -211,8 +240,7 @@ public final class UserDao {
 				int changed = updateToken.executeUpdate();
 				Logger.development(changed + " usertoken was newly generated");
 				updateToken.close();
-				token.setCreationTime(LocalDateTime.now().plus(5,
-						ChronoUnit.MINUTES));
+				token.setCreationTime(LocalDateTime.now());
 				return token;
 			} else {
 				PreparedStatement getToken = conn
@@ -242,10 +270,11 @@ public final class UserDao {
 	// falsely return false if token is null
 	/* @author Jonas Picker */
 	private static boolean userTokenExpired(Connection conn, UserDto userId) throws SQLException {
-		PreparedStatement checkingStmt = conn
-				.prepareStatement("SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
-						+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
-						+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END " + "AS tokenExpired;");
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
+				+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
+				+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END " 
+				+ "AS tokenExpired;");
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
 		conn.commit();
@@ -258,9 +287,10 @@ public final class UserDao {
 	// reads an existing user by id and checks if his token is null
 	/* @author Jonas Picker */
 	private static boolean userTokenIsNull(Connection conn, UserDto userId) throws SQLException {
-		PreparedStatement checkingStmt = conn
-				.prepareStatement("SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
-						+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;");
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
+				+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;"
+						);
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
 		conn.commit();
@@ -271,15 +301,16 @@ public final class UserDao {
 	}
 
 	/**
-	 * Fetches user data associated with a given email. The email address must be
-	 * associated with a user in the data store. Otherwise, an exception is thrown.
+	 * Fetches user data associated with a given email. The email address must 
+	 * be associated with a user in the data store. Otherwise, an exception is 
+	 * thrown.
 	 *
 	 * @param userDto A DTO container with the email address that identifies the
 	 *                user to be fetched.
 	 * @return A DTO container with the fetched user.
-	 * @throws UserDoesNotExistException Is thrown when the enclosed email address
-	 *                                   isn't associated with an existing data
-	 *                                   entry.
+	 * @throws UserDoesNotExistException Is thrown when the enclosed email
+	 * 									 address isn't associated with an 
+	 *									 existing data entry.
 	 * 
 	 * @author Jonas Picker, but re-uses @author Sergei Pravdins's Code
 	 */
@@ -508,31 +539,6 @@ public final class UserDao {
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
-		}
-	}
-
-	private static UserDto readUserHelper(Connection conn, UserDto userDto) throws SQLException {
-		PreparedStatement readStmt = conn.prepareStatement("select * from \"users\" where emailaddress = ?;");
-		readStmt.setString(1, userDto.getEmailAddress());
-		ResultSet resultSet = readStmt.executeQuery();
-
-		if (resultSet.next()) {
-			// Logger.development("hier i am in if ResultSet::::...");
-			userDto.setId(resultSet.getInt(1));
-			userDto.setEmailAddress(resultSet.getString(2));
-			userDto.setPasswordSalt(resultSet.getString(3));
-			userDto.setPasswordHash(resultSet.getString(4));
-			userDto.setFirstName(resultSet.getString(5));
-			userDto.setLastName(resultSet.getString(6));
-			userDto.setZipCode(resultSet.getInt(10));
-			userDto.setCity(resultSet.getString(7));
-			userDto.setStreet(resultSet.getString(8));
-			userDto.setStreetNumber(resultSet.getString(11));
-			conn.commit();
-			return userDto;
-		} else {
-			conn.commit();
-			return null;
 		}
 	}
 

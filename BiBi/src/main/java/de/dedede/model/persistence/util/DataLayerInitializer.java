@@ -372,9 +372,7 @@ public class DataLayerInitializer {
 				+ "	verificationStatus USERVERIFICATIONSTATUS NOT NULL DEFAULT"
 				+ " 'UNVERIFIED',"
 				+ "	userRole USERROLE NOT NULL DEFAULT 'REGISTERED',"
-				+ "	PRIMARY KEY(userID),"
-				+ "	CONSTRAINT positive_tokenCreation CHECK (tokenCreation >= "
-				+ "CURRENT_TIMESTAMP)"
+				+ "	PRIMARY KEY(userID)"
 				+ ");";
 		String s12 = "CREATE TABLE Application ("
 				+ "	one SERIAL,"

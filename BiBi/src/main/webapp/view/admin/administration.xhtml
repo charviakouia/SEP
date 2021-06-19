@@ -37,7 +37,7 @@
 						value="#{administration.application.warningPeriod}">
 			</h:inputText>
 			<h:message id="administration_reminder_offset_message" 
-						for="administration_pickup_period"/>
+						for="administration_reminder_offset"/>
 			
 			<h:outputLabel for="administration_pickup_period" 
 						value="#{msg['administration.pickup_period_label']}"/>
@@ -62,7 +62,8 @@
 			<h:outputLabel for="administration_registration_status_menu" 
 						value="#{msg['administration.registration_status']}"/>
 			<h:selectOneRadio id="administration_registration_status_menu"
-							value="#{administration.application.systemRegistrationStatus}">
+							value="#{administration.application.systemRegistrationStatus}"
+							title="#{msg['administration.registration_status_tooltip']}">
 				<f:selectItems value="#{administration.systemRegistrationStatusValues()}"/>
 			</h:selectOneRadio>
 			<h:message id="administration_registration_status_message" 
@@ -71,7 +72,8 @@
 			<h:outputLabel for="administration_anon_access_menu" 
 						value="#{msg['administration.anon_access']}"/>
 			<h:selectOneRadio id="administration_anon_access_menu"
-							value="#{administration.application.anonRights}">
+							value="#{administration.application.anonRights}"
+							title="#{msg['administration.anon_access_tooltip']}">
 				<f:selectItems value="#{administration.systemAnonAccessValues()}"/>
 			</h:selectOneRadio>
 			<h:message id="administration_anon_access_message" 
@@ -80,7 +82,8 @@
 			<h:outputLabel for="administration_registered_lend_status_menu" 
 						value="#{msg['administration.registered_lend_status']}"/>
 			<h:selectOneRadio id="administration_registered_lend_status_menu"
-							value="#{administration.application.lendingStatus}">
+							value="#{administration.application.lendingStatus}"
+							title="#{msg['administration.lend_status_tooltip']}">
 				<f:selectItems value="#{administration.registeredUserLendStatusValues()}"/>
 			</h:selectOneRadio>
 			<h:message id="administration_registered_lend_status_message" 
@@ -96,7 +99,7 @@
 						for="administration_email_regex"/>
 			
 			<h:commandButton id="administration_save_changes" 
-							action="administration.save()"
+							action="#{administration.save()}"
 							styleClass="btn btn-primary"
 							value="#{msg['administration.save_changes']}"/>	
 							
