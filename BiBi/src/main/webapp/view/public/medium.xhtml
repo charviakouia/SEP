@@ -108,7 +108,7 @@
 			<h:outputLabel value="#{msg['mediumDemotext']}"/>
 			<br/>
 			<h:outputText value="&#160;" />
-			<h:inputText id="demoText" value="#{medium.mediumDto.text}" styleClass="text-input"
+			<h:inputTextarea id="demoText" value="#{medium.mediumDto.text}" styleClass="text-input"
 						  readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
 			<br/>

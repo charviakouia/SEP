@@ -16,6 +16,7 @@ import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -46,7 +47,6 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 	@PostConstruct
 	public void init() {
 		userDto = new UserDto();
-		onload();
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 		onload();
 	}
 
-	private void onload() throws BusinessException {
+	public void onload() throws BusinessException {
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
@@ -81,5 +81,21 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 		} catch (IOException e) {
 			throw new BusinessException("Redirect is not possible.");
 		}
+	}
+
+	public List<MediumCopyUserDto> getCopies() {
+		return copies;
+	}
+
+	public void setCopies(List<MediumCopyUserDto> copies) {
+		this.copies = copies;
+	}
+
+	public UserDto getUserDto() {
+		return userDto;
+	}
+
+	public void setUserDto(UserDto userDto) {
+		this.userDto = userDto;
 	}
 }
