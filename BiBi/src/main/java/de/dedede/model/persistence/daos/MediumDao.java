@@ -516,10 +516,10 @@ public final class MediumDao {
 		return result;
 	}
 
-	public static List<CopyDto> readLentCopiesByUser(PaginationDto paginationDetails) {
-		// TODO: MS3 von Sergej
-		return null;
-
+	public static List<MediumCopyUserDto> readLentCopiesByUser(PaginationDto paginationDetails, UserDto userDto) {
+		List<MediumCopyUserDto> result = MediumDao.readLentCopies(paginationDetails);
+		result.removeIf(p -> p.getUser().getId() != userDto.getId());
+		return result;
 	}
 
 	/**
@@ -1512,4 +1512,101 @@ public final class MediumDao {
 		return result;
 	}
 
+	/**
+	 * Read all copies from the database that are ready to be picked up.
+	 *
+	 * @param pagination A container defining the page size and the amount of pages.
+	 * @return The list of copies ready for pickup and some related data.
+	 */
+	public static List<MediumCopyUserDto> readLentCopies(PaginationDto pagination) {
+
+		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+
+		try {
+
+			final var statementBody = """
+					from
+						medium m,
+						mediumcopy c,
+						users u
+					where
+						c.status = 'BORROWED'
+							and
+						c.mediumid = m.mediumid
+							and
+						c.actor = u.userid
+					""";
+
+			{
+				final var countStatement = connection.prepareStatement("select count(c.copyid) " + statementBody);
+
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+
+				Pagination.updatePagination(pagination, resultSet.getInt(1));
+			}
+
+			final var itemsStatement = connection.prepareStatement("""
+					select
+						m.mediumid, m.title,
+						c.signature, c.bibposition, c.deadline,
+						u.userid, u.emailaddress, u.name, u.surname
+					%s
+					offset ?
+					limit ?
+					""".formatted(statementBody));
+			// @Task sorting
+			itemsStatement.setInt(1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(2, Pagination.getEntriesPerPage());
+
+			final var resultSet = itemsStatement.executeQuery();
+			final var results = new ArrayList<MediumCopyUserDto>();
+
+			while (resultSet.next()) {
+
+				final var compound = new MediumCopyUserDto();
+
+				final var medium = new MediumDto();
+				medium.setId(resultSet.getInt(1));
+				medium.setTitle(resultSet.getString(2));
+				compound.setMedium(medium);
+
+				final var copy = new CopyDto();
+				copy.setSignature(resultSet.getString(3));
+				copy.setLocation(resultSet.getString(4));
+				copy.setDeadline(resultSet.getTimestamp(5));
+				compound.setCopy(copy);
+
+				final var user = new UserDto();
+				user.setId(resultSet.getInt(6));
+				user.setEmailAddress(resultSet.getString(7));
+				user.setFirstName(resultSet.getString(8));
+				user.setLastName(resultSet.getString(9));
+				compound.setUser(user);
+
+				results.add(compound);
+			}
+
+			connection.commit();
+
+			return results;
+		} catch (SQLException exception) {
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while reading copies ready for pickup: "
+					+ exception.getMessage();
+			Logger.severe(message);
+
+			throw new LostConnectionException(message, exception);
+
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(connection);
+		}
+	}
 }
