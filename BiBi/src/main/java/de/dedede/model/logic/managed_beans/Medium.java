@@ -73,7 +73,8 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Save the changes made to the set of medium attributes.
 	 */
-	public void saveAttributes() {
+	public void saveAttributes() throws EntityInstanceDoesNotExistException {
+		MediumDao.updateMedium(mediumDto);
 	}
 
 	/**

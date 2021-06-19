@@ -414,7 +414,6 @@ public final class UserDao {
 	 */
 	public static void updateUser(UserDto userDto) throws EntityInstanceDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-		;
 		try {
 			PreparedStatement updateStmt = conn.prepareStatement("UPDATE Users "
 					+ "SET emailaddress = ?, passwordhashsalt = ?, passwordhash = ?, name = ?, surname = ?, "

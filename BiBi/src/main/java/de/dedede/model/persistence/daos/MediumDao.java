@@ -404,7 +404,29 @@ public final class MediumDao {
 	 * @see MediumDto
 	 */
 	public static void updateMedium(MediumDto mediumDto) throws EntityInstanceDoesNotExistException {
-		// TODO: MS2 von Sergej
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement updateStmt = conn.prepareStatement("UPDATE Medium "
+					+ "SET mediumid = ?, mediumlendperiod = ?, hascategory = ?, title = ?, author1 = ?, "
+					+ "author2 = ?, author3 = ?, author4 = ?, author5 = ?, mediumtype = ?, edition = ?, "
+					+ "publisher = ?, releaseyear = ?, isbn = ?, mediumlink = ?, demotext = ?"
+					+ "WHERE mediumid = ?;");
+			populateMediumStatement(updateStmt, mediumDto);
+			int numAffectedRows = updateStmt.executeUpdate();
+			conn.commit();
+			if (numAffectedRows == 0) {
+				conn.rollback();
+				String msg = String.format("No entity with the id: %d exists", mediumDto.getId());
+				Logger.severe(msg);
+				throw new EntityInstanceDoesNotExistException(msg);
+			}
+		} catch (SQLException e) {
+			String msg = "Database error occurred while updating user entity with id: " + mediumDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
