@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.CopyDto;
@@ -44,7 +45,7 @@ public class ReturnForm implements Serializable {
 	/**
 	 * Holds one copy signature for each input field.
 	 */
-	private ArrayList<CopyDto> copies = new ArrayList<CopyDto>();
+	private List<CopyDto> copies = new ArrayList<CopyDto>();
 
 	/**
 	 * Initializes the bean with 5 signature input fields.
@@ -135,20 +136,41 @@ public class ReturnForm implements Serializable {
 		copies.add(new CopyDto());
 	}
 	
-	/*getters and setters*/
-	
+	/**
+	 * Grants the facelet access to the user input container.
+	 * 
+	 * @return the input container.
+	 */	
 	public UserDto getUser() {
+		
 		return user;
 	}
 
+	/**
+	 * Allows the facelet to modify the user input container in this bean.
+	 * 
+	 * @param user the userDto holding the data.
+	 */
 	public void setUser(UserDto user) {
 		this.user = user;
 	}
 
-	public ArrayList<CopyDto> getCopies() {
+	/**
+	 * Allows the corresponding facelet to access the variable number of 
+	 * CopyDtos that mirror the signature input fields.
+	 * 
+	 * @return the list of CopyDtos.
+	 */
+	public List<CopyDto> getCopies() {
+		
 		return copies;
 	}
 
+	/**
+	 * Allows the facelet to fill the copyDtos with user input data.
+	 * 
+	 * @param copies the list of copyDtos that hold the data.
+	 */
 	public void setCopies(ArrayList<CopyDto> copies) {
 		this.copies = copies;
 	}

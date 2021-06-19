@@ -2,11 +2,15 @@ package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -15,6 +19,7 @@ import jakarta.inject.Named;
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ResourceBundle;
 
 /**
  * Backing bean for the profile page. This page is either the profile page of
@@ -83,13 +88,22 @@ public class Profile implements Serializable {
 	 * Close one's own account if this is the profile of the current user or delete
 	 * a user as an admin.
 	 */
-	public String delete() throws UserDoesNotExistException {
+	public String delete() throws UserDoesNotExistException, IOException {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		UserDao.deleteUser(user);
 		if (userSession.getUser().getUserRole() == UserRole.ADMIN) {
+			context.addMessage(null, new FacesMessage(messages.getString("delUser.success")));
+			context.getExternalContext().getFlash().setKeepMessages(true);
 			String result = "administration?" + userSession.getUser().getId()
 					+ "&faces-redirect=true";
 			return result;
 		} else {
+			userSession.setUser(null);
+			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			externalContext.invalidateSession();
+			context.addMessage(null, new FacesMessage(messages.getString("delUser.success")));
+			context.getExternalContext().getFlash().setKeepMessages(true);
 			return "/view/public/login?faces-redirect=true";
 		}
 	}
@@ -97,7 +111,30 @@ public class Profile implements Serializable {
 	/**
 	 * Save the changes made to the profile.
 	 */
-	public void save() {
+	public void save() throws IOException {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		if (!password.equals(confirmedPassword)) {
+			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.noMatch")));
+		}
+		try {
+			String salt = PasswordHashingModule.generateSalt();
+			String hash = PasswordHashingModule.hashPassword(password, salt);
+			user.setPasswordHash(hash);
+			user.setPasswordSalt(salt);
+			user.setToken(null);
+			user.setTokenCreation(null);
+			UserDao.updateUser(user);
+			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.success")));
+		} catch (EntityInstanceDoesNotExistException e) {
+			userSession.setUser(null);
+			FacesContext.getCurrentInstance().getExternalContext();
+			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			externalContext.invalidateSession();
+			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.notUser")));
+			context.getExternalContext().getFlash().setKeepMessages(true);
+			externalContext.redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
+		}
 
 	}
 
@@ -107,20 +144,28 @@ public class Profile implements Serializable {
 	 * @throws IOException 
 	 */
 	public void onload() throws IOException {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			if (userSession.getUser() != null) {
 				if (userSession.getUser().getUserRole().equals(UserRole.ADMIN)
 						|| userSession.getUser().getId() == user.getId()) {
 					user = UserDao.readUserForProfile(user);
 				} else {
-					context.addMessage(null, new FacesMessage("You do not have access to the user profile."));
+					context.addMessage(null, new FacesMessage(messages.getString("profile.notAccess")));
+					context.getExternalContext().getFlash().setKeepMessages(true);
+					FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+
 				}
 			} else {
+				context.addMessage(null, new FacesMessage(messages.getString("profile.notLogin")));
+				context.getExternalContext().getFlash().setKeepMessages(true);
 				FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/login.xhtml");
-				context.addMessage(null, new FacesMessage("Please sign in."));
 			}
 		} catch (UserDoesNotExistException e) {
-			context.addMessage(null, new FacesMessage("There is no user with this ID."));
+			context.addMessage(null, new FacesMessage(messages.getString("profile.invalidID")));
+			context.getExternalContext().getFlash().setKeepMessages(true);
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
 		}
 	}
 	

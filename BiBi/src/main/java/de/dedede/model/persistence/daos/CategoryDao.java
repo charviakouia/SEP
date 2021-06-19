@@ -1,20 +1,11 @@
 package de.dedede.model.persistence.daos;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.dedede.model.data.dtos.ApplicationDto;
-import de.dedede.model.data.dtos.CategoryDto;
-import de.dedede.model.data.dtos.CategorySearchDto;
-import de.dedede.model.data.dtos.PaginationDto;
-import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
+import de.dedede.model.data.dtos.*;
+import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 
@@ -38,12 +29,44 @@ public final class CategoryDao {
 	 * Otherwise, an exception is thrown.
 	 *
 	 * @param categoryDto A DTO container with the overwriting data
-	 * @throws EntityInstanceNotUniqueException Is thrown if the passed ID is already
-	 * 		associated with a data entry.
+	 * @throws ParentCategoryDoesNotExistException Is thrown if the passed name doesnt
+	 *		associated with a data entry.
 	 * @see CategoryDto
 	 */
-	public static void createCategory(CategoryDto categoryDto) 
-			throws EntityInstanceNotUniqueException {
+	public static void createCategory(CategoryDto categoryDto)
+			throws ParentCategoryDoesNotExistException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		if (categoryDto.getParent().getId() == 0) {
+			try {
+				if (categoryDto.getParent().getName().isEmpty()) {
+					throw new ParentCategoryDoesNotExistException("Parent category name cannot be empty.");
+				}
+				int parentCategoryId = getCategoryIdByName(conn, categoryDto.getParent());
+				categoryDto.getParent().setId(parentCategoryId);
+			} catch (CategoryDoesNotExistException e) {
+				throw new ParentCategoryDoesNotExistException("Specified name "
+						+ categoryDto.getParent().getName()
+						+ " doesn't seem to match any parent category entry", e);
+			}
+		}
+		try {
+			PreparedStatement createStmt = conn.prepareStatement(
+					"INSERT INTO category (categoryid, title, description, parentcategoryid) " +
+							"VALUES (?, ?, ?, ?);",
+					Statement.RETURN_GENERATED_KEYS);
+			populateCategoryStatement(createStmt, categoryDto);
+			int numAffectedRows = createStmt.executeUpdate();
+			if (numAffectedRows > 0) {
+				attemptToInsertGeneratedKey(categoryDto, createStmt);
+			}
+			conn.commit();
+		} catch (SQLException e) {
+			String msg = "Database error occurred while creating category entity with id: " + categoryDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 	
 	/**
@@ -82,8 +105,8 @@ public final class CategoryDao {
 					"OFFSET ?;"
 			);
 			stmt.setString(1, "%" + categorySearchDto.getSearchTerm() + "%");
-			stmt.setInt(2, paginationDetails.getTotalAmountOfRows());
-			stmt.setInt(3, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfRows());
+			stmt.setInt(2, paginationDetails.getTotalAmountOfPages());
+			stmt.setInt(3, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfPages());
 			ResultSet res = stmt.executeQuery();
 			List<CategoryDto> list = new LinkedList<>();
 			while (res.next()) {
@@ -128,12 +151,26 @@ public final class CategoryDao {
 	 * @param categoryDto A DTO container with the ID of the category data entry to 
 	 * 		be deleted
 	 * @return A DTO container with the deleted category data entry.
-	 * @throws EntityInstanceDoesNotExistException Is thrown if the passed ID isn't
+	 * @throws CategoryDoesNotExistException Is thrown if the passed ID isn't
 	 * 		associated with any data entry.
 	 * @see CategoryDto
 	 */
-	public static CategoryDto deleteCategory(CategoryDto categoryDto) {
-		return null;
+	public static CategoryDto deleteCategory(CategoryDto categoryDto) throws CategoryDoesNotExistException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		if (categoryDto.getId() == 0) {
+			int categoryId = getCategoryIdByName(conn, categoryDto);
+			categoryDto.setId(categoryId);
+		}
+		try {
+			deleteCategoryHelper(conn, categoryDto);
+			return categoryDto;
+		} catch (SQLException e) {
+			String msg = "Database error occurred while deleting category entity with id: " + categoryDto.getId();
+			// Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 	
 	public static boolean categoryExists(CategoryDto categoryDto) {
@@ -158,4 +195,47 @@ public final class CategoryDao {
 		}
 	}
 
+	/** @author Sergei Pravdin */
+	private static int getCategoryIdByName(Connection conn, CategoryDto categoryDto)
+			throws CategoryDoesNotExistException {
+		try {
+			PreparedStatement readCategoryId = conn.prepareStatement("SELECT categoryid"
+					+ " FROM category WHERE title = ?;");
+			readCategoryId.setString(1, categoryDto.getName());
+			ResultSet rs = readCategoryId.executeQuery();
+			rs.next();
+			conn.commit();
+			return rs.getInt(1);
+		} catch (SQLException e) {
+			Logger.development("CategoryId couldn't be retrieved for this name.");
+			throw new CategoryDoesNotExistException("Specified name " + categoryDto.getName()
+					+ " doesn't seem to match any category entry", e);
+		}
+	}
+
+	/** @author Sergei Pravdin */
+	private static void populateCategoryStatement(PreparedStatement createStmt, CategoryDto categoryDto)
+			throws SQLException {
+		createStmt.setInt(1, categoryDto.getId());
+		createStmt.setString(2, categoryDto.getName());
+		createStmt.setString(3, categoryDto.getDescription());
+		createStmt.setInt(4, categoryDto.getParent().getId());
+	}
+
+	/** @author Sergei Pravdin */
+	private static void attemptToInsertGeneratedKey(CategoryDto categoryDto, Statement stmt)
+			throws SQLException {
+		ResultSet resultSet = stmt.getGeneratedKeys();
+		if (resultSet.next()) {
+			categoryDto.setId(resultSet.getInt(1));
+		}
+	}
+
+	/** @author Sergei Pravdin */
+	private static void deleteCategoryHelper(Connection conn, CategoryDto categoryDto) throws SQLException {
+		PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM category " + "WHERE categoryid = ?;");
+		deleteStmt.setInt(1, Math.toIntExact(categoryDto.getId()));
+		deleteStmt.executeUpdate();
+		conn.commit();
+	}
 }

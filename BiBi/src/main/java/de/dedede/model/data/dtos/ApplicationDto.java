@@ -2,7 +2,7 @@ package de.dedede.model.data.dtos;
 
 import java.time.Duration;
 
-import de.dedede.model.logic.util.Theme;
+import de.dedede.model.logic.util.SystemAnonAccess;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 
 /**
@@ -41,7 +41,7 @@ public class ApplicationDto {
 
 	private String lookAndFeel;
 
-    private String anonRights;
+    private SystemAnonAccess anonRights;
 
     public long getId() {
         return id;
@@ -281,11 +281,11 @@ public class ApplicationDto {
         this.lookAndFeel = lookAndFeel;
     }
 
-    public String getAnonRights() {
+    public SystemAnonAccess getAnonRights() {
         return anonRights;
     }
 
-    public void setAnonRights(String anonRights) {
+    public void setAnonRights(SystemAnonAccess anonRights) {
         this.anonRights = anonRights;
     }
 

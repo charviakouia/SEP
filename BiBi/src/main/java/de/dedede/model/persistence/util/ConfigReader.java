@@ -97,12 +97,27 @@ public class ConfigReader {
 	 * key.
 	 * 
 	 * @param String key the name of the config variable key.
+	 * @param defaultValue the default value if no value for the key is found
 	 * @return The value for the key or the default value if the original 
 	 * 			value is empty
 	 */
 	public String getKey(String key, String defaultValue)  {
 		
 		return systemConfigurations.getProperty(key, defaultValue);
+	}
+	
+	/**
+	 * Returns a String containing the system configuration under the specified
+	 * key.
+	 * 
+	 * @param String key the name of the config variable key.
+	 * @param defaultValue the default value if no value for the key is found
+	 * @return The value for the key parsed and returned as an int
+	 */
+	public int getKeyAsInt(String key, int defaultValue) {
+		
+		return Integer.parseInt(systemConfigurations.getProperty(key, 
+				String.valueOf(defaultValue)));
 	}
 	
 }

@@ -1,6 +1,7 @@
 package de.dedede.model.persistence.daos;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import de.dedede.model.logic.util.SystemAnonAccess;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
@@ -244,7 +245,7 @@ public final class ApplicationDao {
 		stmt.setObject(9, toPGInterval(appDto.getWarningPeriod()));
 		stmt.setString(10, appDto.getSystemRegistrationStatus().toString());
 		stmt.setString(11, appDto.getLookAndFeel());
-		stmt.setString(12, appDto.getAnonRights());
+		stmt.setString(12, appDto.getAnonRights().toString());
 		stmt.setString(13, appDto.getLendingStatus());
 	}
 
@@ -265,7 +266,7 @@ public final class ApplicationDao {
 		SystemRegistrationStatus status = SystemRegistrationStatus.valueOf(resultSet.getString(11));
 		appDTO.setSystemRegistrationStatus(status);
 		appDTO.setLookAndFeel(resultSet.getString(12));
-		appDTO.setAnonRights(resultSet.getString(13));
+		appDTO.setAnonRights(SystemAnonAccess.valueOf(resultSet.getString(13)));
 		appDTO.setLendingStatus(resultSet.getString(14));
 	}
 
