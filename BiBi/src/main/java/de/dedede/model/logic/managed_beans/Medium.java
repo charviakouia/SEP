@@ -147,6 +147,7 @@ public class Medium extends PaginatedList implements Serializable {
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			MediumDao.deleteCopy(copyDto);
+			throw new BusinessException("bla bla bla");
 		} catch (MediumDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
@@ -157,7 +158,7 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Save changes made to a copy of this medium.
 	 * 
-	 * @param copyId The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
 	public void saveCopy(CopyDto copyDto) throws IllegalArgumentException,
@@ -169,7 +170,7 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Cancel any pending pickup of the a copy this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
 	public void cancelPickup(CopyDto copyDto) throws IllegalArgumentException {
@@ -179,29 +180,27 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Go to the direct lending page taking a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String lendCopy(CopyDto copyDto) throws IllegalArgumentException {
-		return null;
+	public String lendCopy() throws IllegalArgumentException {
+		return "/BiBi/view/staff/lending.xhtml?faces-redirect=true";
 	}
 
 	/**
 	 * Go to the return form taking a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String returnCopy(CopyDto copyDto) throws IllegalStateException {
-		List<CopyDto> copies = new ArrayList<CopyDto>();
-
-		return null;
+	public String returnCopy() throws IllegalStateException {
+		return "/BiBi/view/staff/return-copy.xhtml?faces-redirect=true";
 	}
 
 	/**
 	 * Pick up a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
 	public void pickUpCopy(CopyDto copyDto, UserDto user) throws IllegalStateException {
