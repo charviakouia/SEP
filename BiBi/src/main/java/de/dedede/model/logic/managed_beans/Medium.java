@@ -1,6 +1,7 @@
 package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.CopyDto;
+import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
@@ -15,6 +16,8 @@ import jakarta.inject.Named;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,7 +31,7 @@ import java.util.UUID;
  */
 @Named
 @ViewScoped
-public class Medium implements Serializable {
+public class Medium extends PaginatedList implements Serializable {
 
 	@Serial
 	private static  final long serialVersionUID = 1L;
@@ -47,6 +50,16 @@ public class Medium implements Serializable {
 	private void init() {
 		mediumDto = new MediumDto();
 		newCopy = new CopyDto();
+	}
+
+	@Override
+	public ArrayList<CopyDto> getItems() {
+		return new ArrayList<>(mediumDto.getCopies().values());
+	}
+
+	@Override
+	public void refresh() {
+		onload();
 	}
 
 	public void onload() {
@@ -117,20 +130,22 @@ public class Medium implements Serializable {
 	 * @throws MaxConnectionsException 
 	 * @throws LostConnectionException 
 	 */
-	public void deleteCopy(int index) throws IllegalArgumentException,
+	public void deleteCopy(String index) throws IllegalArgumentException,
 			CopyDoesNotExistException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
-		MediumDao.deleteCopy(mediumDto.getCopy(index));
+		int id = Integer.parseInt(index);
+		MediumDao.deleteCopy(mediumDto.getCopy(id));
 	}
 
 	/**
 	 * Save changes made to a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyId The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void saveCopy(int index) throws IllegalArgumentException,
+	public void saveCopy(String copyId) throws IllegalArgumentException,
 			CopyDoesNotExistException {
-		MediumDao.updateCopy(mediumDto.getCopy(index));
+		int id = Integer.parseInt(copyId);
+		MediumDao.updateCopy(mediumDto.getCopy(id));
 	}
 
 	/**
@@ -139,7 +154,7 @@ public class Medium implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void cancelPickup(int index) throws IllegalArgumentException {
+	public void cancelPickup(String index) throws IllegalArgumentException {
 
 	}
 
@@ -149,7 +164,7 @@ public class Medium implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String lendCopy(int index) throws IllegalArgumentException {
+	public String lendCopy(String index) throws IllegalArgumentException {
 		return null;
 	}
 
@@ -159,7 +174,7 @@ public class Medium implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String returnCopy(int index) throws IllegalStateException {
+	public String returnCopy(String index) throws IllegalStateException {
 		return null;
 	}
 
@@ -169,7 +184,7 @@ public class Medium implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void pickUpCopy(int index, UserDto user) throws IllegalStateException {
+	public void pickUpCopy(String index, UserDto user) throws IllegalStateException {
 	}
 
 	public MediumDto getMediumDto() {

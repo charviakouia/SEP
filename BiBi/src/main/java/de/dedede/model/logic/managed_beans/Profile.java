@@ -118,10 +118,12 @@ public class Profile implements Serializable {
 			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.noMatch")));
 		}
 		try {
-			String salt = PasswordHashingModule.generateSalt();
-			String hash = PasswordHashingModule.hashPassword(password, salt);
-			user.setPasswordHash(hash);
-			user.setPasswordSalt(salt);
+			if (!password.isEmpty()) {
+				String salt = PasswordHashingModule.generateSalt();
+				String hash = PasswordHashingModule.hashPassword(password, salt);
+				user.setPasswordHash(hash);
+				user.setPasswordSalt(salt);
+			}
 			user.setToken(null);
 			user.setTokenCreation(null);
 			UserDao.updateUser(user);

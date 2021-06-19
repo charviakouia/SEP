@@ -1,231 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
-	template="/view/templates/template.xhtml">
-	
-	<ui:param name="page" value="medium" />
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
+                template="/view/templates/template.xhtml">
 
-	<ui:define name="content">
+    <ui:param name="page" value="medium"/>
 
-		<f:metadata>
-			<f:viewParam name="id" value="#{medium.mediumDto.id}" required="true"/>
-			<f:viewAction action="#{medium.onload}" /><br/>
-		</f:metadata>
+    <ui:define name="content">
 
-		<h:form id="form_mediumAttributes_forUsers">
+        <f:metadata>
+            <f:viewParam name="id" value="#{medium.mediumDto.id}" required="true"/>
+            <f:viewAction action="#{medium.onload}"/>
+        </f:metadata>
 
-			<h3>
-				<h:inputText id="title" value="#{medium.mediumDto.title}" required="true"
-							 readonly="#{userSession.user.role != 'ADMIN'
+        <h:form id="form_mediumAttributes_forUsers">
+
+            <h:panelGrid id="panel" columns="2"
+                         cellpadding="10" cellspacing="1"
+                         styleClass="panelGridCenter">
+
+                <f:facet name="header">
+                    <h3>
+                        <h:inputText id="title" value="#{medium.mediumDto.title}" required="true"
+                                     readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			</h3>
+                    </h3>
+                </f:facet>
 
-			<h:outputLabel value="#{msg['medium.author']}"/>
-			<h:inputText id="author1" value="#{medium.mediumDto.author1}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.author']}"/>
+
+                <h:panelGroup layout="block">
+
+                    <h:inputText id="author1" value="#{medium.mediumDto.author1}"
+                                 readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<h:outputText value=", " />
-			<h:inputText id="author2" value="#{medium.mediumDto.author2}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                    <h:inputText id="author2" value="#{medium.mediumDto.author2}"
+                                 readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<h:outputText value=", " />
-			<h:inputText id="author3" value="#{medium.mediumDto.author3}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                    <h:inputText id="author3" value="#{medium.mediumDto.author3}"
+                                 readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<h:outputText value=", " />
-			<h:inputText id="author4" value="#{medium.mediumDto.author4}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                    <h:inputText id="author4" value="#{medium.mediumDto.author4}"
+                                 readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<h:outputText value=", " />
-			<h:inputText id="author5" value="#{medium.mediumDto.author5}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                    <h:inputText id="author5" value="#{medium.mediumDto.author5}"
+                                 readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
+                </h:panelGroup>
 
-			<h:outputLabel value="#{msg['medium.mediumType']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="type" value="#{medium.mediumDto.mediumType}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.mediumType']}"/>
+                <h:inputText id="type" value="#{medium.mediumDto.mediumType}"
+                             readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
 
-			<h:outputLabel value="#{msg['medium.edition']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="edition" value="#{medium.mediumDto.edition}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.edition']}"/>
+                <h:inputText id="edition" value="#{medium.mediumDto.edition}"
+                             readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
 
-			<h:outputLabel value="#{msg['medium.publisher']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="publisher" value="#{medium.mediumDto.publisher}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.publisher']}"/>
+                <h:inputText id="publisher" value="#{medium.mediumDto.publisher}"
+                             readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
 
-			<h:outputLabel value="#{msg['medium.releaseYear']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="releaseYear" value="#{medium.mediumDto.releaseYear}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.releaseYear']}"/>
+                <h:inputText id="releaseYear" value="#{medium.mediumDto.releaseYear}"
+                             readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
 
-			<h:outputLabel value="#{msg['medium.isbn']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="isbn" value="#{medium.mediumDto.isbn}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.isbn']}"/>
+                <h:inputText id="isbn" value="#{medium.mediumDto.isbn}"
+                             readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
 
-			<h:outputLabel value="#{msg['medium.mediumLink']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="link" value="#{medium.mediumDto.mediumLink}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.mediumLink']}"/>
+                <h:inputText id="link" value="#{medium.mediumDto.mediumLink}"
+                             readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
 
-			<h:outputLabel value="#{msg['medium.returnPeriod']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"
-						  converter="DurationConverter"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.returnPeriod']}"/>
+                <h:inputText id="returnPeriod" value="#{medium.mediumDto.returnPeriod}"
+                             converter="DurationConverter"
+                             readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
 
-			<h:outputLabel value="#{msg['medium.hasCategory']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="category" value="#{medium.mediumDto.category}"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['medium.hasCategory']}"/>
+                <h:inputText id="category" value="#{medium.mediumDto.category}"
+                             readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
-			<br/>
 
-			<h:outputLabel value="#{msg['mediumDemotext']}"/>
-			<br/>
-			<h:outputText value="&#160;" />
-			<h:inputTextarea id="demoText" value="#{medium.mediumDto.text}" styleClass="text-input"
-						  readonly="#{userSession.user.role != 'ADMIN'
+                <h:outputLabel value="#{msg['mediumDemotext']}"/>
+                <h:inputTextarea id="demoText" value="#{medium.mediumDto.text}" styleClass="text-input"
+                                 readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
-			<br/>
-			<h:commandButton id="saveMedium"
-							 value="#{msg['medium.save']}"
-							 action="#{medium.saveAttributes}"
-							 rendered="#{userSession.user.role == 'ADMIN'
-									 or userSession.user.role == 'STAFF'}" />
-			<h:outputText value="&#160;" />
-			<h:outputText value="&#160;" />
-			<h:commandButton id="delMedium"
-							 value="#{msg['medium.delete']}"
-							 action="#{medium.delete}"
-							 rendered="#{userSession.user.role == 'ADMIN'
-									 or userSession.user.role == 'STAFF'}" />
-			<br/>
-			<br/>
 
-		</h:form>
+            </h:panelGrid>
 
-		<h:form id="copies">
-			<h3>
-				<h:outputText value="#{msg['medium.copies.title']}"/>
-			</h3>
-			<h:dataTable value="#{medium.mediumDto.copies.keySet().toArray()}" var="copy" varStatus="status">
+            <h:commandButton id="saveMedium"
+                             value="#{msg['medium.save']}"
+                             styleClass="btn btn-primary"
+                             action="#{medium.saveAttributes}"
+                             rendered="#{userSession.user.role == 'ADMIN'
+									 or userSession.user.role == 'STAFF'}"/>
+            <h:outputText value="&#160;"/>
+            <h:outputText value="&#160;"/>
+            <h:commandButton id="delMedium"
+                             value="#{msg['medium.delete']}"
+                             action="#{medium.delete}"
+                             rendered="#{userSession.user.role == 'ADMIN'
+									 or userSession.user.role == 'STAFF'}"
+                             styleClass="btn-danger"/>
+            <br/>
+            <br/>
 
-				<h:column id="column1">
-					<f:facet name="header">
-						<h:outputText value="#{msg['copy.id']}"/>
-					</f:facet>
-					<h:outputText value="#{copy}"/>
-				</h:column>
+        </h:form>
 
-				<h:column id="column2">
-					<f:facet name="header">
-						<h:outputText value="#{msg['copy.position']}"/>
-					</f:facet>
-					<h:inputText value="#{medium.mediumDto.copies.get(copy).location}"
-								 readonly="#{userSession.user.role != 'ADMIN'
-							  and userSession.user.role != 'STAFF'}"/>
-				</h:column>
+        <h:form>
 
-				<h:column id="column3">
-					<f:facet name="header">
-						<h:outputText value="#{msg['copy.availability']}"/>
-					</f:facet>
-					<h:outputText value="#{medium.mediumDto.copies.get(copy).copyStatus}"/>
-				</h:column>
+            <f:facet name="header">
+                <h:outputText value="#{msg['medium.copies.title']}" styleClass="title"/>
+            </f:facet>
 
-				<h:column id="column4">
-					<f:facet name="header">
-						<h:outputText value="#{msg['copy.signature']}"/>
-					</f:facet>
-					<h:inputText value="#{medium.mediumDto.copies.get(copy).signature}" readonly="#{userSession.user.role != 'ADMIN'
-							  and userSession.user.role != 'STAFF'}"/>
-				</h:column>
+            <bibi:paginatedList value="#{medium}">
 
-				<h:column id="column5" rendered="#{userSession.user.role == 'ADMIN'
+                <h:column>
+                    <f:facet name="header">#{msg['copy']}</f:facet>
+                    <bibi:columnContent>
+                        #{item.signature}
+                    </bibi:columnContent>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">#{msg['location']}</f:facet>
+                    <bibi:columnContent>
+
+                    </bibi:columnContent>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">#{msg['copy.availability']}</f:facet>
+                    <bibi:columnContent>
+                        #{item.copyStatus}
+                    </bibi:columnContent>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">#{msg['copy.signature']}</f:facet>
+                    <bibi:columnContent>
+                        #{item.signature}
+                    </bibi:columnContent>
+                </h:column>
+
+                <h:column rendered="#{userSession.user.role == 'ADMIN'
+							or userSession.user.role == 'STAFF'}">
+                    <f:facet name="header">#{msg['copy.staffAction']}</f:facet>
+                    <bibi:columnContent>
+                        <h:form>
+                            <c:set var="copyId" value="#{item.id}"/>
+                            <h:commandButton id="save1"
+                                             value="#{msg['save']}"
+                                             action="#{medium.saveCopy(copyId)}"/>
+                            <h:commandButton id="deleteCopy1"
+                                             value="#{msg['delete']}"
+                                             action="#{medium.deleteCopy(copyId)}"/>
+                            <h:commandButton id="cancelPickup1"
+                                             value="#{msg['copy.cancelPickup']}"
+                                             action="#{medium.cancelPickup(copyId)}"
+                                             rendered="#{medium.mediumDto.copies.get(copyId).copyStatus
+                                             == 'READY_FOR_PICKUP'}"/>
+                            <h:commandButton id="lendCopy1"
+                                             value="#{msg['copy.lend']}"
+                                             action="#{medium.lendCopy(copyId)}"
+                                             rendered="#{medium.mediumDto.copies.get(copyId).copyStatus == 'AVAILABLE'}"/>
+                            <h:commandButton id="returnCopy1"
+                                             value="#{msg['copy.return']}"
+                                             action="#{medium.returnCopy(copyId)}"
+                                             rendered="#{medium.mediumDto.copies.get(copyId).copyStatus == 'BORROWED'}"/>
+                        </h:form>
+                    </bibi:columnContent>
+                </h:column>
+
+                <h:column rendered="#{userSession.user.userLendStatus == 'ENABLED'}">
+                    <f:facet name="header">#{msg['copy.action']}</f:facet>
+                    <bibi:columnContent>
+                        <h:form>
+                            <c:set var="copyId" value="#{item.id}"/>
+                            <h:commandButton id="copyPickup"
+                                             value="#{msg['copy.pickup']}"
+                                             action="#{medium.pickUpCopy(copyId, userSession.user)}"
+                                             rendered="#{item.copyStatus == 'AVAILABLE'}"/>
+                        </h:form>
+                    </bibi:columnContent>
+                </h:column>
+
+            </bibi:paginatedList>
+
+        </h:form>
+
+        <br/>
+
+        <h:form id="createCopy" rendered="#{userSession.user.role == 'ADMIN'
 										 or userSession.user.role == 'STAFF'}">
-					<f:facet name="header">
-						<h:outputText value="#{msg['copy.action']}"/>
-					</f:facet>
-					<h:form>
-						<h:commandButton id="save"
-										 value="#{msg['save']}"
-										 action="#{medium.saveCopy(status.index)}"/>
-						<h:commandButton id="deleteCopy"
-										 value="#{msg['delete']}"
-										 action="#{medium.deleteCopy(status.index)}"/>
-						<h:commandButton id="cancelPickup"
-										 value="#{msg['copy.cancelPickup']}"
-										 action="#{medium.cancelPickup(status.index)}"
-										 rendered="#{medium.mediumDto.copies.get(copy).copyStatus == 'READY_FOR_PICKUP'}"/>
-						<h:commandButton id="lendCopy"
-										 value="#{msg['copy.lend']}"
-										 action="#{medium.lendCopy(status.index)}"
-										 rendered="#{medium.mediumDto.copies.get(copy).copyStatus == 'AVAILABLE'}"/>
-						<h:commandButton id="returnCopy"
-										 value="#{msg['copy.return']}"
-										 action="#{medium.returnCopy(status.index)}"
-										 rendered="#{medium.mediumDto.copies.get(copy).copyStatus == 'BORROWED'}"/>
-					</h:form>
-				</h:column>
+            <h:outputLabel value="#{msg['newCopy.location']}"/>
+            <h:outputText value="&#160;"/>
+            <h:inputText value="#{medium.newCopy.location}"/>
+            <br/>
+            <h:outputLabel value="#{msg['newCopy.signatur']}"/>
+            <h:outputText value="&#160;"/>
+            <h:inputText value="#{medium.newCopy.signature}"/>
+            <h:commandButton id="createCopyButton"
+                             value="#{msg['copy.create']}"
+                             action="#{medium.createCopy()}"/>
+        </h:form>
+        <br/>
 
-				<h:column id="column6" rendered="#{userSession.user != null
-										and userSession.user.userLendStatus == 'ENABLED'
-										and medium.mediumDto.copies.get(copy).copyStatus == 'AVAILABLE'}">
-					<f:facet name="header">
-						<h:outputText value="#{msg['copy.action']}"/>
-					</f:facet>
-					<h:form>
-						<h:commandButton id="copyPickup"
-										 value="#{msg['copy.pickup']}"
-										 action="#{medium.pickUpCopy(status.index, userSession.user)}"/>
-					</h:form>
-				</h:column>
+    </ui:define>
 
-			</h:dataTable>
-		</h:form>
-		<br/>
-
-		<h:form id="createCopy" rendered="#{userSession.user.role == 'ADMIN'
-										 or userSession.user.role == 'STAFF'}">
-			<h:outputLabel value="#{msg['newCopy.location']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText value="#{medium.newCopy.location}"/>
-			<br/>
-			<h:outputLabel value="#{msg['newCopy.signatur']}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText value="#{medium.newCopy.signature}"/>
-			<h:commandButton id="createCopyButton"
-							 value="#{msg['copy.create']}"
-							 action="#{medium.createCopy()}"/>
-		</h:form>
-		<br/>
-		<br/>
-
-	</ui:define>
-	
 </ui:composition>
