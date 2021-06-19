@@ -1,12 +1,23 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.MediumCopyUserDto;
+import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -22,22 +33,53 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 	@Serial
 	private static  final long serialVersionUID = 1L;
 
-	private List<MediumCopyUserDto> items;
+	private List<MediumCopyUserDto> copies;
+
+	private UserDto userDto;
+
+	@Inject
+	UserSession userSession;
+
+	@Inject
+	private FacesContext context;
 
 	@PostConstruct
 	public void init() {
-
+		userDto = new UserDto();
+		onload();
 	}
-	
+
 	@Override
 	public List<MediumCopyUserDto> getItems() {
-		return items;
+		return copies;
 	}
 
 	@Override
 	public void refresh() {
-		// TODO Auto-generated method stub
-		
+		onload();
 	}
 
+	private void onload() throws BusinessException {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		try {
+			if (userSession.getUser() != null) {
+				if (userSession.getUser().getId() == userDto.getId()) {
+					copies = MediumDao.readMarkedCopiesByUser(getPaginatedList(), userDto);
+				} else {
+					context.addMessage(null, new FacesMessage(messages.getString("profile.notAccess")));
+					context.getExternalContext().getFlash().setKeepMessages(true);
+					FacesContext.getCurrentInstance().getExternalContext()
+							.redirect("/BiBi/view/public/medium-search.xhtml");
+				}
+			} else {
+				context.addMessage(null, new FacesMessage(messages.getString("profile.notLogin")));
+				context.getExternalContext().getFlash().setKeepMessages(true);
+				FacesContext.getCurrentInstance().getExternalContext()
+						.redirect("/BiBi/view/public/login.xhtml");
+			}
+		} catch (IOException e) {
+			throw new BusinessException("Redirect is not possible.");
+		}
+	}
 }

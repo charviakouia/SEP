@@ -510,10 +510,10 @@ public final class MediumDao {
 		return null;
 	}
 
-	public static List<CopyDto> readMarkedCopiesByUser(PaginationDto paginationDetails) {
-		// TODO: MS3 von Sergej
-		return null;
-
+	public static List<MediumCopyUserDto> readMarkedCopiesByUser(PaginationDto paginationDetails, UserDto userDto) {
+		List<MediumCopyUserDto> result = MediumDao.readCopiesReadyForPickup(paginationDetails);
+		result.removeIf(p -> p.getUser().getId() != userDto.getId());
+		return result;
 	}
 
 	public static List<CopyDto> readLentCopiesByUser(PaginationDto paginationDetails) {
