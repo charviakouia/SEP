@@ -4,6 +4,7 @@ import de.dedede.model.data.dtos.*;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.*;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -11,6 +12,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -123,13 +125,6 @@ public class Medium extends PaginatedList implements Serializable {
 	}
 
 	/**
-	 * Pick up an arbitrary available copy.
-	 */
-	public void pickUpAnyCopy() {
-
-	}
-
-	/**
 	 * Get the minimum return period of of the user-specific, the medium-specific
 	 * and the global one.
 	 */
@@ -140,16 +135,23 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Delete a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
-	 * @throws IllegalArgumentException If the index is out of bounds.
+	 * @param copyDto The id of the deleted copy.
 	 * @throws MediumDoesNotExistException 
 	 * @throws MaxConnectionsException 
 	 * @throws LostConnectionException 
 	 */
-	public void deleteCopy(String index) throws IllegalArgumentException,
-			CopyDoesNotExistException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
-		int id = Integer.parseInt(index);
-		MediumDao.deleteCopy(mediumDto.getCopy(id));
+	public void deleteCopy(CopyDto copyDto) throws IOException {
+		copyDto.setMediumId(mediumDto.getId());
+		Logger.development("This id: " + copyDto.getId());
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		try {
+			MediumDao.deleteCopy(copyDto);
+		} catch (MediumDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
+			context.getExternalContext().getFlash().setKeepMessages(true);
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+		}
 	}
 
 	/**
@@ -158,10 +160,10 @@ public class Medium extends PaginatedList implements Serializable {
 	 * @param copyId The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void saveCopy(String copyId) throws IllegalArgumentException,
+	public void saveCopy(CopyDto copyDto) throws IllegalArgumentException,
 			CopyDoesNotExistException {
-		int id = Integer.parseInt(copyId);
-		MediumDao.updateCopy(mediumDto.getCopy(id));
+		MediumDao.updateCopy(copyDto);
+		refresh();
 	}
 
 	/**
@@ -170,7 +172,7 @@ public class Medium extends PaginatedList implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void cancelPickup(String index) throws IllegalArgumentException {
+	public void cancelPickup(CopyDto copyDto) throws IllegalArgumentException {
 
 	}
 
@@ -180,7 +182,7 @@ public class Medium extends PaginatedList implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String lendCopy(String index) throws IllegalArgumentException {
+	public String lendCopy(CopyDto copyDto) throws IllegalArgumentException {
 		return null;
 	}
 
@@ -190,7 +192,9 @@ public class Medium extends PaginatedList implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String returnCopy(String index) throws IllegalStateException {
+	public String returnCopy(CopyDto copyDto) throws IllegalStateException {
+		List<CopyDto> copies = new ArrayList<CopyDto>();
+
 		return null;
 	}
 
@@ -200,7 +204,7 @@ public class Medium extends PaginatedList implements Serializable {
 	 * @param index The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void pickUpCopy(String index, UserDto user) throws IllegalStateException {
+	public void pickUpCopy(CopyDto copyDto, UserDto user) throws IllegalStateException {
 	}
 
 	public MediumDto getMediumDto() {

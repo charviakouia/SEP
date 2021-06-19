@@ -20,7 +20,7 @@
         <h:form id="form_mediumAttributes_forUsers">
 
             <h:panelGrid id="panel" columns="2"
-                         cellpadding="10" cellspacing="1"
+                         cellpadding="4"
                          styleClass="panelGridCenter">
 
                 <f:facet name="header">
@@ -33,7 +33,7 @@
 
                 <h:outputLabel value="#{msg['medium.author']}"/>
 
-                <h:panelGroup layout="block">
+                <h:panelGroup layout="block" cellspacing = "1">
 
                     <h:inputText id="author1" value="#{medium.mediumDto.author1}"
                                  readonly="#{userSession.user.role != 'ADMIN'
@@ -127,16 +127,18 @@
             <bibi:paginatedList value="#{medium}">
 
                 <h:column>
-                    <f:facet name="header">#{msg['copy']}</f:facet>
+                    <f:facet name="header">#{msg['copy.signature']}</f:facet>
                     <bibi:columnContent>
-                        #{item.signature}
+                        <h:inputText value="#{item.signature}" readonly="#{userSession.user.role != 'ADMIN'
+						                                       and userSession.user.role != 'STAFF'}"/>
                     </bibi:columnContent>
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">#{msg['location']}</f:facet>
                     <bibi:columnContent>
-                        #{item.location}
+                        <h:inputText value="#{item.location}" readonly="#{userSession.user.role != 'ADMIN'
+						                                       and userSession.user.role != 'STAFF'}"/>
                     </bibi:columnContent>
                 </h:column>
 
@@ -147,38 +149,32 @@
                     </bibi:columnContent>
                 </h:column>
 
-                <h:column>
-                    <f:facet name="header">#{msg['copy.signature']}</f:facet>
-                    <bibi:columnContent>
-                        #{item.signature}
-                    </bibi:columnContent>
-                </h:column>
-
                 <h:column rendered="#{userSession.user.role == 'ADMIN'
 							or userSession.user.role == 'STAFF'}">
                     <f:facet name="header">#{msg['copy.staffAction']}</f:facet>
                     <bibi:columnContent>
                         <h:form>
-                            <c:set var="copyId" value="#{item.id}"/>
-                            <h:commandButton id="save1"
-                                             value="#{msg['save']}"
-                                             action="#{medium.saveCopy(copyId)}"/>
-                            <h:commandButton id="deleteCopy1"
-                                             value="#{msg['delete']}"
-                                             action="#{medium.deleteCopy(copyId)}"/>
-                            <h:commandButton id="cancelPickup1"
-                                             value="#{msg['copy.cancelPickup']}"
-                                             action="#{medium.cancelPickup(copyId)}"
-                                             rendered="#{medium.mediumDto.copies.get(copyId).copyStatus
-                                             == 'READY_FOR_PICKUP'}"/>
-                            <h:commandButton id="lendCopy1"
-                                             value="#{msg['copy.lend']}"
-                                             action="#{medium.lendCopy(copyId)}"
-                                             rendered="#{medium.mediumDto.copies.get(copyId).copyStatus == 'AVAILABLE'}"/>
-                            <h:commandButton id="returnCopy1"
-                                             value="#{msg['copy.return']}"
-                                             action="#{medium.returnCopy(copyId)}"
-                                             rendered="#{medium.mediumDto.copies.get(copyId).copyStatus == 'BORROWED'}"/>
+                            <h:panelGroup layout="block" cellspacing = "1">
+                                <h:commandButton id="save"
+                                                 value="#{msg['save']}"
+                                                 action="#{medium.saveCopy(item)}"/>
+                                <h:commandButton id="deleteCopy"
+                                                 value="#{msg['delete']}"
+                                                 action="#{medium.deleteCopy(item)}"/>
+                                <h:commandButton id="cancelPickup1"
+                                                 value="#{msg['copy.cancelPickup']}"
+                                                 action="#{medium.cancelPickup(item)}"
+                                                 rendered="#{medium.mediumDto.copies.get(item.id).copyStatus
+                                                 == 'READY_FOR_PICKUP'}"/>
+                                <h:commandButton id="lendCopy1"
+                                                 value="#{msg['copy.lend']}"
+                                                 action="#{medium.lendCopy(item)}"
+                                                 rendered="#{medium.mediumDto.copies.get(item.id).copyStatus == 'AVAILABLE'}"/>
+                                <h:commandButton id="returnCopy1"
+                                                 value="#{msg['copy.return']}"
+                                                 action="#{medium.returnCopy(item)}"
+                                                 rendered="#{medium.mediumDto.copies.get(item.id).copyStatus == 'BORROWED'}"/>
+                            </h:panelGroup>
                         </h:form>
                     </bibi:columnContent>
                 </h:column>
@@ -190,7 +186,7 @@
                             <c:set var="copyId" value="#{item.id}"/>
                             <h:commandButton id="copyPickup"
                                              value="#{msg['copy.pickup']}"
-                                             action="#{medium.pickUpCopy(copyId, userSession.user)}"
+                                             action="#{medium.pickUpCopy(item.id, userSession.user)}"
                                              rendered="#{item.copyStatus == 'AVAILABLE'}"/>
                         </h:form>
                     </bibi:columnContent>
