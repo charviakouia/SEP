@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.data.dtos.UserSearchDto;
 import de.dedede.model.persistence.daos.UserDao;
@@ -45,7 +46,15 @@ public class UserSearch extends PaginatedList implements Serializable {
 	public void searchUsers() {
 		users = UserDao.searchUsers(userSearch, getPaginatedList());
 	}
-	
+
+	public boolean getRestrictionToDisabledLendStatus() {
+		return userSearch.getLendStatus() == UserLendStatus.DISABLED;
+	}
+
+	public void setRestrictonToDisabledLendStatus(boolean status) {
+		userSearch.setLendStatus(status ? UserLendStatus.DISABLED : UserLendStatus.ENABLED);
+	}
+
 	/**
 	 * Get all existing user roles.
 	 * 
