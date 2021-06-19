@@ -6,6 +6,7 @@ import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
+import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.ParentCategoryDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -70,6 +71,8 @@ public class CategoryCreator {
             FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/category-browser.xhtml?faces-redirect=true");
         } catch (ParentCategoryDoesNotExistException e) {
             context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notParentMatch")));
+        } catch (EntityInstanceNotUniqueException exception) {
+            context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notUnique")));
         }
 
     }
