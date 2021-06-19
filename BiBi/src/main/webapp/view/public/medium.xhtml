@@ -106,20 +106,19 @@
                                  styleClass="btn btn-primary"
                                  action="#{medium.saveAttributes()}"
                                  rendered="#{userSession.user.role == 'ADMIN'
-									 or userSession.user.role == 'STAFF'}"/>
+							     or userSession.user.role == 'STAFF'}"/>
 
                 <h:commandButton id="delMedium"
                                  value="#{msg['medium.delete']}"
                                  action="#{medium.delete()}"
                                  rendered="#{userSession.user.role == 'ADMIN'
-									 or userSession.user.role == 'STAFF'}"
+							     or userSession.user.role == 'STAFF'}"
                                  styleClass="btn-danger"/>
-            </h:panelGrid>
 
+            </h:panelGrid>
         </h:form>
 
         <h:form>
-
             <f:facet name="header">
                 <h:outputText value="#{msg['medium.copies.title']}" styleClass="title"/>
             </f:facet>
@@ -190,9 +189,7 @@
                 </h:column>
 
             </bibi:paginatedList>
-
         </h:form>
-
 
         <h:form id="createCopy" rendered="#{userSession.user.role == 'ADMIN'
 										 or userSession.user.role == 'STAFF'}">
