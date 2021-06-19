@@ -1,9 +1,6 @@
 package de.dedede.model.logic.managed_beans;
 
-import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.data.dtos.MediumCopyUserDto;
-import de.dedede.model.data.dtos.MediumDto;
-import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.*;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.*;
@@ -18,6 +15,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 /**
@@ -85,25 +83,43 @@ public class Medium extends PaginatedList implements Serializable {
 
 	/**
 	 * Insert a new copy of this medium.
-	 * @throws EntityInstanceNotUniqueException 
+	 * @throws BusinessException
 	 */
-	public void createCopy() throws BusinessException, EntityInstanceNotUniqueException {
+	public void createCopy() throws BusinessException {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
-			UUID idOne = UUID.randomUUID();
-			String str=""+idOne;
-			int uid = str.hashCode();
-			String filterStr=""+uid;
-			str = filterStr.replaceAll("-", "");
-			int newCopyID = Integer.parseInt(str);
-			newCopy.setId(newCopyID);
+			prepareNewCopy(newCopy);
 			MediumDao.createCopy(newCopy, mediumDto);
+			newCopyClean(newCopy);
+			refresh();
 		} catch (LostConnectionException e) {
 			String msg = "Database error occurred while creating copy with id: " + newCopy.getId();
 			throw new BusinessException(msg, e);
 		} catch (MaxConnectionsException e) {
 			String msg = "Connection is not available while creating copy with id: " + newCopy.getId();
 			throw new BusinessException(msg, e);
+		} catch (EntityInstanceNotUniqueException exception) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.notUnique")));
 		}
+	}
+
+	private void newCopyClean(CopyDto newCopy) {
+		newCopy.setLocation(null);
+		newCopy.setId(0);
+		newCopy.setSignature(null);
+	}
+
+	private void prepareNewCopy(CopyDto newCopy) {
+		UUID idOne = UUID.randomUUID();
+		String str=""+idOne;
+		int uid = str.hashCode();
+		String filterStr=""+uid;
+		str = filterStr.replaceAll("-", "");
+		int newCopyID = Integer.parseInt(str);
+		newCopy.setId(newCopyID);
+		newCopy.setCopyStatus(CopyStatus.AVAILABLE);
+		newCopy.setMediumId(mediumDto.getId());
 	}
 
 	/**

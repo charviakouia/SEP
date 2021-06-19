@@ -464,7 +464,7 @@ public final class MediumDao {
 					"INSERT INTO Mediumcopy (copyid, mediumid, signature, bibposition, status, "
 							+ "deadline, actor) VALUES " + "(?, ?, ?, ?, CAST (? AS copyStatus), ?, ?);",
 					Statement.RETURN_GENERATED_KEYS);
-			createStmt.setInt(2, mediumDto.getId());
+			copyDto.setMediumId(mediumDto.getId());
 			populateCopyStatement(createStmt, copyDto);
 			int numAffectedRows = createStmt.executeUpdate();
 			if (numAffectedRows > 0) {
@@ -472,9 +472,16 @@ public final class MediumDao {
 			}
 			conn.commit();
 		} catch (SQLException e) {
-			String msg = "Database error occurred while creating mediumCopy entity with id: " + copyDto.getId();
-			Logger.severe(msg);
-			throw new LostConnectionException(msg, e);
+			try {
+				conn.rollback();
+				String msg = "Database error occurred while creating mediumCopy entity with id: " + copyDto.getId();
+				Logger.severe(msg);
+				throw new LostConnectionException(msg, e);
+			} catch (SQLException exception) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
@@ -860,6 +867,7 @@ public final class MediumDao {
 	 */
 	private static void populateCopyStatement(PreparedStatement stmt, CopyDto copyDto) throws SQLException {
 		stmt.setInt(1, copyDto.getId());
+		stmt.setInt(2, copyDto.getMediumId());
 		stmt.setString(3, copyDto.getSignature());
 		stmt.setString(4, copyDto.getLocation());
 		stmt.setString(5, copyDto.getCopyStatus().name());

@@ -115,7 +115,6 @@
 									 or userSession.user.role == 'STAFF'}"
                              styleClass="btn-danger"/>
             <br/>
-            <br/>
 
         </h:form>
 
@@ -137,7 +136,7 @@
                 <h:column>
                     <f:facet name="header">#{msg['location']}</f:facet>
                     <bibi:columnContent>
-
+                        #{item.location}
                     </bibi:columnContent>
                 </h:column>
 
@@ -201,22 +200,24 @@
 
         </h:form>
 
-        <br/>
 
         <h:form id="createCopy" rendered="#{userSession.user.role == 'ADMIN'
 										 or userSession.user.role == 'STAFF'}">
-            <h:outputLabel value="#{msg['newCopy.location']}"/>
-            <h:outputText value="&#160;"/>
-            <h:inputText value="#{medium.newCopy.location}"/>
-            <br/>
-            <h:outputLabel value="#{msg['newCopy.signatur']}"/>
-            <h:outputText value="&#160;"/>
-            <h:inputText value="#{medium.newCopy.signature}"/>
-            <h:commandButton id="createCopyButton"
-                             value="#{msg['copy.create']}"
-                             action="#{medium.createCopy()}"/>
+            <h:panelGrid id="newCopyPanel" columns="2"
+                         cellpadding="5" cellspacing="1"
+                         styleClass="panelGridCenter">
+                <h:outputLabel value="#{msg['newCopy.location']}"/>
+                <h:inputText value="#{medium.newCopy.location}"/>
+                <h:outputLabel value="#{msg['newCopy.signatur']}"/>
+                <h:inputText value="#{medium.newCopy.signature}"/>
+                <h:panelGroup>
+                    <h:commandButton id="createCopyButton"
+                                     styleClass="btn btn-secondary"
+                                     value="#{msg['copy.create']}"
+                                     action="#{medium.createCopy()}"/>
+                </h:panelGroup>
+            </h:panelGrid>
         </h:form>
-        <br/>
 
     </ui:define>
 
