@@ -44,9 +44,9 @@ public class CategoryCreator {
     }
 
     /**
-     * fetching this category.
+     * Fetches a DTO container with data about the category being created.
      *
-     * @return the category.
+     * @return a DTO container with data about the category being created.
      */
     public CategoryDto getCategory() {
         return category;
@@ -57,8 +57,11 @@ public class CategoryCreator {
     }
 
     /**
-     * creating this category.
-     * TODO: Überprüfen, ob eine Kategorie mit dieser Name schon existiert.
+     * Creates a new category with the attributes specified in the facelet.
+     * It is not possible to create a category with a caption that already exists.
+     * The parent category must be correct, otherwise the user will receive an error message.
+     *
+     * @author Sergei Pravdin
      */
     public void createCategory() throws IOException {
         ResourceBundle messages =
@@ -77,6 +80,17 @@ public class CategoryCreator {
 
     }
 
+    /**
+     * Loads the category creation page. The status of the user who is trying to access
+     * the page must be "STAFF" or "administrator", otherwise the user will receive an error message
+     * and will be redirected to the home page. If the page receives a ViewParam, then the parent category
+     * will be found and the name of the parent category will be displayed on the form. If there is no viewParam,
+     * then the default parent category will be specified.
+     *
+     * @throws IOException, if the redirect is not possible.
+     *
+     * @author Sergei Pravdin
+     */
     public void onload() throws IOException {
         ResourceBundle messages =
                 context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
