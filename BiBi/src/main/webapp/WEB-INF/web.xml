@@ -72,6 +72,11 @@
 	</error-page>
 	
 	<error-page>
+    	<error-code>404</error-code>
+    	<location>/view/error/error404.xhtml</location>
+	</error-page>
+		
+	<error-page>
     	<error-code>405</error-code>
     	<location>/view/error/error405.xhtml</location>
 	</error-page>

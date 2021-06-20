@@ -1483,7 +1483,9 @@ public final class MediumDao {
 			PreparedStatement readAlmostDue = conn.prepareStatement(
 					"SELECT copyid, mediumid, signature, bibposition, "
 					+ "status, deadline, actor FROM mediumcopy WHERE "
-					+ "(deadline is not null) AND (deadline <= ?);"
+					+ "(deadline is not null) AND (deadline <= ?) "
+					+ "AND (deadline > CURRENT_TIMESTAMP) "
+					+ "AND (status = CAST('BORROWED' AS copystatus));"
 					);
 			readAlmostDue.setTimestamp(1, offset);
 			ResultSet rs2 = readAlmostDue.executeQuery();

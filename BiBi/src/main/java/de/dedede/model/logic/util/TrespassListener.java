@@ -20,10 +20,10 @@ import jakarta.faces.event.PhaseListener;
 import jakarta.inject.Inject;
 
 /**
- * Access control for the application is done here. Loginstatus and user role
- * are matched against the requested url-pattern and access is restricted if
- * user rights are insufficient. Finer security involving view-parameters is
- * done in the respective backing beans.
+ * Access control for the application is done here. Loginstatus, system access 
+ * mode and user role are matched against the requested url-pattern and access 
+ * is restricted if user rights are insufficient. Finer security involving 
+ * view-parameters is done in the respective backing beans.
  * 
  * @author Jonas Picker
  */
@@ -93,10 +93,6 @@ public class TrespassListener implements PhaseListener, Serializable{
     			+ "_or_register_short");
     	String longMessageLogin = messages.getString("trespassListener.login"
     			+ "_or_register_long");
-    	String shortMessage404 = messages.getString("trespassListener.not_for"
-    			+ "_your_eyes_short");
-        String longMessage404 = messages.getString("trespassListener.not_for"
-        		+ "_your_eyes_long");
         SystemAnonAccess accessMode 
         				= customs.getApplicationCustomization().getAnonRights();
         if (!isLoggedIn && !isOnFreeForAll 
@@ -113,29 +109,21 @@ public class TrespassListener implements PhaseListener, Serializable{
         		&& (userRole == UserRole.REGISTERED)) {
         	if (!url.startsWith("/view/public/")
         			&& !url.startsWith("/view/account/")) {
-        		redirectToError404(facesCtx, externalCtx, navigationHandler,
-        				shortMessage404, longMessage404);
+        		redirectToError404(facesCtx, externalCtx, navigationHandler);
         	}
         } else if (isLoggedIn && !isOnFreeForAll 
         		&& (userRole == UserRole.STAFF)) {
         	if(!url.startsWith("/view/public/") 
         			&& !url.startsWith("/view/account/") 
         			&& !url.startsWith("/view/staff/")) {
-        		redirectToError404(facesCtx, externalCtx, navigationHandler,
-        				shortMessage404, longMessage404);
+        		redirectToError404(facesCtx, externalCtx, navigationHandler);
         	}
         }      
 	}
 
 	private void redirectToError404(FacesContext facesCtx,
 			ExternalContext externalCtx,
-			NavigationHandler navigationHandler, String shortMsg,
-			String longMsg) {
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-				shortMsg, longMsg);
-		facesCtx.addMessage(null, msg);
-		externalCtx.getFlash().setKeepMessages(true);
-
+			NavigationHandler navigationHandler) {
 		navigationHandler.handleNavigation(facesCtx, null,
 				"/view/error/error404.xhtml?faces-redirect=true");
 		facesCtx.responseComplete();
