@@ -31,3 +31,9 @@ SEVERE: 2021-06-15 17:50:45 ---> Database error occurred while creating mediumCo
 SEVERE: 2021-06-15 17:50:50 ---> Database error occurred while creating application entity with id: 0
 SEVERE: 2021-06-15 17:50:55 ---> Database error occurred while creating application entity with id: 0
 SEVERE: 2021-06-15 17:50:55 ---> Database error occurred while deleting application entity with id: 0
+SEVERE: 2021-06-20 18:28:37 ---> Error occured with db communication while refreshing marked copies with expired deadline.
+SEVERE: 2021-06-20 18:35:50 ---> Error occured with db communication while refreshing marked copies with expired deadline.
+SEVERE: 2021-06-20 18:52:48 ---> This is a test message.
+SEVERE: 2021-06-20 19:09:24 ---> This is a test message.
+SEVERE: 2021-06-20 19:09:47 ---> This is a test message.
+SEVERE: 2021-06-20 19:11:25 ---> This is a test message.

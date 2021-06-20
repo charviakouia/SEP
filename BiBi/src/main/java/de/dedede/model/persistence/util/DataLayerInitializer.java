@@ -56,8 +56,8 @@ public class DataLayerInitializer {
 					+ "trying to connect to the database during "
 					+ "system startup.", sqle);
 		} catch (InvalidConfigurationException e) {
-			Logger.severe("The connection pool encountered a faulty configuration "
-					+ "while starting...");
+			Logger.severe("The connection pool encountered a faulty "
+					+ "configuration while starting...");
 			throw e;
 		}
 		try {
