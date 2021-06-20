@@ -1419,7 +1419,7 @@ public final class MediumDao {
 		rs3.close();
 		getMediumLimit.close();
 		PreparedStatement getUserLimit = conn.prepareStatement(
-				"SELECT EXTRACT (EPOCH FROM (SELECT userLendPeriod "            //Auslagern in UserDao?
+				"SELECT EXTRACT (EPOCH FROM (SELECT userLendPeriod "           
 						+ "FROM users WHERE userId = ?));");
 		getUserLimit.setInt(1, userId);
 		ResultSet rs4 = getUserLimit.executeQuery();
@@ -1610,7 +1610,7 @@ public final class MediumDao {
 				instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		List<MediumCopyUserDto> result = new ArrayList<MediumCopyUserDto>();
 		try {
-			PreparedStatement getReminderOffset = conn.prepareStatement(		//Auslagern in AppDao? -> Ivan fragen
+			PreparedStatement getReminderOffset = conn.prepareStatement(		
 					"SELECT EXTRACT (EPOCH FROM (SELECT reminderoffset " 
 							+ "FROM application WHERE one = 1));");
 			ResultSet rs1 = getReminderOffset.executeQuery();
