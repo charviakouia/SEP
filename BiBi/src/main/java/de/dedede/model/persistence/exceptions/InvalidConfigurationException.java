@@ -1,10 +1,15 @@
 package de.dedede.model.persistence.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
+import jakarta.faces.context.FacesContext;
+
 /**
  * This checked exception describes situations in which in which in which the config reader
  * cannot read the configuration file because the configuration file is invalid.
  */
-public class InvalidConfigurationException extends RuntimeException {
+public class InvalidConfigurationException extends RuntimeException implements AnnotatedException {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,5 +41,12 @@ public class InvalidConfigurationException extends RuntimeException {
     public InvalidConfigurationException(String msg, Throwable cause) {
         super(msg, cause);
     }
+    
+    @Override
+	public String getPersonalizedMessage() {
+		FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.invalidConfiguration");
+	}
 
 }

@@ -17,7 +17,7 @@
 	<ui:param name="page" value="login"/>
 
 	<ui:define name="content">
-	<h1>#{msg['login.headline']}</h1>
+		<h1>#{msg['login.headline']}</h1>
 		<br></br>
 		<br></br>
 
@@ -58,6 +58,12 @@
 
 		
 		</h:panelGrid>
+		</h:form>
+		
+		<h:form>
+			
+			<h:commandButton action="#{login.throwsError()}" value="Throw error"/>
+			
 		</h:form>
         
 

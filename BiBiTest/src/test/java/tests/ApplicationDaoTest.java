@@ -68,7 +68,7 @@ class ApplicationDaoTest {
 		current.setWarningPeriod(Duration.ofDays(2));
 		current.setSystemRegistrationStatus(SystemRegistrationStatus.OPEN);
 		current.setLookAndFeel("css a");
-		current.setAnonRights("OPAC");
+//		current.setAnonRights("OPAC");
 		current.setLendingStatus("UNLOCKED");
 	}
 
@@ -85,7 +85,7 @@ class ApplicationDaoTest {
 		other.setWarningPeriod(Duration.ofDays(3));
 		other.setSystemRegistrationStatus(SystemRegistrationStatus.CLOSED);
 		other.setLookAndFeel("css a");
-		other.setAnonRights("OPAC");
+//		other.setAnonRights("OPAC");
 		other.setLendingStatus("UNLOCKED");
 	}
 	

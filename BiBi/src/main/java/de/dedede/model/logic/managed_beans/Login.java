@@ -7,10 +7,14 @@ import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.exceptions.CustomExceptionHandler;
 import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
@@ -133,16 +137,17 @@ public class Login {
 		String longMessageFail = messages.getString("login.email_failure"
 				+ "_long");
 		TokenDto newTokenContainer = TokenGenerator.generateToken();
+		
 		try {
-			UserDto completeUserData = UserDao.readUserByEmail(userData); 						
-			TokenDto userToken = UserDao.setOrRetrieveUserToken(
-					completeUserData, newTokenContainer);
-			String token = userToken.getContent();		
-			String link = "http://localhost:8080" + 
-					context.getApplication().getViewHandler().getResourceURL(
-					context, "/view/public/password-reset.xhtml?token=" 
-					+ URLEncoder.encode(token, "UTF-8"));
-			completeUserData.setToken(userToken);
+			
+			String token = newTokenContainer.getContent();
+			String link = EmailUtility.getLink("/view/public/password-reset.xhtml", token);
+			
+			UserDto completeUserData = UserDao.readUserByEmail(userData);
+			completeUserData.setToken(newTokenContainer);	
+			// TokenDto userToken = UserDao.setOrRetrieveUserToken(completeUserData, newTokenContainer);
+			UserDao.updateUser(completeUserData);
+
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
 			String emailBody = insertParams(firstname, lastname, link, content);
@@ -179,6 +184,9 @@ public class Login {
 			context.addMessage("login.email_message", new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, shortMessageFail, 
 					longMessageFail));
+		} catch (EntityInstanceDoesNotExistException e1) {
+			// Critical line: UserDao.updateUser(completeUserData)
+			e1.printStackTrace();
 		}
 		
 	}
@@ -206,6 +214,11 @@ public class Login {
 	 */
 	public void setUserData(UserDto user) {
 		this.userData = user;
+	}
+	
+	// Authored by Ivan to test global exception handler functionality
+	public String throwsError() {
+		throw new BusinessException("Testing...", new CopyDoesNotExistException("More testing..."));
 	}
 
 }

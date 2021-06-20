@@ -66,7 +66,7 @@ class ConnectionPoolTest {
 		dto.setWarningPeriod(Duration.ofDays(4));
 		dto.setSystemRegistrationStatus(SystemRegistrationStatus.OPEN);
 		dto.setLookAndFeel("css a");
-		dto.setAnonRights("OPAC");
+//		dto.setAnonRights("OPAC");
 		dto.setLendingStatus("UNLOCKED");
 	}
 	

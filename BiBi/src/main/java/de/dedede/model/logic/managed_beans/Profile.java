@@ -118,10 +118,12 @@ public class Profile implements Serializable {
 			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.noMatch")));
 		}
 		try {
-			String salt = PasswordHashingModule.generateSalt();
-			String hash = PasswordHashingModule.hashPassword(password, salt);
-			user.setPasswordHash(hash);
-			user.setPasswordSalt(salt);
+			if (!password.isEmpty()) {
+				String salt = PasswordHashingModule.generateSalt();
+				String hash = PasswordHashingModule.hashPassword(password, salt);
+				user.setPasswordHash(hash);
+				user.setPasswordSalt(salt);
+			}
 			user.setToken(null);
 			user.setTokenCreation(null);
 			UserDao.updateUser(user);
@@ -168,4 +170,10 @@ public class Profile implements Serializable {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
 		}
 	}
+	
+	// Authored by Ivan to test global exception handler functionality
+	public String throwsError() {
+		throw new IllegalStateException("Doing a bit of testing here...");
+	}
+	
 }

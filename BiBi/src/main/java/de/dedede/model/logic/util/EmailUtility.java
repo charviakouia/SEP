@@ -1,9 +1,14 @@
 package de.dedede.model.logic.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Properties;
 
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.Logger;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -75,6 +80,14 @@ public final class EmailUtility {
 		protected PasswordAuthentication getPasswordAuthentication() {
             return new PasswordAuthentication(username, password);
         }
+	}
+	
+	public static String getLink(String nav, String token) throws UnsupportedEncodingException {
+		ExternalContext e = FacesContext.getCurrentInstance().getExternalContext();
+		// UIViewRoot vr = FacesContext.getCurrentInstance().getViewRoot();
+		String url = String.format("%s://%s:%s%s%s", e.getRequestScheme(), e.getRequestServerName(), 
+				e.getRequestServerPort(), e.getRequestContextPath(), nav);
+		return url + "?token=" + URLEncoder.encode(token, "UTF-8");
 	}
 
 }

@@ -1,11 +1,10 @@
 package de.dedede.model.logic.managed_beans;
 
-import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.data.dtos.MediumDto;
-import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.*;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.*;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -13,8 +12,12 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 /**
@@ -28,7 +31,7 @@ import java.util.UUID;
  */
 @Named
 @ViewScoped
-public class Medium implements Serializable {
+public class Medium extends PaginatedList implements Serializable {
 
 	@Serial
 	private static  final long serialVersionUID = 1L;
@@ -49,6 +52,16 @@ public class Medium implements Serializable {
 		newCopy = new CopyDto();
 	}
 
+	@Override
+	public ArrayList<CopyDto> getItems() {
+		return new ArrayList<>(mediumDto.getCopies().values());
+	}
+
+	@Override
+	public void refresh() {
+		onload();
+	}
+
 	public void onload() {
 		try {
 			mediumDto = MediumDao.readMedium(mediumDto);
@@ -60,7 +73,8 @@ public class Medium implements Serializable {
 	/**
 	 * Save the changes made to the set of medium attributes.
 	 */
-	public void saveAttributes() {
+	public void saveAttributes() throws EntityInstanceDoesNotExistException {
+		MediumDao.updateMedium(mediumDto);
 	}
 
 	/**
@@ -72,32 +86,43 @@ public class Medium implements Serializable {
 
 	/**
 	 * Insert a new copy of this medium.
-	 * @throws EntityInstanceNotUniqueException 
+	 * @throws BusinessException
 	 */
-	public void createCopy() throws BusinessException, EntityInstanceNotUniqueException {
+	public void createCopy() throws BusinessException {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
-			UUID idOne = UUID.randomUUID();
-			String str=""+idOne;
-			int uid = str.hashCode();
-			String filterStr=""+uid;
-			str = filterStr.replaceAll("-", "");
-			int newCopyID = Integer.parseInt(str);
-			newCopy.setId(newCopyID);
+			prepareNewCopy(newCopy);
 			MediumDao.createCopy(newCopy, mediumDto);
+			newCopyClean(newCopy);
+			refresh();
 		} catch (LostConnectionException e) {
 			String msg = "Database error occurred while creating copy with id: " + newCopy.getId();
 			throw new BusinessException(msg, e);
 		} catch (MaxConnectionsException e) {
 			String msg = "Connection is not available while creating copy with id: " + newCopy.getId();
 			throw new BusinessException(msg, e);
+		} catch (EntityInstanceNotUniqueException exception) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.notUnique")));
 		}
 	}
 
-	/**
-	 * Pick up an arbitrary available copy.
-	 */
-	public void pickUpAnyCopy() {
+	private void newCopyClean(CopyDto newCopy) {
+		newCopy.setLocation(null);
+		newCopy.setId(0);
+		newCopy.setSignature(null);
+	}
 
+	private void prepareNewCopy(CopyDto newCopy) {
+		UUID idOne = UUID.randomUUID();
+		String str=""+idOne;
+		int uid = str.hashCode();
+		String filterStr=""+uid;
+		str = filterStr.replaceAll("-", "");
+		int newCopyID = Integer.parseInt(str);
+		newCopy.setId(newCopyID);
+		newCopy.setCopyStatus(CopyStatus.AVAILABLE);
+		newCopy.setMediumId(mediumDto.getId());
 	}
 
 	/**
@@ -111,65 +136,75 @@ public class Medium implements Serializable {
 	/**
 	 * Delete a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
-	 * @throws IllegalArgumentException If the index is out of bounds.
+	 * @param copyDto The id of the deleted copy.
 	 * @throws MediumDoesNotExistException 
 	 * @throws MaxConnectionsException 
 	 * @throws LostConnectionException 
 	 */
-	public void deleteCopy(int index) throws IllegalArgumentException,
-			CopyDoesNotExistException, LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
-		MediumDao.deleteCopy(mediumDto.getCopy(index));
+	public void deleteCopy(CopyDto copyDto) throws IOException {
+		copyDto.setMediumId(mediumDto.getId());
+		Logger.development("This id: " + copyDto.getId());
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		try {
+			MediumDao.deleteCopy(copyDto);
+			throw new BusinessException("bla bla bla");
+		} catch (MediumDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
+			context.getExternalContext().getFlash().setKeepMessages(true);
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+		}
 	}
 
 	/**
 	 * Save changes made to a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void saveCopy(int index) throws IllegalArgumentException,
+	public void saveCopy(CopyDto copyDto) throws IllegalArgumentException,
 			CopyDoesNotExistException {
-		MediumDao.updateCopy(mediumDto.getCopy(index));
+		MediumDao.updateCopy(copyDto);
+		refresh();
 	}
 
 	/**
 	 * Cancel any pending pickup of the a copy this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void cancelPickup(int index) throws IllegalArgumentException {
+	public void cancelPickup(CopyDto copyDto) throws IllegalArgumentException {
 
 	}
 
 	/**
 	 * Go to the direct lending page taking a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String lendCopy(int index) throws IllegalArgumentException {
-		return null;
+	public String lendCopy() throws IllegalArgumentException {
+		return "/BiBi/view/staff/lending.xhtml?faces-redirect=true";
 	}
 
 	/**
 	 * Go to the return form taking a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String returnCopy(int index) throws IllegalStateException {
-		return null;
+	public String returnCopy() throws IllegalStateException {
+		return "/BiBi/view/staff/return-copy.xhtml?faces-redirect=true";
 	}
 
 	/**
 	 * Pick up a copy of this medium.
 	 * 
-	 * @param index The index into the list of copies.
+	 * @param copyDto The index into the list of copies.
 	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public void pickUpCopy(int index, UserDto user) throws IllegalStateException {
+	public void pickUpCopy(CopyDto copyDto, UserDto user) throws IllegalStateException {
 	}
 
 	public MediumDto getMediumDto() {

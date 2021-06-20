@@ -3,6 +3,7 @@ package test.java.tests;
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
+import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.ParentCategoryDoesNotExistException;
 import de.dedede.model.persistence.util.ConnectionPool;
 import org.junit.jupiter.api.AfterAll;
@@ -43,7 +44,7 @@ public class CategoryCreationTest {
     }
 
     @Test
-    public void createCategoryTest() throws ParentCategoryDoesNotExistException {
+    public void createCategoryTest() throws ParentCategoryDoesNotExistException, EntityInstanceNotUniqueException {
         CategoryDao.createCategory(categoryDto);
         Assertions.assertTrue(CategoryDao.categoryExists(categoryDto));
     }

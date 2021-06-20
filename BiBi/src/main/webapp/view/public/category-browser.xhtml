@@ -7,13 +7,96 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
-	
+
 	<ui:param name="page" value="category_browser" />
 
 	<ui:define name="content">
 
-		
+		<h:form id="form_category_search">
+
+			<h:panelGroup layout="block" styleClass="input-group">
+
+				<h:inputText id="input_category_search_term"
+					value="#{categoryBrowser.categorySearch.searchTerm}"
+					styleClass="form-control" title="#{msg['search_term']}" />
+
+				<h:commandButton id="button_search_category"
+					value="#{msg['search']}"
+					action="#{categoryBrowser.searchCategories()}"
+					styleClass="btn btn-primary" />
+
+			</h:panelGroup>
+
+		</h:form>
+
+		<bibi:treeView />
+
+		<h:form id="form_category">
+
+			<h:inputText id="input_category_name"
+				value="#{categoryBrowser.currentCategory.name}"
+				readonly="#{!categoryBrowser.writableCategoryName()}"
+				styleClass="readonly-as-plain-text">
+				<f:validateLength minimum="1" maximum="100" />
+			</h:inputText>
+
+			<h:inputTextarea id="input_category_description"
+				value="#{categoryBrowser.currentCategory.description}"
+				readonly="#{!categoryBrowser.writableCategoryDescription()}"
+				styleClass="readonly-as-plain-text" />
+
+			<h:commandButton id="button_save_category" value="!SAVE CHANGES!"
+				action="#{categoryBrowser.saveCategory()}"
+				styleClass="btn btn-secondary" />
+
+
+			<!-- @TGask style secondary -> "danger" if exists -->
+			<h:commandButton id="button_delete_category"
+				value="!DELETE_CATEGORY!"
+				action="#{categoryBrowser.deleteCategory()}"
+				styleClass="btn btn-secondary" />
+
+			<h:commandLink id="link_create_category" value="!CREATE CATEGORY!"
+				action="#{categoryBrowser.createCategory()}" />
+
+		</h:form>
+
+		<bibi:paginatedList value="#{categoryBrowser}" styleClass="mt-5">
+
+			<h:column>
+				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
+
+				<bibi:columnContent>
+					#{item.title}
+				</bibi:columnContent>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
+
+				<bibi:columnContent>
+					#{mediumSearch.formatAuthors(item)}
+				</bibi:columnContent>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">#{msg['medium_attribute.edition']}</f:facet>
+
+				<bibi:columnContent>
+					#{item.edition}
+				</bibi:columnContent>
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">#{msg['medium_attribute.publisher']}</f:facet>
+
+				<bibi:columnContent>
+					#{item.publisher}
+				</bibi:columnContent>
+			</h:column>
+
+		</bibi:paginatedList>
 
 	</ui:define>
-	
+
 </ui:composition>

@@ -19,107 +19,100 @@
 
 		<h:form id="form_profile">
 
-			<h:outputLabel value="#{msg.userFirstName}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="firstname" value="#{profile.user.firstName}" required="true"/>
-			<br/>
+			<h:panelGrid id = "panel" columns = "2"
+						 cellpadding = "5" cellspacing = "1"
+						 styleClass="panelGridCenter">
 
-			<h:outputLabel value="#{msg.userLastName}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="lastname" value="#{profile.user.lastName}" required="true"/>
-			<br/>
+				<f:facet name = "header">
+					<h:outputText value="#{msg['profile.header']}"/>
+					<h:outputText value="#{profile.user.firstName}"/>
+					<h:outputText value="!"/>
+				</f:facet>
 
-			<h:outputLabel value="#{msg.userPassword}"/>
-			<h:outputText value="&#160;" />
-			<h:inputSecret id="password" value="#{profile.password}" required="true"
-						   validator="passwordValidator"/>
-			<br/>
+				<h:outputLabel value="#{msg.userFirstName}"/>
+				<h:inputText id="frstname" value="#{profile.user.firstName}" required="true"/>
 
-			<h:outputLabel value="#{msg.userConfirmedPassword}"/>
-			<h:outputText value="&#160;" />
-			<h:inputSecret id="confirmedPassword" value="#{profile.confirmedPassword}" required="true"
-						   validator="confirmPasswordValidator"/>
-			<br/>
+				<h:outputLabel value="#{msg.userLastName}"/>
+				<h:inputText id="lastname" value="#{profile.user.lastName}" required="true"/>
 
-			<h:outputLabel value="#{msg.userEmailAddress}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="email" value="#{profile.user.emailAddress}" required="true"
-						 validator="emailValidator"/>
-			<br/>
+				<h:outputLabel value="#{msg.userPassword}"/>
+				<h:inputSecret id="password" value="#{profile.password}" required="true"
+							   validator="passwordValidator"/>
 
-			<h:outputLabel value="#{msg.userZipCode}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="zipCode" value="#{profile.user.zipCode}"/>
-			<br/>
+				<h:outputLabel value="#{msg.userConfirmedPassword}"/>
+				<h:inputSecret id="confirmedPassword" value="#{profile.confirmedPassword}" required="true"
+							   validator="confirmPasswordValidator"/>
 
-			<h:outputLabel value="#{msg.userCity}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="city" value="#{profile.user.city}"/>
-			<br/>
+				<h:outputLabel value="#{msg.userEmailAddress}"/>
+				<h:inputText id="email" value="#{profile.user.emailAddress}" required="true"
+							 validator="emailValidator"/>
 
-			<h:outputLabel value="#{msg.userStreet}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="street" value="#{profile.user.street}"/>
-			<br/>
+				<h:outputLabel value="#{msg.userZipCode}"/>
+				<h:inputText id="zipCode" value="#{profile.user.zipCode}"/>
 
-			<h:outputLabel value="#{msg.userStreetNumber}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="streetNumber" value="#{profile.user.streetNumber}"/>
-			<br/>
+				<h:outputLabel value="#{msg.userCity}"/>
+				<h:inputText id="city" value="#{profile.user.city}"/>
 
-			<h:outputLabel value="#{msg.userRole}" rendered="#{userSession.user.role == 'ADMIN'}"/>
-			<h:outputText value="&#160;" />
-			<h:selectOneMenu id="userRole" value="#{profile.user.role}"
-							 rendered="#{userSession.user.role == 'ADMIN'
-							 and profile.user.id != userSession.user.id}">
+				<h:outputLabel value="#{msg.userStreet}"/>
+				<h:inputText id="street" value="#{profile.user.street}"/>
 
-				<f:selectItems value="#{profile.allUserRoles}"
-							   var="role" itemValue="#{role}"
-							   itemLabel="#{msg[role.toString()]}"/>
-			</h:selectOneMenu>
-			<br/>
+				<h:outputLabel value="#{msg.userStreetNumber}"/>
+				<h:inputText id="streetNumber" value="#{profile.user.streetNumber}"/>
 
-			<h:outputLabel value="#{msg.userStatus}" rendered="#{userSession.user.role == 'ADMIN'}"/>
-			<h:outputText value="&#160;" />
-			<h:selectOneMenu id="accountStatus" value="#{profile.user.userVerificationStatus}"
-							 rendered="#{userSession.user.role == 'ADMIN'}">
+				<h:outputLabel value="#{msg.userReturnPeriod}" rendered="#{userSession.user.role == 'ADMIN'}"/>
+				<h:inputText id="returnPeriod" value="#{profile.user.lendingPeriod}"
+							 rendered="#{userSession.user.role == 'ADMIN'}" converter="DurationConverter"/>
 
-				<f:selectItems value="#{profile.allUserStatus}"
-							   var="status" itemValue="#{status}"
-							   itemLabel="#{msg[status.toString()]}"/>
-			</h:selectOneMenu>
-			<br/>
+				<h:outputLabel value="#{msg.userStatus}" rendered="#{userSession.user.role == 'ADMIN'}"/>
+				<h:selectOneMenu value="#{profile.user.userVerificationStatus}"
+								 rendered="#{userSession.user.role == 'ADMIN'}">
 
-			<h:outputLabel value="#{msg.userReturnPeriod}" rendered="#{userSession.user.role == 'ADMIN'}"/>
-			<h:outputText value="&#160;" />
-			<h:inputText id="returnPeriod" value="#{profile.user.lendingPeriod}"
-						 rendered="#{userSession.user.role == 'ADMIN'}" converter="DurationConverter"/>
-			<br/>
-			<br/>
+					<f:selectItems value="#{profile.allUserStatus}"
+								   var="status" itemValue="#{status}"
+								   itemLabel="#{msg[status.toString()]}"/>
+				</h:selectOneMenu>
 
-			<h:commandButton id="button_save"
-							 value="#{msg.saveProfile}"
-							 action="#{profile.save}"
-							 styleClass="btn btn-secondary" />
+				<h:outputLabel value="#{msg.userRole}" rendered="#{userSession.user.role == 'ADMIN'}"/>
+				<h:selectOneMenu value="#{profile.user.role}"
+								 rendered="#{userSession.user.role == 'ADMIN'}">
+
+					<f:selectItems value="#{profile.allUserRoles}"
+								   var="role" itemValue="#{role}"
+								   itemLabel="#{msg[role.toString()]}"/>
+				</h:selectOneMenu>
+
+			</h:panelGrid>
+
+			<h:panelGrid id = "footer" columns = "1"
+						 cellpadding = "10" cellspacing = "1">
+
+				<h:commandButton id="button_save"
+								 value="#{msg.saveProfile}"
+								 action="#{profile.save}"
+								 styleClass="btn btn-primary" />
+
+				<h:link value="#{msg.toMyCopiesReadyForPickup}" outcome="copies-ready-for-pickup"
+						styleClass="btn btn-secondary">
+					<f:param name="id" value="#{profile.user.id}"/>
+				</h:link>
+
+				<h:link value="#{msg.toMyBorrowedCopies}" outcome="borrowed-copies" styleClass="btn btn-secondary">
+					<f:param name="id" value="#{profile.user.id}"/>
+				</h:link>
+
+				<h:commandButton
+						value="#{msg.toProfileDelete}"
+						action="#{profile.delete}"
+						styleClass="btn-danger" />
+
+			</h:panelGrid>
 
 		</h:form>
-
-		<h:link value="#{msg.toMyCopiesReadyForPickup}" outcome="copies-ready-for-pickup">
-			<f:param name="id" value="#{profile.user.id}"/>
-		</h:link>
-
-		<br/>
-
-		<h:link value="#{msg.toMyBorrowedCopies}" outcome="borrowed-copies">
-			<f:param name="id" value="#{profile.user.id}"/>
-		</h:link>
-
-		<h:form id="delUserForm">
-
-			<h:commandButton id="button_del_user"
-							 value="#{msg.toProfileDelete}"
-							 action="#{profile.delete}"
-							 styleClass="btn btn-secondary" />
+		
+		<h:form>
+			
+			<h:commandButton action="#{profile.throwsError()}" value="Throw error"/>
+			
 		</h:form>
 
 	</ui:define>

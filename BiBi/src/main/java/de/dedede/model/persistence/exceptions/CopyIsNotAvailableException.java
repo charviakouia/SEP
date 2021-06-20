@@ -1,10 +1,15 @@
 package de.dedede.model.persistence.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
+import jakarta.faces.context.FacesContext;
+
 /**
  * This checked exception describes situations in which in which a user was available to lend a copy,
  * but at the same time another user lent the copy. Sometimes, this may be the result of a race-condition.
  */
-public class CopyIsNotAvailableException extends Exception {
+public class CopyIsNotAvailableException extends Exception implements AnnotatedException {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,5 +41,12 @@ public class CopyIsNotAvailableException extends Exception {
     public CopyIsNotAvailableException(String msg, Throwable cause) {
         super(msg, cause);
     }
+    
+    @Override
+	public String getPersonalizedMessage() {
+		FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.copyIsNotAvailable");
+	}
 
 }

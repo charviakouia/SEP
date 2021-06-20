@@ -34,15 +34,32 @@ public final class CategoryDao {
 	 * @see CategoryDto
 	 */
 	public static void createCategory(CategoryDto categoryDto)
-			throws ParentCategoryDoesNotExistException {
+			throws ParentCategoryDoesNotExistException, EntityInstanceNotUniqueException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-		try {
-			int parentCategoryId = getCategoryIdByName(conn, categoryDto.getParent().getName());
-			categoryDto.getParent().setId(parentCategoryId);
-		} catch (CategoryDoesNotExistException e) {
-			throw new ParentCategoryDoesNotExistException("Specified name "
-					+ categoryDto.getParent().getName()
-					+ " doesn't seem to match any parent category entry", e);
+		if (categoryDto.getParent().getId() == 0) {
+			try {
+				if (categoryDto.getParent().getName().isEmpty()) {
+					throw new ParentCategoryDoesNotExistException("Parent category name cannot be empty.");
+				}
+				if (signatureExists(conn, categoryDto)) {
+					throw new EntityInstanceNotUniqueException("Category with that title already exists.");
+				}
+				int parentCategoryId = getCategoryIdByName(conn, categoryDto.getParent());
+				categoryDto.getParent().setId(parentCategoryId);
+			} catch (CategoryDoesNotExistException e) {
+				try {
+					conn.rollback();
+					String msg = "Database error occurred while checking for category titles";
+					Logger.severe(msg);
+					throw new ParentCategoryDoesNotExistException("Specified name "
+							+ categoryDto.getParent().getName()
+							+ " doesn't seem to match any parent category entry", e);
+				} catch (SQLException exception) {
+					final var message = "Failed to rollback database transaction";
+					Logger.severe(message);
+					throw new LostConnectionException(message);
+				}
+			}
 		}
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
@@ -56,9 +73,16 @@ public final class CategoryDao {
 			}
 			conn.commit();
 		} catch (SQLException e) {
-			String msg = "Database error occurred while creating category entity with id: " + categoryDto.getId();
-			Logger.severe(msg);
-			throw new LostConnectionException(msg, e);
+			try {
+				conn.rollback();
+				String msg = "Database error occurred while creating category entity with id: " + categoryDto.getId();
+				Logger.severe(msg);
+				throw new LostConnectionException(msg, e);
+			} catch (SQLException exception) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
@@ -152,8 +176,10 @@ public final class CategoryDao {
 	 */
 	public static CategoryDto deleteCategory(CategoryDto categoryDto) throws CategoryDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-		int categoryId = getCategoryIdByName(conn, categoryDto.getName());
-		categoryDto.setId(categoryId);
+		if (categoryDto.getId() == 0) {
+			int categoryId = getCategoryIdByName(conn, categoryDto);
+			categoryDto.setId(categoryId);
+		}
 		try {
 			deleteCategoryHelper(conn, categoryDto);
 			return categoryDto;
@@ -189,19 +215,19 @@ public final class CategoryDao {
 	}
 
 	/** @author Sergei Pravdin */
-	private static int getCategoryIdByName(Connection conn, String name)
+	private static int getCategoryIdByName(Connection conn, CategoryDto categoryDto)
 			throws CategoryDoesNotExistException {
 		try {
 			PreparedStatement readCategoryId = conn.prepareStatement("SELECT categoryid"
 					+ " FROM category WHERE title = ?;");
-			readCategoryId.setString(1, name);
+			readCategoryId.setString(1, categoryDto.getName());
 			ResultSet rs = readCategoryId.executeQuery();
 			rs.next();
 			conn.commit();
 			return rs.getInt(1);
 		} catch (SQLException e) {
 			Logger.development("CategoryId couldn't be retrieved for this name.");
-			throw new CategoryDoesNotExistException("Specified name " + name
+			throw new CategoryDoesNotExistException("Specified name " + categoryDto.getName()
 					+ " doesn't seem to match any category entry", e);
 		}
 	}
@@ -230,5 +256,30 @@ public final class CategoryDao {
 		deleteStmt.setInt(1, Math.toIntExact(categoryDto.getId()));
 		deleteStmt.executeUpdate();
 		conn.commit();
+	}
+
+	/** @author Sergei Pravdin */
+	private static boolean signatureExists(Connection conn, CategoryDto categoryDto) {
+		try {
+			PreparedStatement checkStmt = conn.prepareStatement("SELECT CASE "
+					+ "WHEN (SELECT COUNT(DISTINCT title) FROM Category WHERE title = ?) > 0 THEN true "
+					+ "ELSE false " + "END AS entityExists;");
+			checkStmt.setString(1, categoryDto.getName());
+			ResultSet resultSet = checkStmt.executeQuery();
+			resultSet.next();
+			conn.commit();
+			return resultSet.getBoolean(1);
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+				String msg = "Database error occurred while checking for category titles";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg, e);
+			} catch (SQLException exception) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+		}
 	}
 }

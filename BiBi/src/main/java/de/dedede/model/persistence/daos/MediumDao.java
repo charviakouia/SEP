@@ -7,7 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +25,11 @@ import de.dedede.model.data.dtos.MediumSearchCriterion;
 import de.dedede.model.data.dtos.MediumSearchDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.data.dtos.SearchOperator;
+import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserLendStatus;
+import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -404,7 +411,29 @@ public final class MediumDao {
 	 * @see MediumDto
 	 */
 	public static void updateMedium(MediumDto mediumDto) throws EntityInstanceDoesNotExistException {
-		// TODO: MS2 von Sergej
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement updateStmt = conn.prepareStatement("UPDATE Medium "
+					+ "SET mediumid = ?, mediumlendperiod = ?, hascategory = ?, title = ?, author1 = ?, "
+					+ "author2 = ?, author3 = ?, author4 = ?, author5 = ?, mediumtype = ?, edition = ?, "
+					+ "publisher = ?, releaseyear = ?, isbn = ?, mediumlink = ?, demotext = ?"
+					+ "WHERE mediumid = ?;");
+			populateMediumStatement(updateStmt, mediumDto);
+			int numAffectedRows = updateStmt.executeUpdate();
+			conn.commit();
+			if (numAffectedRows == 0) {
+				conn.rollback();
+				String msg = String.format("No entity with the id: %d exists", mediumDto.getId());
+				Logger.severe(msg);
+				throw new EntityInstanceDoesNotExistException(msg);
+			}
+		} catch (SQLException e) {
+			String msg = "Database error occurred while updating user entity with id: " + mediumDto.getId();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
@@ -464,7 +493,7 @@ public final class MediumDao {
 					"INSERT INTO Mediumcopy (copyid, mediumid, signature, bibposition, status, "
 							+ "deadline, actor) VALUES " + "(?, ?, ?, ?, CAST (? AS copyStatus), ?, ?);",
 					Statement.RETURN_GENERATED_KEYS);
-			createStmt.setInt(2, mediumDto.getId());
+			copyDto.setMediumId(mediumDto.getId());
 			populateCopyStatement(createStmt, copyDto);
 			int numAffectedRows = createStmt.executeUpdate();
 			if (numAffectedRows > 0) {
@@ -472,9 +501,16 @@ public final class MediumDao {
 			}
 			conn.commit();
 		} catch (SQLException e) {
-			String msg = "Database error occurred while creating mediumCopy entity with id: " + copyDto.getId();
-			Logger.severe(msg);
-			throw new LostConnectionException(msg, e);
+			try {
+				conn.rollback();
+				String msg = "Database error occurred while creating mediumCopy entity with id: " + copyDto.getId();
+				Logger.severe(msg);
+				throw new LostConnectionException(msg, e);
+			} catch (SQLException exception) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
@@ -505,21 +541,128 @@ public final class MediumDao {
 	 * @return A list of DTO containers with the medium-copy data.
 	 * @see CopyDto
 	 */
-	public static List<CopyDto> readAllOverdueCopies(PaginationDto paginationDetails) {
-		// TODO: MS3 von Ivan
-		return null;
+	public static List<MediumCopyUserDto> readAllOverdueCopies(PaginationDto paginationDetails) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"SELECT COALESCE(u.userlendperiod, m.mediumlendperiod, a.globallendlimit) AS lendPeriod, " +
+					"u.userid, u.emailaddress, u.passwordhashsalt, u.passwordhash, u.name, u.surname, u.postalcode, u.city, u.street, " +
+					"u.housenumber, u.token, u.tokencreation, u.userlendperiod, u.lendstatus, u.verificationstatus, u.userrole, " +
+					"m.mediumid, m.mediumlendperiod, m.hascategory, m.title, m.author1, m.author2, m.author3, m.author4, m.author5, " +
+					"m.mediumtype, m.edition, m.publisher, m.releaseyear, m.isbn, m.mediumlink, m.demotext, " +
+					"c.copyid, c.mediumid, c.signature, c.bibposition, c.status, c.deadline, c.actor " +
+					"FROM users AS u " +
+					"JOIN mediumcopy AS c ON u.userid = c.actor " +
+					"JOIN medium AS m ON c.mediumid = m.mediumid " +
+					"CROSS JOIN application AS a " +
+					"WHERE c.deadline < NOW() " +
+					"AND c.status = 'BORROWED' " +
+					"ORDER BY u.userid, m.mediumid, c.copyid DESC " +
+					"LIMIT ? " +
+					"OFFSET ?;"
+			);
+			stmt.setInt(1, paginationDetails.getTotalAmountOfRows());
+			stmt.setInt(2, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfRows());
+			ResultSet resultSet = stmt.executeQuery();
+			List<MediumCopyUserDto> result = new LinkedList<>();
+			while (resultSet.next()) {
+				MediumCopyUserDto dto = new MediumCopyUserDto();
+				dto.setCopy(new CopyDto());
+				dto.setMedium(new MediumDto());
+				dto.setUser(new UserDto());
+				dto.getUser().setToken(new TokenDto());
+				populateMCUDto(resultSet, dto);
+				result.add(dto);
+			}
+			conn.commit();
+			return result;
+		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
+			String msg = "Database error occurred while reading mediumCopyUser entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+	
+	private static void populateMCUDto(ResultSet resultSet, MediumCopyUserDto dto) throws SQLException {
+		dto.setLendingDuration(getDuration((PGInterval) resultSet.getObject(1)));
+		UserDto userDto = dto.getUser();
+		userDto.setId(resultSet.getInt(2));
+		userDto.setEmailAddress(resultSet.getString(3));
+		userDto.setPasswordSalt(resultSet.getString(4));
+		userDto.setPasswordHash(resultSet.getString(5));
+		userDto.setFirstName(resultSet.getString(6));
+		userDto.setLastName(resultSet.getString(7));
+		userDto.setZipCode(resultSet.getInt(8));
+		userDto.setCity(resultSet.getString(9));
+		userDto.setStreet(resultSet.getString(10));
+		userDto.setStreetNumber(resultSet.getString(11));
+		TokenDto tokenDto = userDto.getToken();
+		tokenDto.setContent(resultSet.getString(12));
+		Timestamp tokenCreationTime = resultSet.getTimestamp(13);
+		tokenDto.setCreationTime((tokenCreationTime == null ? null : tokenCreationTime.toLocalDateTime()));
+		userDto.setLendingPeriod(getDuration((PGInterval) resultSet.getObject(14)));
+		String userLendStatusStr = resultSet.getString(15);
+		userDto.setUserLendStatus((userLendStatusStr == null ? null : UserLendStatus.valueOf(userLendStatusStr)));
+		String userVerificationStatusStr = resultSet.getString(16);
+		userDto.setUserVerificationStatus((userVerificationStatusStr == null ? null : UserVerificationStatus.valueOf(userVerificationStatusStr)));
+		String userRoleStr = resultSet.getString(17);
+		userDto.setUserRole((userRoleStr == null ? null : UserRole.valueOf(userRoleStr)));
+		MediumDto mediumDto = dto.getMedium();
+		mediumDto.setId(resultSet.getInt(18));
+		mediumDto.setReturnPeriod(getDuration((PGInterval) resultSet.getObject(19)));
+		CategoryDto categoryDto = new CategoryDto();
+		categoryDto.setId(resultSet.getInt(20));
+		mediumDto.setCategory(categoryDto);
+		mediumDto.setTitle(resultSet.getString(21));
+		mediumDto.setAuthor1(resultSet.getString(22));
+		mediumDto.setAuthor2(resultSet.getString(23));
+		mediumDto.setAuthor3(resultSet.getString(24));
+		mediumDto.setAuthor4(resultSet.getString(25));
+		mediumDto.setAuthor5(resultSet.getString(26));
+		mediumDto.setMediumType(resultSet.getString(27));
+		mediumDto.setEdition(resultSet.getString(28));
+		mediumDto.setPublisher(resultSet.getString(29));
+		mediumDto.setReleaseYear(resultSet.getInt(30));
+		mediumDto.setIsbn(resultSet.getString(31));
+		mediumDto.setMediumLink(resultSet.getString(32));
+		mediumDto.setText(resultSet.getString(33));
+		CopyDto copyDto = dto.getCopy();
+		copyDto.setId(resultSet.getInt(34));
+		copyDto.setSignature(resultSet.getString(36));
+		copyDto.setLocation(resultSet.getString(37));
+		String copyStatusStr = resultSet.getString(38);
+		copyDto.setCopyStatus((copyStatusStr == null ? null : CopyStatus.valueOf(copyStatusStr)));
+		copyDto.setDeadline(resultSet.getTimestamp(39));
+		copyDto.setActor(resultSet.getInt(40));
+	}
+	
+	private static Duration getDuration(PGInterval interval) {
+		if (interval == null) {
+			return null;
+		} else {
+			double seconds = interval.getSeconds() + 
+					interval.getMinutes() * 60 + 
+					interval.getHours() * 60 * 60 + 
+					interval.getDays() * 24 * 60 * 60 +
+					interval.getMonths() * 24 * 60 * 60 * 30 +
+					interval.getYears() * 24 * 60 * 60 * 30 * 12;
+			return Duration.ofSeconds(Math.round(seconds));
+		}
 	}
 
-	public static List<CopyDto> readMarkedCopiesByUser(PaginationDto paginationDetails) {
-		// TODO: MS3 von Sergej
-		return null;
-
+	public static List<MediumCopyUserDto> readMarkedCopiesByUser(PaginationDto paginationDetails, UserDto userDto) {
+		List<MediumCopyUserDto> result = MediumDao.readCopiesReadyForPickup(paginationDetails);
+		result.removeIf(p -> p.getUser().getId() != userDto.getId());
+		return result;
 	}
 
-	public static List<CopyDto> readLentCopiesByUser(PaginationDto paginationDetails) {
-		// TODO: MS3 von Sergej
-		return null;
-
+	public static List<MediumCopyUserDto> readLentCopiesByUser(PaginationDto paginationDetails, UserDto userDto) {
+		List<MediumCopyUserDto> result = MediumDao.readLentCopies(paginationDetails);
+		result.removeIf(p -> p.getUser().getId() != userDto.getId());
+		return result;
 	}
 
 	/**
@@ -860,6 +1003,7 @@ public final class MediumDao {
 	 */
 	private static void populateCopyStatement(PreparedStatement stmt, CopyDto copyDto) throws SQLException {
 		stmt.setInt(1, copyDto.getId());
+		stmt.setInt(2, copyDto.getMediumId());
 		stmt.setString(3, copyDto.getSignature());
 		stmt.setString(4, copyDto.getLocation());
 		stmt.setString(5, copyDto.getCopyStatus().name());
@@ -1519,4 +1663,101 @@ public final class MediumDao {
 		return result;
 	}
 
+	/**
+	 * Read all copies from the database that are ready to be picked up.
+	 *
+	 * @param pagination A container defining the page size and the amount of pages.
+	 * @return The list of copies ready for pickup and some related data.
+	 */
+	public static List<MediumCopyUserDto> readLentCopies(PaginationDto pagination) {
+
+		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+
+		try {
+
+			final var statementBody = """
+					from
+						medium m,
+						mediumcopy c,
+						users u
+					where
+						c.status = 'BORROWED'
+							and
+						c.mediumid = m.mediumid
+							and
+						c.actor = u.userid
+					""";
+
+			{
+				final var countStatement = connection.prepareStatement("select count(c.copyid) " + statementBody);
+
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+
+				Pagination.updatePagination(pagination, resultSet.getInt(1));
+			}
+
+			final var itemsStatement = connection.prepareStatement("""
+					select
+						m.mediumid, m.title,
+						c.signature, c.bibposition, c.deadline,
+						u.userid, u.emailaddress, u.name, u.surname
+					%s
+					offset ?
+					limit ?
+					""".formatted(statementBody));
+			// @Task sorting
+			itemsStatement.setInt(1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(2, Pagination.getEntriesPerPage());
+
+			final var resultSet = itemsStatement.executeQuery();
+			final var results = new ArrayList<MediumCopyUserDto>();
+
+			while (resultSet.next()) {
+
+				final var compound = new MediumCopyUserDto();
+
+				final var medium = new MediumDto();
+				medium.setId(resultSet.getInt(1));
+				medium.setTitle(resultSet.getString(2));
+				compound.setMedium(medium);
+
+				final var copy = new CopyDto();
+				copy.setSignature(resultSet.getString(3));
+				copy.setLocation(resultSet.getString(4));
+				copy.setDeadline(resultSet.getTimestamp(5));
+				compound.setCopy(copy);
+
+				final var user = new UserDto();
+				user.setId(resultSet.getInt(6));
+				user.setEmailAddress(resultSet.getString(7));
+				user.setFirstName(resultSet.getString(8));
+				user.setLastName(resultSet.getString(9));
+				compound.setUser(user);
+
+				results.add(compound);
+			}
+
+			connection.commit();
+
+			return results;
+		} catch (SQLException exception) {
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while reading copies ready for pickup: "
+					+ exception.getMessage();
+			Logger.severe(message);
+
+			throw new LostConnectionException(message, exception);
+
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(connection);
+		}
+	}
 }

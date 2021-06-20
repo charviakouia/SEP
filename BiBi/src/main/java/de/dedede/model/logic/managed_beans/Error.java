@@ -2,9 +2,17 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 
 import de.dedede.model.data.dtos.ErrorDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.component.UIViewParameter;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -18,16 +26,46 @@ import jakarta.inject.Named;
 @RequestScoped
 public class Error implements Serializable {
 
-	@Serial
-    private static  final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
+	@Inject FacesContext context;
+	private ErrorDto[] errorDtos;
+	private String previousUrl;
+	private Map<String, String> parameterMap;
+	
+	@PostConstruct
+    public void init() {
+		Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
+		errorDtos = (ErrorDto[]) requestMap.get("errorDtos");
+		parameterMap = (Map<String, String>) requestMap.get("parameterMap");
+		previousUrl = (String) requestMap.get("previousUrl");
+	}
 
-	private ErrorDto errorDto;
-
-    public ErrorDto getErrorDto() {
-        return errorDto;
+    public ErrorDto[] getErrorDtos() {
+        return errorDtos;
     }
 
-    public void setErrorDto(ErrorDto errorDto) {
-        this.errorDto = errorDto;
+    public void setErrorDtos(ErrorDto[] errorDtos) {
+        this.errorDtos = errorDtos;
     }
+    
+    public String getUrlWithParameters() {
+    	if (parameterMap.isEmpty()) {
+    		return previousUrl;
+    	} else {
+    		StringJoiner sj = new StringJoiner("&", "?", "");
+        	for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
+        		sj.add(entry.getKey() + "=" + entry.getValue());
+        	}
+        	return previousUrl + sj.toString();
+    	}
+    }
+    
+    public String getUrlWithoutParameters() {
+    	return previousUrl;
+    }
+    
+    public String getHomeUrl() {
+    	return "/view/public/medium-search.xhtml";
+    }
+    
 }
