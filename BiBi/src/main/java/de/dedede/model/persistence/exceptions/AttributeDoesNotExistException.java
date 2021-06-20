@@ -1,12 +1,17 @@
 package de.dedede.model.persistence.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
+import jakarta.faces.context.FacesContext;
+
 /**
  * This checked exception describes situations in which at attribute, as represented
  * by a data entry, is absent from the data store. This generally means that
  * an attempt to reference an entity by an ID was carried out with an ID that
  * doesn't refer to anything. Sometimes, this may be the result of a race-condition.
  */
-public class AttributeDoesNotExistException extends Exception {
+public class AttributeDoesNotExistException extends Exception implements AnnotatedException {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,5 +43,12 @@ public class AttributeDoesNotExistException extends Exception {
     public AttributeDoesNotExistException(String msg, Throwable cause) {
         super(msg, cause);
     }
+
+	@Override
+	public String getPersonalizedMessage() {
+		FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.attributeDoesNotExist");
+	}
 
 }

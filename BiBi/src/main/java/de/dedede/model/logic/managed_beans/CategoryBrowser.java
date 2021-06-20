@@ -8,7 +8,9 @@ import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CategorySearchDto;
 import de.dedede.model.data.dtos.MediumDto;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -18,17 +20,24 @@ import jakarta.inject.Named;
  *
  */
 @Named
-@RequestScoped
+@ViewScoped
 public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
+	
+	@Inject
+	private ExternalContext ectx;
+	
+	@Inject
+	private UserSession session;
+
+	private CategorySearchDto categorySearch;
 
 	private CategoryDto currentCategory;
 	
 	private List<MediumDto> mediums;
 
-	private CategorySearchDto categorySearch;
 
 	@PostConstruct
 	public void init() {
@@ -50,13 +59,35 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	public void setCurrentCategory(CategoryDto currentCategory) {
 		this.currentCategory = currentCategory;
 	}
+	
+	public boolean writableCategoryName() {
+		if (session.getUser() == null) {
+			return false;
+		}
+		
+		return session.getUser().getRole().isStaffOrHigher();
+	}
+	
+	public boolean writableCategoryDescription() {
+		if (session.getUser() == null) {
+			return false;
+		}
+		
+		return session.getUser().getRole().isStaffOrHigher();
+	}
 
 	public void deleteCategory() {
 
 	}
 
-	public void searchCategory() {
+	public void searchCategories() {
 
+	}
+	
+	public String createCategory() {
+		ectx.getFlash().put("parent-category", currentCategory.getId());
+		
+		return "category-creation?faces-redirect=true";
 	}
 
 	@Override
@@ -66,7 +97,6 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	@Override
 	public void refresh() {
-		// TODO Auto-generated method stub
-		
+		searchCategories();
 	}
 }

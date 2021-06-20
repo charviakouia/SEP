@@ -29,7 +29,6 @@ import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
-import junit.framework.Assert;
 
 public class MediumCreationTest {
 	

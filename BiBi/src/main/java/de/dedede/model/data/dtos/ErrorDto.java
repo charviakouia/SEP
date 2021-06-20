@@ -1,7 +1,9 @@
 package de.dedede.model.data.dtos;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import de.dedede.model.data.exceptions.AnnotatedException;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 
@@ -17,6 +19,7 @@ public class ErrorDto {
 
     private String message;
     private StackTraceElement[] stackTraceElements;
+    private String[][] exceptionInformation;
 
     /**
      * Fetches an error message to the user explaining what went wrong.
@@ -42,6 +45,14 @@ public class ErrorDto {
 
 	public void setStackTraceElements(StackTraceElement[] stackTraceElements) {
 		this.stackTraceElements = stackTraceElements;
+	}
+
+	public String[][] getExceptionInformation() {
+		return exceptionInformation;
+	}
+
+	public void setExceptionInformation(String[][] exceptionInformation) {
+		this.exceptionInformation = exceptionInformation;
 	}
 	
 }

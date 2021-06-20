@@ -1,6 +1,7 @@
 package de.dedede.model.persistence.daos;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import de.dedede.model.logic.util.SystemAnonAccess;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
@@ -44,10 +45,10 @@ public final class ApplicationDao {
 			PreparedStatement createStmt = conn.prepareStatement(
 					"INSERT INTO Application (bibName, emailRegEx, contactInfo, imprintInfo, privacyPolicy, " +
 							"bibLogo, globalLendLimit, globalMarkingLimit, reminderOffset, registrationStatus, " +
-							"lookAndFeel, ananRights, userLendStatus) VALUES " +
+							"lookAndFeel, anonRights, userLendStatus) VALUES " +
 							"(?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), CAST(? AS INTERVAL), CAST(? AS INTERVAL)," +
-							"CAST(? AS systemRegistrationStatus), CAST(? AS systemLookAndFeel)," +
-							"CAST(? AS systemAnonRights), CAST(? AS userLendStatus));",
+							"CAST(? AS systemregistrationstatus), ?, CAST(? AS systemanonaccess), " +
+							"CAST(? AS registereduserlendstatus));",
 					Statement.RETURN_GENERATED_KEYS
 			);
 			populateStatement(createStmt, appDTO);
@@ -55,6 +56,7 @@ public final class ApplicationDao {
 			if (numAffectedRows > 0){ attemptToInsertGeneratedKey(appDTO, createStmt); }
 			conn.commit();
 		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while creating application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -87,6 +89,7 @@ public final class ApplicationDao {
 			conn.commit();
 			return result;
 		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while reading application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -118,9 +121,9 @@ public final class ApplicationDao {
 							"SET bibName = ?, emailRegEx = ?, contactInfo = ?, imprintInfo = ?, privacyPolicy = ?, " +
 							"bibLogo = ?, globalLendLimit = CAST(? AS INTERVAL), " +
 							"globalMarkingLimit = CAST(? AS INTERVAL), reminderOffset = CAST(? AS INTERVAL), " +
-							"registrationStatus = CAST(? AS systemRegistrationStatus), " +
-							"lookAndFeel = CAST(? AS systemLookAndFeel), anonRights = CAST(? AS systemAnonRights), " +
-							"userLendStatus = CAST(? AS userLendStatus) " +
+							"registrationStatus = CAST(? AS systemregistrationstatus), " +
+							"lookAndFeel = ?, anonRights = CAST(? AS systemanonaccess), " +
+							"userLendStatus = CAST(? AS registereduserlendstatus) " +
 							"WHERE one = ?;"
 			);
 			populateStatement(updateStmt, appDTO);
@@ -128,11 +131,13 @@ public final class ApplicationDao {
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0){
+				try { conn.rollback(); } catch (SQLException ignore) {}
 				String msg = String.format("No entity with the id: %d exists", appDTO.getId());
 				Logger.severe(msg);
 				throw new EntityInstanceDoesNotExistException(msg);
 			}
 		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while updating application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -166,11 +171,13 @@ public final class ApplicationDao {
 				conn.commit();
 				return appDTO;
 			} else {
+				try { conn.rollback(); } catch (SQLException ignore) {}
 				String msg = String.format("No entity with the id: %d exists", appDTO.getId());
 				Logger.severe(msg);
 				throw new EntityInstanceDoesNotExistException(msg);
 			}
 		} catch (SQLException e) {
+			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while deleting application entity with id: " + appDTO.getId();
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
@@ -244,7 +251,7 @@ public final class ApplicationDao {
 		stmt.setObject(9, toPGInterval(appDto.getWarningPeriod()));
 		stmt.setString(10, appDto.getSystemRegistrationStatus().toString());
 		stmt.setString(11, appDto.getLookAndFeel());
-		stmt.setString(12, appDto.getAnonRights());
+		stmt.setString(12, appDto.getAnonRights().toString());
 		stmt.setString(13, appDto.getLendingStatus());
 	}
 
@@ -265,7 +272,7 @@ public final class ApplicationDao {
 		SystemRegistrationStatus status = SystemRegistrationStatus.valueOf(resultSet.getString(11));
 		appDTO.setSystemRegistrationStatus(status);
 		appDTO.setLookAndFeel(resultSet.getString(12));
-		appDTO.setAnonRights(resultSet.getString(13));
+		appDTO.setAnonRights(SystemAnonAccess.valueOf(resultSet.getString(13)));
 		appDTO.setLendingStatus(resultSet.getString(14));
 	}
 

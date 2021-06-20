@@ -1,13 +1,17 @@
 package de.dedede.model.logic.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
 import de.dedede.model.logic.managed_beans.EmailConfirmation;
 import de.dedede.model.logic.managed_beans.PasswordReset;
+import jakarta.faces.context.FacesContext;
 
 /**
  * This checked exception describes a situation where an administrator or employee
  * tries to set an invalid (impossible) deadline for a medium, copy, or user.
  */
-public class DeadlineException extends Exception {
+public class DeadlineException extends Exception implements AnnotatedException {
 
     /**
      * Constructs a new DeadlineException.
@@ -37,4 +41,11 @@ public class DeadlineException extends Exception {
     public DeadlineException(String message, Throwable cause) {
         super(message, cause);
     }
+    
+    public String getPersonalizedMessage() {
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.deadline");
+    }
+    
 }

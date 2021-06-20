@@ -14,35 +14,71 @@ public class PaginationDto implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	private int pageNumber;
+	// zero-indexed
+	private int pageNumber = 0;
 
-	private int totalAmountOfRows;
+	private int totalAmountOfPages = 1;
+	
+	private int totalAmountOfRows = 0;
 
 	private String sortBy;
 
+	/**
+	 * Get the current zero-indexed page number.
+	 * 
+	 * @return The current zero-indexed page number.
+	 */
 	public int getPageNumber() {
 		return pageNumber;
 	}
 
+	/**
+	 * Set the current zero-indexed page number.
+	 * 
+	 * @param pageNumber The to-be-current zero-indexed page number.
+	 */
 	public void setPageNumber(int pageNumber) {
 		this.pageNumber = pageNumber;
 	}
 
 	/**
-	 * Fetches a total amount of rows for the page.
-	 *
-	 * @return A total amount of rows for the page.
+	 * Get the total amount of pages of the paginated list.
+	 * 
+	 * The amount is always larger than zero.
+	 * 
+	 * @return The total amount of pages.
 	 */
+	public int getTotalAmountOfPages() {
+		return totalAmountOfPages;
+	}
+
+	/**
+	 * Set the total amount of pages of the paginated list.
+	 * The amount has to be at least 1.
+	 * 
+	 * @param totalAmountOfPages The total amount of pages.
+	 */
+	public void setTotalAmountOfPages(int totalAmountOfPages) {
+		if (totalAmountOfPages < 1) {
+			throw new IllegalArgumentException("totalAmountOfPages is lower than 1");
+		}
+		
+		this.totalAmountOfPages = totalAmountOfPages;
+	}
+
 	public int getTotalAmountOfRows() {
 		return totalAmountOfRows;
 	}
 
-	/**
-	 * Sets a total amount of rows for the page.
-	 *
-	 * @param totalAmountOfRows A total amount of rows for the page.
-	 */
 	public void setTotalAmountOfRows(int totalAmountOfRows) {
 		this.totalAmountOfRows = totalAmountOfRows;
+	}
+
+	public String getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
 	}
 }

@@ -1,9 +1,14 @@
 package de.dedede.model.logic.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
+import jakarta.faces.context.FacesContext;
+
 /**
  * Thrown if the initial admin couldn't be added.
  */
-public class PasswordHashException extends RuntimeException {
+public class PasswordHashException extends RuntimeException implements AnnotatedException {
 
     /**
      * Constructs a new InitialAdminException.
@@ -33,4 +38,12 @@ public class PasswordHashException extends RuntimeException {
     public PasswordHashException(String message, Throwable cause) {
         super(message, cause);
     }
+    
+    @Override
+    public String getPersonalizedMessage() {
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.passwordHash");
+    }
+    
 }

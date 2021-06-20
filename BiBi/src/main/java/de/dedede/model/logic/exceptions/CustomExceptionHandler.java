@@ -8,6 +8,7 @@ import java.util.Map;
 
 import de.dedede.model.data.dtos.ErrorDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.exceptions.AnnotatedException;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.component.UIViewParameter;
@@ -51,7 +52,6 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
             
             Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
             requestMap.put("errorDtos", dtos.toArray(new ErrorDto[0]));
-            // requestMap.put("previousUrl", context.getExternalContext().getRequestContextPath() + viewRoot.getViewId());
             requestMap.put("previousUrl", viewRoot.getViewId());
             requestMap.put("parameterMap", getParameterMap());
             
@@ -96,6 +96,8 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 			ErrorDto dto = new ErrorDto();
 			dto.setMessage(exception.getMessage());
 			dto.setStackTraceElements(exception.getStackTrace());
+			dto.setExceptionInformation(getExceptionInformation(exception));
+			
 			dtos.add(dto);
 			
 			queue.remove();
@@ -103,6 +105,29 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 		} while (queue.hasNext());
 		
 		return dtos;
+		
+	}
+	
+	private String[][] getExceptionInformation(Throwable exception){
+		
+		List<String[]> result = new LinkedList<>();
+		
+		for (Throwable e = exception; e != null; e = e.getCause()) {
+			
+			String[] arr = new String[3];
+			arr[0] = e.getClass().getName();
+			if (e instanceof AnnotatedException) {
+				arr[1] = ((AnnotatedException) e).getPersonalizedMessage();
+			} else {
+				arr[1] = null;
+			}
+			arr[2] = e.getMessage();
+			
+			result.add(arr);
+			
+		}
+		
+		return result.toArray(new String[0][0]);
 		
 	}
 

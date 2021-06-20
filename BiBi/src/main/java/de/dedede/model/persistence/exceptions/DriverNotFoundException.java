@@ -1,11 +1,16 @@
 package de.dedede.model.persistence.exceptions;
 
+import java.util.ResourceBundle;
+
+import de.dedede.model.data.exceptions.AnnotatedException;
+import jakarta.faces.context.FacesContext;
+
 /**
  * This checked exception describes situations in which in which a driver
  * for accessing the database was not found at the specified path.
  * Sometimes, this may be the result of a race-condition.
  */
-public class DriverNotFoundException extends RuntimeException {
+public class DriverNotFoundException extends RuntimeException implements AnnotatedException {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,5 +42,12 @@ public class DriverNotFoundException extends RuntimeException {
     public DriverNotFoundException(String msg, Throwable cause) {
         super(msg, cause);
     }
+    
+    @Override
+	public String getPersonalizedMessage() {
+		FacesContext context = FacesContext.getCurrentInstance();
+    	ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
+    	return bundle.getString("exception.driverNotFound");
+	}
 
 }
