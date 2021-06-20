@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
+/**
+ * @author Sergei Pravdin
+ */
 public class DeleteCopyTest {
 
     private static final CopyDto copyDto = new CopyDto();

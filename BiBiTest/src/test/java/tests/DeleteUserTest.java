@@ -1,4 +1,4 @@
-package tests;
+package test.java.tests;
 
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
@@ -10,7 +10,6 @@ import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.ConnectionPool;
-import de.dedede.model.persistence.util.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,8 +33,8 @@ public class DeleteUserTest {
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException,
             InvalidConfigurationException, LostConnectionException, MaxConnectionsException {
-        ConnectionPool.setUpConnectionPool();
-        Connection conn = getConnection();
+        PreTest.setUp();
+        Connection conn = ConnectionPool.getInstance().fetchConnection(5000);
         try {
             PreparedStatement createStmt = conn.prepareStatement(
                     "INSERT INTO Users (userid, emailaddress, passwordhashsalt," +
@@ -58,21 +57,6 @@ public class DeleteUserTest {
         }
     }
 
-    private static Connection getConnection() throws LostConnectionException,
-            MaxConnectionsException {
-        Connection conn = null;
-        try {
-            conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-            conn.setAutoCommit(false);
-            conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-        } catch (SQLException e) {
-            Logger.severe("Couldn't configure the connection");
-            ConnectionPool.getInstance().releaseConnection(conn);
-            throw new LostConnectionException("Couldn't configure the connection");
-        }
-        return conn;
-    }
-
     private static void populateStmt(PreparedStatement createStmt)
             throws SQLException {
         createStmt.setInt(1, testID);
@@ -90,15 +74,14 @@ public class DeleteUserTest {
         PGInterval interval = new PGInterval();
         interval.setSeconds(30000);
         createStmt.setObject(13, interval);
-        createStmt.setString(14, String.valueOf(UserLendStatus.ENABLED));
-        createStmt.setString(15,
-                String.valueOf(UserVerificationStatus.VERIFIED));
-        createStmt.setString(16, String.valueOf(UserRole.REGISTERED));
+        createStmt.setString(14, "ENABLED");
+        createStmt.setString(15, "VERIFIED");
+        createStmt.setString(16, "REGISTERED");
     }
 
     private static boolean userEntityExists(UserDto userDto) throws SQLException,
             LostConnectionException, MaxConnectionsException {
-        Connection conn = getConnection();
+        Connection conn = ConnectionPool.getInstance().fetchConnection(5000);
         PreparedStatement checkingStmt = conn.prepareStatement(
                 "SELECT CASE " + "WHEN (SELECT COUNT(userid) " +
                         "FROM Users WHERE userid = ?) > 0 THEN true "
@@ -114,7 +97,7 @@ public class DeleteUserTest {
     @AfterAll
     public static void tearDown() throws LostConnectionException, MaxConnectionsException,
             SQLException {
-        Connection conn = getConnection();
+        Connection conn = ConnectionPool.getInstance().fetchConnection(5000);
         PreparedStatement deleteStmt = conn.prepareStatement(
                 "DELETE FROM Users " +
                         "WHERE userid = ?;"
