@@ -60,6 +60,8 @@ public class BorrowedCopies extends PaginatedList implements Serializable {
 	 * Loads a page with a list of copies according to the given viewParam.
 	 * If the user is not logged in or sends a viewParam from someone other than his own,
 	 * the page will not be loaded and the user will see an error message.
+	 *
+	 * @throws BusinessException If the redirect is not possible.
 	 */
 	public void onload() throws BusinessException {
 		ResourceBundle messages =
