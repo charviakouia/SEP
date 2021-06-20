@@ -518,7 +518,7 @@ public final class UserDao {
 		stmt.setString(9, userDto.getStreetNumber());
 		TokenDto tokenDto = userDto.getToken();
 		stmt.setString(10, (tokenDto == null ? null : tokenDto.getContent()));
-		stmt.setTimestamp(11, (tokenDto == null ? null : Timestamp.valueOf(tokenDto.getCreationTime())));
+		stmt.setTimestamp(11, (tokenDto == null || tokenDto.getCreationTime() == null ? null : Timestamp.valueOf(tokenDto.getCreationTime())));
 		stmt.setObject(12, toPGInterval(userDto.getLendingPeriod()));
 		stmt.setString(13, userDto.getUserLendStatus().toString());
 		stmt.setString(14, userDto.getUserVerificationStatus().name());

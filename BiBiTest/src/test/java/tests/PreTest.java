@@ -1,4 +1,4 @@
-package test.java.tests;
+package tests;
 
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
@@ -28,6 +28,10 @@ public final class PreTest {
         props.put("DB_NAME", "sep21g01t");
         props.put("DB_URL", "jdbc:postgresql://");
         props.put("DB_CAPACITY", "20");
+    }
+    
+    public static String getProperty(String key) {
+    	return props.getProperty(key);
     }
 
 }

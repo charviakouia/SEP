@@ -123,12 +123,13 @@ public final class ApplicationDao {
 							"bibLogo = ?, globalLendLimit = CAST(? AS INTERVAL), " +
 							"globalMarkingLimit = CAST(? AS INTERVAL), reminderOffset = CAST(? AS INTERVAL), " +
 							"registrationStatus = CAST(? AS systemregistrationstatus), " +
+							"lookandfeel = ?, " +
 							"anonRights = CAST(? AS systemanonaccess), " +
 							"userLendStatus = CAST(? AS registereduserlendstatus) " +
 							"WHERE one = ?;"
 			);
 			populateStatement(updateStmt, appDTO);
-			updateStmt.setLong(13, appDTO.getId());
+			updateStmt.setLong(14, appDTO.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0){
@@ -197,7 +198,7 @@ public final class ApplicationDao {
 						"ELSE false " +
 						"END AS entityExists;"
 		);
-		checkingStmt.setString(1, String.valueOf(appDTO.getId()));
+		checkingStmt.setLong(1, appDTO.getId());
 		ResultSet resultSet = checkingStmt.executeQuery();
 		resultSet.next();
 		return resultSet.getBoolean(1);
@@ -251,8 +252,9 @@ public final class ApplicationDao {
 		stmt.setObject(8, toPGInterval(appDto.getPickupPeriod()));
 		stmt.setObject(9, toPGInterval(appDto.getWarningPeriod()));
 		stmt.setString(10, appDto.getSystemRegistrationStatus().toString());
-		stmt.setString(11, appDto.getAnonRights().toString());
-		stmt.setString(12, appDto.getLendingStatus().toString());
+		stmt.setString(11, "");
+		stmt.setString(12, appDto.getAnonRights().toString());
+		stmt.setString(13, appDto.getLendingStatus().toString());
 	}
 
 	private static void populateDto(Connection conn, ResultSet resultSet, ApplicationDto appDTO) throws SQLException {

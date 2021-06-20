@@ -1,13 +1,20 @@
 package tests;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
+import de.dedede.model.logic.util.RegisteredUserLendStatus;
+import de.dedede.model.logic.util.SystemAnonAccess;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -24,13 +31,12 @@ class ConnectionPoolTest {
 	private static ConnectionPool poolInstance;
 	private static final long CONNECTION_TIMEOUT = 5000;
 	private static ApplicationDto dto;
-	private static Properties props;
+	private boolean resetPool = false;
+	private List<Connection> connections = new LinkedList<>();
 	
 	@BeforeAll
 	public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
-		setUpProperties();
-		ConfigReader.getInstance().setUpConfigReader(props);
-		ConnectionPool.setUpConnectionPool();
+		PreTest.setUp();
 		poolInstance = ConnectionPool.getInstance();
 		initializeDto();
 	}
@@ -38,6 +44,28 @@ class ConnectionPoolTest {
 	@AfterAll
 	public static void tearDown() {
 		ConnectionPool.destroyConnectionPool();
+	}
+	
+	@AfterEach
+	public void resetPool() {
+		if (resetPool) {
+			for (Connection conn : connections) {
+				poolInstance.releaseConnection(conn);
+			}
+		}
+		resetPool = false;
+	}
+	
+	@Test
+	public void testExhaustingConnectionPool() {
+		resetPool = true;
+		assertThrows(MaxConnectionsException.class, () -> exhaustConnectionPool());
+	}
+	
+	private void exhaustConnectionPool() {
+		while (true) {
+			connections.add(poolInstance.fetchConnection(CONNECTION_TIMEOUT));
+		}
 	}
 	
 	@Test
@@ -65,23 +93,8 @@ class ConnectionPoolTest {
 		dto.setPickupPeriod(Duration.ofHours(7));
 		dto.setWarningPeriod(Duration.ofDays(4));
 		dto.setSystemRegistrationStatus(SystemRegistrationStatus.OPEN);
-		dto.setLookAndFeel("css a");
-//		dto.setAnonRights("OPAC");
-		dto.setLendingStatus("UNLOCKED");
-	}
-	
-	private static void setUpProperties() {
-		props = new Properties();
-		props.put("DB_USER", "sep21g01");
-		props.put("DB_PASSWORD", "fooZae4cuoSa");
-		props.put("DB_DRIVER", "org.postgresql.Driver");
-		props.put("DB_SSL", "TRUE");
-		props.put("DB_SSL_FACTORY", "org.postgresql.ssl.DefaultJavaSSLFactory");
-		props.put("DB_HOST", "bueno.fim.uni-passau.de");
-		props.put("DB_PORT", "5432");
-		props.put("DB_NAME", "sep21g01t");
-		props.put("DB_URL", "jdbc:postgresql://");
-		props.put("DB_CAPACITY", "20");
+		dto.setAnonRights(SystemAnonAccess.OPAC);
+		dto.setLendingStatus(RegisteredUserLendStatus.UNLOCKED);
 	}
 
 }
