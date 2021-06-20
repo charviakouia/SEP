@@ -58,7 +58,7 @@ class ApplicationDaoTest {
 	private static void initializeFirstDto() {
 		current = new ApplicationDto();
 		current.setName("A");
-		current.setEmailAddressSuffixRegEx("A");
+		current.setEmailSuffixRegEx("A");
 		current.setContactInfo("A");
 		current.setSiteNotice("A");
 		current.setPrivacyPolicy("A");
@@ -75,7 +75,7 @@ class ApplicationDaoTest {
 	private static void initializeSecondDto() {
 		other = new ApplicationDto();
 		other.setName("B");
-		other.setEmailAddressSuffixRegEx("B");
+		other.setEmailSuffixRegEx("B");
 		other.setContactInfo("B");
 		other.setSiteNotice("B");
 		other.setPrivacyPolicy("B");

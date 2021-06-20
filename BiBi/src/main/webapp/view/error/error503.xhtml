@@ -8,12 +8,14 @@
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
 	
-	<ui:param name="page" value="medium_schema_editor" />
+	<ui:param name="page" value="error_page_503" />
 
 	<ui:define name="content">
-
-		UNIMPLEMENTED
-
+	<h1>#{msg['static_error_503.headline']}</h1>
+	<br></br>
+	<br></br>
+	<h:outputText id="error_503_text" value="#{msg['static_error_503.text']}"/>
+	
 	</ui:define>
 	
 </ui:composition>

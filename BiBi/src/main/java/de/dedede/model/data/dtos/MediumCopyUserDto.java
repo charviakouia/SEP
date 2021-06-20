@@ -1,5 +1,8 @@
 package de.dedede.model.data.dtos;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+
 public class MediumCopyUserDto {
 
 	private CopyDto copy;
@@ -7,6 +10,8 @@ public class MediumCopyUserDto {
 	private MediumDto medium;
 
 	private UserDto user;
+	
+	private Duration lendingDuration;
 
 	public CopyDto getCopy() {
 		return copy;
@@ -31,4 +36,23 @@ public class MediumCopyUserDto {
 	public void setUser(UserDto user) {
 		this.user = user;
 	}
+
+	public Duration getOverdraft() {
+		if (getCopy() == null || getCopy().getDeadline() == null) {
+			return null;
+		} else {
+			Timestamp deadline = getCopy().getDeadline();
+			long diff = System.currentTimeMillis() - deadline.getTime();
+			return Duration.ofMillis(diff);
+		}
+	}
+
+	public Duration getLendingDuration() {
+		return lendingDuration;
+	}
+
+	public void setLendingDuration(Duration lendingDuration) {
+		this.lendingDuration = lendingDuration;
+	}
+	
 }

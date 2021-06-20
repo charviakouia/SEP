@@ -37,10 +37,10 @@ public class UserValidator implements Validator<String> {
 		ApplicationDto appDto = new ApplicationDto();
 		appDto.setId(DEFAULT_ID);
 		ApplicationDao.readCustomization(appDto);
-		if (appDto != null && appDto.getEmailAddressSuffixRegEx() != null) {
-			if (!Pattern.matches(appDto.getEmailAddressSuffixRegEx(), s)){
+		if (appDto != null && appDto.getEmailSuffixRegEx() != null) {
+			if (!Pattern.matches(appDto.getEmailSuffixRegEx(), s)){
 				throw new ValidatorException(new FacesMessage(
-						"Given email doesn't match pattern:" + appDto.getEmailAddressSuffixRegEx()));
+						"Given email doesn't match pattern:" + appDto.getEmailSuffixRegEx()));
 			}
 		}
 		

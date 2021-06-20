@@ -11,8 +11,32 @@
 	<ui:param name="page" value="privacy_policy" />
 
 	<ui:define name="content">
+		<h1>#{msg['privacy_policy.headline']}</h1>
 
-		UNIMPLEMENTED
+		<h:form id="privacy_policy_form">
+		<h:panelGrid id="privacy_policy_panel" columns="1" border="10" 
+				cellpadding="10" cellspacing="10"
+				rendered="#{privacyPolicy.renderButton()}">
+               
+		<h:inputTextarea id="privacy_policy_text_area" 
+						value="#{privacyPolicy.textContainer.privacyPolicy}" 
+						readonly="#{privacyPolicy.readOnly()}"
+						cols="100" rows="30" 
+						rendered="#{privacyPolicy.renderButton()}"/>
+		
+		<h:commandButton id="privacy_policy_save_changes" 
+					action="#{privacyPolicy.save()}" 
+					styleClass="btn btn-primary" 
+					value="#{msg['all_three.save_changes']}"
+					rendered="#{privacyPolicy.renderButton()}"/>
+		
+		</h:panelGrid>
+		</h:form>
+		
+		<h:outputText id="privacy_policy_output_text" 
+					value="#{privacyPolicy.textContainer.privacyPolicy}" 
+					rendered="#{privacyPolicy.readOnly()}"
+					escape="false"/>
 
 	</ui:define>
 

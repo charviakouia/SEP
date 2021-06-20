@@ -76,7 +76,7 @@ public class LendingProcessSignatureValidator implements Validator<String> {
 	    			+ "_copy_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg, e1);
+	    	throw new ValidatorException(msg);
 	    } catch (CopyIsNotAvailableException e2) {
 	    	String shortMessage = messages.getString("lending.already"
 	    			+ "_lent_short");
@@ -84,7 +84,7 @@ public class LendingProcessSignatureValidator implements Validator<String> {
 	    			+ "_lent_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg, e2);
+	    	throw new ValidatorException(msg);
 	    } catch (InvalidUserForCopyException e3) {
 	    	String shortMessage = messages.getString("lending.wrong"
 	    			+ "_user_short");
@@ -92,7 +92,7 @@ public class LendingProcessSignatureValidator implements Validator<String> {
 	    			+ "_user_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg, e3);
+	    	throw new ValidatorException(msg);
 	    }
 	}
 	

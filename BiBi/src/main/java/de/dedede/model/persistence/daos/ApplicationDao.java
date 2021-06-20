@@ -1,6 +1,7 @@
 package de.dedede.model.persistence.daos;
 
 import de.dedede.model.data.dtos.ApplicationDto;
+import de.dedede.model.logic.util.RegisteredUserLendStatus;
 import de.dedede.model.logic.util.SystemAnonAccess;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -122,12 +123,12 @@ public final class ApplicationDao {
 							"bibLogo = ?, globalLendLimit = CAST(? AS INTERVAL), " +
 							"globalMarkingLimit = CAST(? AS INTERVAL), reminderOffset = CAST(? AS INTERVAL), " +
 							"registrationStatus = CAST(? AS systemregistrationstatus), " +
-							"lookAndFeel = ?, anonRights = CAST(? AS systemanonaccess), " +
+							"anonRights = CAST(? AS systemanonaccess), " +
 							"userLendStatus = CAST(? AS registereduserlendstatus) " +
 							"WHERE one = ?;"
 			);
 			populateStatement(updateStmt, appDTO);
-			updateStmt.setLong(14, appDTO.getId());
+			updateStmt.setLong(13, appDTO.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0){
@@ -214,7 +215,7 @@ public final class ApplicationDao {
 		readStmt.setInt(1, Math.toIntExact(appDTO.getId()));
 		ResultSet resultSet = readStmt.executeQuery();
 		if (resultSet.next()){
-			populateDto(resultSet, appDTO);
+			populateDto(conn, resultSet, appDTO);
 			return appDTO;
 		} else {
 			return null;
@@ -241,7 +242,7 @@ public final class ApplicationDao {
 
 	private static void populateStatement(PreparedStatement stmt, ApplicationDto appDto) throws SQLException {
 		stmt.setString(1, appDto.getName());
-		stmt.setString(2, appDto.getEmailAddressSuffixRegEx());
+		stmt.setString(2, appDto.getEmailSuffixRegEx());
 		stmt.setString(3, appDto.getContactInfo());
 		stmt.setString(4, appDto.getSiteNotice());
 		stmt.setString(5, appDto.getPrivacyPolicy());
@@ -250,36 +251,79 @@ public final class ApplicationDao {
 		stmt.setObject(8, toPGInterval(appDto.getPickupPeriod()));
 		stmt.setObject(9, toPGInterval(appDto.getWarningPeriod()));
 		stmt.setString(10, appDto.getSystemRegistrationStatus().toString());
-		stmt.setString(11, appDto.getLookAndFeel());
-		stmt.setString(12, appDto.getAnonRights().toString());
-		stmt.setString(13, appDto.getLendingStatus());
+		stmt.setString(11, appDto.getAnonRights().toString());
+		stmt.setString(12, appDto.getLendingStatus().toString());
 	}
 
-	private static void populateDto(ResultSet resultSet, ApplicationDto appDTO) throws SQLException {
+	private static void populateDto(Connection conn, ResultSet resultSet, ApplicationDto appDTO) throws SQLException {
 		appDTO.setId(resultSet.getInt(1));
 		appDTO.setName(resultSet.getString(2));
-		appDTO.setEmailAddressSuffixRegEx(resultSet.getString(3));
+		appDTO.setEmailSuffixRegEx(resultSet.getString(3));
 		appDTO.setContactInfo(resultSet.getString(4));
 		appDTO.setSiteNotice(resultSet.getString(5));
 		appDTO.setPrivacyPolicy(resultSet.getString(6));
 		appDTO.setLogo(resultSet.getBytes(7));
-		long lendingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(8)).getSeconds());
+		long lendingPeriodSeconds = (long) getLendingPeriodSeconds(conn);
 		appDTO.setReturnPeriod(Duration.ofSeconds(lendingPeriodSeconds));
-		long markingPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(9)).getSeconds());
+		long markingPeriodSeconds = (long) getPickupPeriodSeconds(conn);
 		appDTO.setPickupPeriod(Duration.ofSeconds(markingPeriodSeconds));
-		long remindPeriodSeconds = Math.round(((PGInterval) resultSet.getObject(10)).getSeconds());
+		long remindPeriodSeconds = (long) getWarningPeriodSeconds(conn);
 		appDTO.setWarningPeriod(Duration.ofSeconds(remindPeriodSeconds));
 		SystemRegistrationStatus status = SystemRegistrationStatus.valueOf(resultSet.getString(11));
 		appDTO.setSystemRegistrationStatus(status);
-		appDTO.setLookAndFeel(resultSet.getString(12));
 		appDTO.setAnonRights(SystemAnonAccess.valueOf(resultSet.getString(13)));
-		appDTO.setLendingStatus(resultSet.getString(14));
+		appDTO.setLendingStatus(RegisteredUserLendStatus.valueOf(resultSet.getString(14)));
 	}
 
 	private static PGInterval toPGInterval(Duration duration){
 		PGInterval result = new PGInterval();
 		result.setSeconds(duration.getSeconds());
 		return result;
+	}
+	
+	/*@author Jonas Picker */
+	private static double getPickupPeriodSeconds(Connection conn) throws SQLException {
+		PreparedStatement getMarkingLimit = conn.prepareStatement(
+				"SELECT EXTRACT (EPOCH FROM (SELECT globalMarkingLimit " 			
+						+ "FROM application WHERE one = 1));");
+		ResultSet rs = getMarkingLimit.executeQuery();
+		conn.commit();
+		rs.next();
+		double markingLimitSeconds = rs.getDouble(1);
+		rs.close();
+		getMarkingLimit.close();
+		
+		return markingLimitSeconds;
+	}
+	
+	/*@author Jonas Picker */
+	private static double getWarningPeriodSeconds(Connection conn) throws SQLException {
+		PreparedStatement getReminder = conn.prepareStatement(
+				"SELECT EXTRACT (EPOCH FROM (SELECT reminderOffset " 			
+						+ "FROM application WHERE one = 1));");
+		ResultSet rs = getReminder.executeQuery();
+		conn.commit();
+		rs.next();
+		double reminderSeconds = rs.getDouble(1);
+		rs.close();
+		getReminder.close();
+		
+		return reminderSeconds;
+	}
+	
+	/*@author Jonas Picker */
+	public static double getLendingPeriodSeconds(Connection conn) throws SQLException {
+		PreparedStatement getGlobalLimit = conn.prepareStatement(
+				"SELECT EXTRACT (EPOCH FROM (SELECT globalLendLimit " 			
+						+ "FROM application WHERE one = 1));");
+		ResultSet rs = getGlobalLimit.executeQuery();
+		conn.commit();
+		rs.next();
+		double globalSeconds = rs.getDouble(1);
+		rs.close();
+		getGlobalLimit.close();
+		
+		return globalSeconds;
 	}
 
 }

@@ -1,20 +1,17 @@
 package de.dedede.model.logic.managed_beans;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
-import de.dedede.model.logic.exceptions.CustomExceptionHandler;
 import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
@@ -137,17 +134,12 @@ public class Login {
 		String longMessageFail = messages.getString("login.email_failure"
 				+ "_long");
 		TokenDto newTokenContainer = TokenGenerator.generateToken();
-		
 		try {
-			
-			String token = newTokenContainer.getContent();
-			String link = EmailUtility.getLink("/view/public/password-reset.xhtml", token);
-			
 			UserDto completeUserData = UserDao.readUserByEmail(userData);
-			completeUserData.setToken(newTokenContainer);	
-			// TokenDto userToken = UserDao.setOrRetrieveUserToken(completeUserData, newTokenContainer);
-			UserDao.updateUser(completeUserData);
-
+			TokenDto userToken = UserDao.setOrRetrieveUserToken(
+					completeUserData, newTokenContainer);			
+			String link = EmailUtility.getLink(
+				   "/view/public/password-reset.xhtml", userToken.getContent());
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
 			String emailBody = insertParams(firstname, lastname, link, content);
@@ -160,7 +152,6 @@ public class Login {
 				context.addMessage("login_email_message", 
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 								shortMessageFail, longMessageFail));
-				
 			}
 			Logger.development("A password reset was requested from the "
 					+ "login page, an email was sent to: " 
@@ -173,8 +164,10 @@ public class Login {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							shortMessage, longMessage));
 		} catch (UserDoesNotExistException e) {
-			String shortMessage = messages.getString("login.unknown_user_short");
-			String longMessage = messages.getString("login.unknown_user_long");
+			String shortMessage = messages.getString("login.unknown_user"
+					+ "_short");
+			String longMessage = messages.getString("login.unknown_user"
+					+ "_long");
 			context.addMessage("login_email_message", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, shortMessage,
 							longMessage));
@@ -184,14 +177,11 @@ public class Login {
 			context.addMessage("login.email_message", new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, shortMessageFail, 
 					longMessageFail));
-		} catch (EntityInstanceDoesNotExistException e1) {
-			// Critical line: UserDao.updateUser(completeUserData)
-			e1.printStackTrace();
-		}
-		
+		}		
 	}
 	
-	private String insertParams(String param1, String param2, String param3, String content) {
+	private String insertParams(String param1, String param2, String param3, 
+			String content) {
 		MessageFormat messageFormat = new MessageFormat(content);
 		Object[] args = {param1, param2, param3};
 		String contentWithParam = messageFormat.format(args);

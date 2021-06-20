@@ -18,6 +18,8 @@ public class PaginationDto implements Serializable {
 	private int pageNumber = 0;
 
 	private int totalAmountOfPages = 1;
+	
+	private int totalAmountOfRows = 0;
 
 	private String sortBy;
 
@@ -62,5 +64,21 @@ public class PaginationDto implements Serializable {
 		}
 		
 		this.totalAmountOfPages = totalAmountOfPages;
+	}
+
+	public int getTotalAmountOfRows() {
+		return totalAmountOfRows;
+	}
+
+	public void setTotalAmountOfRows(int totalAmountOfRows) {
+		this.totalAmountOfRows = totalAmountOfRows;
+	}
+
+	public String getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
 	}
 }

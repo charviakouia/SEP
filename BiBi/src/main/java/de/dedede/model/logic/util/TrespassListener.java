@@ -5,8 +5,8 @@ import java.io.Serializable;
 import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.managed_beans.ApplicationCustomization;
 import de.dedede.model.logic.managed_beans.UserSession;
-import de.dedede.model.persistence.util.Logger;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -20,14 +20,14 @@ import jakarta.faces.event.PhaseListener;
 import jakarta.inject.Inject;
 
 /**
- * Access control for the application is done here. Loginstatus and user role
- * are matched against the requested url-pattern and access is restricted if
- * user rights are insufficient. Finer security involving view-parameters is
- * done in the respective backing beans.
+ * Access control for the application is done here. Loginstatus, system access 
+ * mode and user role are matched against the requested url-pattern and access 
+ * is restricted if user rights are insufficient. Finer security involving 
+ * view-parameters is done in the respective backing beans.
  * 
  * @author Jonas Picker
  */
-public class TrespassListener implements PhaseListener, Serializable{ //redirection evtl zu (statischen) Fehlerseiten statt Profil bei eingeloggten Nutzern
+public class TrespassListener implements PhaseListener, Serializable{ 
 	
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -37,17 +37,21 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
 	 */
 	@Inject
 	private UserSession userSession = 
-						CDI.current().select(UserSession.class).get();
+					CDI.current().select(UserSession.class).get();
 	
 	/**
-	 * The system wide rights for anonymous users.
+	 * The applicationscoped managed bean that holds the database customizations
+	 * in order to prevent system access mode queries for each request.
 	 */
-	private static SystemAnonAccess accessMode;                          //nicht schön evtl db selber anfragen oder applicationscoped bean
+	@Inject
+	private ApplicationCustomization customs = 
+					CDI.current().select(ApplicationCustomization.class).get();
 		
 	/**
 	 * The processes the TrespassListener performs after the phase is executed.
 	 * Filters url-patterns against the users login-status, role and the systems
-	 * access mode
+	 * access mode. Open/closed registration access control should be handled in
+	 * BB to enable admins to still create new accounts.
 	 *
 	 * @param phaseEvent The event on which the listener is triggered.
 	 */
@@ -61,7 +65,6 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
 				"#{msg}", ResourceBundle.class);
 		UIViewRoot viewRoot = facesCtx.getViewRoot();  
         String url = viewRoot.getViewId();
-        Logger.development("viewRoot was: " + url);
         boolean isLoggedIn = false;
         UserRole userRole = null;
         if (userSession != null && userSession.getUser() != null) {
@@ -69,7 +72,8 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
         	userRole = userSession.getUser().getRole();
         }
         boolean isOnFreeForAll = false;
-        if (url.endsWith("login.xhtml") 
+        if (url.startsWith("/view/error/")
+        		|| url.endsWith("login.xhtml") 
         		|| url.endsWith("registration.xhtml") 
         		|| url.endsWith("password-reset.xhtml") 
         		|| url.endsWith("email-confirmation.xhtml") 
@@ -85,15 +89,12 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
         		|| url.endsWith("medium.xhtml")) {
         	isOnFreeForOpac = true;
         }
-        //Logger.development("isLoggedIn: " + isLoggedIn + " | isOnFreeForAll: " + isOnFreeForAll + " | isOnFreeForOpac: " + isOnFreeForOpac);
     	String shortMessageLogin = messages.getString("trespassListener.login"
     			+ "_or_register_short");
     	String longMessageLogin = messages.getString("trespassListener.login"
     			+ "_or_register_long");
-    	String shortMessage404 = messages.getString("trespassListener.not_for"
-    			+ "_your_eyes_short");
-        String longMessage404 = messages.getString("trespassListener.not_for"
-        		+ "_your_eyes_long");
+        SystemAnonAccess accessMode 
+        				= customs.getApplicationCustomization().getAnonRights();
         if (!isLoggedIn && !isOnFreeForAll 
         		&& (accessMode == SystemAnonAccess.REGISTRATION)) {
         	redirectToLogin(facesCtx, externalCtx, navigationHandler,
@@ -108,32 +109,23 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
         		&& (userRole == UserRole.REGISTERED)) {
         	if (!url.startsWith("/view/public/")
         			&& !url.startsWith("/view/account/")) {
-        		redirectToProfile(facesCtx, externalCtx, navigationHandler,
-        				shortMessage404, longMessage404);
+        		redirectToError404(facesCtx, externalCtx, navigationHandler);
         	}
         } else if (isLoggedIn && !isOnFreeForAll 
         		&& (userRole == UserRole.STAFF)) {
         	if(!url.startsWith("/view/public/") 
         			&& !url.startsWith("/view/account/") 
         			&& !url.startsWith("/view/staff/")) {
-        		redirectToProfile(facesCtx, externalCtx, navigationHandler,
-        				shortMessage404, longMessage404);
+        		redirectToError404(facesCtx, externalCtx, navigationHandler);
         	}
         }      
-        
 	}
 
-	private void redirectToProfile(FacesContext facesCtx,
+	private void redirectToError404(FacesContext facesCtx,
 			ExternalContext externalCtx,
-			NavigationHandler navigationHandler, String shortMsg,
-			String longMsg) {
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-				shortMsg, longMsg);
-		facesCtx.addMessage(null, msg);
-		externalCtx.getFlash().setKeepMessages(true);
-		int userId = userSession.getUser().getId();
+			NavigationHandler navigationHandler) {
 		navigationHandler.handleNavigation(facesCtx, null,
-				"/view/account/profile.xhtml?faces-redirect=true&id=" + userId);
+				"/view/error/error404.xhtml?faces-redirect=true");
 		facesCtx.responseComplete();
 	}
 
@@ -167,14 +159,5 @@ public class TrespassListener implements PhaseListener, Serializable{ //redirect
 	 */
 	@Override
 	public void beforePhase(PhaseEvent phaseEvent) {}
-
-	/**
-	 * Used for making immediate changes to anonymous user rights.
-	 * 
-	 * @param accessMode the desired access mode
-	 */
-	public static void setAccessMode(SystemAnonAccess accessMode) {       		 //unschön
-		TrespassListener.accessMode = accessMode;
-	}
 	
 }

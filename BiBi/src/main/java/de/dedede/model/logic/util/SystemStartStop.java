@@ -3,8 +3,6 @@ package de.dedede.model.logic.util;
 import java.io.InputStream;
 import java.util.ResourceBundle;
 
-import de.dedede.model.data.dtos.ApplicationDto;
-import de.dedede.model.persistence.daos.ApplicationDao;
 import de.dedede.model.persistence.exceptions.DriverNotFoundException;
 import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
 import de.dedede.model.persistence.exceptions.InvalidLogFileException;
@@ -34,12 +32,7 @@ public class SystemStartStop implements SystemEventListener {
 	 * The config-files path relative to /webapp folder
 	 */
 	private static final String relative = "WEB-INF/config.properties";
-	
-	/**
-	 * The id of the database entry used to hold the application configuration.
-	 */
-	private static final long appDataId = 1;
-			
+				
 	/** @inheritDoc
 	 */
 	@Override
@@ -101,13 +94,6 @@ public class SystemStartStop implements SystemEventListener {
 		String emailBody = messages.getString("reminderEmail.return_copy"
 				+ "_reminder_email");
 		DataLayerInitializer.execute(emailSubject, emailBody);
-		ApplicationDto idContainer = new ApplicationDto();
-		idContainer.setId(appDataId);
-		ApplicationDto appData = ApplicationDao.readCustomization(idContainer);
-		SystemAnonAccess accessMode = appData.getAnonRights();
-		TrespassListener.setAccessMode(accessMode);
-		Logger.development("Set anonymous user access rights to: " 
-				+ accessMode.toString());
 	}
 	
 	private void shutdownApplication() {
@@ -115,7 +101,7 @@ public class SystemStartStop implements SystemEventListener {
 	}
 	
 	/**
-	 *@inheritDoc
+	 * @inheritDoc
 	 */
 	@Override
 	public boolean isListenerForSource(Object source) {

@@ -2,6 +2,7 @@ package de.dedede.model.data.dtos;
 
 import java.time.Duration;
 
+import de.dedede.model.logic.util.RegisteredUserLendStatus;
 import de.dedede.model.logic.util.SystemAnonAccess;
 import de.dedede.model.logic.util.SystemRegistrationStatus;
 
@@ -25,21 +26,19 @@ public class ApplicationDto {
 
     private String contactInfo;
 
-    private byte[] logo;
-
-    private String emailAddressSuffixRegEx;
-
-    private String lendingStatus;
+    private String emailSuffixRegEx;
 
     private Duration warningPeriod;
 
     private Duration returnPeriod;
 
     private Duration pickupPeriod;
+    
+    private byte[] logo;
+    
+    private RegisteredUserLendStatus lendingStatus;
 
 	private SystemRegistrationStatus systemRegistrationStatus;
-
-	private String lookAndFeel;
 
     private SystemAnonAccess anonRights;
 
@@ -124,31 +123,13 @@ public class ApplicationDto {
     }
 
     /**
-     * Fetches the logo of the application.
-     *
-     * @return the logo of the application.
-     */
-    public byte[] getLogo() {
-        return logo;
-    }
-
-    /**
-     * Sets the logo of the application.
-     *
-     * @param logo the logo of the application.
-     */
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
-    }
-
-    /**
      * Fetches a regular expression for the email address, allowing only the user with this
      * regex in suffix their email address to sign up to the application.
      *
      * @return regex of email suffix
      */
-    public String getEmailAddressSuffixRegEx() {
-        return emailAddressSuffixRegEx;
+    public String getEmailSuffixRegEx() {
+        return emailSuffixRegEx;
     }
 
     /**
@@ -158,8 +139,8 @@ public class ApplicationDto {
      *
      * @param emailAddressSuffixRegEx regex of email suffix
      */
-    public void setEmailAddressSuffixRegEx(String emailAddressSuffixRegEx) {
-        this.emailAddressSuffixRegEx = emailAddressSuffixRegEx;
+    public void setEmailSuffixRegEx(String emailAddressSuffixRegEx) {
+        this.emailSuffixRegEx = emailAddressSuffixRegEx;
     }
 
     /**
@@ -168,7 +149,7 @@ public class ApplicationDto {
      *
      * @return the global lending status in the application.
      */
-    public String getLendingStatus() {
+    public RegisteredUserLendStatus getLendingStatus() {
         return lendingStatus;
     }
 
@@ -178,7 +159,7 @@ public class ApplicationDto {
      *
      * @param lendingStatus the global lending status in the application.
      */
-    public void setLendingStatus(String lendingStatus) {
+    public void setLendingStatus(RegisteredUserLendStatus lendingStatus) {
         this.lendingStatus = lendingStatus;
     }
 
@@ -273,14 +254,6 @@ public class ApplicationDto {
 		this.systemRegistrationStatus = systemRegistrationStatus;
 	}
 
-    public String getLookAndFeel() {
-        return lookAndFeel;
-    }
-
-    public void setLookAndFeel(String lookAndFeel) {
-        this.lookAndFeel = lookAndFeel;
-    }
-
     public SystemAnonAccess getAnonRights() {
         return anonRights;
     }
@@ -288,5 +261,13 @@ public class ApplicationDto {
     public void setAnonRights(SystemAnonAccess anonRights) {
         this.anonRights = anonRights;
     }
+
+	public byte[] getLogo() {
+		return logo;
+	}
+
+	public void setLogo(byte[] logo) {
+		this.logo = logo;
+	}
 
 }

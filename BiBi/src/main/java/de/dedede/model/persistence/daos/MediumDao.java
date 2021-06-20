@@ -7,7 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +25,11 @@ import de.dedede.model.data.dtos.MediumSearchCriterion;
 import de.dedede.model.data.dtos.MediumSearchDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.data.dtos.SearchOperator;
+import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserLendStatus;
+import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -535,9 +542,116 @@ public final class MediumDao {
 	 * @return A list of DTO containers with the medium-copy data.
 	 * @see CopyDto
 	 */
-	public static List<CopyDto> readAllOverdueCopies(PaginationDto paginationDetails) {
-		// TODO: MS3 von Ivan
-		return null;
+	public static List<MediumCopyUserDto> readAllOverdueCopies(PaginationDto paginationDetails) {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"SELECT COALESCE(u.userlendperiod, m.mediumlendperiod, a.globallendlimit) AS lendPeriod, " +
+					"u.userid, u.emailaddress, u.passwordhashsalt, u.passwordhash, u.name, u.surname, u.postalcode, u.city, u.street, " +
+					"u.housenumber, u.token, u.tokencreation, u.userlendperiod, u.lendstatus, u.verificationstatus, u.userrole, " +
+					"m.mediumid, m.mediumlendperiod, m.hascategory, m.title, m.author1, m.author2, m.author3, m.author4, m.author5, " +
+					"m.mediumtype, m.edition, m.publisher, m.releaseyear, m.isbn, m.mediumlink, m.demotext, " +
+					"c.copyid, c.mediumid, c.signature, c.bibposition, c.status, c.deadline, c.actor " +
+					"FROM users AS u " +
+					"JOIN mediumcopy AS c ON u.userid = c.actor " +
+					"JOIN medium AS m ON c.mediumid = m.mediumid " +
+					"CROSS JOIN application AS a " +
+					"WHERE c.deadline < NOW() " +
+					"AND c.status = 'BORROWED' " +
+					"ORDER BY u.userid, m.mediumid, c.copyid DESC " +
+					"LIMIT ? " +
+					"OFFSET ?;"
+			);
+			stmt.setInt(1, paginationDetails.getTotalAmountOfRows());
+			stmt.setInt(2, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfRows());
+			ResultSet resultSet = stmt.executeQuery();
+			List<MediumCopyUserDto> result = new LinkedList<>();
+			while (resultSet.next()) {
+				MediumCopyUserDto dto = new MediumCopyUserDto();
+				dto.setCopy(new CopyDto());
+				dto.setMedium(new MediumDto());
+				dto.setUser(new UserDto());
+				dto.getUser().setToken(new TokenDto());
+				populateMCUDto(resultSet, dto);
+				result.add(dto);
+			}
+			conn.commit();
+			return result;
+		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
+			String msg = "Database error occurred while reading mediumCopyUser entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+	
+	private static void populateMCUDto(ResultSet resultSet, MediumCopyUserDto dto) throws SQLException {
+		dto.setLendingDuration(getDuration((PGInterval) resultSet.getObject(1)));
+		UserDto userDto = dto.getUser();
+		userDto.setId(resultSet.getInt(2));
+		userDto.setEmailAddress(resultSet.getString(3));
+		userDto.setPasswordSalt(resultSet.getString(4));
+		userDto.setPasswordHash(resultSet.getString(5));
+		userDto.setFirstName(resultSet.getString(6));
+		userDto.setLastName(resultSet.getString(7));
+		userDto.setZipCode(resultSet.getInt(8));
+		userDto.setCity(resultSet.getString(9));
+		userDto.setStreet(resultSet.getString(10));
+		userDto.setStreetNumber(resultSet.getString(11));
+		TokenDto tokenDto = userDto.getToken();
+		tokenDto.setContent(resultSet.getString(12));
+		Timestamp tokenCreationTime = resultSet.getTimestamp(13);
+		tokenDto.setCreationTime((tokenCreationTime == null ? null : tokenCreationTime.toLocalDateTime()));
+		userDto.setLendingPeriod(getDuration((PGInterval) resultSet.getObject(14)));
+		String userLendStatusStr = resultSet.getString(15);
+		userDto.setUserLendStatus((userLendStatusStr == null ? null : UserLendStatus.valueOf(userLendStatusStr)));
+		String userVerificationStatusStr = resultSet.getString(16);
+		userDto.setUserVerificationStatus((userVerificationStatusStr == null ? null : UserVerificationStatus.valueOf(userVerificationStatusStr)));
+		String userRoleStr = resultSet.getString(17);
+		userDto.setUserRole((userRoleStr == null ? null : UserRole.valueOf(userRoleStr)));
+		MediumDto mediumDto = dto.getMedium();
+		mediumDto.setId(resultSet.getInt(18));
+		mediumDto.setReturnPeriod(getDuration((PGInterval) resultSet.getObject(19)));
+		CategoryDto categoryDto = new CategoryDto();
+		categoryDto.setId(resultSet.getInt(20));
+		mediumDto.setCategory(categoryDto);
+		mediumDto.setTitle(resultSet.getString(21));
+		mediumDto.setAuthor1(resultSet.getString(22));
+		mediumDto.setAuthor2(resultSet.getString(23));
+		mediumDto.setAuthor3(resultSet.getString(24));
+		mediumDto.setAuthor4(resultSet.getString(25));
+		mediumDto.setAuthor5(resultSet.getString(26));
+		mediumDto.setMediumType(resultSet.getString(27));
+		mediumDto.setEdition(resultSet.getString(28));
+		mediumDto.setPublisher(resultSet.getString(29));
+		mediumDto.setReleaseYear(resultSet.getInt(30));
+		mediumDto.setIsbn(resultSet.getString(31));
+		mediumDto.setMediumLink(resultSet.getString(32));
+		mediumDto.setText(resultSet.getString(33));
+		CopyDto copyDto = dto.getCopy();
+		copyDto.setId(resultSet.getInt(34));
+		copyDto.setSignature(resultSet.getString(36));
+		copyDto.setLocation(resultSet.getString(37));
+		String copyStatusStr = resultSet.getString(38);
+		copyDto.setCopyStatus((copyStatusStr == null ? null : CopyStatus.valueOf(copyStatusStr)));
+		copyDto.setDeadline(resultSet.getTimestamp(39));
+		copyDto.setActor(resultSet.getInt(40));
+	}
+	
+	private static Duration getDuration(PGInterval interval) {
+		if (interval == null) {
+			return null;
+		} else {
+			double seconds = interval.getSeconds() + 
+					interval.getMinutes() * 60 + 
+					interval.getHours() * 60 * 60 + 
+					interval.getDays() * 24 * 60 * 60 +
+					interval.getMonths() * 24 * 60 * 60 * 30 +
+					interval.getYears() * 24 * 60 * 60 * 30 * 12;
+			return Duration.ofSeconds(Math.round(seconds));
+		}
 	}
 
 	public static List<MediumCopyUserDto> readMarkedCopiesByUser(PaginationDto paginationDetails, UserDto userDto) {
@@ -1304,15 +1418,9 @@ public final class MediumDao {
 		conn.commit();
 		rs1.next();
 		int fromMedium = rs1.getInt(1);
+		rs1.close();
 		getCopysMedium.close();
-		PreparedStatement getGlobalLimit = conn.prepareStatement(
-				"SELECT EXTRACT (EPOCH FROM (SELECT globalLendLimit " 			//Auslagern in AppDao?
-						+ "FROM application WHERE one = 1));");
-		ResultSet rs2 = getGlobalLimit.executeQuery();
-		conn.commit();
-		rs2.next();
-		double globalSeconds = rs2.getDouble(1);
-		getGlobalLimit.close();
+		double globalSeconds = ApplicationDao.getLendingPeriodSeconds(conn);
 		PreparedStatement getMediumLimit = conn.prepareStatement(
 				"SELECT EXTRACT (EPOCH FROM (SELECT mediumLendPeriod " 
 						+ "FROM medium WHERE mediumId = ?));");
@@ -1321,15 +1429,17 @@ public final class MediumDao {
 		conn.commit();
 		rs3.next();
 		double mediumSeconds = rs3.getDouble(1);
+		rs3.close();
 		getMediumLimit.close();
 		PreparedStatement getUserLimit = conn.prepareStatement(
-				"SELECT EXTRACT (EPOCH FROM (SELECT userLendPeriod "            //Auslagern in UserDao?
+				"SELECT EXTRACT (EPOCH FROM (SELECT userLendPeriod "           
 						+ "FROM users WHERE userId = ?));");
 		getUserLimit.setInt(1, userId);
 		ResultSet rs4 = getUserLimit.executeQuery();
 		conn.commit();
 		rs4.next();
 		double userSeconds = rs4.getDouble(1);
+		rs4.close();
 		getUserLimit.close();
 		double applyingLimit = 0;
 		if (globalSeconds == 0 && mediumSeconds == 0 && userSeconds == 0) {
@@ -1446,12 +1556,18 @@ public final class MediumDao {
 		try {
 			if (!copySignatureExists(conn, signatureContainer)) {
 				throw new CopyDoesNotExistException("Signature doesn't exist");
-			} else if (invalidCopyStatusReturnAttempt(conn, signatureContainer)) {
-				throw new CopyIsNotAvailableException("Invalid copy status" + " for this return");
-			} else if (invalidActorReturnAttempt(conn, signatureContainer, user)) {
-				throw new InvalidUserForCopyException("Invalid user for " + "this return");
-			} else if (invalidDeadlineReturnAttempt(conn, signatureContainer, user)) {
-				throw new UserExceededDeadlineException("The return deadline" + " was exceeded by this user");
+			} else if (invalidCopyStatusReturnAttempt(conn, 
+					signatureContainer)) {
+				throw new CopyIsNotAvailableException("Invalid copy status"
+						+ " for this return");
+			} else if (invalidActorReturnAttempt(conn, 
+					signatureContainer, user)) {
+				throw new InvalidUserForCopyException("Invalid user for "
+						+ "this return");
+			} else if (invalidDeadlineReturnAttempt(conn, 
+					signatureContainer, user)) {
+				throw new UserExceededDeadlineException("The return deadline"
+						+ " was exceeded by this user");
 			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -1477,9 +1593,12 @@ public final class MediumDao {
 			if (!copySignatureExists(conn, signatureContainer)) {
 				throw new CopyDoesNotExistException("Signature doesn't exist");
 			} else if (copyIsLentBySignature(conn, signatureContainer)) {
-				throw new CopyIsNotAvailableException("Invalid copy status," + " cannot lend copy");
-			} else if (invalidUserLendingAttempt(conn, signatureContainer, user)) {
-				throw new InvalidUserForCopyException("Invalid user for " + "lending process");
+				throw new CopyIsNotAvailableException("Invalid copy status," 
+												+ " cannot lend copy");
+			} else if (invalidUserLendingAttempt(conn, 
+					signatureContainer, user)) {
+				throw new InvalidUserForCopyException("Invalid user for " 
+												+ "lending process");
 			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -1504,7 +1623,7 @@ public final class MediumDao {
 				instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		List<MediumCopyUserDto> result = new ArrayList<MediumCopyUserDto>();
 		try {
-			PreparedStatement getReminderOffset = conn.prepareStatement(		//Auslagern in AppDao? -> Ivan fragen
+			PreparedStatement getReminderOffset = conn.prepareStatement(		
 					"SELECT EXTRACT (EPOCH FROM (SELECT reminderoffset " 
 							+ "FROM application WHERE one = 1));");
 			ResultSet rs1 = getReminderOffset.executeQuery();
@@ -1521,7 +1640,9 @@ public final class MediumDao {
 			PreparedStatement readAlmostDue = conn.prepareStatement(
 					"SELECT copyid, mediumid, signature, bibposition, "
 					+ "status, deadline, actor FROM mediumcopy WHERE "
-					+ "(deadline is not null) AND (deadline <= ?);"
+					+ "(deadline is not null) AND (deadline <= ?) "
+					+ "AND (deadline > CURRENT_TIMESTAMP) "
+					+ "AND (status = CAST('BORROWED' AS copystatus));"
 					);
 			readAlmostDue.setTimestamp(1, offset);
 			ResultSet rs2 = readAlmostDue.executeQuery();
