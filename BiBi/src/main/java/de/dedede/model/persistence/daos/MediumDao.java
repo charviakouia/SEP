@@ -693,8 +693,8 @@ public final class MediumDao {
 		}
 		try {
 			PreparedStatement updateStmt = conn.prepareStatement(
-					"UPDATE Mediumcopy" + "SET (mediumid = ?, signature = ?, bibposition = ?,"
-							+ " status = CAST(? AS copyStatus), deadline = ?, actor = ?) WHERE copyid = ? ");
+					"UPDATE Mediumcopy " + "SET mediumid = ?, signature = ?, bibposition = ?,"
+							+ " status = CAST(? AS copyStatus), deadline = ?, actor = ? WHERE copyid = ? ");
 			populateCopyStatement(updateStmt, copyDto);
 			updateStmt.setInt(7, copyDto.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
@@ -727,7 +727,7 @@ public final class MediumDao {
 	 */
 
 	public static CopyDto deleteCopy(CopyDto copyDto)
-			throws MediumDoesNotExistException, LostConnectionException, MaxConnectionsException {
+			throws CopyDoesNotExistException, LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (copyEntityExists(conn, copyDto)) {
@@ -737,7 +737,7 @@ public final class MediumDao {
 			} else {
 				String msg = String.format("No entity with the id: %d exists", copyDto.getId());
 				// Logger.severe(msg);
-				throw new MediumDoesNotExistException(msg);
+				throw new CopyDoesNotExistException(msg);
 			}
 		} catch (SQLException e) {
 			String msg = "Database error occurred while deleting medium entity with id: " + copyDto.getId();

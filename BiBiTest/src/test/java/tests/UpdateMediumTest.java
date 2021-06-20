@@ -1,6 +1,7 @@
 package test.java.tests;
 
 
+import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.*;
@@ -44,6 +45,12 @@ public class UpdateMediumTest {
         mediumDtoTest.setId(testId);
         MediumDao.readMedium(mediumDtoTest);
         Assertions.assertEquals(mediumDtoTest.getEdition(), testEdition);
+    }
+
+    @Test
+    public void readCopyTest() {
+        CopyDto copyDto = mediumDto.getCopy(616861318);
+        Assertions.assertEquals("ZB", copyDto.getLocation());
     }
 
     private static void setMediumDto() throws MediumDoesNotExistException {

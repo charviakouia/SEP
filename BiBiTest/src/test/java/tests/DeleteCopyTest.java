@@ -5,6 +5,7 @@ import de.dedede.model.data.dtos.CopyStatus;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
 import de.dedede.model.persistence.util.ConnectionPool;
@@ -55,7 +56,7 @@ public class DeleteCopyTest {
     }
 
     @Test
-    public void deleteCopyTest() throws MediumDoesNotExistException {
+    public void deleteCopyTest() throws CopyDoesNotExistException {
         MediumDao.deleteCopy(copyDto);
         Assertions.assertFalse(MediumDao.copyExists(copyDto));
     }
