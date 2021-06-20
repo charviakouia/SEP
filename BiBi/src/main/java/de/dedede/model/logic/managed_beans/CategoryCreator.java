@@ -6,6 +6,7 @@ import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
+import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.exceptions.ParentCategoryDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -43,9 +44,9 @@ public class CategoryCreator {
     }
 
     /**
-     * fetching this category.
+     * Fetches a DTO container with data about the category being created.
      *
-     * @return the category.
+     * @return a DTO container with data about the category being created.
      */
     public CategoryDto getCategory() {
         return category;
@@ -56,8 +57,11 @@ public class CategoryCreator {
     }
 
     /**
-     * creating this category.
-     * TODO: Überprüfen, ob eine Kategorie mit dieser Name schon existiert.
+     * Creates a new category with the attributes specified in the facelet.
+     * It is not possible to create a category with a caption that already exists.
+     * The parent category must be correct, otherwise the user will receive an error message.
+     *
+     * @author Sergei Pravdin
      */
     public void createCategory() throws IOException {
         ResourceBundle messages =
@@ -70,10 +74,23 @@ public class CategoryCreator {
             FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/category-browser.xhtml?faces-redirect=true");
         } catch (ParentCategoryDoesNotExistException e) {
             context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notParentMatch")));
+        } catch (EntityInstanceNotUniqueException exception) {
+            context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notUnique")));
         }
 
     }
 
+    /**
+     * Loads the category creation page. The status of the user who is trying to access
+     * the page must be "STAFF" or "administrator", otherwise the user will receive an error message
+     * and will be redirected to the home page. If the page receives a ViewParam, then the parent category
+     * will be found and the name of the parent category will be displayed on the form. If there is no viewParam,
+     * then the default parent category will be specified.
+     *
+     * @throws IOException, if the redirect is not possible.
+     *
+     * @author Sergei Pravdin
+     */
     public void onload() throws IOException {
         ResourceBundle messages =
                 context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);

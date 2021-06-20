@@ -414,7 +414,6 @@ public final class UserDao {
 	 */
 	public static void updateUser(UserDto userDto) throws EntityInstanceDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-		;
 		try {
 			PreparedStatement updateStmt = conn.prepareStatement("UPDATE Users "
 					+ "SET emailaddress = ?, passwordhashsalt = ?, passwordhash = ?, name = ?, surname = ?, "
@@ -442,8 +441,10 @@ public final class UserDao {
 
 	private static void populateStatement(PreparedStatement stmt, UserDto userDto) throws SQLException {
 		stmt.setString(1, userDto.getEmailAddress());
-		stmt.setString(2, userDto.getPasswordSalt());
-		stmt.setString(3, userDto.getPasswordHash());
+		if (!userDto.getPasswordHash().isEmpty()) {
+			stmt.setString(2, userDto.getPasswordSalt());
+			stmt.setString(3, userDto.getPasswordHash());
+		}
 		stmt.setString(4, userDto.getLastName());
 		stmt.setString(5, userDto.getFirstName());
 		stmt.setString(6, String.valueOf(userDto.getZipCode()));
