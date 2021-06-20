@@ -26,7 +26,7 @@ public class UpdateCopyTest {
 
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, MediumDoesNotExistException {
-        PreTest.setUp();
+        tests.PreTest.setUp();
         setMediumDto();
     }
 
