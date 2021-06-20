@@ -1387,7 +1387,8 @@ public final class MediumDao {
 		try {
 			PreparedStatement refreshMarkedDeadlines = conn.prepareStatement(
 					"UPDATE mediumCopy SET status = CAST('AVAILABLE' "
-					+ "AS copyStatus) WHERE ((status = CAST('READY_FOR_PICKUP' "
+					+ "AS copyStatus), actor = null, deadline = null"
+					+ " WHERE ((status = CAST('READY_FOR_PICKUP' "
 					+ "AS copyStatus)) AND (deadline < CURRENT_TIMESTAMP));");
 			int updated = refreshMarkedDeadlines.executeUpdate();
 			conn.commit();
