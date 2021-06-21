@@ -39,7 +39,7 @@ public final class Logger {
 					configReader.getKey("LOG_FILENAME") + ".txt");
 			newFileCreated = logFile.createNewFile();							
 		} catch (IOException e) {
-			System.out.println("log-Setup failed with IOException.");			//Tomcat log?
+			System.out.println("log-Setup failed with IOException.");			
 		} catch (SecurityException se) {
 			System.out.println("log-Setup failed due to denied"
 					+ " write permissions.");									

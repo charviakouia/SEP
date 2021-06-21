@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
+/**
+ * @author Sergei Pravdin
+ */
 public class CategoryCreationTest {
 
     private static CategoryDto categoryDto;

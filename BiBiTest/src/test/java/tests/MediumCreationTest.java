@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
+import de.dedede.model.persistence.exceptions.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,11 +23,6 @@ import de.dedede.model.logic.managed_beans.MediumCreator;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
-import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
 
@@ -38,7 +34,7 @@ public class MediumCreationTest {
 	@BeforeAll
 	public static void setUp() throws ClassNotFoundException, SQLException, MaxConnectionsException, 
 			LostConnectionException, UserDoesNotExistException, EntityInstanceNotUniqueException, 
-			MediumDoesNotExistException {
+			MediumDoesNotExistException, CopyDoesNotExistException, EntityInstanceDoesNotExistException {
 		PreTest.setUp();
 		deleteCopyIfExists();
 		setUpMedium();
@@ -60,13 +56,14 @@ public class MediumCreationTest {
 		medium.setIsbn("ISBN");
 	}
 	
-	private static void deleteCopyIfExists() throws LostConnectionException, MaxConnectionsException, 
-			MediumDoesNotExistException {
+	private static void deleteCopyIfExists() throws LostConnectionException, MaxConnectionsException,
+			CopyDoesNotExistException, EntityInstanceDoesNotExistException {
 		copy = new CopyDto();
 		copy.setCopyStatus(CopyStatus.AVAILABLE);
 		copy.setLocation("Location");
 		copy.setSignature("Signature");
 		if (MediumDao.copyExists(copy)) {
+			MediumDao.readCopyBySignature(copy);
 			MediumDao.deleteCopy(copy);
 		}
 	}
@@ -83,7 +80,7 @@ public class MediumCreationTest {
 	
 	@Test
 	public void testAddingCopiesToMedium() throws LostConnectionException, MaxConnectionsException, 
-			MediumDoesNotExistException, EntityInstanceNotUniqueException {
+			MediumDoesNotExistException, EntityInstanceNotUniqueException, CopyDoesNotExistException, EntityInstanceDoesNotExistException {
 		deleteCopyIfExists();
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);

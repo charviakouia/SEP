@@ -62,6 +62,9 @@ public class Medium extends PaginatedList implements Serializable {
 		onload();
 	}
 
+	/**
+	 * Used in viewAction to load the page if the passed to the viewPair with the medium id is correct.
+	 */
 	public void onload() {
 		try {
 			mediumDto = MediumDao.readMedium(mediumDto);
@@ -72,23 +75,26 @@ public class Medium extends PaginatedList implements Serializable {
 
 	/**
 	 * Save the changes made to the set of medium attributes.
+	 *
+	 * @throws IOException if the redirect is not possible.
 	 */
-	public void saveAttributes() throws EntityInstanceDoesNotExistException {
-		MediumDao.updateMedium(mediumDto);
-	}
-
-	/**
-	 * Update the return period specific to this medium.
-	 */
-	public void updateReturnPeriod() {
-
+	public void saveAttributes() throws IOException {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		try {
+			MediumDao.updateMedium(mediumDto);
+			context.addMessage(null, new FacesMessage(messages.getString("medium.updateSuccess")));
+		} catch (EntityInstanceDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
+			context.getExternalContext().getFlash().setKeepMessages(true);
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+		}
 	}
 
 	/**
 	 * Insert a new copy of this medium.
-	 * @throws BusinessException
 	 */
-	public void createCopy() throws BusinessException {
+	public void createCopy() {
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
@@ -96,12 +102,6 @@ public class Medium extends PaginatedList implements Serializable {
 			MediumDao.createCopy(newCopy, mediumDto);
 			newCopyClean(newCopy);
 			refresh();
-		} catch (LostConnectionException e) {
-			String msg = "Database error occurred while creating copy with id: " + newCopy.getId();
-			throw new BusinessException(msg, e);
-		} catch (MaxConnectionsException e) {
-			String msg = "Connection is not available while creating copy with id: " + newCopy.getId();
-			throw new BusinessException(msg, e);
 		} catch (EntityInstanceNotUniqueException exception) {
 			context.addMessage(null, new FacesMessage(messages.getString("copy.notUnique")));
 		}
@@ -126,30 +126,17 @@ public class Medium extends PaginatedList implements Serializable {
 	}
 
 	/**
-	 * Get the minimum return period of of the user-specific, the medium-specific
-	 * and the global one.
-	 */
-	public String getReturnPeriod() {
-		return null;
-	}
-
-	/**
 	 * Delete a copy of this medium.
 	 * 
 	 * @param copyDto The id of the deleted copy.
-	 * @throws MediumDoesNotExistException 
-	 * @throws MaxConnectionsException 
-	 * @throws LostConnectionException 
 	 */
 	public void deleteCopy(CopyDto copyDto) throws IOException {
-		copyDto.setMediumId(mediumDto.getId());
-		Logger.development("This id: " + copyDto.getId());
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			MediumDao.deleteCopy(copyDto);
-			throw new BusinessException("bla bla bla");
-		} catch (MediumDoesNotExistException e) {
+			refresh();
+		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
 			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
@@ -159,40 +146,50 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Save changes made to a copy of this medium.
 	 * 
-	 * @param copyDto The index into the list of copies.
-	 * @throws IllegalArgumentException If the index is out of bounds.
+	 * @param copyDto a DTO container with data about the copy whose attributes need to be changed.
 	 */
-	public void saveCopy(CopyDto copyDto) throws IllegalArgumentException,
-			CopyDoesNotExistException {
-		MediumDao.updateCopy(copyDto);
-		refresh();
+	public void saveCopy(CopyDto copyDto) {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		try {
+			MediumDao.updateCopy(copyDto);
+			refresh();
+		} catch (CopyDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
+		} catch (CopyIsNotAvailableException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.isNotAvailable")));
+		}
 	}
 
 	/**
 	 * Cancel any pending pickup of the a copy this medium.
 	 * 
-	 * @param copyDto The index into the list of copies.
-	 * @throws IllegalArgumentException If the index is out of bounds.
+	 * @param copyDto a DTO container with data about the copy, which should be available for pickup again.
 	 */
-	public void cancelPickup(CopyDto copyDto) throws IllegalArgumentException {
-
+	public void cancelPickup(CopyDto copyDto) {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		copyDto.setActor(null);
+		copyDto.setCopyStatus(CopyStatus.AVAILABLE);
+		try {
+			MediumDao.updateCopy(copyDto);
+			refresh();
+		} catch (CopyDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
+		} catch (CopyIsNotAvailableException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.isNotAvailable")));
+		}
 	}
 
 	/**
 	 * Go to the direct lending page taking a copy of this medium.
-	 * 
-	 * @param copyDto The index into the list of copies.
-	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
-	public String lendCopy() throws IllegalArgumentException {
+	public String lendCopy() {
 		return "/BiBi/view/staff/lending.xhtml?faces-redirect=true";
 	}
 
 	/**
 	 * Go to the return form taking a copy of this medium.
-	 * 
-	 * @param copyDto The index into the list of copies.
-	 * @throws IllegalArgumentException If the index is out of bounds.
 	 */
 	public String returnCopy() throws IllegalStateException {
 		return "/BiBi/view/staff/return-copy.xhtml?faces-redirect=true";
@@ -201,10 +198,22 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Pick up a copy of this medium.
 	 * 
-	 * @param copyDto The index into the list of copies.
-	 * @throws IllegalArgumentException If the index is out of bounds.
+	 * @param copyDto a DTO container of the copy marked for pickup.
+	 * @param user who marks the copy for the pickup.
 	 */
-	public void pickUpCopy(CopyDto copyDto, UserDto user) throws IllegalStateException {
+	public void pickUpCopy(CopyDto copyDto, UserDto user) {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		copyDto.setActor(user.getId());
+		copyDto.setCopyStatus(CopyStatus.READY_FOR_PICKUP);
+		try {
+			MediumDao.updateCopy(copyDto);
+			refresh();
+		} catch (CopyDoesNotExistException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
+		} catch (CopyIsNotAvailableException e) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.isNotAvailable")));
+		}
 	}
 
 	public MediumDto getMediumDto() {
@@ -215,9 +224,22 @@ public class Medium extends PaginatedList implements Serializable {
 		this.mediumDto = mediumDto;
 	}
 
-	public String delete() throws MediumDoesNotExistException {
-		MediumDao.deleteMedium(mediumDto);
-		return "/view/public/medium-search?faces-redirect=true";
+	/**
+	 * Removes the medium with all its copies.
+	 *
+	 * @return homepage.
+	 */
+	public String delete() {
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		try {
+			MediumDao.deleteMedium(mediumDto);
+			context.addMessage(null, new FacesMessage(messages.getString("medium.deleteSuccess")));
+			context.getExternalContext().getFlash().setKeepMessages(true);
+			return "/view/public/medium-search?faces-redirect=true";
+		} catch (MediumDoesNotExistException e) {
+			return "/view/public/medium-search?faces-redirect=true";
+		}
 	}
 
 	public CopyDto getNewCopy() {

@@ -116,6 +116,7 @@ public class Profile implements Serializable {
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		if (!password.equals(confirmedPassword)) {
 			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.noMatch")));
+			return;
 		}
 		try {
 			if (!password.isEmpty()) {
@@ -137,7 +138,6 @@ public class Profile implements Serializable {
 			context.getExternalContext().getFlash().setKeepMessages(true);
 			externalContext.redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
 		}
-
 	}
 
 	/**

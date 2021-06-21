@@ -52,6 +52,10 @@ public class CategoryCreator {
         return category;
     }
 
+
+    /**
+     * @param category Sets a DTO container with data about the category being created.
+     */
     public void setCategory(CategoryDto category) {
         this.category = category;
     }
@@ -77,7 +81,6 @@ public class CategoryCreator {
         } catch (EntityInstanceNotUniqueException exception) {
             context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notUnique")));
         }
-
     }
 
     /**

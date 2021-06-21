@@ -61,6 +61,32 @@ public final class MediumDao {
 
 	private MediumDao() {
 	}
+	
+	public static void readCopyBySignature(CopyDto copy) throws EntityInstanceDoesNotExistException {
+		if (!signatureExists(copy)) {
+			throw new EntityInstanceDoesNotExistException("Copy entity with signature " + copy.getSignature() + " doesn't exist");
+		}
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement readStmt = conn.prepareStatement(
+					"SELECT copyid, mediumid, signature, bibposition, status, deadline, actor "
+							+ "FROM Mediumcopy " + "WHERE signature = ?;"
+			);
+			readStmt.setString(1, copy.getSignature());
+			ResultSet resultSet = readStmt.executeQuery();
+			if (resultSet.next()) {
+				populateCopyDto(copy, resultSet);
+			}
+			conn.commit();
+		} catch (SQLException e) {
+			try { conn.rollback(); } catch (SQLException ignore) {}
+			String msg = "Database error occurred while reading copy entity with signature: " + copy.getSignature();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
 
 	/**
 	 * Enters new medium data into the persistent data store. Any copies associated
@@ -119,7 +145,7 @@ public final class MediumDao {
 		stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
 		CategoryDto category = mediumDto.getCategory();
 		if (category == null) {
-			stmt.setObject(2, null);
+			stmt.setObject(2, 1);
 		} else {
 			stmt.setInt(2, category.getId());
 		}
@@ -414,11 +440,12 @@ public final class MediumDao {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			PreparedStatement updateStmt = conn.prepareStatement("UPDATE Medium "
-					+ "SET mediumid = ?, mediumlendperiod = ?, hascategory = ?, title = ?, author1 = ?, "
+					+ "SET mediumlendperiod = ?, hascategory = ?, title = ?, author1 = ?, "
 					+ "author2 = ?, author3 = ?, author4 = ?, author5 = ?, mediumtype = ?, edition = ?, "
 					+ "publisher = ?, releaseyear = ?, isbn = ?, mediumlink = ?, demotext = ?"
 					+ "WHERE mediumid = ?;");
 			populateMediumStatement(updateStmt, mediumDto);
+			updateStmt.setLong(16, mediumDto.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0) {
@@ -676,23 +703,36 @@ public final class MediumDao {
 	 * @see CopyDto
 	 */
 	public static void updateCopy(CopyDto copyDto)
-			throws CopyDoesNotExistException, LostConnectionException, MaxConnectionsException {
+			throws CopyDoesNotExistException, LostConnectionException, MaxConnectionsException,
+			CopyIsNotAvailableException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		if (copyIsLentBySignature(conn, copyDto)) {
+			try {
+				conn.rollback();
+				Logger.severe("Copy is not available: " + copyDto.getId());
+				throw new CopyIsNotAvailableException("Copy is not available.");
+			} catch (SQLException exception) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+		}
 		try {
 			PreparedStatement updateStmt = conn.prepareStatement(
-					"UPDATE Mediumcopy" + "SET (copyid = ?, mediumid = ?, signature = ?, bibposition = ?,"
-							+ " status = CAST(? AS copyStatus), deadline = ?, actor = ?) WHERE copyid = ? ");
+					"UPDATE Mediumcopy " + "SET mediumid = ?, signature = ?, bibposition = ?,"
+							+ " status = CAST(? AS copyStatus), deadline = ?, actor = ? WHERE copyid = ? ");
 			populateCopyStatement(updateStmt, copyDto);
+			updateStmt.setInt(7, copyDto.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
 			conn.commit();
 			if (numAffectedRows == 0) {
 				String msg = String.format("No entity with the id: %d exists", copyDto.getId());
-				// Logger.severe(msg);
+				Logger.severe(msg);
 				throw new CopyDoesNotExistException(msg);
 			}
 		} catch (SQLException e) {
 			String msg = "Database error occurred while updating application entity with id: " + copyDto.getId();
-			// Logger.severe(msg);
+			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
@@ -713,7 +753,7 @@ public final class MediumDao {
 	 */
 
 	public static CopyDto deleteCopy(CopyDto copyDto)
-			throws MediumDoesNotExistException, LostConnectionException, MaxConnectionsException {
+			throws CopyDoesNotExistException, LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (copyEntityExists(conn, copyDto)) {
@@ -723,7 +763,7 @@ public final class MediumDao {
 			} else {
 				String msg = String.format("No entity with the id: %d exists", copyDto.getId());
 				// Logger.severe(msg);
-				throw new MediumDoesNotExistException(msg);
+				throw new CopyDoesNotExistException(msg);
 			}
 		} catch (SQLException e) {
 			String msg = "Database error occurred while deleting medium entity with id: " + copyDto.getId();
@@ -1454,7 +1494,8 @@ public final class MediumDao {
 		try {
 			PreparedStatement refreshMarkedDeadlines = conn.prepareStatement(
 					"UPDATE mediumCopy SET status = CAST('AVAILABLE' "
-					+ "AS copyStatus) WHERE ((status = CAST('READY_FOR_PICKUP' "
+					+ "AS copyStatus), actor = null, deadline = null"
+					+ " WHERE ((status = CAST('READY_FOR_PICKUP' "
 					+ "AS copyStatus)) AND (deadline < CURRENT_TIMESTAMP));");
 			int updated = refreshMarkedDeadlines.executeUpdate();
 			conn.commit();

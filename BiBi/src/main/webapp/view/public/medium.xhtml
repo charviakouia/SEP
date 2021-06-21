@@ -33,7 +33,7 @@
 
                 <h:outputLabel value="#{msg['medium.author']}"/>
 
-                <h:panelGroup layout="block" cellspacing = "1">
+                <h:panelGroup layout="block" cellspacing="1">
 
                     <h:inputText id="author1" value="#{medium.mediumDto.author1}"
                                  readonly="#{userSession.user.role != 'ADMIN'
@@ -88,8 +88,9 @@
                              readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
 
-                <h:outputLabel value="#{msg['medium.hasCategory']}"/>
+                <h:outputLabel value="#{msg['medium.hasCategory']}" rendered="false"/>
                 <h:inputText id="category" value="#{medium.mediumDto.category}"
+                             rendered="false"
                              readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
 
@@ -151,43 +152,41 @@
                 <h:column rendered="#{userSession.user.role == 'ADMIN'
 							or userSession.user.role == 'STAFF'}">
                     <f:facet name="header">#{msg['copy.staffAction']}</f:facet>
+
                     <bibi:columnContent>
-                        <h:panelGrid columns="5">
-                            <h:commandButton id="save"
-                                             value="#{msg['save']}"
-                                             action="#{medium.saveCopy(item)}"/>
-                            <h:commandButton id="deleteCopy"
-                                             value="#{msg['delete']}"
-                                             action="#{medium.deleteCopy(item)}"/>
-                            <h:commandButton id="cancelPickup"
-                                             value="#{msg['copy.cancelPickup']}"
-                                             action="#{medium.cancelPickup(item)}"
-                                             rendered="#{medium.mediumDto.copies.get(item.id).copyStatus
+                            <h:panelGrid columns="5">
+                                <h:commandButton id="save"
+                                                 value="#{msg['save']}"
+                                                 action="#{medium.saveCopy(item)}"/>
+                                <h:commandButton id="deleteCopy"
+                                                 value="#{msg['delete']}"
+                                                 action="#{medium.deleteCopy(item)}"/>
+                                <h:commandButton id="cancelPickup"
+                                                 value="#{msg['copy.cancelPickup']}"
+                                                 action="#{medium.cancelPickup(item)}"
+                                                 rendered="#{medium.mediumDto.copies.get(item.id).copyStatus
                                                  == 'READY_FOR_PICKUP'}"/>
-                            <h:commandButton id="lendCopy"
-                                             value="#{msg['copy.lend']}"
-                                             action="#{medium.lendCopy()}"
-                                             rendered="#{medium.mediumDto.copies.get(item.id).copyStatus == 'AVAILABLE'}"/>
-                            <h:commandButton id="returnCopy"
-                                             value="#{msg['copy.return']}"
-                                             action="#{medium.returnCopy()}"
-                                             rendered="#{medium.mediumDto.copies.get(item.id).copyStatus == 'BORROWED'}"/>
-                        </h:panelGrid>
+                                <h:commandButton id="lendCopy"
+                                                 value="#{msg['copy.lend']}"
+                                                 action="#{medium.lendCopy}"
+                                                 rendered="#{medium.mediumDto.copies.get(item.id).copyStatus == 'AVAILABLE'}"/>
+                                <h:commandButton id="returnCopy"
+                                                 value="#{msg['copy.return']}"
+                                                 action="#{medium.returnCopy()}"
+                                                 rendered="#{medium.mediumDto.copies.get(item.id).copyStatus == 'BORROWED'}"/>
+                            </h:panelGrid>
                     </bibi:columnContent>
                 </h:column>
 
                 <h:column rendered="#{userSession.user.userLendStatus == 'ENABLED'}">
                     <f:facet name="header">#{msg['copy.action']}</f:facet>
                     <bibi:columnContent>
-                        <h:panelGroup>
-                            <h:commandButton id="copyPickup"
-                                             value="#{msg['copy.pickup']}"
-                                             action="#{medium.pickUpCopy(item, userSession.user)}"
-                                             rendered="#{item.copyStatus == 'AVAILABLE'}"/>
-                        </h:panelGroup>
+                        <h:commandButton id="copyPickup"
+                                         value="#{msg['copy.pickup']}"
+                                         action="#{medium.pickUpCopy(item, userSession.user)}"
+                                         rendered="#{item.copyStatus == 'AVAILABLE'}"/>
                     </bibi:columnContent>
                 </h:column>
-
             </bibi:paginatedList>
         </h:form>
 
