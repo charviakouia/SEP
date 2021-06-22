@@ -277,16 +277,26 @@ public final class UserDao {
 	 */
 	public static List<UserDto> searchUsers(UserSearchDto userSearch, PaginationDto pagination) {
 
+		// @Task search by email address or name
+
 		// TEMPORARY CODE AHEAD!!
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
 
-			final var statementBody = ""; // @Task
+			final var statementBody = """
+					from
+						users u
+					where
+						position(lower(?) in lower(u.emailaddress)) > 0
+					""";
 
 			{
-				final var countStatement = connection.prepareStatement("" + statementBody); // @Task
+				final var countStatement = connection
+						.prepareStatement("select count(distinct u.userid) " + statementBody);
+
+				countStatement.setString(1, userSearch.getSearchTerm());
 
 				final var resultSet = countStatement.executeQuery();
 				resultSet.next();
@@ -294,10 +304,19 @@ public final class UserDao {
 				Pagination.updatePagination(pagination, resultSet.getInt(1));
 			}
 
-			final var itemsStatement = connection.prepareStatement("".formatted(statementBody)); // @Task
+			final var itemsStatement = connection.prepareStatement("""
+					select distinct
+						u.userid, u.emailaddress, u.name, u.surname
+					%s
+					offset ?
+					limit ?
+					""".formatted(statementBody));
+
+			itemsStatement.setString(1, userSearch.getSearchTerm());
+
 			// @Task sorting
-			itemsStatement.setInt(1, Pagination.pageOffset(pagination));
-			itemsStatement.setInt(2, Pagination.getEntriesPerPage());
+			itemsStatement.setInt(2, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(3, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<UserDto>();
@@ -306,7 +325,10 @@ public final class UserDao {
 
 				final var user = new UserDto();
 
-				// @Task
+				user.setId(resultSet.getInt(1));
+				user.setEmailAddress(resultSet.getString(2));
+				user.setFirstName(resultSet.getString(3));
+				user.setLastName(resultSet.getString(4));
 
 				results.add(user);
 			}
