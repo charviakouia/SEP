@@ -277,10 +277,6 @@ public final class UserDao {
 	 */
 	public static List<UserDto> searchUsers(UserSearchDto userSearch, PaginationDto pagination) {
 
-		// @Task search by email address or name
-
-		// TEMPORARY CODE AHEAD!!
-
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
@@ -289,14 +285,23 @@ public final class UserDao {
 					from
 						users u
 					where
-						position(lower(?) in lower(u.emailaddress)) > 0
+						(  position(lower(?) in lower(u.emailaddress)) > 0
+						or position(lower(?) in lower(u.name)) > 0
+						or position(lower(?) in lower(u.surname)) > 0)
+							and
+						u.lendstatus = ?::userlendstatus
 					""";
 
 			{
 				final var countStatement = connection
 						.prepareStatement("select count(distinct u.userid) " + statementBody);
+				var parameterIndex = 0;
 
-				countStatement.setString(1, userSearch.getSearchTerm());
+				while (parameterIndex < 3) {
+					countStatement.setString(parameterIndex += 1, userSearch.getSearchTerm());
+				}
+
+				countStatement.setString(parameterIndex += 1, userSearch.getLendStatus().name());
 
 				final var resultSet = countStatement.executeQuery();
 				resultSet.next();
@@ -311,12 +316,17 @@ public final class UserDao {
 					offset ?
 					limit ?
 					""".formatted(statementBody));
+			var parameterIndex = 0;
 
-			itemsStatement.setString(1, userSearch.getSearchTerm());
+			while (parameterIndex < 3) {
+				itemsStatement.setString(parameterIndex += 1, userSearch.getSearchTerm());
+			}
+
+			itemsStatement.setString(parameterIndex += 1, userSearch.getLendStatus().name());
 
 			// @Task sorting
-			itemsStatement.setInt(2, Pagination.pageOffset(pagination));
-			itemsStatement.setInt(3, Pagination.getEntriesPerPage());
+			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<UserDto>();

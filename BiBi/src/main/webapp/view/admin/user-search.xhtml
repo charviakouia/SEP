@@ -27,9 +27,9 @@
 
 			<h:panelGroup layout="block">
 				<h:selectBooleanCheckbox id="check_user_lend_status"
-					value="#{userSearch.userSearch.lendStatus}"
+					value="#{userSearch.blockedUserSearchRestriction}"
 					styleClass="form-check-input" />
-				<h:outputLabel value="!USER_LEND_STATUS!"
+				<h:outputLabel value="#{msg['restrict_search_to_blocked_users']}"
 					for="check_user_lend_status" styleClass="form-check-label" />
 
 				<!-- @Task has to support the option "any user" -->
@@ -48,7 +48,7 @@
 		<bibi:paginatedList value="#{userSearch}" styleClass="mt-5">
 
 			<h:column>
-				<f:facet name="header">!EMAIL!</f:facet>
+				<f:facet name="header">#{msg['userEmailAddress']}</f:facet>
 
 				<bibi:columnContent>
 					<h:link value="#{item.emailAddress}"
@@ -57,7 +57,7 @@
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">!FIRST_NAME!</f:facet>
+				<f:facet name="header">#{msg['userFirstName']}</f:facet>
 
 				<bibi:columnContent>
 					#{item.firstName}
@@ -65,7 +65,7 @@
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">!LAST_NAME!</f:facet>
+				<f:facet name="header">#{msg['userLastName']}</f:facet>
 
 				<bibi:columnContent>
 					#{item.lastName}
