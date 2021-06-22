@@ -17,3 +17,7 @@ html, body {
 .className td {
     vertical-align: top;
 }
+
+.paginated-list:not(:first-child) {
+	margin-top: 3rem;
+}
