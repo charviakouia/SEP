@@ -58,3 +58,6 @@ SEVERE: 2021-06-20 18:52:48 ---> This is a test message.
 SEVERE: 2021-06-20 19:09:24 ---> This is a test message.
 SEVERE: 2021-06-20 19:09:47 ---> This is a test message.
 SEVERE: 2021-06-20 19:11:25 ---> This is a test message.
+SEVERE: 2021-06-22 00:53:25 ---> Connection pool couldn't be initialized
+SEVERE: 2021-06-22 00:55:28 ---> Database error occurred while creating mediumCopy entity with id: 555
+SEVERE: 2021-06-22 01:00:08 ---> Database error occurred while creating mediumCopy entity with id: 555
