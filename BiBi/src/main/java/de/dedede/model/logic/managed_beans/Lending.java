@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.CopyDto;
@@ -44,7 +45,7 @@ public class Lending implements Serializable {
 	/**
 	 * Reflects the input fields for signatures as an ArrayList
 	 */
-	private ArrayList<CopyDto> copies = new ArrayList<CopyDto>(); //normale list
+	private List<CopyDto> copies = new ArrayList<CopyDto>(); //normale list
 
 	/**
 	 * Initializes the Backing Bean with 5 copy signature input fields.
@@ -150,12 +151,11 @@ public class Lending implements Serializable {
 		this.user = user;
 	}
 
-	public ArrayList<CopyDto> getCopies() {
-		
+	public List<CopyDto> getCopies() {
 		return copies;
 	}
 
-	public void setCopies(ArrayList<CopyDto> copies) {
+	public void setCopies(List<CopyDto> copies) {
 		this.copies = copies;
 	}
 
