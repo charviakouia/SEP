@@ -213,12 +213,6 @@ public final class CategoryDao {
 	 * @see CategoryDto
 	 */
 	public static void updateCategory(CategoryDto category) {
-
-		Logger.development("updateCategory()");
-		Logger.development("id = " + category.getId());
-		Logger.development("name = " + category.getName());
-		Logger.development("descr = " + category.getDescription());
-		Logger.development("parent = " + (category.getParent() == null ? null : category.getParent().getId()));
 		
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
@@ -239,7 +233,6 @@ public final class CategoryDao {
 			statement.setInt(parameterIndex += 1, category.getId());
 			
 			final var affectedRows = statement.executeUpdate();
-			connection.commit();
 			
 			if (affectedRows == 0) {
 				final var message = "Non-existent category with id %s passed to updateCategory()".formatted(category.getId());
@@ -247,8 +240,8 @@ public final class CategoryDao {
 				throw new CategoryDoesNotExistException(message);
 			}
 			
-			Logger.development("affected rows: " + affectedRows);
-
+			connection.commit();
+			
 		} catch (SQLException exception) {
 
 			try {

@@ -8,6 +8,7 @@ import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CategorySearchDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.persistence.daos.CategoryDao;
+import de.dedede.model.persistence.daos.MediumDao;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.view.ViewScoped;
@@ -26,23 +27,22 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
-	
+
 	@Inject
 	private ExternalContext ectx;
-	
+
 	@Inject
 	private UserSession session;
 
 	private CategorySearchDto categorySearch;
 
 	private CategoryDto currentCategory;
-	
+
 	// maybe temporary
 	// this is the tree o categories … for now … a flat version of it!!
 	private List<CategoryDto> categories;
-	
-	private List<MediumDto> mediums;
 
+	private List<MediumDto> mediums;
 
 	@PostConstruct
 	public void init() {
@@ -64,7 +64,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	public void setCurrentCategory(CategoryDto currentCategory) {
 		this.currentCategory = currentCategory;
 	}
-	
+
 	public List<CategoryDto> getCategories() {
 		return categories;
 	}
@@ -79,28 +79,32 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 //		}
 //		
 //		return session.getUser().getRole().isStaffOrHigher();
-		
+
 		return true; // @Temporary
 	}
-	
+
 	public boolean writableCategoryDescription() {
 //		if (session.getUser() == null) {
 //			return false;
 //		}
 //		
 //		return session.getUser().getRole().isStaffOrHigher();
-		
+
 		return true; // @Temporary
 	}
 
 	public void selectCategory(CategoryDto category) {
 		currentCategory = category;
+		
+		if (currentCategory != null) {
+			mediums = MediumDao.readMediaGivenCategory(currentCategory, getPaginatedList());
+		}
 	}
-	
+
 	public void saveCategory() {
 		CategoryDao.updateCategory(currentCategory);
 	}
-	
+
 	public void deleteCategory() {
 
 	}
@@ -108,10 +112,10 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	public void searchCategories() {
 
 	}
-	
+
 	public String createCategory() {
 		ectx.getFlash().put("parent-category", currentCategory.getId());
-		
+
 		return "category-creation?faces-redirect=true";
 	}
 
@@ -122,6 +126,8 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	@Override
 	public void refresh() {
-		searchCategories();
+		if (currentCategory != null) {
+			mediums = MediumDao.readMediaGivenCategory(currentCategory, getPaginatedList());
+		}
 	}
 }
