@@ -2,8 +2,10 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.persistence.daos.MediumDao;
 import jakarta.annotation.PostConstruct;
@@ -25,9 +27,9 @@ public class CopiesReadyForPickupAllUsers extends PaginatedList implements Seria
 
 	@Serial
 	private static final long serialVersionUID = 1L;
-
+	
 	@Inject
-	private ExternalContext ectx;
+	private Lending lending;
 	
 	private List<MediumCopyUserDto> copies;
 
@@ -37,7 +39,11 @@ public class CopiesReadyForPickupAllUsers extends PaginatedList implements Seria
 	}
 	
 	public String goToLending(String signature) {
-		ectx.getFlash().put("signature", signature);
+		final var copies = new ArrayList<CopyDto>();
+		final var copy = new CopyDto();
+		copy.setSignature(signature);
+		copies.add(copy);
+		lending.setCopies(copies);
 		
 		return "lending?faces-redirect=true";
 	}

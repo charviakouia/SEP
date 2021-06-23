@@ -18,14 +18,13 @@ import jakarta.inject.Named;
  * Backing bean for the header facelet of the application. Implements functions
  * necessary for the header facelet into the template.
  */
-
 @Named("pageHeader") // "header" is reserved / an implicit object in EL
 @RequestScoped
 public class Header {
 
 	@Inject
 	private ExternalContext ectx;
-	
+
 	@Inject
 	private UserSession session;
 
@@ -34,8 +33,15 @@ public class Header {
 	// @Note we could also make it flat here!
 	private MediumSearchDto mediumSearch = new MediumSearchDto();
 
+	/**
+	 * Initialize this backing bean.
+	 * 
+	 * This method is not meant to be called directly but only by JSF and that only
+	 * once!
+	 */
 	@PostConstruct
 	public void init() {
+		// there only ever exists one application and it has this specified ID
 		final var PROPER_APPLICATION_ID = 1;
 
 		var argument = new ApplicationDto();
@@ -45,6 +51,11 @@ public class Header {
 
 	}
 
+	/**
+	 * Get the application logo in the Base64 format.
+	 * 
+	 * @return The application logo in Base64.
+	 */
 	public String getApplicationBase64Logo() {
 		return Base64.getEncoder().encodeToString(application.getLogo());
 	}
@@ -65,11 +76,23 @@ public class Header {
 		this.mediumSearch = mediumSearch;
 	}
 
-	public boolean showingAccountHelp() {
+	/**
+	 * Indicates whether context-sensitive help for registered users should be
+	 * contained in the help page.
+	 * 
+	 * @return Flag if context-sensitive help for registered users should be shown.
+	 */
+	public boolean isShowingAccountHelp() {
 		return session.getUser() != null;
 	}
 
-	public boolean showingStaffHelp() {
+	/**
+	 * Indicates whether context-sensitive help for library staff should be
+	 * contained in the help page.
+	 * 
+	 * @return Flag if context-sensitive help for library staff should be shown.
+	 */
+	public boolean isShowingStaffHelp() {
 		if (session.getUser() == null) {
 			return false;
 		}
@@ -77,7 +100,13 @@ public class Header {
 		return session.getUser().getRole().isStaffOrHigher();
 	}
 
-	public boolean showingAdminHelp() {
+	/**
+	 * Indicates whether context-sensitive help for administrators should be
+	 * contained in the help page.
+	 * 
+	 * @return Flag if context-sensitive help for administrators should be shown.
+	 */
+	public boolean isShowingAdminHelp() {
 		if (session.getUser() == null) {
 			return false;
 		}
@@ -85,11 +114,23 @@ public class Header {
 		return session.getUser().getRole() == UserRole.ADMIN;
 	}
 
-	public boolean showingLogOut() {
+	/**
+	 * Indicates whether the dropdown menu containing account-related links gets
+	 * displayed.
+	 * 
+	 * @return If the account menu gets shown.
+	 */
+	public boolean isShowingAccountMenu() {
 		return session.getUser() != null;
 	}
 
-	public boolean showingLending() {
+	/**
+	 * Indicates whether the dropdown menu containg staff-specific links gets
+	 * displayed.
+	 * 
+	 * @return If the staff menu gets shown.
+	 */
+	public boolean isShowingStaffMenu() {
 		if (session.getUser() == null) {
 			return false;
 		}
@@ -97,35 +138,13 @@ public class Header {
 		return session.getUser().getRole().isStaffOrHigher();
 	}
 
-	public boolean showingReturnForm() {
-		if (session.getUser() == null) {
-			return false;
-		}
-
-		return session.getUser().getRole().isStaffOrHigher();
-	}
-
-	public boolean showingCopiesReadyForPickupAllUsers() {
-		if (session.getUser() == null) {
-			return false;
-		}
-
-		return session.getUser().getRole().isStaffOrHigher();
-	}
-
-	public boolean showingMediumCreator() {
-		if (session.getUser() == null) {
-			return false;
-		}
-
-		return session.getUser().getRole().isStaffOrHigher();
-	}
-
-	public boolean showingProfile() {
-		return session.getUser() != null;
-	}
-
-	public boolean showingAdministration() {
+	/**
+	 * Indicates whether the dropdown menu containing administrator-specific links
+	 * gets displayed.
+	 * 
+	 * @return If the administrator menu gets shown.
+	 */
+	public boolean isShowingAdministratorMenu() {
 		if (session.getUser() == null) {
 			return false;
 		}
@@ -133,11 +152,21 @@ public class Header {
 		return session.getUser().getRole() == UserRole.ADMIN;
 	}
 
-	public boolean showingLogin() {
+	/**
+	 * Indicates whether the hyperlink to the login page gets displayed.
+	 * 
+	 * @return If the link to the login page gets shown.
+	 */
+	public boolean isShowingLogin() {
 		return session.getUser() == null;
 	}
 
-	public boolean showingRegistration() {
+	/**
+	 * Indicates whether the hyperlink to the registration page gets displayed.
+	 * 
+	 * @return If the link to the registration page gets shown.
+	 */
+	public boolean isShowingRegistration() {
 		return session.getUser() == null;
 	}
 
@@ -147,19 +176,17 @@ public class Header {
 	 * {@link Login}.
 	 * 
 	 * @return the String to the login page.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void logOut() throws IOException {
 		session.setUser(null);
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-		externalContext.invalidateSession();
-
-		externalContext.redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
+		ectx.invalidateSession();
+		ectx.redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
 	}
 
 	public String searchMedium() {
 		ectx.getFlash().put("medium_search_term", mediumSearch.getGeneralSearchTerm());
-		
+
 		return "medium-search?faces-redirect=true";
 	}
 }
