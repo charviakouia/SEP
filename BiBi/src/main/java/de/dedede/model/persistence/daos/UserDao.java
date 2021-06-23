@@ -347,10 +347,11 @@ public final class UserDao {
 
 			return results;
 		} catch (SQLException exeption) {
+			
 			try {
 				connection.rollback();
-			} catch (SQLException e) {
-				final var message = "Failed to rollback database transaction";
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
 				Logger.severe(message);
 				throw new LostConnectionException(message);
 			}

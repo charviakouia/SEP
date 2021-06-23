@@ -260,19 +260,19 @@ public final class MediumDao {
 			connection.commit();
 
 			return results;
-		} catch (SQLException exeption) {
+		} catch (SQLException exception) {
 
 			try {
 				connection.rollback();
-			} catch (SQLException e) {
-				final var message = "Failed to rollback database transaction";
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
 				Logger.severe(message);
 				throw new LostConnectionException(message);
 			}
 
-			final var message = "Database error occurred while search for mediums: " + exeption.getMessage();
+			final var message = "Database error occurred while searching for media: " + exception.getMessage();
 			Logger.severe(message);
-			throw new LostConnectionException(message, exeption);
+			throw new LostConnectionException(message, exception);
 
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(connection);
@@ -669,10 +669,11 @@ public final class MediumDao {
 
 			return results;
 		} catch (SQLException exeption) {
+			
 			try {
 				connection.rollback();
-			} catch (SQLException e) {
-				final var message = "Failed to rollback database transaction";
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
 				Logger.severe(message);
 				throw new LostConnectionException(message);
 			}

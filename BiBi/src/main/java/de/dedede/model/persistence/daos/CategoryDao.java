@@ -1,6 +1,7 @@
 package de.dedede.model.persistence.daos;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import de.dedede.model.data.dtos.*;
 import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
+import de.dedede.model.persistence.util.Pagination;
 
 /**
  * This DAO (data access object) manages data pertaining to a category.
@@ -83,44 +85,67 @@ public final class CategoryDao {
 	 * search term for their names and pagination details. The order of the data and 
 	 * concurrent read/write behavior in the underlying data store is unspecified.
 	 *
-	 * @param paginationDetails A container for the search term, page size, and page number.
+	 * @param pagination A container for the search term, page size, and page number.
 	 * @return A list of DTO containers with the category data that conforms
 	 * 		to the specified search term and pagination details.
 	 * @see CategoryDto
 	 */
-	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearchDto, PaginationDto paginationDetails) {
-		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+	// @Task rename to searchCategories
+	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearch, PaginationDto pagination) {
+		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(
-					"SELECT categoryId, title, description, parentCategoryId " +
-					"FROM category " +
-					"WHERE title LIKE ? " +
-					"ORDER BY title DESC " +
-					"LIMIT ? " +
-					"OFFSET ?;"
-			);
-			stmt.setString(1, "%" + categorySearchDto.getSearchTerm() + "%");
-			stmt.setInt(2, paginationDetails.getTotalAmountOfPages());
-			stmt.setInt(3, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfPages());
-			ResultSet res = stmt.executeQuery();
-			List<CategoryDto> list = new LinkedList<>();
-			while (res.next()) {
-				CategoryDto category = new CategoryDto();
-				category.setId(Math.toIntExact(res.getLong(1)));
-				category.setName(res.getString(2));
-				category.setDescription(res.getString(3));
-				CategoryDto parent = new CategoryDto();
-				parent.setId(Math.toIntExact(res.getLong(4)));
-				category.setParent(parent);
-				list.add(category);
+			// @Task count
+			final var statement = connection.prepareStatement("""
+					select
+						ct.categoryid, ct.title, ct.description, ct.parentcategoryid
+					from
+						category ct
+					where
+						position(lower(?) in lower(ct.title)) > 0
+					order by
+						title
+							desc
+					offset ?
+					limit ?
+			""");
+			var parameterIndex = 0;
+			statement.setString(parameterIndex += 1, categorySearch.getSearchTerm());
+			statement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			statement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
+			
+			final var resultSet = statement.executeQuery();
+			final var results = new ArrayList<CategoryDto>();
+			
+			while (resultSet.next()) {
+				final var category = new CategoryDto();
+				category.setId(resultSet.getInt(1));
+				category.setName(resultSet.getString(2));
+				category.setDescription(resultSet.getString(3));
+				
+				final var parentCategory = new CategoryDto();
+				parentCategory.setId(resultSet.getInt(4));
+				category.setParent(parentCategory);
+				results.add(category);
 			}
-			return list;
-		} catch (SQLException e) {
-			String msg = "Database error occurred while reading category entities";
-			Logger.severe(msg);
-			throw new LostConnectionException(msg, e);
+			
+			return results;
+	
+		} catch (SQLException exception) {
+			
+			try {
+				connection.rollback();
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while searching for categories: " + exception.getMessage();
+			Logger.severe(message);
+			throw new LostConnectionException(message, exception);
 		} finally {
-			ConnectionPool.getInstance().releaseConnection(conn);
+			ConnectionPool.getInstance().releaseConnection(connection);
 		}
 	}
 
