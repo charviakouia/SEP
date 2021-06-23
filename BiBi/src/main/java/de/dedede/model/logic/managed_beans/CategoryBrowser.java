@@ -7,6 +7,7 @@ import java.util.List;
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CategorySearchDto;
 import de.dedede.model.data.dtos.MediumDto;
+import de.dedede.model.persistence.daos.CategoryDao;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.view.ViewScoped;
@@ -36,12 +37,16 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	private CategoryDto currentCategory;
 	
+	// maybe temporary
+	// this is the tree o categories … for now … a flat version of it!!
+	private List<CategoryDto> categories;
+	
 	private List<MediumDto> mediums;
 
 
 	@PostConstruct
 	public void init() {
-
+		categories = CategoryDao.readAllCategoriesTemp();
 	}
 
 	public CategorySearchDto getCategorySearch() {
@@ -60,22 +65,42 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		this.currentCategory = currentCategory;
 	}
 	
+	public List<CategoryDto> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<CategoryDto> categories) {
+		this.categories = categories;
+	}
+
 	public boolean writableCategoryName() {
-		if (session.getUser() == null) {
-			return false;
-		}
+//		if (session.getUser() == null) {
+//			return false;
+//		}
+//		
+//		return session.getUser().getRole().isStaffOrHigher();
 		
-		return session.getUser().getRole().isStaffOrHigher();
+		return true; // @Temporary
 	}
 	
 	public boolean writableCategoryDescription() {
-		if (session.getUser() == null) {
-			return false;
-		}
+//		if (session.getUser() == null) {
+//			return false;
+//		}
+//		
+//		return session.getUser().getRole().isStaffOrHigher();
 		
-		return session.getUser().getRole().isStaffOrHigher();
+		return true; // @Temporary
 	}
 
+	public void selectCategory(CategoryDto category) {
+		currentCategory = category;
+	}
+	
+	public void saveCategory() {
+		CategoryDao.updateCategory(currentCategory);
+	}
+	
 	public void deleteCategory() {
 
 	}

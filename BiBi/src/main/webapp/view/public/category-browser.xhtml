@@ -29,7 +29,20 @@
 
 		</h:form>
 
-		<bibi:treeView />
+		<h:form id="form_category_tree">
+
+			<ui:repeat value="#{categoryBrowser.categories}" var="category">
+
+				<h:panelGroup layout="block" styleClass="XXX">
+					<h:commandLink id="link_select_category" value="#{category.name}"
+						action="#{categoryBrowser.selectCategory(category)}" />
+				</h:panelGroup>
+
+			</ui:repeat>
+
+		</h:form>
+
+		<!-- <bibi:treeView /> -->
 
 		<h:form id="form_category">
 
