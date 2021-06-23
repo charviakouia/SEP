@@ -10,14 +10,6 @@ html, body {
 	height: var(--footer-height);
 }
 
-.nav-link.active {
-	color: var(--bs-gray);
-}
-
-.className td {
-    vertical-align: top;
-}
-
 .paginated-list:not(:first-child) {
 	margin-top: 3rem;
 }
