@@ -74,8 +74,8 @@
 
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingAccountMenu}">
-						<h:link value="#{msg['account']}" styleClass="nav-link dropdown-toggle"
-							p:data-bs-toggle="dropdown" />
+						<h:link value="#{msg['account']}"
+							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
 						<h:panelGroup styleClass="dropdown-menu">
 							<h:link value="#{msg['profile']}"
@@ -121,14 +121,14 @@
 
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingAdministratorMenu}">
-						<h:link value="#{msg['administration']}" styleClass="nav-link dropdown-toggle"
-							p:data-bs-toggle="dropdown" />
+						<h:link value="#{msg['administration']}"
+							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
 						<h:panelGroup styleClass="dropdown-menu">
 							<h:link value="#{msg['user_search']}"
 								outcome="/view/admin/user-search.xhtml"
 								styleClass="dropdown-item #{page == 'user_search' ? 'active' : ''}" />
-						
+
 							<h:link value="#{msg['settings']}"
 								outcome="/view/admin/administration.xhtml"
 								styleClass="dropdown-item #{page == 'administration' ? 'active' : ''}" />
@@ -161,7 +161,13 @@
 						styleClass="nav-item form-control" title="#{msg['search_term']}"
 						p:placeholder="#{msg['search']}" />
 
-					<!-- @Task add comment bc of hack -->
+					<!--
+					Indeed, the button below is not displayed to the user but it is triggered when a user presses
+					the enter key inside of the input field. Not showing a button is a stylistic choice of mine.
+					Unfortunately, I have to fall back to this hack since "action" is not an attribute of a form
+					element and the attribute "valueChangeListener" on input fields fires *before* the setter which
+					breaks the logic in the backing bean and "actionListener" does not work either.
+					-->
 					<h:commandButton id="button_search_medium_header"
 						action="#{pageHeader.searchMedium()}" style="display: none" />
 				</h:form>

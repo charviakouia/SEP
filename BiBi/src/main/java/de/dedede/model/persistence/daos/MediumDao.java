@@ -455,7 +455,7 @@ public final class MediumDao {
 				throw new LostConnectionException(message);
 			}
 
-			final var message = "Database error occurred while reading copies ready for pickup: "
+			final var message = "Database error occurred while reading media given a category: "
 					+ exeption.getMessage();
 			Logger.severe(message);
 

@@ -42,35 +42,31 @@
 
 		</h:form>
 
-		<!-- <bibi:treeView /> -->
-
 		<h:form id="form_category">
 
 			<h:inputText id="input_category_name"
 				value="#{categoryBrowser.currentCategory.name}"
 				readonly="#{!categoryBrowser.writableCategoryName()}"
-				styleClass="readonly-as-plain-text">
+				styleClass="readonly-as-plain-text form-control">
 				<f:validateLength minimum="1" maximum="100" />
 			</h:inputText>
 
 			<h:inputTextarea id="input_category_description"
 				value="#{categoryBrowser.currentCategory.description}"
 				readonly="#{!categoryBrowser.writableCategoryDescription()}"
-				styleClass="readonly-as-plain-text" />
+				styleClass="readonly-as-plain-text form-control" />
 
 			<h:commandButton id="button_save_category" value="!SAVE CHANGES!"
 				action="#{categoryBrowser.saveCategory()}"
-				styleClass="btn btn-secondary" />
+				styleClass="btn btn-outline-secondary" />
 
-
-			<!-- @TGask style secondary -> "danger" if exists -->
 			<h:commandButton id="button_delete_category"
 				value="!DELETE_CATEGORY!"
 				action="#{categoryBrowser.deleteCategory()}"
-				styleClass="btn btn-secondary" />
+				styleClass="btn btn-outline-danger" />
 
-			<h:commandLink id="link_create_category" value="!CREATE CATEGORY!"
-				action="#{categoryBrowser.createCategory()}" />
+			<h:commandButton id="button_create_category" value="!CREATE CATEGORY!"
+				action="#{categoryBrowser.createCategory()}" styleClass="btn btn-outline-primary" />
 
 		</h:form>
 
@@ -80,7 +76,8 @@
 				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
 
 				<bibi:columnContent>
-					#{item.title}
+					<h:link value="#{item.title}"
+						outcome="/view/public/medium.xhtml?id=#{item.id}" />
 				</bibi:columnContent>
 			</h:column>
 
