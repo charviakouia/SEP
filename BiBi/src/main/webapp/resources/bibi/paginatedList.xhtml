@@ -9,13 +9,12 @@
 	<cc:interface>
 		<cc:attribute name="value"
 			type="de.dedede.model.logic.managed_beans.PaginatedList" />
-		<cc:attribute name="styleClass" />
 	</cc:interface>
 
 	<cc:implementation>
 
 		<h:panelGroup layout="block"
-			styleClass="btn-toolbar justify-content-center #{cc.attrs.styleClass}">
+			styleClass="paginated-list btn-toolbar justify-content-center">
 
 			<h:form id="form_go_back" styleClass="btn-group">
 				<!--
