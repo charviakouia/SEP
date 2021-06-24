@@ -139,7 +139,7 @@ public class Login {
 			TokenDto userToken = UserDao.setOrRetrieveUserToken(
 					completeUserData, newTokenContainer);			
 			String link = EmailUtility.getLink(
-				   "/view/public/password-reset.xhtml", userToken.getContent());
+				   "/view/ffa/password-reset.xhtml", userToken.getContent());
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
 			String emailBody = insertParams(firstname, lastname, link, content);

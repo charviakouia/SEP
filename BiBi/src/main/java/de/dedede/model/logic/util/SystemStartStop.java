@@ -87,7 +87,6 @@ public class SystemStartStop implements SystemEventListener {
 			System.out.println("Failed to connect to the Mail Server.");
 		}
 
-		/*
 		Application application = fctx.getApplication();
 		ResourceBundle messages = application.evaluateExpressionGet(fctx, 
 				"#{msg}", ResourceBundle.class);
@@ -96,9 +95,6 @@ public class SystemStartStop implements SystemEventListener {
 		String emailBody = messages.getString("reminderEmail.return_copy"
 				+ "_reminder_email");
 		DataLayerInitializer.execute(emailSubject, emailBody);
-		 */
-
-		DataLayerInitializer.execute("A", "B");
 	}
 	
 	private void shutdownApplication() {
