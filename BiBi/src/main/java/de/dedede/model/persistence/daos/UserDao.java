@@ -235,6 +235,7 @@ public final class UserDao {
 				updateToken.setInt(2, user.getId());
 				int changed = updateToken.executeUpdate();
 				Logger.development(changed + " usertoken was newly generated");
+				conn.commit(); // Ivan
 				updateToken.close();
 				token.setCreationTime(LocalDateTime.now());
 				return token;
@@ -246,6 +247,7 @@ public final class UserDao {
 				rs.next();
 				String content = rs.getString(1);
 				LocalDateTime creation = rs.getTimestamp(2).toLocalDateTime();
+				conn.commit(); // Ivan
 				getToken.close();
 				TokenDto result = new TokenDto();
 				result.setContent(content);

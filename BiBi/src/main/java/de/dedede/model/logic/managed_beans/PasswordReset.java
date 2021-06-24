@@ -13,6 +13,7 @@ import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistExceptio
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -69,7 +70,8 @@ public class PasswordReset implements Serializable {
 	}
 
 	public void findUser() {
-		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		Application app = context.getApplication();
+		ResourceBundle messages = app.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			userDto.setToken(token);
 			UserDao.readUserByToken(userDto);
@@ -99,7 +101,8 @@ public class PasswordReset implements Serializable {
 		userDto.setToken(null);
 		userDto.setTokenCreation(null);
 		UserDao.updateUser(userDto);
-		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		Application app = context.getApplication();
+		ResourceBundle messages = app.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		context.addMessage(null, new FacesMessage(messages.getString("passwordReset.success")));
 		context.getExternalContext().getFlash().setKeepMessages(true);
 		return "/view/public/login.xhtml?faces-redirect=true";

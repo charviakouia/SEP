@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import de.dedede.model.persistence.exceptions.*;
 import org.postgresql.util.PGInterval;
 
 import de.dedede.model.data.dtos.CategoryDto;
@@ -30,16 +31,6 @@ import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.util.UserVerificationStatus;
-import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
-import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
-import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
-import de.dedede.model.persistence.exceptions.UserExceededDeadlineException;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 import de.dedede.model.persistence.util.Pagination; 
@@ -142,12 +133,15 @@ public final class MediumDao {
 	}
 
 	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) throws SQLException {
-		stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
-		CategoryDto category = mediumDto.getCategory();
-		if (category == null) {
+		if (mediumDto.getReturnPeriod() == null){
+			stmt.setObject(1, null);
+		} else {
+			stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
+		}
+		if (mediumDto.getCategory() == null) {
 			stmt.setObject(2, 1);
 		} else {
-			stmt.setInt(2, category.getId());
+			stmt.setInt(2, mediumDto.getCategory().getId());
 		}
 		stmt.setString(3, mediumDto.getTitle());
 		stmt.setString(4, mediumDto.getAuthor1());
@@ -603,6 +597,42 @@ public final class MediumDao {
 			}
 			conn.commit();
 			return result;
+		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
+			String msg = "Database error occurred while reading mediumCopyUser entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	public static int readNumberOfAllOverdueCopies() {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"SELECT COUNT(*) FROM (" +
+							"SELECT *" +
+							"FROM users AS u " +
+							"JOIN mediumcopy AS c ON u.userid = c.actor " +
+							"JOIN medium AS m ON c.mediumid = m.mediumid " +
+							"CROSS JOIN (SELECT * FROM application ORDER BY one ASC LIMIT 1) AS a " +
+							"WHERE c.deadline < CURRENT_TIMESTAMP " +
+							"AND c.status = 'BORROWED' " +
+							"ORDER BY u.userid, m.mediumid, c.copyid DESC" +
+							") AS countingTable;"
+			);
+			ResultSet resultSet = stmt.executeQuery();
+			if (resultSet.next()){
+				int result = resultSet.getInt(1);
+				conn.commit();
+				return result;
+			} else {
+				try { conn.rollback(); } catch (SQLException ignore) {}
+				String msg = "SQL query returned unexpected result, single int required";
+				Logger.severe(msg);
+				throw new InvalidConfigurationException(msg);
+			}
 		} catch (SQLException e){
 			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while reading mediumCopyUser entities";

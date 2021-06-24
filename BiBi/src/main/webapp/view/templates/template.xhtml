@@ -16,6 +16,15 @@
 	<h:outputStylesheet library="css" name="bootstrap-5.0.1.min.css" />
 	<h:outputStylesheet library="css" name="style.css" />
 
+	<style>
+		body {
+			background-image: linear-gradient(to right, white 20%, rgba(255,255,255,0.8) 50%, transparent 80%),
+				url("#{resource['images:backgroundImage.svg']}"),
+				linear-gradient(to right, white 30%, transparent 80%);
+			background-size: 100%, cover;
+		}
+	</style>
+
 	<!-- @Task favicon -->
 
 </h:head>

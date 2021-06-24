@@ -11,6 +11,7 @@ import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -25,6 +26,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * The backing bean for the registration page. On this page an anonymous user
@@ -49,6 +51,8 @@ public class Registration implements Serializable {
 		user = new UserDto();
 		user.setUserVerificationStatus(UserVerificationStatus.UNVERIFIED);
 		user.setUserLendStatus(UserLendStatus.ENABLED);
+		user.setRole(UserRole.REGISTERED);
+		user.setZipCode(99999);
 	}
 
 	public UserDto getUser() {
@@ -60,11 +64,7 @@ public class Registration implements Serializable {
 	}
 
 	public List<UserRole> getRoles(){
-		if (isAdmin()) {
-			return List.of(UserRole.values());
-		} else {
-			return List.of(UserRole.REGISTERED);
-		}
+		return List.of(UserRole.values());
 	}
 
 	public String getPassword() {
@@ -104,16 +104,18 @@ public class Registration implements Serializable {
 	}
 
 	private String switchUser(){
+		Application app = context.getApplication();
+		ResourceBundle messages = app.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		String msg;
 		if (isAdmin()){
-			context.addMessage(null, new FacesMessage("User created successfully"));
-			context.getExternalContext().getFlash().setKeepMessages(true);
-			return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
+			msg = messages.getString("registration.success.admin");
 		} else {
-			context.addMessage(null, new FacesMessage("Registration successful"));
-			context.getExternalContext().getFlash().setKeepMessages(true);
+			msg = messages.getString("registration.success.own");
 			session.setUser(user);
-			return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
 		}
+		context.getExternalContext().getFlash().setKeepMessages(true);
+		context.addMessage(null, new FacesMessage(msg));
+		return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
 	}
 
 	private void setPasswordHash(){
@@ -123,7 +125,7 @@ public class Registration implements Serializable {
 		user.setPasswordSalt(salt);
 	}
 	
-	private boolean isAdmin() {
+	public boolean isAdmin() {
 		UserDto currentUser = session.getUser();
 		return currentUser != null && currentUser.getRole() != null && currentUser.getRole().equals(UserRole.ADMIN);
 	}

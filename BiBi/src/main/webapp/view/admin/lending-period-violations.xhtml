@@ -12,53 +12,42 @@
 
 	<ui:define name="content">
 
-		<h:outputLabel value="#{msg['lendingPeriodViolations.title']}"/>
-		
-		<h:dataTable value="#{lendingPeriodViolation.items}" var="dto">
-			
+		<h:outputLabel value="#{msg['lendingPeriodViolations.title']}" style="font-weight:bold; font-size:x-large;"/>
+
+		<bibi:paginatedList value="#{lendingPeriodViolation}">
+
 			<h:column>
-			
 				<f:facet name="header">#{msg['lendingPeriodViolations.mediumTitle']}</f:facet>
-				
-				<h:link value="#{lendingPeriodViolation.getMediumLabel(dto)}" outcome="#{lendingPeriodViolation.getMediumLink(dto)}"/>
-			
+				<bibi:columnContent>
+					<h:link value="#{lendingPeriodViolation.getMediumLabel(item)}"
+							outcome="#{lendingPeriodViolation.getMediumLink(item)}"/>
+				</bibi:columnContent>
 			</h:column>
-			
+
 			<h:column>
-			
 				<f:facet name="header">#{msg['lendingPeriodViolations.userTitle']}</f:facet>
-				
-				<h:link value="#{lendingPeriodViolation.getUserLabel(dto)}" outcome="#{lendingPeriodViolation.getUserLink(dto)}"/>
-			
+				<bibi:columnContent>
+					<h:link value="#{lendingPeriodViolation.getUserLabel(item)}"
+							outcome="#{lendingPeriodViolation.getUserLink(item)}"/>
+				</bibi:columnContent>
 			</h:column>
-			
+
 			<h:column>
-			
 				<f:facet name="header">#{msg['lendingPeriodViolations.copyTitle']}</f:facet>
-				
-				<h:link value="#{lendingPeriodViolation.getCopyLabel(dto)}" outcome="#{lendingPeriodViolation.getCopyLink(dto)}"/>
-			
+				<bibi:columnContent>
+					<h:link value="#{lendingPeriodViolation.getCopyLabel(item)}"
+							outcome="#{lendingPeriodViolation.getCopyLink(item)}"/>
+				</bibi:columnContent>
 			</h:column>
-			
+
 			<h:column>
-			
 				<f:facet name="header">#{msg['lendingPeriodViolations.overdraftTitle']}</f:facet>
-				
-				<h:outputText value="#{lendingPeriodViolation.getOverdraftText(dto)}"/>
-			
+				<bibi:columnContent>
+					<h:outputText value="#{lendingPeriodViolation.getOverdraftText(item)}"/>
+				</bibi:columnContent>
 			</h:column>
-			
-		</h:dataTable>
-		
-		<h:form>
-		
-			<h:commandButton value="#{msg['previous_page']}" action="#{lendingPeriodViolation.goBack()}"/>
-			
-			<h:commandButton value="#{msg['next_page']}" action="#{lendingPeriodViolation.goForward()}"/>
-			
-			<h:outputText value="#{msg['page']}: #{lendingPeriodViolation.paginatedList.pageNumber}"/>
-		
-		</h:form>
+
+		</bibi:paginatedList>
 
 	</ui:define>
 	

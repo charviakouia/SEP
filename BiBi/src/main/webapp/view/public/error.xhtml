@@ -11,68 +11,63 @@
 	<ui:param name="page" value="error" />
 
 	<ui:define name="content">
-	
-	
 
-		<h:form>
+		<h:outputLabel value="#{msg['error.title']}:" style="font-weight:bold; font-size:x-large;"/><br/><br/>
+
+		<h:outputLabel value="#{msg['error.navigation']}" for="errorNavigationMenu"
+					   style="font-weight:bold;"/><br/>
+
+		<h:form id="errorNavigationMenu">
 
 			<h:outputLabel value="#{msg['error.comingFrom']}: '#{error.urlWithParameters}'"/><br/><br/>
 		
-			<h:button value="#{msg['error.goBackWithParamteters']}" outcome="#{error.urlWithParameters}"/>
-
+			<h:button value="#{msg['error.goBackWithParameters']}" outcome="#{error.urlWithParameters}"/>
 			<h:button value="#{msg['error.goBack']}" outcome="#{error.urlWithoutParameters}"/>
-
 			<h:button value="#{msg['error.homePage']}" outcome="#{error.homeUrl}"/>
 
 		</h:form><br/><br/>
+
+		<ui:fragment id="userFriendlyDetails" rendered="#{initParam['jakarta.faces.PROJECT_STAGE'] == 'Development'}">
+
+			<h:outputLabel for="userFriendlyDetails" value="#{msg['error.exceptionDetails']}:"
+						   style="font-weight:bold;"/><br/><br/>
+
+			<ui:repeat value="#{error.errorDtos}" var="dto">
+				<ui:repeat value="#{dto.exceptionInformation}" var="messageArray">
+
+					<ui:fragment>
+						<h:outputText value="#{msg['error.exceptionName']}: '#{messageArray[0]}'"/><br/>
+					</ui:fragment>
+
+					<ui:fragment rendered="#{messageArray[1] != null}">
+						<h:outputText value="- #{msg['error.explanation']}: #{messageArray[1]}"/><br/>
+					</ui:fragment>
+
+					<ui:fragment rendered="#{messageArray[2] != null}">
+						<h:outputText value="- #{msg['error.message']}: '#{messageArray[2]}'"/><br/>
+					</ui:fragment>
+
+				</ui:repeat>
+			</ui:repeat><br/>
+
+		</ui:fragment>
 		
+		<ui:fragment id="stackTrace" rendered="#{initParam['jakarta.faces.PROJECT_STAGE'] == 'Development'}">
 		
-		
-		<h:outputLabel value="#{msg['error.exceptionDetails']}:"/><br/><br/>
-	
-		<ui:repeat value="#{error.errorDtos}" var="dto">
-			
-			<ui:repeat value="#{dto.exceptionInformation}" var="messageArray">
-			
-				<ui:fragment><h:outputText value="#{msg['error.exceptionName']}: '#{messageArray[0]}'"/><br/></ui:fragment>
-			
-				<ui:fragment rendered="#{messageArray[1] != null}">
-				
-					<h:outputText value="- #{msg['error.explanation']}: #{messageArray[1]}"/><br/>
-					
-				</ui:fragment>
-				
-				<ui:fragment rendered="#{messageArray[2] != null}">
-				
-					<h:outputText value="- #{msg['error.message']}: '#{messageArray[2]}'"/><br/>
-					
-				</ui:fragment>
-				
-			</ui:repeat>
-			
-		</ui:repeat><br/>
-		
-		
-		
-		<ui:fragment rendered="#{initParam['jakarta.faces.PROJECT_STAGE'] == 'Development'}">
-		
-			<h:outputLabel value="#{msg['error.stackTrace']}:"/><br/><br/>
+			<h:outputLabel for="stackTrace" value="#{msg['error.stackTrace']}:" style="font-weight:bold;"/><br/><br/>
 		
 			<ui:repeat value="#{error.errorDtos}" var="dto">
 				
 				<h:outputText value="#{msg['error.message']}: '#{dto.message}'"/><br/>
 				
 				<ui:repeat value="#{dto.stackTraceElements}" var="e">
-				
-					<h:outputText value="- '#{e.fileName}' >> '#{e.className}' >> '#{e.methodName}' >> #{msg['error.line']} #{e.lineNumber}"/><br/>
-				
+					<h:outputText value="- '#{e.fileName}' >> '#{e.className}' >>
+					'#{e.methodName}' >> #{msg['error.line']} #{e.lineNumber}"/><br/>
 				</ui:repeat>
 				
 			</ui:repeat>
 		
 		</ui:fragment>
-		
-		
 
 	</ui:define>
 	
