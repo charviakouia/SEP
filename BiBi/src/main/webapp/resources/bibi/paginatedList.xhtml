@@ -7,62 +7,93 @@
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi">
 
 	<cc:interface>
+		<!--
+		The backing bean powering the paginated list.
+		Our current infrastructure merely supports at most one paginated list per backing bean.
+		-->
 		<cc:attribute name="value"
-			type="de.dedede.model.logic.managed_beans.PaginatedList" />
+			type="de.dedede.model.logic.managed_beans.PaginatedList"
+			required="true" />
+
+		<!--
+		Additional style classes that should be applied to the paginated list apart from some default ones.
+		Mostly useful for specifying the top margin. It is recommended to set the style class to either
+		`mt-5` or nothing if the paginated list is visually the first element of the page.
+		-->
+		<cc:attribute name="styleClass" />
+
+		<!--
+		The label shown when the paginated list is empty.
+		 -->
+		<cc:attribute name="noEntriesLabel"
+			default="#{msg['paginated_list.no_entries']}" />
 	</cc:interface>
 
 	<cc:implementation>
 
 		<h:panelGroup layout="block"
-			styleClass="paginated-list btn-toolbar justify-content-center">
+			rendered="#{not empty cc.attrs.value.items}">
 
-			<h:form id="form_go_back" styleClass="btn-group">
-				<!--
-				The large z-index is necessary to prevent a Boostrap bug where the the left border of the
-				input field #input_current_page overlaps the right border of the button.
-				-->
-				<h:commandButton id="button_go_back" value="#{msg['previous_page']}"
-					action="#{cc.attrs.value.goBack()}"
-					disabled="#{cc.attrs.value.firstPage}"
-					styleClass="btn btn-outline-secondary" style="z-index: 1000" />
-			</h:form>
+			<h:panelGroup layout="block"
+				styleClass="btn-toolbar justify-content-center #{cc.attrs.styleClass}">
 
-			<h:form id="form_page_number" styleClass="input-group">
-				<h:inputText id="input_current_page"
-					value="#{cc.attrs.value.pageNumber}" styleClass="form-control" />
+				<h:form id="form_go_back" styleClass="btn-group">
+					<!--
+					The large z-index is necessary to prevent a Bootstrap bug where the left border of the
+					input field #input_current_page overlaps the right border of the button.
+					-->
+					<h:commandButton id="button_go_back"
+						value="#{msg['previous_page']}"
+						action="#{cc.attrs.value.goBack()}"
+						disabled="#{cc.attrs.value.firstPage}"
+						styleClass="btn btn-outline-secondary" style="z-index: 1000" />
+				</h:form>
 
-				<h:panelGroup styleClass="input-group-text">/</h:panelGroup>
+				<h:form id="form_page_number" styleClass="input-group">
+					<h:inputText id="input_current_page"
+						value="#{cc.attrs.value.pageNumber}" styleClass="form-control" />
 
-				<!-- read-only input text for cosmetic reasons -->
-				<h:inputText
-					value="#{cc.attrs.value.paginatedList.totalAmountOfPages}"
-					styleClass="form-control" readonly="true" />
-				<!--
-				Indeed, the button below is not displayed to the user but it is triggered when a user presses
-				the enter key inside of the input field. Not showing a button is a stylistic choice of mine.
-				Unfortunately, I have to fall back to this hack since "action" is not an attribute of a form
-				element and the attribute "valueChangeListener" on input fields fires *before* the setter which
-				breaks the logic in the backing bean and "actionListener" does not work either.
-				-->
-				<h:commandButton id="button_current_page"
-					action="#{cc.attrs.value.goToPage()}" style="display: none;" />
-			</h:form>
+					<h:panelGroup styleClass="input-group-text">/</h:panelGroup>
 
-			<h:form id="form_go_forward" styleClass="btn-group">
-				<h:commandButton id="button_go_forward" value="#{msg['next_page']}"
-					action="#{cc.attrs.value.goForward()}"
-					disabled="#{cc.attrs.value.lastPage}"
-					styleClass="btn btn-outline-secondary" />
-			</h:form>
+					<!-- read-only input text for cosmetic reasons -->
+					<h:inputText
+						value="#{cc.attrs.value.paginatedList.totalAmountOfPages}"
+						styleClass="form-control" readonly="true" />
+
+					<!--
+					Indeed, the button below is not displayed to the user but it is triggered when a user presses
+					the enter key inside of the input field. Not showing a button is a stylistic choice of mine.
+					Unfortunately, I have to fall back to this hack since "action" is not an attribute of a form
+					element and the attribute "valueChangeListener" on input fields fires *before* the setter which
+					breaks the logic in the backing bean and "actionListener" does not work either.
+					-->
+					<h:commandButton id="button_current_page"
+						action="#{cc.attrs.value.goToPage()}" style="display: none;" />
+				</h:form>
+
+				<h:form id="form_go_forward" styleClass="btn-group">
+					<h:commandButton id="button_go_forward" value="#{msg['next_page']}"
+						action="#{cc.attrs.value.goForward()}"
+						disabled="#{cc.attrs.value.lastPage}"
+						styleClass="btn btn-outline-secondary" />
+				</h:form>
+
+			</h:panelGroup>
+
+			<h:dataTable value="#{cc.attrs.value.items}" var="item"
+				varStatus="status" styleClass="table">
+
+				<cc:insertChildren />
+
+			</h:dataTable>
 
 		</h:panelGroup>
 
-		<h:dataTable value="#{cc.attrs.value.items}" var="item"
-			varStatus="status" styleClass="table">
-
-			<cc:insertChildren />
-
-		</h:dataTable>
+		<h:panelGroup layout="block"
+			styleClass="text-center text-muted fst-italic #{cc.attrs.styleClass}"
+			rendered="#{empty cc.attrs.value.items}">
+			#{cc.attrs.noEntriesLabel}
+		</h:panelGroup>
 
 	</cc:implementation>
 

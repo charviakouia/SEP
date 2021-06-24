@@ -45,7 +45,8 @@
 
 		</h:form>
 
-		<bibi:paginatedList value="#{userSearch}">
+		<bibi:paginatedList value="#{userSearch}" styleClass="mt-5"
+			noEntriesLabel="#{msg['paginated_list.no_search_results']}">
 
 			<h:column>
 				<f:facet name="header">#{msg['userEmailAddress']}</f:facet>

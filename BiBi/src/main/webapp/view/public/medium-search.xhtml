@@ -76,7 +76,8 @@
 
 		</h:form>
 
-		<bibi:paginatedList value="#{mediumSearch}">
+		<bibi:paginatedList value="#{mediumSearch}" styleClass="mt-5"
+			noEntriesLabel="#{msg['paginated_list.no_search_results']}">
 
 			<h:column>
 				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
