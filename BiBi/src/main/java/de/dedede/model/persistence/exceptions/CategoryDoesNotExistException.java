@@ -6,12 +6,13 @@ import de.dedede.model.data.exceptions.AnnotatedException;
 import jakarta.faces.context.FacesContext;
 
 /**
- * This checked exception describes situations in which a category, as represented
+ * This runtime exception describes situations in which a category, as represented
  * by a data entry, is absent from the data store. This generally means that
  * an attempt to reference an entity by an ID was carried out with an ID that
  * doesn't refer to anything. Sometimes, this may be the result of a race-condition.
  */
-public class CategoryDoesNotExistException extends Exception implements AnnotatedException {
+
+public class CategoryDoesNotExistException extends RuntimeException implements AnnotatedException {
 
     private static final long serialVersionUID = 1L;
 
