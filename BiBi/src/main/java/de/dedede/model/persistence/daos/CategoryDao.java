@@ -2,6 +2,7 @@ package de.dedede.model.persistence.daos;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,6 +93,7 @@ public final class CategoryDao {
 	 */
 	// @Task rename to searchCategories
 	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearch, PaginationDto pagination) {
+
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
@@ -149,39 +151,56 @@ public final class CategoryDao {
 		}
 	}
 
+	// @Task docs
 	public static List<CategoryDto> readAllCategoriesTemp() {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
 			final var statement = connection.prepareStatement("""
-							select
-								ct.categoryid, ct.title, ct.description, ct.parentcategoryid
-							from
-								category ct
-							order by
-								title
-									desc
+							with recursive categories(categoryid, title, description, parentcategoryid) as (
+								select
+									ct.categoryid, ct.title, ct.description, ct.parentcategoryid
+								from
+									category ct
+								where
+									ct.parentcategoryid is null
+								union all
+								select
+									ct.categoryid, ct.title, ct.description, ct.parentcategoryid
+								from
+									category ct,
+									categories pct
+								where
+									ct.parentcategoryid = pct.categoryid
+							)
+							select * from categories
+							order by title
 					""");
 
 			final var resultSet = statement.executeQuery();
 			final var results = new ArrayList<CategoryDto>();
-
+			final var categories = new HashMap<Integer, CategoryDto>();
+			
 			while (resultSet.next()) {
 				final var category = new CategoryDto();
 				category.setId(resultSet.getInt(1));
 				category.setName(resultSet.getString(2));
 				category.setDescription(resultSet.getString(3));
 
-				if (resultSet.getObject(4) != null) {
-					final var parentCategory = new CategoryDto();
-					parentCategory.setId(resultSet.getInt(4));
-					category.setParent(parentCategory);
-				}
+				categories.put(category.getId(), category);
 				
-				results.add(category);
+				if (resultSet.getObject(4) != null) {
+					// parent exists by now!
+					category.setParent(categories.get(resultSet.getInt(4)));
+				} else {
+					// only put top-level/parentless categories directly into the list of results
+					results.add(category);
+				}
 			}
 
+			connection.commit();
+			
 			return results;
 
 		} catch (SQLException exception) {
@@ -213,11 +232,11 @@ public final class CategoryDao {
 	 * @see CategoryDto
 	 */
 	public static void updateCategory(CategoryDto category) {
-		
+
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
-			
+
 			final var statement = connection.prepareStatement("""
 							update
 								category
@@ -229,19 +248,21 @@ public final class CategoryDao {
 			var parameterIndex = 0;
 			statement.setString(parameterIndex += 1, category.getName());
 			statement.setString(parameterIndex += 1, category.getDescription());
-			statement.setObject(parameterIndex += 1, category.getParent() == null ? null : category.getParent().getId());
+			statement.setObject(parameterIndex += 1,
+					category.getParent() == null ? null : category.getParent().getId());
 			statement.setInt(parameterIndex += 1, category.getId());
-			
+
 			final var affectedRows = statement.executeUpdate();
-			
+
 			if (affectedRows == 0) {
-				final var message = "Non-existent category with id %s passed to updateCategory()".formatted(category.getId());
+				final var message = "Non-existent category with id %d passed to updateCategory()"
+						.formatted(category.getId());
 				Logger.severe(message);
 				throw new CategoryDoesNotExistException(message);
 			}
-			
+
 			connection.commit();
-			
+
 		} catch (SQLException exception) {
 
 			try {
@@ -258,7 +279,7 @@ public final class CategoryDao {
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(connection);
 		}
-		
+
 	}
 
 	/**
