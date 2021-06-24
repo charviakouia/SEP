@@ -9,7 +9,3 @@ html, body {
 .footer {
 	height: var(--footer-height);
 }
-
-.paginated-list:not(:first-child) {
-	margin-top: 3rem;
-}

@@ -288,19 +288,19 @@ public final class MediumDao {
 			connection.commit();
 
 			return results;
-		} catch (SQLException exeption) {
+		} catch (SQLException exception) {
 
 			try {
 				connection.rollback();
-			} catch (SQLException e) {
-				final var message = "Failed to rollback database transaction";
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
 				Logger.severe(message);
 				throw new LostConnectionException(message);
 			}
 
-			final var message = "Database error occurred while search for mediums: " + exeption.getMessage();
+			final var message = "Database error occurred while searching for media: " + exception.getMessage();
 			Logger.severe(message);
-			throw new LostConnectionException(message, exeption);
+			throw new LostConnectionException(message, exception);
 
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(connection);
@@ -417,6 +417,80 @@ public final class MediumDao {
 			return Optional.of(Integer.parseInt(source));
 		} catch (NumberFormatException exception) {
 			return Optional.empty();
+		}
+	}
+	
+	// @Task docs
+	public static List<MediumDto> readMediaGivenCategory(CategoryDto category, PaginationDto pagination) {
+		
+		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+
+		try {
+
+			final var statementBody = """
+					from
+						medium m
+					where
+						m.hascategory = ?
+					""";
+
+			{
+				final var countStatement = connection.prepareStatement("select count(m.mediumid) " + statementBody);
+				countStatement.setInt(1, category.getId());
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+				
+				Pagination.updatePagination(pagination, resultSet.getInt(1));
+			}
+
+			final var itemsStatement = connection.prepareStatement("""
+					select
+						m.mediumid, m.title, m.author1, m.author2, m.edition, m.publisher
+					%s
+					offset ?
+					limit ?
+					""".formatted(statementBody));
+			var parameterIndex = 0;
+			itemsStatement.setInt(parameterIndex += 1, category.getId());
+			// @Task sorting
+			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
+
+			final var resultSet = itemsStatement.executeQuery();
+			final var results = new ArrayList<MediumDto>();
+
+			while (resultSet.next()) {
+				final var medium = new MediumDto();
+				medium.setId(resultSet.getInt(1));
+				medium.setTitle(resultSet.getString(2));
+				medium.setAuthor1(resultSet.getString(3));
+				medium.setAuthor2(resultSet.getString(4));
+				medium.setEdition(resultSet.getString(5));
+				medium.setPublisher(resultSet.getString(6));
+				results.add(medium);
+			}
+
+			connection.commit();
+
+			return results;
+		} catch (SQLException exeption) {
+			
+			try {
+				connection.rollback();
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while reading media given a category: "
+					+ exeption.getMessage();
+			Logger.severe(message);
+
+			throw new LostConnectionException(message, exeption);
+
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(connection);
 		}
 	}
 
@@ -883,10 +957,11 @@ public final class MediumDao {
 
 			return results;
 		} catch (SQLException exeption) {
+			
 			try {
 				connection.rollback();
-			} catch (SQLException e) {
-				final var message = "Failed to rollback database transaction";
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
 				Logger.severe(message);
 				throw new LostConnectionException(message);
 			}

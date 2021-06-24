@@ -45,6 +45,7 @@ public class Lending implements Serializable {
 	/**
 	 * Reflects the input fields for signatures as an ArrayList
 	 */
+
 	private List<CopyDto> copies = new ArrayList<CopyDto>(); // normale list
 
 	/**
@@ -157,11 +158,6 @@ public class Lending implements Serializable {
 		return copies;
 	}
 
-	/**
-	 * Allows the facelet to fill the copyDtos with user input data.
-	 * 
-	 * @param copies the list of copyDtos that hold the data.
-	 */
 	public void setCopies(List<CopyDto> copies) {
 		this.copies = copies;
 	}
