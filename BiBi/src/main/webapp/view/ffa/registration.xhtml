@@ -12,48 +12,95 @@
 
 	<ui:define name="content">
 
-		<h:messages/>
+		<h:form id="messageForm">
 
-		<h:outputLabel for="registrationForm"/>
+			<h:panelGrid columns="1">
+
+				<h:panelGroup>
+					<h:inputHidden id="positive"/>
+					<h:message for="positive" style="color: green"/>
+				</h:panelGroup>
+
+				<h:panelGroup>
+					<h:inputHidden id="negative"/>
+					<h:message for="negative" style="color: darkred"/>
+				</h:panelGroup>
+
+			</h:panelGrid>
+
+		</h:form><br/>
+
+		<h:outputLabel for="registrationForm" value="#{msg['title.registration']}"
+					   style="font-weight:bold; font-size:x-large;"/>
+
 		<h:form id="registrationForm">
 
-			<h:outputLabel for="firstName" value="#{msg['registration.firstName']}"/>
-			<h:inputText id="firstName" value="#{registration.user.firstName}" required="true"/><br/>
+			<h:panelGrid columns="3" cellpadding="10">
 
-			<h:outputLabel for="lastName" value="#{msg['registration.lastName']}"/>
-			<h:inputText id="lastName" value="#{registration.user.lastName}" required="true"/><br/>
+				<h:outputLabel for="firstName" value="#{msg['registration.firstName']}*"/>
+				<h:inputText id="firstName" value="#{registration.user.firstName}" required="true"
+							 requiredMessage="#{msg['registration.error.required']}"/>
+				<h:message for="firstName" style="color:darkred"/>
 
-			<h:outputLabel for="password" value="#{msg['registration.password']}"/>
-			<h:inputSecret id="password" value="#{registration.password}" required="true">
-				<f:validator validatorId="passwordValidator"/>
-			</h:inputSecret><br/>
+				<h:outputLabel for="lastName" value="#{msg['registration.lastName']}*"/>
+				<h:inputText id="lastName" value="#{registration.user.lastName}" required="true"
+							 requiredMessage="#{msg['registration.error.required']}"/>
+				<h:message for="lastName" style="color:darkred"/>
 
-			<h:outputLabel for="confirmedPassword" value="#{msg['registration.repeatPassword']}"/>
-			<h:inputSecret id="confirmedPassword" value="#{registration.repeatedPassword}" required="true">
-				<f:validator validatorId="confirmPasswordValidator"/>
-			</h:inputSecret><br/>
+				<h:outputLabel for="password" value="#{msg['registration.password']}*"/>
+				<h:inputSecret id="password" value="#{registration.password}" required="true"
+							   requiredMessage="#{msg['registration.error.required']}">
+					<f:validator validatorId="passwordValidator"/>
+				</h:inputSecret>
+				<h:message for="password" style="color:darkred"/>
 
-			<h:outputLabel for="email" value="#{msg['registration.email']}"/>
-			<h:inputText id="email" value="#{registration.user.emailAddress}" required="true">
-				<f:validator validatorId="userEmailValidator"/>
-			</h:inputText><br/>
+				<h:outputLabel for="confirmedPassword" value="#{msg['registration.repeatPassword']}*"/>
+				<h:inputSecret id="confirmedPassword" value="#{registration.repeatedPassword}" required="true"
+							   requiredMessage="#{msg['registration.error.required']}">
+					<f:validator validatorId="confirmPasswordValidator"/>
+				</h:inputSecret>
+				<h:message for="confirmedPassword" style="color:darkred"/>
 
-			<h:outputLabel for="zip" value="#{msg['registration.zip']}"/>
-			<h:inputText id="zip" value="#{registration.user.zipCode}" required="true"/><br/>
+				<h:outputLabel for="email" value="#{msg['registration.email']}*"/>
+				<h:inputText id="email" value="#{registration.user.emailAddress}" required="true"
+							 requiredMessage="#{msg['registration.error.required']}">
+					<f:validator validatorId="userEmailValidator"/>
+				</h:inputText>
+				<h:message for="email" style="color:darkred"/>
 
-			<h:outputLabel for="city" value="#{msg['registration.city']}"/>
-			<h:inputText id="city" value="#{registration.user.city}" required="true"/><br/>
+				<h:outputLabel for="zip" value="#{msg['registration.zip']}*"/>
+				<h:inputText id="zip" value="#{registration.user.zipCode}" required="true"
+							 requiredMessage="#{msg['registration.error.required']}"
+							 validatorMessage="#{msg['registration.error.positiveNumber']}">
+					<f:validateLongRange minimum="0"/>
+				</h:inputText>
+				<h:message for="zip" style="color:darkred"/>
 
-			<h:outputLabel for="street" value="#{msg['registration.street']}"/>
-			<h:inputText id="street" value="#{registration.user.street}" required="true"/><br/>
+				<h:outputLabel for="city" value="#{msg['registration.city']}*"/>
+				<h:inputText id="city" value="#{registration.user.city}" required="true"
+							 requiredMessage="#{msg['registration.error.required']}"/>
+				<h:message for="city" style="color:darkred"/>
 
-			<h:outputLabel for="streetNumber" value="#{msg['registration.streetNr']}"/>
-			<h:inputText id="streetNumber" value="#{registration.user.streetNumber}" required="true"/><br/>
+				<h:outputLabel for="street" value="#{msg['registration.street']}*"/>
+				<h:inputText id="street" value="#{registration.user.street}" required="true"
+							 requiredMessage="#{msg['registration.error.required']}"/>
+				<h:message for="street" style="color:darkred"/>
 
-			<h:selectOneMenu value="#{registration.user.role}" required="true">
-				<f:selectItems value="#{registration.roles}" var="role"
-							   itemValue="#{role}" itemLabel="#{role.toString()}"/>
-			</h:selectOneMenu><br/>
+				<h:outputLabel for="streetNumber" value="#{msg['registration.streetNr']}*"/>
+				<h:inputText id="streetNumber" value="#{registration.user.streetNumber}" required="true"
+							 requiredMessage="#{msg['registration.error.required']}"/>
+				<h:message for="streetNumber" style="color:darkred"/>
+
+				<h:outputLabel for="roleChoice" value="#{msg['user_role']}*" rendered="#{registration.admin}"/>
+				<h:selectOneMenu id="roleChoice" value="#{registration.user.role}" required="true"
+								 rendered="#{registration.admin}"
+								 requiredMessage="#{msg['registration.error.required']}">
+					<f:selectItems value="#{registration.roles}" var="role"
+								   itemValue="#{role}" itemLabel="#{role.name()}"/>
+				</h:selectOneMenu>
+				<h:message for="roleChoice" style="color:darkred" rendered="#{registration.admin}"/>
+
+			</h:panelGrid><br/>
 
 			<h:commandButton value="#{msg['save']}" action="#{registration.register}"/>
 

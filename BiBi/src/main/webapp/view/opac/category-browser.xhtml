@@ -29,73 +29,90 @@
 
 		</h:form>
 
-		<bibi:treeView />
+		<h:form id="form_category_tree">
 
-		<h:form id="form_category">
+			<ui:repeat value="#{categoryBrowser.categories}" var="category">
 
-			<h:inputText id="input_category_name"
-				value="#{categoryBrowser.currentCategory.name}"
-				readonly="#{!categoryBrowser.writableCategoryName()}"
-				styleClass="readonly-as-plain-text">
-				<f:validateLength minimum="1" maximum="100" />
-			</h:inputText>
+				<h:panelGroup layout="block" styleClass="XXX">
+					<h:commandLink id="link_select_category" value="#{category.name}"
+						action="#{categoryBrowser.selectCategory(category)}" />
+				</h:panelGroup>
 
-			<h:inputTextarea id="input_category_description"
-				value="#{categoryBrowser.currentCategory.description}"
-				readonly="#{!categoryBrowser.writableCategoryDescription()}"
-				styleClass="readonly-as-plain-text" />
-
-			<h:commandButton id="button_save_category" value="!SAVE CHANGES!"
-				action="#{categoryBrowser.saveCategory()}"
-				styleClass="btn btn-secondary" />
-
-
-			<!-- @TGask style secondary -> "danger" if exists -->
-			<h:commandButton id="button_delete_category"
-				value="!DELETE_CATEGORY!"
-				action="#{categoryBrowser.deleteCategory()}"
-				styleClass="btn btn-secondary" />
-
-			<h:commandLink id="link_create_category" value="!CREATE CATEGORY!"
-				action="#{categoryBrowser.createCategory()}" />
+			</ui:repeat>
 
 		</h:form>
 
-		<bibi:paginatedList value="#{categoryBrowser}" styleClass="mt-5">
+		<h:panelGrid layout="block" styleClass="container-fluid"
+			rendered="#{categoryBrowser.currentCategory != null}">
 
-			<h:column>
-				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
+			<h:form id="form_category_controls">
 
-				<bibi:columnContent>
-					#{item.title}
-				</bibi:columnContent>
-			</h:column>
+				<h:inputText id="input_category_name"
+					value="#{categoryBrowser.currentCategory.name}"
+					readonly="#{!categoryBrowser.writableCategoryName()}"
+					styleClass="readonly-as-plain-text form-control">
+					<f:validateLength minimum="1" maximum="100" />
+				</h:inputText>
 
-			<h:column>
-				<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
+				<h:inputTextarea id="input_category_description"
+					value="#{categoryBrowser.currentCategory.description}"
+					readonly="#{!categoryBrowser.writableCategoryDescription()}"
+					styleClass="readonly-as-plain-text form-control" />
 
-				<bibi:columnContent>
+				<h:commandButton id="button_save_category" value="!SAVE CHANGES!"
+					action="#{categoryBrowser.saveCategory()}"
+					styleClass="btn btn-outline-secondary" />
+
+				<h:commandButton id="button_delete_category"
+					value="!DELETE_CATEGORY!"
+					action="#{categoryBrowser.deleteCategory()}"
+					styleClass="btn btn-outline-danger" />
+
+				<h:commandButton id="button_create_category"
+					value="!CREATE CATEGORY!"
+					action="#{categoryBrowser.createCategory()}"
+					styleClass="btn btn-outline-primary" />
+
+			</h:form>
+
+			<bibi:paginatedList value="#{categoryBrowser}" styleClass="mt-5">
+
+				<h:column>
+					<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
+
+					<bibi:columnContent>
+						<h:link value="#{item.title}"
+							outcome="/view/public/medium.xhtml?id=#{item.id}" />
+					</bibi:columnContent>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
+
+					<bibi:columnContent>
 					#{mediumSearch.formatAuthors(item)}
 				</bibi:columnContent>
-			</h:column>
+				</h:column>
 
-			<h:column>
-				<f:facet name="header">#{msg['medium_attribute.edition']}</f:facet>
+				<h:column>
+					<f:facet name="header">#{msg['medium_attribute.edition']}</f:facet>
 
-				<bibi:columnContent>
+					<bibi:columnContent>
 					#{item.edition}
 				</bibi:columnContent>
-			</h:column>
+				</h:column>
 
-			<h:column>
-				<f:facet name="header">#{msg['medium_attribute.publisher']}</f:facet>
+				<h:column>
+					<f:facet name="header">#{msg['medium_attribute.publisher']}</f:facet>
 
-				<bibi:columnContent>
+					<bibi:columnContent>
 					#{item.publisher}
 				</bibi:columnContent>
-			</h:column>
+				</h:column>
 
-		</bibi:paginatedList>
+			</bibi:paginatedList>
+
+		</h:panelGrid>
 
 	</ui:define>
 

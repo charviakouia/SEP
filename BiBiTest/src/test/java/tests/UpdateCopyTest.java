@@ -1,11 +1,10 @@
 package test.java.tests;
 
 
+import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.persistence.daos.MediumDao;
-import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
+import de.dedede.model.persistence.exceptions.*;
 import de.dedede.model.persistence.util.ConnectionPool;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +19,6 @@ import java.sql.SQLException;
 public class UpdateCopyTest {
 
     private static MediumDto mediumDto = new MediumDto();
-    private static String defaultLocation = "ZB";
     private static String testLocation = "Kneipe";
     private static int testMediumId = 3;
     private static int testCopyId = 2075071941;
@@ -28,7 +26,7 @@ public class UpdateCopyTest {
 
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, MediumDoesNotExistException {
-        PreTest.setUp();
+        tests.PreTest.setUp();
         setMediumDto();
     }
 
@@ -38,10 +36,18 @@ public class UpdateCopyTest {
     }
 
     @Test
-    public void updateCopyTest() throws EntityInstanceDoesNotExistException, MediumDoesNotExistException {
-
+    public void updateCopyTest() throws MediumDoesNotExistException, CopyDoesNotExistException,
+            CopyIsNotAvailableException {
+        CopyDto copyDto = mediumDto.getCopy(testCopyId);
+        copyDto.setLocation(testLocation);
+        MediumDao.updateCopy(copyDto);
+        MediumDao.readMedium(mediumDto);
+        CopyDto testCopyDto = mediumDto.getCopy(testCopyId);
+        Assertions.assertEquals(testCopyDto.getLocation(), testLocation);
     }
 
     private static void setMediumDto() throws MediumDoesNotExistException {
+        mediumDto.setId(testMediumId);
+        MediumDao.readMedium(mediumDto);
     }
 }

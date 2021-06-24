@@ -156,7 +156,7 @@ public final class UserDao {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Used to enable or disable all registered users lending rights.
 	 * 
@@ -168,35 +168,33 @@ public final class UserDao {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		int affected = 0;
-		try { 
-			PreparedStatement stmt = conn.prepareStatement("UPDATE users "
-					+ "SET lendstatus = CAST(? AS userlendstatus) "
-					+ "WHERE userrole = CAST('REGISTERED' AS userrole);"
-					);
+		try {
+			PreparedStatement stmt = conn
+					.prepareStatement("UPDATE users " + "SET lendstatus = CAST(? AS userlendstatus) "
+							+ "WHERE userrole = CAST('REGISTERED' AS userrole);");
 			String statusString = status.toString();
 			stmt.setString(1, statusString);
 			affected = stmt.executeUpdate();
 			conn.commit();
 			stmt.close();
 		} catch (SQLException e) {
-			String message = "A db communication error occured while "
-					+ "trying to disable user lend status";
+			String message = "A db communication error occured while " + "trying to disable user lend status";
 			Logger.severe(message);
 			throw new LostConnectionException(message, e);
 		}
 		return affected;
 	}
-	
+
 	/**
 	 * Checks if the user email exists and then if the user is allowed to lend
-	 * copies. 
+	 * copies.
 	 * 
 	 * @param userEmail the users email in a dto.
-	 * @throws UserDoesNotExistException if the useremail wasn't found in db.
+	 * @throws UserDoesNotExistException   if the useremail wasn't found in db.
 	 * @throws InvalidUserForCopyException if the user isn't allowed to lend.
 	 * @author Jonas Picker
 	 */
-	public static void validateUserLending(UserDto userEmail) 
+	public static void validateUserLending(UserDto userEmail)
 			throws UserDoesNotExistException, InvalidUserForCopyException {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
@@ -226,31 +224,30 @@ public final class UserDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-	public static TokenDto setOrRetrieveUserToken(UserDto user, TokenDto token)
-			throws UserDoesNotExistException {
+	public static TokenDto setOrRetrieveUserToken(UserDto user, TokenDto token) throws UserDoesNotExistException {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (userTokenIsNull(conn, user) || userTokenExpired(conn, user)) {
 				PreparedStatement updateToken = conn.prepareStatement(
-						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP,"
-						+ " token = ? WHERE userid = ?;");
+						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP," + " token = ? WHERE userid = ?;");
 				updateToken.setString(1, token.getContent());
 				updateToken.setInt(2, user.getId());
 				int changed = updateToken.executeUpdate();
 				Logger.development(changed + " usertoken was newly generated");
+				conn.commit(); // Ivan
 				updateToken.close();
 				token.setCreationTime(LocalDateTime.now());
 				return token;
 			} else {
 				PreparedStatement getToken = conn
-						.prepareStatement("SELECT token, tokenCreation "
-								+ "FROM users WHERE userid = ?;");
+						.prepareStatement("SELECT token, tokenCreation " + "FROM users WHERE userid = ?;");
 				getToken.setInt(1, user.getId());
 				ResultSet rs = getToken.executeQuery();
 				rs.next();
 				String content = rs.getString(1);
 				LocalDateTime creation = rs.getTimestamp(2).toLocalDateTime();
+				conn.commit(); // Ivan
 				getToken.close();
 				TokenDto result = new TokenDto();
 				result.setContent(content);
@@ -258,8 +255,7 @@ public final class UserDao {
 				return result;
 			}
 		} catch (SQLException e) {
-			String message = "SQLException while checking or "
-					+ "setting valid user token";
+			String message = "SQLException while checking or " + "setting valid user token";
 			Logger.development(message);
 			throw new LostConnectionException(message, e);
 		}
@@ -270,11 +266,10 @@ public final class UserDao {
 	// falsely return false if token is null
 	/* @author Jonas Picker */
 	private static boolean userTokenExpired(Connection conn, UserDto userId) throws SQLException {
-		PreparedStatement checkingStmt = conn.prepareStatement(
-				"SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
-				+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
-				+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END " 
-				+ "AS tokenExpired;");
+		PreparedStatement checkingStmt = conn
+				.prepareStatement("SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
+						+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
+						+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END " + "AS tokenExpired;");
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
 		conn.commit();
@@ -287,10 +282,9 @@ public final class UserDao {
 	// reads an existing user by id and checks if his token is null
 	/* @author Jonas Picker */
 	private static boolean userTokenIsNull(Connection conn, UserDto userId) throws SQLException {
-		PreparedStatement checkingStmt = conn.prepareStatement(
-				"SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
-				+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;"
-						);
+		PreparedStatement checkingStmt = conn
+				.prepareStatement("SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
+						+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;");
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
 		conn.commit();
@@ -301,16 +295,15 @@ public final class UserDao {
 	}
 
 	/**
-	 * Fetches user data associated with a given email. The email address must 
-	 * be associated with a user in the data store. Otherwise, an exception is 
-	 * thrown.
+	 * Fetches user data associated with a given email. The email address must be
+	 * associated with a user in the data store. Otherwise, an exception is thrown.
 	 *
 	 * @param userDto A DTO container with the email address that identifies the
 	 *                user to be fetched.
 	 * @return A DTO container with the fetched user.
-	 * @throws UserDoesNotExistException Is thrown when the enclosed email
-	 * 									 address isn't associated with an 
-	 *									 existing data entry.
+	 * @throws UserDoesNotExistException Is thrown when the enclosed email address
+	 *                                   isn't associated with an existing data
+	 *                                   entry.
 	 * 
 	 * @author Jonas Picker, but re-uses @author Sergei Pravdins's Code
 	 */
@@ -341,10 +334,6 @@ public final class UserDao {
 	 */
 	public static List<UserDto> searchUsers(UserSearchDto userSearch, PaginationDto pagination) {
 
-		// @Task search by email address or name
-
-		// TEMPORARY CODE AHEAD!!
-
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
@@ -353,15 +342,24 @@ public final class UserDao {
 					from
 						users u
 					where
-						position(lower(?) in lower(u.emailaddress)) > 0
+						(  position(lower(?) in lower(u.emailaddress)) > 0
+						or position(lower(?) in lower(u.name)) > 0
+						or position(lower(?) in lower(u.surname)) > 0)
+							and
+						u.lendstatus = ?::userlendstatus
 					""";
 
 			{
 				final var countStatement = connection
 						.prepareStatement("select count(distinct u.userid) " + statementBody);
+				var parameterIndex = 0;
 
-				countStatement.setString(1,  userSearch.getSearchTerm());
-				
+				while (parameterIndex < 3) {
+					countStatement.setString(parameterIndex += 1, userSearch.getSearchTerm());
+				}
+
+				countStatement.setString(parameterIndex += 1, userSearch.getLendStatus().name());
+
 				final var resultSet = countStatement.executeQuery();
 				resultSet.next();
 
@@ -375,12 +373,17 @@ public final class UserDao {
 					offset ?
 					limit ?
 					""".formatted(statementBody));
-			
-			itemsStatement.setString(1, userSearch.getSearchTerm());
-			
+			var parameterIndex = 0;
+
+			while (parameterIndex < 3) {
+				itemsStatement.setString(parameterIndex += 1, userSearch.getSearchTerm());
+			}
+
+			itemsStatement.setString(parameterIndex += 1, userSearch.getLendStatus().name());
+
 			// @Task sorting
-			itemsStatement.setInt(2, Pagination.pageOffset(pagination));
-			itemsStatement.setInt(3, Pagination.getEntriesPerPage());
+			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<UserDto>();
@@ -401,10 +404,11 @@ public final class UserDao {
 
 			return results;
 		} catch (SQLException exeption) {
+			
 			try {
 				connection.rollback();
-			} catch (SQLException e) {
-				final var message = "Failed to rollback database transaction";
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
 				Logger.severe(message);
 				throw new LostConnectionException(message);
 			}
@@ -518,7 +522,8 @@ public final class UserDao {
 		stmt.setString(9, userDto.getStreetNumber());
 		TokenDto tokenDto = userDto.getToken();
 		stmt.setString(10, (tokenDto == null ? null : tokenDto.getContent()));
-		stmt.setTimestamp(11, (tokenDto == null ? null : Timestamp.valueOf(tokenDto.getCreationTime())));
+		stmt.setTimestamp(11, (tokenDto == null || tokenDto.getCreationTime() == null ? null
+				: Timestamp.valueOf(tokenDto.getCreationTime())));
 		stmt.setObject(12, toPGInterval(userDto.getLendingPeriod()));
 		stmt.setString(13, userDto.getUserLendStatus().toString());
 		stmt.setString(14, userDto.getUserVerificationStatus().name());

@@ -9,117 +9,172 @@
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi">
 
 	<h:panelGroup layout="block"
-		styleClass="header container-fluid p-3 d-flex border-bottom justify-content-center justify-content-lg-between">
+		styleClass="navbar navbar-expand-lg navbar-light bg-light border-bottom">
 
-		<h:panelGroup layout="block" styleClass="information me-5">
+		<h:panelGroup layout="block" styleClass="container-fluid">
 
-			<!-- TASK: replace this mechanism with a separate facelet streaming binary data -->
 			<!-- <h:graphicImage
 					value="data:image/png;base64,#{pageHeader.applicationBase64Logo}"/> -->
 
-			<h:outputText value="#{pageHeader.application.name}" styleClass="h2" />
+			<h:outputText value="#{pageHeader.application.name}"
+				styleClass="navbar-brand" />
 
-		</h:panelGroup>
-
-		<h:panelGroup layout="block" styleClass="menu nav">
-
-			<h:outputLink value="#help" styleClass="nav-item"
-				p:data-bs-toggle="offcanvas" p:role="button">
-				<h:graphicImage library="icons" name="question-mark-circle.svg"
-					title="#{msg['show_help']}" styleClass="nav-link" />
-			</h:outputLink>
-
-			<h:panelGroup layout="block" id="help"
-				styleClass="offcanvas offcanvas-start" p:tabindex="-1">
-
-				<h:panelGroup layout="block" styleClass="offcanvas-header">
-					<h:outputText value="#{msg['help']}"
-						styleClass="h5 offcanvas-title" />
-					<h:form id="button_close_help">
-						<h:commandButton styleClass="btn-close text-reset"
-							p:data-bs-dismiss="offcanvas" p:aria-label="Close" />
-					</h:form>
-				</h:panelGroup>
-
-				<h:panelGroup layout="block" styleClass="offcanvas-body">
-
-					<h:panelGroup layout="block" styleClass="public">
-						#{msg['help.'.concat(page).concat('.public')]}
-					</h:panelGroup>
-
-					<h:panelGroup layout="block" styleClass="account"
-						rendered="#{pageHeader.showingAccountHelp()}">
-						#{msg['help.'.concat(page).concat('.account')]}
-					</h:panelGroup>
-
-					<h:panelGroup layout="block" styleClass="staff"
-						rendered="#{pageHeader.showingStaffHelp()}">
-						#{msg['help.'.concat(page).concat('.staff')]}
-					</h:panelGroup>
-
-					<h:panelGroup layout="block" styleClass="admin"
-						rendered="#{pageHeader.showingAdminHelp()}">
-						#{msg['help.'.concat(page).concat('.admin')]}
-					</h:panelGroup>
-
-				</h:panelGroup>
-
+			<h:panelGroup layout="block" styleClass="navbar-toggler"
+				p:data-bs-toggle="collapse" p:data-bs-target="#navbar_content">
+				<h:panelGroup styleClass="navbar-toggler-icon" />
 			</h:panelGroup>
 
-			<h:form id="form_log_out" rendered="#{pageHeader.showingLogOut()}"
-				styleClass="nav-item">
-				<h:commandLink id="button_log_out" value="#{msg['log_out']}"
-					action="#{pageHeader.logOut()}" styleClass="nav-link" />
-			</h:form>
+			<h:panelGroup layout="block" styleClass="collapse navbar-collapse"
+				id="navbar_content">
 
-			<h:link value="#{msg['lending']}" outcome="/view/staff/lending.xhtml"
-				rendered="#{pageHeader.showingLending()}"
-				styleClass="nav-link #{page == 'lending' ? 'active' : ''}" />
+				<h:panelGroup styleClass="navbar-nav me-auto mb-2 mb-lg-0">
 
-			<h:link value="#{msg['return_form']}"
-				outcome="/view/staff/return-form.xhtml"
-				rendered="#{pageHeader.showingReturnForm()}"
-				styleClass="nav-link #{page == 'return_form' ? 'active' : ''}" />
+					<h:outputLink value="#help" styleClass="nav-item"
+						p:data-bs-toggle="offcanvas" p:role="button">
+						<h:graphicImage library="icons" name="question-mark-circle.svg"
+							title="#{msg['show_help']}" styleClass="nav-link" />
+					</h:outputLink>
 
-			<h:link value="#{msg['copies_ready_for_pickup_all_users']}"
-				outcome="/view/staff/copies-ready-for-pickup-all-users.xhtml"
-				rendered="#{pageHeader.showingCopiesReadyForPickupAllUsers()}"
-				styleClass="nav-link #{page == 'copies_ready_for_pickup_all_users' ? 'active' : ''}" />
+					<h:panelGroup layout="block" id="help"
+						styleClass="offcanvas offcanvas-start" p:tabindex="-1">
 
-			<h:link value="#{msg['medium_creator']}"
-				outcome="/view/staff/medium-creator.xhtml"
-				rendered="#{pageHeader.showingMediumCreator()}"
-				styleClass="nav-link #{page == 'medium_creator' ? 'active' : ''}" />
+						<h:panelGroup layout="block" styleClass="offcanvas-header">
+							<h:outputText value="#{msg['help']}"
+								styleClass="h5 offcanvas-title" />
+							<h:form id="button_close_help">
+								<h:commandButton styleClass="btn-close text-reset"
+									p:data-bs-dismiss="offcanvas" p:aria-label="Close" />
+							</h:form>
+						</h:panelGroup>
 
-			<h:link value="#{msg['profile']}"
-				outcome="/view/account/profile.xhtml?id=#{userSession.user.id}"
-				rendered="#{pageHeader.showingProfile()}"
-				styleClass="nav-link #{page == 'profile' ? 'active' : ''}" />
+						<h:panelGroup layout="block" styleClass="offcanvas-body">
 
-			<h:link value="#{msg['administration']}"
-				outcome="/view/admin/administration.xhtml"
-				rendered="#{pageHeader.showingAdministration()}"
-				styleClass="nav-link #{page == 'administration' ? 'active' : ''}" />
+							<h:panelGroup layout="block" styleClass="public">
+								#{msg['help.'.concat(page).concat('.public')]}
+							</h:panelGroup>
 
-			<h:link value="#{msg['log_in']}" outcome="/view/public/login.xhtml"
-				rendered="#{pageHeader.showingLogin()}"
-				styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
+							<h:panelGroup layout="block" styleClass="account"
+								rendered="#{pageHeader.showingAccountHelp}">
+								#{msg['help.'.concat(page).concat('.account')]}
+							</h:panelGroup>
 
-			<h:link value="#{msg['register']}"
-				outcome="/view/public/registration.xhtml"
-				rendered="#{pageHeader.showingRegistration()}"
-				styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
+							<h:panelGroup layout="block" styleClass="staff"
+								rendered="#{pageHeader.showingStaffHelp}">
+								#{msg['help.'.concat(page).concat('.staff')]}
+							</h:panelGroup>
 
-			<h:link value="#{msg['advanced_search']}"
-				outcome="/view/public/medium-search.xhtml"
-				styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
+							<h:panelGroup layout="block" styleClass="admin"
+								rendered="#{pageHeader.showingAdminHelp}">
+								#{msg['help.'.concat(page).concat('.admin')]}
+							</h:panelGroup>
 
-			<h:form id="form_medium_search_header"
-				action="#{pageHeader.searchMedium()}" title="#{msg['search_term']}">
-				<h:inputText id="input_medium_search_term"
-					value="#{pageHeader.mediumSearch.generalSearchTerm}"
-					styleClass="nav-item form-control" />
-			</h:form>
+						</h:panelGroup>
+
+					</h:panelGroup>
+
+					<h:panelGroup layout="block" styleClass="nav-item dropdown"
+						rendered="#{pageHeader.showingAccountMenu}">
+
+						<h:link value="#{msg['account']}"
+							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
+
+						<h:panelGroup styleClass="dropdown-menu">
+							<h:link value="#{msg['profile']}"
+								outcome="/view/account/profile.xhtml?id=#{userSession.user.id}"
+								styleClass="dropdown-item #{page == 'profile' ? 'active' : ''}" />
+
+							<h:form id="form_log_out" styleClass="nav-item">
+								<h:commandLink id="button_log_out" value="#{msg['log_out']}"
+									action="#{pageHeader.logOut()}" styleClass="dropdown-item" />
+							</h:form>
+						</h:panelGroup>
+
+					</h:panelGroup>
+
+					<h:panelGroup layout="block" styleClass="nav-item dropdown"
+						rendered="#{pageHeader.showingStaffMenu}">
+						<h:link value="#{msg['staff']}"
+							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
+
+						<h:panelGroup styleClass="dropdown-menu">
+							<h:link value="#{msg['lending']}"
+								outcome="/view/staff/lending.xhtml"
+								styleClass="dropdown-item #{page == 'lending' ? 'active' : ''}" />
+
+							<h:link value="#{msg['return_form']}"
+								outcome="/view/staff/return-form.xhtml"
+								styleClass="dropdown-item #{page == 'return_form' ? 'active' : ''}" />
+
+							<h:link value="#{msg['copies_ready_for_pickup_all_users']}"
+								outcome="/view/staff/copies-ready-for-pickup-all-users.xhtml"
+								styleClass="dropdown-item #{page == 'copies_ready_for_pickup_all_users' ? 'active' : ''}" />
+
+							<h:link value="#{msg['lending_period_violations.short']}"
+								outcome="/view/admin/lending-period-violations.xhtml"
+								styleClass="dropdown-item #{page == 'lending_period_violations' ? 'active' : ''}" />
+
+							<h:link value="#{msg['medium_creator']}"
+								outcome="/view/staff/medium-creator.xhtml"
+								styleClass="dropdown-item #{page == 'medium_creator' ? 'active' : ''}" />
+						</h:panelGroup>
+
+					</h:panelGroup>
+
+					<h:panelGroup layout="block" styleClass="nav-item dropdown"
+						rendered="#{pageHeader.showingAdministratorMenu}">
+
+						<h:link value="#{msg['administration']}"
+							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
+
+						<h:panelGroup styleClass="dropdown-menu">
+							<h:link value="#{msg['user_search']}"
+								outcome="/view/admin/user-search.xhtml"
+								styleClass="dropdown-item #{page == 'user_search' ? 'active' : ''}" />
+
+							<h:link value="#{msg['settings']}"
+								outcome="/view/admin/administration.xhtml"
+								styleClass="dropdown-item #{page == 'administration' ? 'active' : ''}" />
+						</h:panelGroup>
+
+					</h:panelGroup>
+
+					<h:link value="#{msg['category_browser.short']}"
+						outcome="/view/public/category-browser.xhtml"
+						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />
+
+					<h:link value="#{msg['advanced_search']}"
+						outcome="/view/public/medium-search.xhtml"
+						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
+
+					<h:link value="#{msg['log_in']}" outcome="/view/public/login.xhtml"
+						rendered="#{pageHeader.showingLogin}"
+						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
+
+					<h:link value="#{msg['register']}"
+						outcome="/view/public/registration.xhtml"
+						rendered="#{pageHeader.showingRegistration}"
+						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
+
+				</h:panelGroup>
+
+				<h:form id="form_medium_search_header">
+					<h:inputText id="input_medium_search_term_header"
+						value="#{pageHeader.mediumSearch.generalSearchTerm}"
+						styleClass="nav-item form-control" title="#{msg['search_term']}"
+						p:placeholder="#{msg['search']}" />
+
+					<!--
+					Indeed, the button below is not displayed to the user but it is triggered when a user presses
+					the enter key inside of the input field. Not showing a button is a stylistic choice of mine.
+					Unfortunately, I have to fall back to this hack since "action" is not an attribute of a form
+					element and the attribute "valueChangeListener" on input fields fires *before* the setter which
+					breaks the logic in the backing bean and "actionListener" does not work either.
+					-->
+					<h:commandButton id="button_search_medium_header"
+						action="#{pageHeader.searchMedium()}" style="display: none" />
+				</h:form>
+
+			</h:panelGroup>
 
 		</h:panelGroup>
 

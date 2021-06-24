@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.List;
 
 import de.dedede.model.data.dtos.*;
+import de.dedede.model.logic.util.MediumType;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
@@ -18,7 +19,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UISelectOne;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -37,11 +40,9 @@ public class MediumCreator implements Serializable {
 	private static final int NUM_DISPLAYED_CATEGORY_ENTRIES = 10;
 	
 	@Inject FacesContext context;
-	@Inject UserSession session;
 
 	private MediumDto medium;
 	private CopyDto copy;
-	private int releaseYear;
 
 	private String categorySearchTerm;
 	private List<CategoryDto> categories = new LinkedList<>();
@@ -49,6 +50,7 @@ public class MediumCreator implements Serializable {
 	@PostConstruct
 	public void init(){
 		medium = new MediumDto();
+		medium.setReleaseYear(2000);
 		copy = new CopyDto();
 		copy.setCopyStatus(CopyStatus.AVAILABLE);
 		searchForCategory("");
@@ -91,12 +93,12 @@ public class MediumCreator implements Serializable {
 	 * @throws LostConnectionException 
 	 */
 	public String save() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException{
-		medium.setReleaseYear(releaseYear);
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
-		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		context.addMessage(null, new FacesMessage(messages.getString("mediumCreator.success")));
-		context.getExternalContext().getFlash().setKeepMessages(true);
+		ResourceBundle messages =
+				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		context.addMessage("messageForm:positive",
+				new FacesMessage(messages.getString("mediumCreator.success")));
 		return null;
 	}
 
@@ -108,7 +110,6 @@ public class MediumCreator implements Serializable {
 	
 	private void searchForCategory(String searchTerm) {
 		PaginationDto paginationDto = new PaginationDto();
-
 		paginationDto.setPageNumber(0);
 		paginationDto.setTotalAmountOfPages(NUM_DISPLAYED_CATEGORY_ENTRIES);
 		CategorySearchDto categorySearchDto = new CategorySearchDto();
@@ -116,12 +117,20 @@ public class MediumCreator implements Serializable {
 		categories = CategoryDao.readCategoriesByName(categorySearchDto, paginationDto);
 	}
 
-	public int getReleaseYear() {
-		return releaseYear;
+	public String specifyMediumType(){
+		UIInput selectOne = (UISelectOne) context.getViewRoot().findComponent("mediumForm:mediumTypeChoice");
+		UIInput inputField = (UIInput) context.getViewRoot().findComponent("mediumForm:mediumType");
+		MediumType selectedType = MediumType.valueOf((String) selectOne.getSubmittedValue());
+		inputField.setSubmittedValue(selectedType.getCanonicalName());
+		return null;
 	}
 
-	public void setReleaseYear(int releaseYear) {
-		this.releaseYear = releaseYear;
+	public List<MediumType> getCommonMediumTypes(){
+		return List.of(MediumType.values());
+	}
+
+	public String getCommonMediumLabel(MediumType type){
+		return type.getInternationalName(context);
 	}
 
 }

@@ -44,7 +44,12 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 
 	@Override
 	public void refresh() {
-		items = MediumDao.readAllOverdueCopies(getPaginatedList());
+		PaginationDto paginationDetails = getPaginatedList();
+		int numRowsPerPage = paginationDetails.getTotalAmountOfRows();
+		long numPages = Math.round(Math.floor(MediumDao.readNumberOfAllOverdueCopies() / (double) numRowsPerPage));
+		paginationDetails.setTotalAmountOfPages(Math.toIntExact(numPages) + 1);
+		items = MediumDao.readAllOverdueCopies(paginationDetails);
+		setPaginatedList(paginationDetails);
 	}
 	
 	public String getMediumLink(MediumCopyUserDto dto) {
@@ -102,18 +107,6 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 					(seconds % (60 * 60)) / 60);
 		}
 	}
-	
-	/*
-	public String forward() {
-		goForward();
-		return null;
-	}
-	
-	public String back() {
-		goBack();
-		return null;
-	}
-	*/
 	
 }
 

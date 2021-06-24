@@ -66,6 +66,14 @@ public class UserSearch extends PaginatedList implements Serializable {
 	public UserRole[] getAllUserRoles() {
 		return UserRole.values();
 	}
+	
+	public void setBlockedUserSearchRestriction(boolean blocked) {
+		userSearch.setLendStatus(blocked ? UserLendStatus.DISABLED : UserLendStatus.ENABLED);
+	}
+	
+	public boolean getBlockedUserSearchRestriction() {
+		return userSearch.getLendStatus() == UserLendStatus.DISABLED;
+	}
 
 	@Override
 	public List<UserDto> getItems() {

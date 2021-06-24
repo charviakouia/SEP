@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
+import de.dedede.model.persistence.exceptions.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,27 +23,19 @@ import de.dedede.model.logic.managed_beans.MediumCreator;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
-import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;
 
 public class MediumCreationTest {
 	
-	private static Properties props;
 	private static CopyDto copy;
 	private static MediumDto medium;
 
 	@BeforeAll
 	public static void setUp() throws ClassNotFoundException, SQLException, MaxConnectionsException, 
 			LostConnectionException, UserDoesNotExistException, EntityInstanceNotUniqueException, 
-			MediumDoesNotExistException {
-		setUpProperties();
-		ConfigReader.getInstance().setUpConfigReader(props);
-		ConnectionPool.setUpConnectionPool();
+			MediumDoesNotExistException, CopyDoesNotExistException, EntityInstanceDoesNotExistException {
+		PreTest.setUp();
 		deleteCopyIfExists();
 		setUpMedium();
 	}
@@ -63,13 +56,14 @@ public class MediumCreationTest {
 		medium.setIsbn("ISBN");
 	}
 	
-	private static void deleteCopyIfExists() throws LostConnectionException, MaxConnectionsException, 
-			MediumDoesNotExistException {
+	private static void deleteCopyIfExists() throws LostConnectionException, MaxConnectionsException,
+			CopyDoesNotExistException, EntityInstanceDoesNotExistException {
 		copy = new CopyDto();
 		copy.setCopyStatus(CopyStatus.AVAILABLE);
 		copy.setLocation("Location");
 		copy.setSignature("Signature");
 		if (MediumDao.copyExists(copy)) {
+			MediumDao.readCopyBySignature(copy);
 			MediumDao.deleteCopy(copy);
 		}
 	}
@@ -86,7 +80,7 @@ public class MediumCreationTest {
 	
 	@Test
 	public void testAddingCopiesToMedium() throws LostConnectionException, MaxConnectionsException, 
-			MediumDoesNotExistException, EntityInstanceNotUniqueException {
+			MediumDoesNotExistException, EntityInstanceNotUniqueException, CopyDoesNotExistException, EntityInstanceDoesNotExistException {
 		deleteCopyIfExists();
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
@@ -101,20 +95,6 @@ public class MediumCreationTest {
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
 		assertThrows(EntityInstanceNotUniqueException.class, () -> MediumDao.createCopy(copy, medium));
-	}
-	
-	private static void setUpProperties() {
-		props = new Properties();
-		props.put("DB_USER", "sep21g01");
-		props.put("DB_PASSWORD", "fooZae4cuoSa");
-		props.put("DB_DRIVER", "org.postgresql.Driver");
-		props.put("DB_SSL", "TRUE");
-		props.put("DB_SSL_FACTORY", "org.postgresql.ssl.DefaultJavaSSLFactory");
-		props.put("DB_HOST", "bueno.fim.uni-passau.de");
-		props.put("DB_PORT", "5432");
-		props.put("DB_NAME", "sep21g01t");
-		props.put("DB_URL", "jdbc:postgresql://");
-		props.put("DB_CAPACITY", "20");
 	}
 	
 }

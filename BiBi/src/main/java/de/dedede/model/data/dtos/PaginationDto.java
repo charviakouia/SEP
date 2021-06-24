@@ -60,7 +60,7 @@ public class PaginationDto implements Serializable {
 	 */
 	public void setTotalAmountOfPages(int totalAmountOfPages) {
 		if (totalAmountOfPages < 1) {
-			throw new IllegalArgumentException("totalAmountOfPages is lower than 1");
+			throw new IllegalArgumentException("totalAmountOfPages is lower than 1: " + totalAmountOfPages);
 		}
 		
 		this.totalAmountOfPages = totalAmountOfPages;

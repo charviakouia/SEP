@@ -2,6 +2,8 @@
 
 ## Feinspezifikation - 3. Meilenstein
 
+* mehr Links im Header, mögl. durch Drop-Downs
+* (not implemented yet probably) LendingPeriodViolations accessible to staff now too
 * Erstellung der Klasse `Pagination`
 * Umbennung von `UserDao`s `readUserBySearchCriteria` zu `searchUsers`
 * rename `UserSearch.searchUser` -> `UserSearch.searchUsers`

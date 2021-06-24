@@ -17,6 +17,9 @@ public class DurationConverter implements Converter<Duration> {
 
     @Override
     public Duration getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
+    	if (s == null || s.isBlank()){
+    		return null;
+		}
     	Application application = facesContext.getApplication();
 		ResourceBundle messages = application.evaluateExpressionGet(facesContext, 
 				"#{msg}", ResourceBundle.class);
@@ -46,6 +49,9 @@ public class DurationConverter implements Converter<Duration> {
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Duration duration) {
+    	if (duration == null){
+    		return null;
+		}
         double divResult = ((double) duration.getSeconds()) / (60 * 60 * 24);
         return String.valueOf(Math.toIntExact(Math.round(Math.ceil(divResult))));
     }

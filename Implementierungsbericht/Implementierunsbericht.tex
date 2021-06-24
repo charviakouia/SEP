@@ -12,6 +12,12 @@
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
 
+<<<<<<< HEAD
+=======
+\setlength\LTleft{0pt}
+\setlength\LTright{0pt}
+
+>>>>>>> origin/master
 \makeatletter
 \newcommand{\sectionauthor}[1]{
 	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{1em}}
@@ -22,7 +28,11 @@
 }
 \makeatother
 
+<<<<<<< HEAD
 \title{Bibliotheksanwendung - Implementierungsbericht}
+=======
+\title{BiBi - Implementierungsbericht}
+>>>>>>> origin/master
 \date{\today\\v1.0}
 \author{
 	Ivan Charviakou\\
@@ -45,8 +55,8 @@
 
 %--Einleitung--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Einleitung}
-\sectionauthor{Toad}
-Cool text
+\sectionauthor{Sergei Pravdin}
+In diesem Dokument ist der Implementierungsbericht der Webanwendung \textbf{BiBi} dokumentiert. Dabei erfolgt die Gliederung der Implementierung in Milestones mit den geplanten und tatsächlichen Zeitaufwänden. Außerdem sind das \textbf{Änderungen gegenüber der Spezifikation}, die \textbf{Änderungen gegenüber dem Implementierungsplan} und die \textbf{Code-Metriken} zu sehen.
 
 %--Spezifikation----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Änderungen gegenüber der Spezifikation}
@@ -81,7 +91,82 @@ Eigene Implementierungen der nötigen Validatoren und Converter für das reibung
 %--Metriken----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Code-Metriken}
 \sectionauthor{Yoshi}
-Cool text
+
+Im Folgenden werden verschiedene Code-Metriken allgemein vorgestellt und für das erstellte Projekt angegeben. 
+Darüber hinaus lassen sich diese Metriken in drei allgemeine Untersuchungsbereiche unterteilen: 
+Allgemeine Metriken, Komplexitäts-bezogene Metriken, und Abhängigkeits-bezogene Metriken.
+Durch Angabe dieser Metriken wird eine genauere Analyse des Codes aus verschiedenen Sichten ermöglicht.
+
+\subsection{Allgemeine Metriken}
+
+%--Table for facelets
+\begin{longtable}{@{\extracolsep{\fill}}ll@{}}
+\toprule
+\multicolumn{2}{l}{\textbf{Facelets}} \\* \midrule
+\endfirsthead
+\endhead
+\textbf{Anzahl Facelets} & Number \\
+\textbf{Anzahl Zeilen XML Code} & Number \\* \bottomrule
+\end{longtable}
+
+%--Table for packages
+\begin{longtable}{@{\extracolsep{\fill}}llll@{}}
+\toprule
+\multicolumn{4}{l}{\textbf{Metriken nach Paket}} \\* \midrule
+\textbf{Paketname} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Zeilen\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Methoden\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Klassen\end{tabular}} \\* \midrule
+\endfirsthead
+\textbf{Paketname} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Zeilen\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Methoden\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Klassen\end{tabular}} \\* \midrule
+\endhead
+Input	 & Input & Input & Input \\
+Input	 & Input & Input & Input \\* \bottomrule
+\end{longtable}
+
+\subsection{Komplexitäts-bezogene Metriken}
+
+%--Table for packages
+\begin{longtable}{@{\extracolsep{\fill}}llll@{}}
+\toprule
+\multicolumn{4}{l}{\textbf{Metriken nach Paket}} \\* \midrule
+\textbf{Paketname} & \textbf{Durchschnittliche zyklomatische Komplexität*} \\* \midrule
+\endfirsthead
+\textbf{Paketname} & \textbf{Durchschnittliche zyklomatische Komplexität} \\* \midrule
+\endhead
+Input	 & Input \\
+Input	 & Input \\* \bottomrule
+\end{longtable}
+
+%--Table for methods
+\begin{longtable}{@{\extracolsep{\fill}}ll@{}}
+\toprule
+\multicolumn{2}{l}{\textbf{Die 10 komplexeste Methoden nach kognitiver Komplexität}} \\* \midrule
+\textbf{Methodenname} & \textbf{Kognitive Komplexität*} \\* \midrule
+\endfirsthead
+\textbf{Methodenname} & \textbf{Kognitive Komplexität} \\* \midrule
+\endhead
+Input	 & Input \\
+Input	 & Input \\* \bottomrule
+\end{longtable}
+
+\paragraph{Zyklomatische Komplexität} 
+Als zyklomatische Komplexität bezeichnet man die maximale Anzahl an Pfaden im entsprechenden Kontroll-Fluss Grahpen, die sich jeweils im Vergleich zu allen anderen Pfaden in der Menge an besuchten Knoten um mindestens einen unterscheiden. 
+
+\paragraph{Kognitive Komplexität} 
+Im Code setzt sich die Metrik zur kognitiven Komplexität aus der Anzahl an Brüchen im Kontrollfluss und Verschachtelungen von entsprechenden Kontrollflussanweisungen zusammen. 
+Im Gegensatz zur zyklomatischen Komplexität fasst diese Metrik die Schwierigkeit, mit der das gegebene Code zum Lesen und Verstehen ist.
+
+\subsection{Abhängigkeits-bezogene Metriken}
+
+%--Table for packages
+\begin{longtable}{@{\extracolsep{\fill}}lll@{}}
+\toprule
+\multicolumn{3}{l}{\textbf{Metriken nach Paket}} \\* \midrule
+\textbf{Paketname} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Paket-\\Abhängigkeiten\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl Paketen\\ mit dieser\\ Abhängigkeit\end{tabular}} \\* \midrule
+\endfirsthead
+\textbf{Paketname} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Paket-\\Abhängigkeiten\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl Paketen\\ mit dieser\\ Abhängigkeit\end{tabular}} \\* \midrule
+\endhead
+Input	 & Input & Input \\
+Input	 & Input & Input \\* \bottomrule
+\end{longtable}
 
 %--Reference--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Reference}
@@ -89,7 +174,7 @@ Cool text
 Cool text
 
 \subsection{Nice looking table}
-\begin{longtable}{@{}lllll@{}}
+\begin{longtable}{@{\extracolsep{\fill}}lllll@{}}
 \toprule
 \textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
 \endfirsthead
@@ -102,7 +187,7 @@ Text 1            & Text 2            & Text 3            & Text 4            & 
 
 \subsection{Nice looking landscape-table}
 \begin{landscape}
-\begin{longtable}{@{}lllll@{}}
+\begin{longtable}{@{\extracolsep{\fill}}lllll@{}}
 \toprule
 \textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
 \endfirsthead

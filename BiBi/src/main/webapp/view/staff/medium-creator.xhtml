@@ -12,73 +12,131 @@
 
 	<ui:define name="content">
 
-		<h:messages/>
+		<h:form id="messageForm">
 
-		<h:outputLabel for="mediumForm" value="#{msg['title.medium_creator']}"/>
+			<h:panelGrid columns="1">
+
+				<h:panelGroup>
+					<h:inputHidden id="positive"/>
+					<h:message for="positive" style="color: green"/>
+				</h:panelGroup>
+
+				<h:panelGroup>
+					<h:inputHidden id="negative"/>
+					<h:message for="negative" style="color: darkred"/>
+				</h:panelGroup>
+
+			</h:panelGrid>
+
+		</h:form><br/>
+
+		<h:outputLabel for="mediumForm" value="#{msg['title.medium_creator']}"
+					   style="font-weight:bold; font-size:x-large;"/>
+
 		<h:form id="mediumForm">
-			
-			<h:outputLabel for="categorySearchTerm" value="#{msg['title.category_search']}"/>
-			<h:inputText id="categorySearchTerm" value="#{mediumCreator.categorySearchTerm}"/>
-			
-			<h:commandButton action="#{mediumCreator.searchForCategory}" value="#{msg['search']}" 
-				immediate="true"/><br/>
-			
-			<h:outputLabel for="categoryChoice" value="#{msg['title.category_browser']}"/>
-			<h:selectOneMenu id="categoryChoice" value="#{mediumCreator.medium.category}"
-				converter="CategoryConverter" required="true" immediate="true">
-				<f:selectItems value="#{mediumCreator.searchedCategories}" var="item"
-					itemValue="#{item}" itemLabel="#{item.name}" immediate="true"/>
-			</h:selectOneMenu><br/>
-						
-			<h:outputLabel for="mediumTitle" value="#{msg['title.medium_attribute_type.title']}"/>
-			<h:inputText id="mediumTitle" value="#{mediumCreator.medium.title}" required="true"/><br/> 
-			
-			<h:outputLabel for="lendingDuration" value="#{msg['title.medium_lending_duration']}"/>
-			<h:inputText id="lendingDuration" value="#{mediumCreator.medium.returnPeriod}"
-				converter="DurationConverter" required="true"/><br/>
-						 
-			<h:outputLabel for="author1" value="#{msg['title.medium_attribute_type.author']}"/>
-			<h:inputText id="author1" value="#{mediumCreator.medium.author1}"/><br/>
-						 
-			<h:outputLabel for="author2" value="#{msg['title.medium_attribute_type.author']}"/>
-			<h:inputText id="author2" value="#{mediumCreator.medium.author2}"/><br/>			 
-			
-			<h:outputLabel for="author3" value="#{msg['title.medium_attribute_type.author']}"/>
-			<h:inputText id="author3" value="#{mediumCreator.medium.author3}"/><br/>
-			
-			<h:outputLabel for="author4" value="#{msg['title.medium_attribute_type.author']}"/>
-			<h:inputText id="author4" value="#{mediumCreator.medium.author4}"/><br/>
-			
-			<h:outputLabel for="author5" value="#{msg['title.medium_attribute_type.author']}"/>
-			<h:inputText id="author5" value="#{mediumCreator.medium.author5}"/><br/> 
-						 
-			<h:outputLabel for="mediumType" value="#{msg['title.medium_attribute_type.type']}"/>
-			<h:inputText id="mediumType" value="#{mediumCreator.medium.mediumType}" required="true"/><br/> 
-						 
-			<h:outputLabel for="mediumEdition" value="#{msg['title.medium_attribute_type.edition']}"/>
-			<h:inputText id="mediumEdition" value="#{mediumCreator.medium.edition}" required="true"/><br/> 
-						 
-			<h:outputLabel for="mediumPublisher" value="#{msg['title.medium_attribute_type.publisher']}"/>
-			<h:inputText id="mediumPublisher" value="#{mediumCreator.medium.publisher}" required="true"/><br/> 
-						 
-			<h:outputLabel for="releaseYear" value="#{msg['title.medium_attribute_type.releaseYear']}"/>
-			<h:inputText id="releaseYear" value="#{mediumCreator.releaseYear}" required="true"/><br/>  
-						 
-			<h:outputLabel for="isbn" value="#{msg['title.medium_attribute_type.isbn']}"/>
-			<h:inputText id="isbn" value="#{mediumCreator.medium.isbn}" required="true"/><br/>  
-						
-			<h:outputLabel for="mediumLink" value="#{msg['title.medium_attribute_type.mediumLink']}"/>
-			<h:inputText id="mediumLink" value="#{mediumCreator.medium.mediumLink}"/><br/>  
-						 
-			<h:outputLabel for="demoText" value="#{msg['title.medium_attribute_type.demoText']}"/>
-			<h:inputText id="demoText" value="#{mediumCreator.medium.text}"/><br/> 		 
 
-			<h:outputLabel for="copyLocation" value="#{msg['title.copyLocation']}"/>
-			<h:inputText id="copyLocation" value="#{mediumCreator.copy.location}" required="true"/><br/>
+			<h:panelGrid columns="3" cellpadding="10">
 
-			<h:outputLabel for="copySignature" value="#{msg['title.copySignature']}"/>
-			<h:inputText id="copySignature" value="#{mediumCreator.copy.signature}" 
-				validator="mediumCreationSignatureValidator" required="true"/><br/>
+				<h:outputLabel for="categorySearchTerm" value="#{msg['title.category_search']}"/>
+				<h:inputText id="categorySearchTerm" value="#{mediumCreator.categorySearchTerm}"/>
+				<h:commandButton action="#{mediumCreator.searchForCategory}" value="#{msg['search']}"
+								 immediate="true"/>
+
+				<h:outputLabel for="categoryChoice" value="#{msg['title.category_browser']}*"/>
+				<h:selectOneMenu id="categoryChoice" value="#{mediumCreator.medium.category}"
+								 converter="CategoryConverter" required="true" immediate="true"
+								 requiredMessage="#{msg['mediumCreator.error.required']}">
+					<f:selectItems value="#{mediumCreator.searchedCategories}" var="item"
+								   itemValue="#{item}" itemLabel="#{item.name}" immediate="true"/>
+				</h:selectOneMenu>
+				<h:message for="categoryChoice" style="color:darkred"/>
+
+				<h:outputLabel for="mediumTitle" value="#{msg['title.medium_attribute_type.title']}*"/>
+				<h:inputText id="mediumTitle" value="#{mediumCreator.medium.title}" required="true"
+							 requiredMessage="#{msg['mediumCreator.error.required']}"/>
+				<h:message for="mediumTitle" style="color:darkred"/>
+
+				<h:outputLabel for="lendingDuration" value="#{msg['title.medium_lending_duration']}"/>
+				<h:inputText id="lendingDuration" value="#{mediumCreator.medium.returnPeriod}"
+							 converter="DurationConverter"/>
+				<h:message for="lendingDuration" style="color:darkred"/>
+
+				<h:outputLabel for="author1" value="#{msg['title.medium_attribute_type.author']}"/>
+				<h:inputText id="author1" value="#{mediumCreator.medium.author1}"/>
+				<h:message for="author1" style="color:darkred"/>
+
+				<h:outputLabel for="author2" value="#{msg['title.medium_attribute_type.author']}"/>
+				<h:inputText id="author2" value="#{mediumCreator.medium.author2}"/>
+				<h:message for="author2" style="color:darkred"/>
+
+				<h:outputLabel for="author3" value="#{msg['title.medium_attribute_type.author']}"/>
+				<h:inputText id="author3" value="#{mediumCreator.medium.author3}"/>
+				<h:message for="author3" style="color:darkred"/>
+
+				<h:outputLabel for="author4" value="#{msg['title.medium_attribute_type.author']}"/>
+				<h:inputText id="author4" value="#{mediumCreator.medium.author4}"/>
+				<h:message for="author4" style="color:darkred"/>
+
+				<h:outputLabel for="author5" value="#{msg['title.medium_attribute_type.author']}"/>
+				<h:inputText id="author5" value="#{mediumCreator.medium.author5}"/>
+				<h:message for="author5" style="color:darkred"/>
+
+				<h:outputLabel for="mediumTypeChoice" value="#{msg['mediumCreator.mediumChoice']}"/>
+				<h:selectOneMenu id="mediumTypeChoice">
+					<f:selectItems value="#{mediumCreator.commonMediumTypes}" var="item" immediate="true"
+								   itemValue="#{item}" itemLabel="#{mediumCreator.getCommonMediumLabel(item)}"/>
+				</h:selectOneMenu>
+				<h:commandButton action="#{mediumCreator.specifyMediumType}" value="#{msg['mediumType.insert']}"
+								 immediate="true"/>
+
+				<h:outputLabel for="mediumType" value="#{msg['title.medium_attribute_type.type']}*"/>
+				<h:inputText id="mediumType" value="#{mediumCreator.medium.mediumType}" required="true"
+							 requiredMessage="#{msg['mediumCreator.error.required']}"/>
+				<h:message for="mediumType" style="color:darkred"/>
+
+				<h:outputLabel for="mediumEdition" value="#{msg['title.medium_attribute_type.edition']}*"/>
+				<h:inputText id="mediumEdition" value="#{mediumCreator.medium.edition}" required="true"
+							 requiredMessage="#{msg['mediumCreator.error.required']}"/>
+				<h:message for="mediumEdition" style="color:darkred"/>
+
+				<h:outputLabel for="mediumPublisher" value="#{msg['title.medium_attribute_type.publisher']}*"/>
+				<h:inputText id="mediumPublisher" value="#{mediumCreator.medium.publisher}" required="true"
+							 requiredMessage="#{msg['mediumCreator.error.required']}"/>
+				<h:message for="mediumPublisher" style="color:darkred"/>
+
+				<h:outputLabel for="releaseYear" value="#{msg['title.medium_attribute_type.releaseYear']}*"/>
+				<h:inputText id="releaseYear" value="#{mediumCreator.medium.releaseYear}" required="true"
+							 validatorMessage="#{msg['mediumCreator.error.positiveNumber']}"
+							 requiredMessage="#{msg['mediumCreator.error.required']}">
+					<f:validateLongRange minimum="0"/>
+				</h:inputText>
+				<h:message for="releaseYear" style="color:darkred"/>
+
+				<h:outputLabel for="isbn" value="#{msg['title.medium_attribute_type.isbn']}*"/>
+				<h:inputText id="isbn" value="#{mediumCreator.medium.isbn}" required="true"
+							 requiredMessage="#{msg['mediumCreator.error.required']}"/>
+				<h:message for="isbn" style="color:darkred"/>
+
+				<h:outputLabel for="mediumLink" value="#{msg['title.medium_attribute_type.mediumLink']}"/>
+				<h:inputText id="mediumLink" value="#{mediumCreator.medium.mediumLink}"/>
+				<h:message for="mediumLink" style="color:darkred"/>
+
+				<h:outputLabel for="demoText" value="#{msg['title.medium_attribute_type.demoText']}"/>
+				<h:inputText id="demoText" value="#{mediumCreator.medium.text}"/>
+				<h:message for="demoText" style="color:darkred"/>
+
+				<h:outputLabel for="copyLocation" value="#{msg['title.copyLocation']}*"/>
+				<h:inputText id="copyLocation" value="#{mediumCreator.copy.location}" required="true"
+							 requiredMessage="#{msg['mediumCreator.error.required']}"/>
+				<h:message for="copyLocation" style="color:darkred"/>
+
+				<h:outputLabel for="copySignature" value="#{msg['title.copySignature']}*"/>
+				<h:inputText id="copySignature" value="#{mediumCreator.copy.signature}"
+							 validator="mediumCreationSignatureValidator" required="true"
+							 requiredMessage="#{msg['mediumCreator.error.required']}"/>
+				<h:message for="copySignature" style="color:darkred"/>
+
+			</h:panelGrid><br/>
 
 			<h:commandButton action="#{mediumCreator.save}" value="#{msg['save']}"/>
 

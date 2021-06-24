@@ -29,5 +29,9 @@ public final class PreTest {
         props.put("DB_URL", "jdbc:postgresql://");
         props.put("DB_CAPACITY", "20");
     }
+    
+    public static String getProperty(String key) {
+    	return props.getProperty(key);
+    }
 
 }

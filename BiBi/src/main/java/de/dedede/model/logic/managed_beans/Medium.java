@@ -131,27 +131,12 @@ public class Medium extends PaginatedList implements Serializable {
 	 * @param copyDto The id of the deleted copy.
 	 */
 	public void deleteCopy(CopyDto copyDto) throws IOException {
-		copyDto.setMediumId(mediumDto.getId());
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			MediumDao.deleteCopy(copyDto);
-		} catch (MediumDoesNotExistException e) {
-			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
-			context.getExternalContext().getFlash().setKeepMessages(true);
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
-		}
-	}
-
-	public void deleteCopyTest(int id) throws IOException {
-		CopyDto copyDto;
-		copyDto = mediumDto.getCopy(id);
-		ResourceBundle messages =
-				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		try {
-			MediumDao.deleteCopy(copyDto);
-			context.addMessage(null, new FacesMessage(messages.getString("medium.copy.deleteSuccess")));
-		} catch (MediumDoesNotExistException e) {
+			refresh();
+		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
 			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
@@ -168,6 +153,7 @@ public class Medium extends PaginatedList implements Serializable {
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			MediumDao.updateCopy(copyDto);
+			refresh();
 		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
 		} catch (CopyIsNotAvailableException e) {
@@ -187,6 +173,7 @@ public class Medium extends PaginatedList implements Serializable {
 		copyDto.setCopyStatus(CopyStatus.AVAILABLE);
 		try {
 			MediumDao.updateCopy(copyDto);
+			refresh();
 		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
 		} catch (CopyIsNotAvailableException e) {
@@ -221,6 +208,7 @@ public class Medium extends PaginatedList implements Serializable {
 		copyDto.setCopyStatus(CopyStatus.READY_FOR_PICKUP);
 		try {
 			MediumDao.updateCopy(copyDto);
+			refresh();
 		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
 		} catch (CopyIsNotAvailableException e) {

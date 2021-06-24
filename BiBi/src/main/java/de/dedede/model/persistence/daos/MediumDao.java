@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import de.dedede.model.persistence.exceptions.*;
 import org.postgresql.util.PGInterval;
 
 import de.dedede.model.data.dtos.CategoryDto;
@@ -30,16 +31,6 @@ import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.util.UserVerificationStatus;
-import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
-import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
-import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
-import de.dedede.model.persistence.exceptions.UserExceededDeadlineException;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 import de.dedede.model.persistence.util.Pagination; 
@@ -60,6 +51,32 @@ public final class MediumDao {
 	private static final double DEFAULT_REMINDER_OFFSET_SECONDS = 3600;
 
 	private MediumDao() {
+	}
+	
+	public static void readCopyBySignature(CopyDto copy) throws EntityInstanceDoesNotExistException {
+		if (!signatureExists(copy)) {
+			throw new EntityInstanceDoesNotExistException("Copy entity with signature " + copy.getSignature() + " doesn't exist");
+		}
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement readStmt = conn.prepareStatement(
+					"SELECT copyid, mediumid, signature, bibposition, status, deadline, actor "
+							+ "FROM Mediumcopy " + "WHERE signature = ?;"
+			);
+			readStmt.setString(1, copy.getSignature());
+			ResultSet resultSet = readStmt.executeQuery();
+			if (resultSet.next()) {
+				populateCopyDto(copy, resultSet);
+			}
+			conn.commit();
+		} catch (SQLException e) {
+			try { conn.rollback(); } catch (SQLException ignore) {}
+			String msg = "Database error occurred while reading copy entity with signature: " + copy.getSignature();
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
@@ -116,12 +133,15 @@ public final class MediumDao {
 	}
 
 	private static void populateMediumStatement(PreparedStatement stmt, MediumDto mediumDto) throws SQLException {
-		stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
-		CategoryDto category = mediumDto.getCategory();
-		if (category == null) {
+		if (mediumDto.getReturnPeriod() == null){
+			stmt.setObject(1, null);
+		} else {
+			stmt.setObject(1, toPGInterval(mediumDto.getReturnPeriod()));
+		}
+		if (mediumDto.getCategory() == null) {
 			stmt.setObject(2, 1);
 		} else {
-			stmt.setInt(2, category.getId());
+			stmt.setInt(2, mediumDto.getCategory().getId());
 		}
 		stmt.setString(3, mediumDto.getTitle());
 		stmt.setString(4, mediumDto.getAuthor1());
@@ -268,19 +288,19 @@ public final class MediumDao {
 			connection.commit();
 
 			return results;
-		} catch (SQLException exeption) {
+		} catch (SQLException exception) {
 
 			try {
 				connection.rollback();
-			} catch (SQLException e) {
-				final var message = "Failed to rollback database transaction";
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
 				Logger.severe(message);
 				throw new LostConnectionException(message);
 			}
 
-			final var message = "Database error occurred while search for mediums: " + exeption.getMessage();
+			final var message = "Database error occurred while searching for media: " + exception.getMessage();
 			Logger.severe(message);
-			throw new LostConnectionException(message, exeption);
+			throw new LostConnectionException(message, exception);
 
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(connection);
@@ -399,6 +419,80 @@ public final class MediumDao {
 			return Optional.empty();
 		}
 	}
+	
+	// @Task docs
+	public static List<MediumDto> readMediaGivenCategory(CategoryDto category, PaginationDto pagination) {
+		
+		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+
+		try {
+
+			final var statementBody = """
+					from
+						medium m
+					where
+						m.hascategory = ?
+					""";
+
+			{
+				final var countStatement = connection.prepareStatement("select count(m.mediumid) " + statementBody);
+				countStatement.setInt(1, category.getId());
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+				
+				Pagination.updatePagination(pagination, resultSet.getInt(1));
+			}
+
+			final var itemsStatement = connection.prepareStatement("""
+					select
+						m.mediumid, m.title, m.author1, m.author2, m.edition, m.publisher
+					%s
+					offset ?
+					limit ?
+					""".formatted(statementBody));
+			var parameterIndex = 0;
+			itemsStatement.setInt(parameterIndex += 1, category.getId());
+			// @Task sorting
+			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
+
+			final var resultSet = itemsStatement.executeQuery();
+			final var results = new ArrayList<MediumDto>();
+
+			while (resultSet.next()) {
+				final var medium = new MediumDto();
+				medium.setId(resultSet.getInt(1));
+				medium.setTitle(resultSet.getString(2));
+				medium.setAuthor1(resultSet.getString(3));
+				medium.setAuthor2(resultSet.getString(4));
+				medium.setEdition(resultSet.getString(5));
+				medium.setPublisher(resultSet.getString(6));
+				results.add(medium);
+			}
+
+			connection.commit();
+
+			return results;
+		} catch (SQLException exeption) {
+			
+			try {
+				connection.rollback();
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while reading media given a category: "
+					+ exeption.getMessage();
+			Logger.severe(message);
+
+			throw new LostConnectionException(message, exeption);
+
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(connection);
+		}
+	}
 
 	/**
 	 * Overwrites existing medium data in the persistent data store. The enclosed ID
@@ -491,8 +585,8 @@ public final class MediumDao {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
-					"INSERT INTO Mediumcopy (copyid, mediumid, signature, bibposition, status, "
-							+ "deadline, actor) VALUES " + "(?, ?, ?, ?, CAST (? AS copyStatus), ?, ?);",
+					"INSERT INTO Mediumcopy (mediumid, signature, bibposition, status, "
+							+ "deadline, actor) VALUES " + "(?, ?, ?, CAST (? AS copyStatus), ?, ?);",
 					Statement.RETURN_GENERATED_KEYS);
 			copyDto.setMediumId(mediumDto.getId());
 			populateCopyStatement(createStmt, copyDto);
@@ -555,8 +649,8 @@ public final class MediumDao {
 					"FROM users AS u " +
 					"JOIN mediumcopy AS c ON u.userid = c.actor " +
 					"JOIN medium AS m ON c.mediumid = m.mediumid " +
-					"CROSS JOIN application AS a " +
-					"WHERE c.deadline < NOW() " +
+					"CROSS JOIN (SELECT * FROM application ORDER BY one ASC LIMIT 1) AS a " +
+					"WHERE c.deadline < CURRENT_TIMESTAMP " +
 					"AND c.status = 'BORROWED' " +
 					"ORDER BY u.userid, m.mediumid, c.copyid DESC " +
 					"LIMIT ? " +
@@ -577,6 +671,42 @@ public final class MediumDao {
 			}
 			conn.commit();
 			return result;
+		} catch (SQLException e){
+			try { conn.rollback(); } catch (SQLException ignore) {}
+			String msg = "Database error occurred while reading mediumCopyUser entities";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	public static int readNumberOfAllOverdueCopies() {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"SELECT COUNT(*) FROM (" +
+							"SELECT *" +
+							"FROM users AS u " +
+							"JOIN mediumcopy AS c ON u.userid = c.actor " +
+							"JOIN medium AS m ON c.mediumid = m.mediumid " +
+							"CROSS JOIN (SELECT * FROM application ORDER BY one ASC LIMIT 1) AS a " +
+							"WHERE c.deadline < CURRENT_TIMESTAMP " +
+							"AND c.status = 'BORROWED' " +
+							"ORDER BY u.userid, m.mediumid, c.copyid DESC" +
+							") AS countingTable;"
+			);
+			ResultSet resultSet = stmt.executeQuery();
+			if (resultSet.next()){
+				int result = resultSet.getInt(1);
+				conn.commit();
+				return result;
+			} else {
+				try { conn.rollback(); } catch (SQLException ignore) {}
+				String msg = "SQL query returned unexpected result, single int required";
+				Logger.severe(msg);
+				throw new InvalidConfigurationException(msg);
+			}
 		} catch (SQLException e){
 			try { conn.rollback(); } catch (SQLException ignore) {}
 			String msg = "Database error occurred while reading mediumCopyUser entities";
@@ -693,8 +823,8 @@ public final class MediumDao {
 		}
 		try {
 			PreparedStatement updateStmt = conn.prepareStatement(
-					"UPDATE Mediumcopy" + "SET (mediumid = ?, signature = ?, bibposition = ?,"
-							+ " status = CAST(? AS copyStatus), deadline = ?, actor = ?) WHERE copyid = ? ");
+					"UPDATE Mediumcopy " + "SET mediumid = ?, signature = ?, bibposition = ?,"
+							+ " status = CAST(? AS copyStatus), deadline = ?, actor = ? WHERE copyid = ? ");
 			populateCopyStatement(updateStmt, copyDto);
 			updateStmt.setInt(7, copyDto.getId());
 			int numAffectedRows = updateStmt.executeUpdate();
@@ -727,7 +857,7 @@ public final class MediumDao {
 	 */
 
 	public static CopyDto deleteCopy(CopyDto copyDto)
-			throws MediumDoesNotExistException, LostConnectionException, MaxConnectionsException {
+			throws CopyDoesNotExistException, LostConnectionException, MaxConnectionsException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (copyEntityExists(conn, copyDto)) {
@@ -737,7 +867,7 @@ public final class MediumDao {
 			} else {
 				String msg = String.format("No entity with the id: %d exists", copyDto.getId());
 				// Logger.severe(msg);
-				throw new MediumDoesNotExistException(msg);
+				throw new CopyDoesNotExistException(msg);
 			}
 		} catch (SQLException e) {
 			String msg = "Database error occurred while deleting medium entity with id: " + copyDto.getId();
@@ -827,10 +957,11 @@ public final class MediumDao {
 
 			return results;
 		} catch (SQLException exeption) {
+			
 			try {
 				connection.rollback();
-			} catch (SQLException e) {
-				final var message = "Failed to rollback database transaction";
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
 				Logger.severe(message);
 				throw new LostConnectionException(message);
 			}
@@ -1016,6 +1147,7 @@ public final class MediumDao {
 	 * @author Sergei Pravdin
 	 */
 	private static void populateCopyStatement(PreparedStatement stmt, CopyDto copyDto) throws SQLException {
+		// stmt.setInt(1, copyDto.getId());
 		stmt.setInt(1, copyDto.getMediumId());
 		stmt.setString(2, copyDto.getSignature());
 		stmt.setString(3, copyDto.getLocation());
@@ -1055,6 +1187,86 @@ public final class MediumDao {
 		deleteStmt.setInt(1, Math.toIntExact(copyDto.getId()));
 		deleteStmt.executeUpdate();
 		conn.commit();
+	}
+	
+	public static void deleteCopyBySignature(CopyDto copyDto)
+			throws LostConnectionException, MaxConnectionsException, EntityInstanceDoesNotExistException {
+		if (!copyExists(copyDto)) {
+			throw new EntityInstanceDoesNotExistException("Copy doesn't exist");
+		}
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"DELETE FROM Mediumcopy WHERE signature = ?;"
+			);
+			stmt.setString(1, copyDto.getSignature());
+			stmt.executeUpdate();
+			conn.commit();
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+				String msg = "Database error occurred while deleting copy entity with id: " + copyDto.getId();
+				Logger.severe(msg);
+				throw new LostConnectionException(msg, e);
+			} catch (SQLException exception) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+	
+	public static void deleteCopiesByMediumId(MediumDto mediumDto)
+			throws LostConnectionException, MaxConnectionsException, EntityInstanceDoesNotExistException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"DELETE FROM Mediumcopy WHERE mediumid = ?;"
+			);
+			stmt.setInt(1, mediumDto.getId());
+			stmt.executeUpdate();
+			conn.commit();
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+				String msg = "Database error occurred while deleting copy entities with meidum-id: " + mediumDto.getId();
+				Logger.severe(msg);
+				throw new LostConnectionException(msg, e);
+			} catch (SQLException exception) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+	
+	public static void returnOverdueCopies()
+			throws LostConnectionException, MaxConnectionsException, EntityInstanceDoesNotExistException {
+		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		try {
+			PreparedStatement stmt = conn.prepareStatement(
+					"UPDATE Mediumcopy SET status = 'AVAILABLE', deadline = null, actor = null WHERE deadline < CURRENT_TIMESTAMP;"
+			);
+			stmt.executeUpdate();
+			conn.commit();
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+				String msg = "Database error occurred while deleting copy entities";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg, e);
+			} catch (SQLException exception) {
+				final var message = "Failed to rollback database transaction";
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(conn);
+		}
 	}
 
 	/**
