@@ -8,16 +8,16 @@
 \usepackage{booktabs}
 \usepackage{lscape}
 \usepackage{longtable}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \graphicspath{ {./images/} }
 \setlength\parindent{0pt}
 
-<<<<<<< HEAD
-=======
 \setlength\LTleft{0pt}
 \setlength\LTright{0pt}
 
->>>>>>> origin/master
 \makeatletter
 \newcommand{\sectionauthor}[1]{
 	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{1em}}
@@ -28,11 +28,7 @@
 }
 \makeatother
 
-<<<<<<< HEAD
-\title{Bibliotheksanwendung - Implementierungsbericht}
-=======
 \title{BiBi - Implementierungsbericht}
->>>>>>> origin/master
 \date{\today\\v1.0}
 \author{
 	Ivan Charviakou\\
@@ -57,6 +53,31 @@
 \section{Einleitung}
 \sectionauthor{Sergei Pravdin}
 In diesem Dokument ist der Implementierungsbericht der Webanwendung \textbf{BiBi} dokumentiert. Dabei erfolgt die Gliederung der Implementierung in Milestones mit den geplanten und tatsächlichen Zeitaufwänden. Außerdem sind das \textbf{Änderungen gegenüber der Spezifikation}, die \textbf{Änderungen gegenüber dem Implementierungsplan} und die \textbf{Code-Metriken} zu sehen.
+
+
+%--Meilensteine----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Meilensteine}
+\sectionauthor{Sergei Pravdin}
+In diesem Kapitel werden wir die geplanten Zeitaufwänden, bzw. Start- und Endzeiten, mit den tatsächlichen Werten verglichen.
+
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
+\begin{figure}[h]
+    \centering
+    \includegraphics{MS1-2}
+    \caption{Meilensteine 1 und 2}
+\end{figure}
+\restoregeometry
+
+\newpage
+
+\newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
+\begin{figure}[h]
+    \centering
+    \includegraphics{MS3}
+\end{figure}
+\restoregeometry
+
+\newpage
 
 %--Spezifikation----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Änderungen gegenüber der Spezifikation}
