@@ -71,49 +71,32 @@ public class TrespassListener implements PhaseListener, Serializable{
         	isLoggedIn = true;
         	userRole = userSession.getUser().getRole();
         }
-        boolean isOnFreeForAll = false;
-        if (url.startsWith("/view/error/")
-        		|| url.endsWith("login.xhtml") 
-        		|| url.endsWith("registration.xhtml") 
-        		|| url.endsWith("password-reset.xhtml") 
-        		|| url.endsWith("email-confirmation.xhtml") 
-        		|| url.endsWith("error.xhtml") 
-        		|| url.endsWith("contact.xhtml") 
-        		|| url.endsWith("site-notice.xhtml") 
-        		|| url.endsWith("privacy-policy.xhtml") ) {
-            isOnFreeForAll = true;
-        }
-        boolean isOnFreeForOpac = false;
-        if (url.endsWith("category-browser.xhtml") 
-        		|| url.endsWith("medium-search.xhtml") 
-        		|| url.endsWith("medium.xhtml")) {
-        	isOnFreeForOpac = true;
-        }
     	String shortMessageLogin = messages.getString("trespassListener.login"
     			+ "_or_register_short");
     	String longMessageLogin = messages.getString("trespassListener.login"
     			+ "_or_register_long");
         SystemAnonAccess accessMode 
         				= customs.getApplicationCustomization().getAnonRights();
-        if (!isLoggedIn && !isOnFreeForAll 
+        if (!isLoggedIn && !url.startsWith("/view/ffa/")
         		&& (accessMode == SystemAnonAccess.REGISTRATION)) {
         	redirectToLogin(facesCtx, externalCtx, navigationHandler,
         			shortMessageLogin, longMessageLogin);
-        } else if (!isLoggedIn && !isOnFreeForAll && !isOnFreeForOpac 
+        } else if (!isLoggedIn && !url.startsWith("/view/ffa/") 
+        		&& !url.startsWith("/view/opac/") 
         		&& (accessMode == SystemAnonAccess.OPAC)) {
         	if (!url.startsWith("/view/public/")) {
         		redirectToLogin(facesCtx, externalCtx, navigationHandler,
         				shortMessageLogin, longMessageLogin);
         	}
-        } else if (isLoggedIn && !isOnFreeForAll 
+        } else if (isLoggedIn && !url.startsWith("/view/ffa/")
         		&& (userRole == UserRole.REGISTERED)) {
         	if (!url.startsWith("/view/public/")
         			&& !url.startsWith("/view/account/")) {
         		redirectToError404(facesCtx, externalCtx, navigationHandler);
         	}
-        } else if (isLoggedIn && !isOnFreeForAll 
+        } else if (isLoggedIn && !url.startsWith("/view/ffa/") 
         		&& (userRole == UserRole.STAFF)) {
-        	if(!url.startsWith("/view/public/") 
+        	if(!url.startsWith("/view/opac/") 
         			&& !url.startsWith("/view/account/") 
         			&& !url.startsWith("/view/staff/")) {
         		redirectToError404(facesCtx, externalCtx, navigationHandler);
@@ -137,7 +120,7 @@ public class TrespassListener implements PhaseListener, Serializable{
 		facesCtx.addMessage(null, msg);
 		externalCtx.getFlash().setKeepMessages(true);
 		navigationHandler.handleNavigation(facesCtx, null,
-				"/view/public/login.xhtml?faces-redirect=true");          
+				"/view/ffa/login.xhtml?faces-redirect=true");          
 		facesCtx.responseComplete();
 	}
 	
@@ -148,6 +131,7 @@ public class TrespassListener implements PhaseListener, Serializable{
 	 */
 	@Override
 	public PhaseId getPhaseId() {
+		
         return PhaseId.RESTORE_VIEW;
 	}
 	

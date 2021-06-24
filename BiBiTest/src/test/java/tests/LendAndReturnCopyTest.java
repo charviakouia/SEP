@@ -29,7 +29,7 @@ import de.dedede.model.persistence.util.ConnectionPool;
  * 
  * @author Jonas Picker
  */
-public class LendAndReturnCopyTest {
+public class LendAndReturnCopyTest extends TestEntities{
 	
 	private static int testMediumId;
 	private static int testCategoryId;
@@ -50,9 +50,9 @@ public class LendAndReturnCopyTest {
     	PreTest.setUp();
         Connection conn = ConnectionPool.getInstance().fetchConnection(5000);
         try {
-        testUserId = MaintenanceProcessTest.insertTestUser(conn);
-        testCategoryId = MaintenanceProcessTest.insertTestCategory(conn);
-        testMediumId = MaintenanceProcessTest.insertTestMedium(conn, 
+        testUserId = insertTestUser(conn);
+        testCategoryId = insertTestCategory(conn);
+        testMediumId = insertTestMedium(conn, 
         		testCategoryId);
         PreparedStatement testCopy = conn.prepareStatement(
         		"insert into mediumcopy(copyID, mediumid, signature, "
@@ -92,8 +92,8 @@ public class LendAndReturnCopyTest {
     	stmt.executeUpdate();
     	conn.commit();
     	stmt.close();
-    	MaintenanceProcessTest.deleteTestMedium(conn);
-    	MaintenanceProcessTest.deleteTestCategory(conn);
+    	deleteTestMedium(conn);
+    	deleteTestCategory(conn);
         UserDto userDto = new UserDto();
         userDto.setId(testUserId);
         UserDao.deleteUser(userDto);

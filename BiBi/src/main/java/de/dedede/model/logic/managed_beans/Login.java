@@ -96,7 +96,7 @@ public class Login {
 				NavigationHandler navigationHandler = 
 						application.getNavigationHandler();
 				navigationHandler.handleNavigation(context, null,
-						"medium-search.xhtml?faces-redirect=true");
+						"/view/opac/medium-search.xhtml?faces-redirect=true");
 				return;
 			} else {
 				String shortMessage = messages.getString("login.wrong"

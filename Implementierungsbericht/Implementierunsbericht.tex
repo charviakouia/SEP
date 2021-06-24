@@ -1,0 +1,117 @@
+
+% !TeX spellcheck = de_DE
+\documentclass{article}
+
+\usepackage[ngerman]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{longtable}
+
+\graphicspath{ {./images/} }
+\setlength\parindent{0pt}
+
+\makeatletter
+\newcommand{\sectionauthor}[1]{
+	{\parindent 0em \large \scshape Autor: #1 \par \nobreak \vspace*{1em}}
+	\@afterheading
+}
+\newcommand{\specification}[3]{
+	{\parindent 0.5em \hangindent 3em \hypertarget{spec:#1:#2}{\textbf{/#1#2/}} #3 \par \nobreak \vspace*{0.5em}}
+}
+\makeatother
+
+\title{Bibliotheksanwendung - Implementierungsbericht}
+\date{\today\\v1.0}
+\author{
+	Ivan Charviakou\\
+	León Liehr\\
+	Jonas Picker\\
+	Sergei Pravdin
+}
+
+\begin{document}
+
+%--Titel----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\maketitle
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 30em]{Logo}
+\end{figure}
+\newpage
+\tableofcontents
+\newpage
+
+%--Einleitung--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Einleitung}
+\sectionauthor{Toad}
+Cool text
+
+%--Spezifikation----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Änderungen gegenüber der Spezifikation}
+\sectionauthor{Mario}
+Cool text
+
+\subsection{Geänderte Views}
+Cool list
+
+\subsection{Paketstruktur und verwendete Klassen}
+Cool list
+
+\subsection{Datenbankschema}
+Cool list
+
+%--Implementierungsplan----------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Änderungen gegenüber dem Implementierungsplan}
+\sectionauthor{Jonas Picker}
+Im Folgenden werden die Abweichungen vom Implementierungsplan
+\subsection{Milestone 1}
+Zu Begin des Milestones am Montag den 31.05.2021 war es zunächst notwendig, den bisherigen Implementierungsplan aufgrund von Unzulänglichkeiten komplett zu überarbeiten. Im Zuge dessen wurde der eigentliche Beginn der Implementierungsarbeit für 3 Teammitglieder deutlich verzögert. Das restliche Kapitel bezieht sich auf diese zweite, überarbeitete Version des Plans. Es war ursprünglich geplant, den Testspezialisten das Schreiben der Testpakete übernehmen zu lassen und ihn zum Ausgleich in den anderen Paketen zu entlasten. Nachdem dies wider Erwarten nicht stattfinden konnte, mussten alle Teammitglieder zusätzliche Zeit aufwenden, um sich teilweise parallel in das verwendete Testframework einzuarbeiten. Das Aufsetzen der Datenbank und der Systemstartfunktionen nahm ebenfalls deutlich mehr Zeit in Anspruch, als ursprünglich angenommen. Nachdem sich dieses Arbeitspaket (`SystemStartStop/DataLayerInitializer') auch als schwierig zu testen herausstellte, wurde der geplante Test stattdessen zunächst für den Logger erstellt. Durch die Entscheidung, die Tests nicht mit Auszuliefern und in ein eigenes Projekt zu verpacken, entstanden hier bereits die ersten Probleme beim Lesen von Dateien aus dem Hauptprojekt, jedoch wurde es aus Zeitmangel und der unerwarteten Parallelarbeit an den Tests nicht gleich kollektiv erkannt. Durch falsch kalkulierte Zeitschätzungen beim Anpassen des Implementierungsplans am Anfang der Phase, hatte der Testspezialist zum Schluss zu wenig Arbeit und es wurde bereits mit Teilen des Arbeitspakets `Medienansicht' aus Milestone 2 begonnen. Neben Problemen bei der korrekten Fertigstellung des Arbeitspakets `Login/Registrierung', hatte der verantwortliche Implementierer Schwierigkeiten, das Versionskontrollsystem `git' im Einklang mit dem übrigen Team und dem Spezialisten über die Kommandozeile zu benutzen. Dadurch entstand ein deutlicher Mehraufwand für den Rest des Teams beim Reparieren unbedachter Operationen am gemeinsamen Repository.
+
+\subsection{Milestone 2}
+Wegen des Fehlens eines funktionierenden Logins am Ende von Milestone 1, musste der Verantwortliche dessen Fertigstellung zunächst vervollständigen, wodurch seine geplanten Arbeitspakete in diesem Milestone nicht angefangen wurden. Durch dieses Fehlen einer Grundfunktionalität, wurde das manuelle Ausprobieren von sessionabhängigen Funktionen ebenfalls erschwert. Ansonsten konnten die übrigen Teammitglieder ihre Pakete des zweiten Milestones relativ unabhängig voneinander implementieren, da die Arbeitspakete im Gegensatz zu Milestone 1 horizontal aufgebaut waren. Am Donnerstag den 10.06.2021 verließ der nacharbeitende Implementierer das Team, ohne eines seiner bisherigen Arbeitspakete vervollständigt zu haben. Dies hatte sowohl eine Reduzierung des Funktionsumfangs des Systems, als auch ein erneutes Umstrukturieren des Implementierungsplans zur Folge, um die fehlende Arbeitskraft zu kompensieren und wichtige Kernfunktionalitäten auf die übrigen Entwickler zu verteilen. Hierbei entstand ein zu großer Mehraufwand für einen unserer Entwickler, der bereits Zeitprobleme hatte und so ebenfalls seine Arbeitspakete zum Ende von Milestone 2 nicht komplett fertigstellen konnte. Im Testprojekt kristallisierte sich gegen Ende des Milestones heraus, dass der Pfad zur Konfigurationsdatei aus dem Hauptprojekt trotz mehrstündiger Versuche nicht aufgelöst werden konnte und deshalb der ConnectionPool keine Verbindung zur Datenbank bekam. Die Lösung dieser Schwierigkeit wurde aus Zeitmangel in den letzten Milestone verschoben.
+ 
+\subsection{Milestone 3}
+Neben der Nacharbeit der fehlenden Pakete aus dem letzten Abschnitt, war es dem Entwickler diesmal möglich, auch seine übrigen Arbeitsaufträge zu erfüllen. Hierzu wurden nicht nennenswerte Teile von Arbeitspaketen als kleine Entlastung umverteilt. Das Leseproblem im Testprojekt wurde umgangen, indem im PreTest die Konfigurationsdatei hartkodiert übergeben wurde. Ohne eine explizite Lösung des Problems war jedoch ein Fertigstellen des im Abschnitt 1 erwähnten Loggertests nicht möglich, dieser wurde gestrichen und gegen einen Test für den DataLayerInitializer ausgetauscht. Außerdem wurde die Reihenfolge der Pakete verändert, z.B. wurde die Implementierung des TrespassListeners nach hinten verlegt, um manuelle URL-Eingaben für unkompliziertes Testen bis zum Ende des Milestones möglich zu machen. Es trat dann Mitte der Woche eine bis jetzt ungeklärte Anomalie bei zwei unserer Entwickler auf, in Folge derer sich das System lokal nicht mehr starten lies. Da unser Paginationsspezialist, der das Gros der verbleibenden technisch komplizierten Teile nach der Funktionsreduktion zu tragen hatte, so noch zusätzlich Zeit aufwenden musste, geriet er mit den Tests in Verzug und es wurde beschlossen, diese zeitnah nachzuliefern. Ohne die Möglichkeit, produzierten Code zu testen, verschob sich ebenfalls die Fertigstellung des Kategoriebrowsers über das Ende des Milestones hinaus. 
+
+\subsection{Allgemeine Schwierigkeiten}
+Eigene Implementierungen der nötigen Validatoren und Converter für das reibungslose Funktionieren der Facelets wurden in vorhergehenden Phasen großteils gar nicht spezifiziert und stellten einen ungeplanten Mehraufwand in vielen Paketen dar. Ebenfalls ungenügend und zeitaufwendig waren die Kommentare und Methodenrümpfe aus der Spezifikation, die beim Erreichen des Arbeitspakets dann angepasst werden mussten, obwohl diese bereits manchmal als Schnittstelle in anderen Paketen benutzt wurden. Da die Verantwortlichkeiten in den Dao-Klassen methodenweise verteilt waren, kam es teils vor, dass identische Hilfsmethoden redundant parallel entwickelt wurden oder im umgekehrten Fall, Hilfsmethoden von anderen verwendet und dann vom Originalautor abgeändert wurden. Durch die Reduzierung der Teamgröße und damit des Funktionsumfangs mitten in der Implementierungsphase, entstanden einige unbenutze Artefakte im Code und der Datenbank, deren Entfernung weitreichende Änderungen in den Zuständigkeitsbereichen unterschiedlicher Entwickler zur Folge gehabt hätten. Da dies oft nicht mit dem jeweiligen Zeitplan vereinbar war, wurde von deren Entfernung zunächst abgesehen. Infolgedessen rutschten Fertigstellungen von Paketen gegen Ende der Milestones oft in Zeitknappheit und aus Prioritätsgründen wurde dann die Lauffähigkeit und der Umfang der geplanten Testfälle vernachlässigt. Über alle Milestones hinweg gab es immer wieder verschiedene Probleme, die mit der Interaktion unseres Versionskontrollsystems und den unterschiedlichen Entwicklungsumgebungen der Teammitglieder zusammenhing. Hierbei wurden vor allem Projektkonfigurationen die in proprietären Metadatenformaten der jeweiligen IDEs gespeichert waren, immer wieder gegenseitig überschrieben und es gab Unterschiede in der Interpretierung der Packagestruktur. All dies resultierte in der Notwendigkeit für einige Mitglieder, mitten in der Implementierungsphase auf die Referenzentwicklungsumgebung zu wechseln, womit weitere ungeplante Einarbeitungszeit einherging.
+
+%--Metriken----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Code-Metriken}
+\sectionauthor{Yoshi}
+Cool text
+
+%--Reference--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Reference}
+\sectionauthor{Wario}
+Cool text
+
+\subsection{Nice looking table}
+\begin{longtable}{@{}lllll@{}}
+\toprule
+\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\endfirsthead
+%
+\endhead
+%
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
+\end{longtable}
+
+\subsection{Nice looking landscape-table}
+\begin{landscape}
+\begin{longtable}{@{}lllll@{}}
+\toprule
+\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\endfirsthead
+%
+\endhead
+%
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
+\end{longtable}
+\end{landscape}
+
+\end{document}

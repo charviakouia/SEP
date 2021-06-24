@@ -43,8 +43,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	 * Checks on press of return button if: 
 	 * a) the user field wasn't left empty
 	 * b) the copies signature exists
-	 * c) the copy isn't to be returned by this user
-	 * d) the return deadline wasn't exceeded
+	 * c) the copy is to be returned by this user
 	 * in this order and
 	 * @throws a validatorException if one condition isn't met
 	 */
@@ -94,14 +93,14 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
-	    } catch (UserExceededDeadlineException e4) {							//soll man hier die Nachricht ausgeben, 
-	    	String shortMessage = messages.getString("returnForm.invalid"		//aber trotzdem das Exemplar als 'avaliable' markieren im DAO?
+	    } catch (UserExceededDeadlineException e4) {							
+	    	String shortMessage = messages.getString("returnForm.invalid"		
 	    			+ "_deadline_return_short");							
 	    	String longMessage = messages.getString("returnForm.invalid"
 	    			+ "_deadline_return_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	throw new ValidatorException(msg);
+	    	context.addMessage("return_form:returnForm_signature_field", msg);
 	    }
 		
 	}

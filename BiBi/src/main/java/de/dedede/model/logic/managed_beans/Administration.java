@@ -26,7 +26,8 @@ import jakarta.inject.Named;
  * Backing bean for the administration facelet. Allows an administrator to
  * update the system settings. Further, they can search for any user inside of
  * the system from here. This Backing Bean for system settings too.
- *
+ * 
+ * @author Jonas Picker
  */
 @Named
 @RequestScoped
@@ -45,7 +46,10 @@ public class Administration implements Serializable {
 	 * The settings for the application capsuled in a Dto.
 	 */
 	private ApplicationDto application;
-		
+	
+	/**
+	 * Initializes the input capsule with the DB-held costumizations.
+	 */
 	@PostConstruct
 	public void init() {
 		ApplicationDto idContainer = new ApplicationDto();
@@ -53,24 +57,35 @@ public class Administration implements Serializable {
 		this.application = ApplicationDao.readCustomization(idContainer);
 	}
 
+	/**
+	 * Allows reading access to the input capsule.
+	 * 
+	 * @return The Dto holding the settings.
+	 */
 	public ApplicationDto getApplication() {
 		return application;
 	}
 
+	/**
+	 * Allows modifications of the input capsule.
+	 * 
+	 * @param application the new settings held in a Dto.
+	 */
 	public void setApplication(ApplicationDto application) {
 		this.application = application;
 	}
 
 	/**
-	 * Save the changes made to the system settings.
+	 * Save the changes made to the system settings in the DB and the 
+	 * applicationscoped Bean, then reload the page. Also diplays the number of
+	 * affected users in a message.
 	 */
-	public void save() { //To-Do: Ausleihfreigabe umschalten => alle Nutzer geblocked?
+	public String save() { 
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Application app = facesContext.getApplication();
 		ResourceBundle messages = app.evaluateExpressionGet(facesContext, 
 				"#{msg}", ResourceBundle.class);
 		try {
-			//Logger.development(application.getName() + "|" + application.getPickupPeriod().toString() + "|" + application.getReturnPeriod().toString() + "|" + application.getWarningPeriod().toString() + "|" + application.getAnonRights() + "|" + application.getSystemRegistrationStatus() + "|" + application.getLendingStatus() + "|" + application.getEmailSuffixRegEx());
 			ApplicationDao.updateCustomization(application);
 			Logger.detailed("Application customizations saved in the database");
 			ApplicationDto appCustomData = 
@@ -105,7 +120,6 @@ public class Administration implements Serializable {
 				longMsg = enabled + " " 
 						+ messages.getString("administration.users"
 								+ "_enabled_long");
-;
 			}
 			appCustoms.setApplicationCustomization(application);
 			String shortSuccess = messages.getString("administration.update"
@@ -115,6 +129,8 @@ public class Administration implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					shortSuccess + shortMsg, longSuccess + longMsg);
 			facesContext.addMessage(null, msg);
+			
+			return "";
 		} catch (EntityInstanceDoesNotExistException e) {
 			String message = "The application configuration entry couldn't be "
 					+ "located in the database during save attempt.";
@@ -122,22 +138,30 @@ public class Administration implements Serializable {
 			throw new BusinessException(message, e);
 		}
 	}
-
-	/**
-	 * Search for a user inside of the system.
-	 */
-	public String searchUser() {
-		return "";
-	}
 	
+	/**
+	 * Provides the facelet radio buttons with the enum values to be displayed.
+	 * 
+	 * @return the array of values of @see SystemRegistrationStatus.
+	 */
 	public SystemRegistrationStatus[] systemRegistrationStatusValues() {
 		return SystemRegistrationStatus.values();
 	} 
-	
+
+	/**
+	 * Provides the facelet radio buttons with the enum values to be displayed.
+	 * 
+	 * @return the array of values of @see SystemAnonAccess.
+	 */
 	public SystemAnonAccess[] systemAnonAccessValues() {
 		return SystemAnonAccess.values();
 	}
 	
+	/**
+	 * Provides the facelet radio buttons with the enum values to be displayed.
+	 * 
+	 * @return the array of values of @see RegisteredUserLendStatus.
+	 */
 	public RegisteredUserLendStatus[] registeredUserLendStatusValues() {
 		return RegisteredUserLendStatus.values();
 	}

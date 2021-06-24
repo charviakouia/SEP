@@ -84,7 +84,8 @@ public class PrivacyPolicy  {
 	 * @return true if the user is not an admin.
 	 */
 	public boolean readOnly() {
-		if (userSession.getUser().getRole() == UserRole.ADMIN) {
+		if (userSession != null 
+				&& userSession.getUser().getRole() == UserRole.ADMIN) {
 			return false;
 		} else {
 			return true;
@@ -97,7 +98,8 @@ public class PrivacyPolicy  {
 	 * @return true if the user is an admin.
 	 */
 	public boolean renderButton() {
-		if (userSession.getUser().getRole() == UserRole.ADMIN) {
+		if (userSession != null 
+				&& userSession.getUser().getRole() == UserRole.ADMIN) {
 			return true;
 		} else {
 			return false;

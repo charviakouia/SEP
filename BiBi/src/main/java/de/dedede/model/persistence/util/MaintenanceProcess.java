@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -55,6 +56,12 @@ public final class MaintenanceProcess {
 	private static String reminderEmail;
 	
 	/**
+	 * Remembers sent reminders in order to prevent spamming. Copy-ids are keys
+	 * while user-ids are values.
+	 */
+	private static HashMap<Integer, Integer> sentReminders;
+	
+	/**
 	 * Private constructor to ensure only one instance can exist at any time.
 	 */
 	private MaintenanceProcess() {}
@@ -79,7 +86,12 @@ public final class MaintenanceProcess {
 			
 		/**
 	 	* Checks the data store for any approaching deadlines and sends a
-	 	* reminder email if the deadline is within the chosen reminder offset
+	 	* reminder email if the deadline is within the chosen reminder offset.
+	 	* Remembers sent reminders by copy and user as long as the server runs
+	 	* If a user is reminded and he returns the copy, which is then lent by
+	 	* another user who then needs to be reminded, the old value is 
+	 	* overwritten with the same key and a reminder e-mail is sent 
+	 	* regardless.
 	 	*/
 		@Override
 		public void run() {		
@@ -88,20 +100,32 @@ public final class MaintenanceProcess {
 						MediumDao.readDueDateReminders();
 				int sent = 0;
 				for (MediumCopyUserDto entry : doRemind) {
-					String firstname = entry.getUser().getFirstName();
-					String lastname = entry.getUser().getLastName();
-					String mediumTitle = entry.getMedium().getTitle();
 					Timestamp deadline = entry.getCopy().getDeadline();
-					LocalDateTime localDateTime = deadline.toLocalDateTime();
-					FormatStyle style = FormatStyle.MEDIUM;
-					DateTimeFormatter formatter = 
+					Timestamp nowPlusScanInterval = new Timestamp(System.currentTimeMillis() + intervalInMillis);
+					int userId = entry.getUser().getId();
+					int copyId = entry.getCopy().getId();
+					if (sentReminders.get(copyId) == null 
+							|| sentReminders.get(copyId) != userId) {
+						String firstname = entry.getUser().getFirstName();
+						String lastname = entry.getUser().getLastName();
+						String mediumTitle = entry.getMedium().getTitle();
+						LocalDateTime localDateTime = 
+								deadline.toLocalDateTime();
+						FormatStyle style = FormatStyle.MEDIUM;
+						DateTimeFormatter formatter = 
 							DateTimeFormatter.ofLocalizedDateTime(style);
-					String timeLeft = localDateTime.format(formatter);
-					String recipient = entry.getUser().getEmailAddress();
-					String body = insertParams(firstname, lastname, mediumTitle,
-							timeLeft, reminderEmail);
-					EmailUtility.sendEmail(recipient, reminderSubject, body);
-					sent++;
+						String timeLeft = localDateTime.format(formatter);
+						String recipient = entry.getUser().getEmailAddress();
+						String body = insertParams(firstname, lastname, 
+								mediumTitle, timeLeft, reminderEmail);
+						EmailUtility.sendEmail(recipient, reminderSubject, 
+								body);
+						sentReminders.put(copyId, userId);
+						sent++;
+					} else if (sentReminders.get(copyId) == userId 
+							&& deadline.before(nowPlusScanInterval)) {
+						sentReminders.remove(copyId);
+					}
 				}
 				Logger.detailed(sent + " reminder e-mails have been sent during"
 					+ " scheduled service execution");
@@ -162,12 +186,13 @@ public final class MaintenanceProcess {
 
 	/**
 	 * Relays the necessary RessourceBundle Strings from the upper layer down 
-	 * here. Also initializes the Timer.
+	 * here. Also initializes the Timer and the sentReminders field.
 	 * 
 	 * @param emailContent the body of the e-mail with 4 placeholders
 	 * @param emailSubject the subject to be displayed
 	 */
 	public void setup(String emailSubject, String emailBody) {
+		sentReminders = new HashMap<Integer, Integer>();
 		ConfigReader instance = ConfigReader.getInstance();
 		int keyAsIntInMinutes = instance.getKeyAsInt("SCAN_INTERVAL", 20);
 		intervalInMillis = keyAsIntInMinutes * 60 * 1000;
