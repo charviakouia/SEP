@@ -30,6 +30,10 @@
 	</cc:interface>
 
 	<cc:implementation>
+
+		<h:panelGroup layout="block"
+			rendered="#{not empty cc.attrs.value.items}">
+
 			<h:panelGroup layout="block"
 				styleClass="btn-toolbar justify-content-center #{cc.attrs.styleClass}">
 
