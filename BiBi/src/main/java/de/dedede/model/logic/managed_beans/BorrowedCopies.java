@@ -74,13 +74,13 @@ public class BorrowedCopies extends PaginatedList implements Serializable {
 					context.addMessage(null, new FacesMessage(messages.getString("profile.notAccess")));
 					context.getExternalContext().getFlash().setKeepMessages(true);
 					FacesContext.getCurrentInstance().getExternalContext()
-							.redirect("/BiBi/view/public/medium-search.xhtml");
+							.redirect("/BiBi/view/opac/medium-search.xhtml");
 				}
 			} else {
 				context.addMessage(null, new FacesMessage(messages.getString("profile.notLogin")));
 				context.getExternalContext().getFlash().setKeepMessages(true);
 				FacesContext.getCurrentInstance().getExternalContext()
-						.redirect("/BiBi/view/public/login.xhtml");
+						.redirect("/BiBi/view/ffa/login.xhtml");
 			}
 		} catch (IOException e) {
 			throw new BusinessException("Redirect is not possible.");

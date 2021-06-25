@@ -87,7 +87,7 @@ public class Medium extends PaginatedList implements Serializable {
 		} catch (EntityInstanceDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
 		}
 	}
 
@@ -139,7 +139,7 @@ public class Medium extends PaginatedList implements Serializable {
 		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
 		}
 	}
 
@@ -236,9 +236,9 @@ public class Medium extends PaginatedList implements Serializable {
 			MediumDao.deleteMedium(mediumDto);
 			context.addMessage(null, new FacesMessage(messages.getString("medium.deleteSuccess")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			return "/view/public/medium-search?faces-redirect=true";
+			return "/view/opac/medium-search?faces-redirect=true";
 		} catch (MediumDoesNotExistException e) {
-			return "/view/public/medium-search?faces-redirect=true";
+			return "/view/opac/medium-search?faces-redirect=true";
 		}
 	}
 

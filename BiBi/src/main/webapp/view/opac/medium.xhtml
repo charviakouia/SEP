@@ -168,7 +168,7 @@
                                                  == 'READY_FOR_PICKUP'}"/>
                                 <h:commandButton id="lendCopy"
                                                  value="#{msg['copy.lend']}"
-                                                 action="#{medium.lendCopy}"
+                                                 action="#{medium.lendCopy()}"
                                                  rendered="#{medium.mediumDto.copies.get(item.id).copyStatus == 'AVAILABLE'}"/>
                                 <h:commandButton id="returnCopy"
                                                  value="#{msg['copy.return']}"
