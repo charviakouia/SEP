@@ -54,7 +54,6 @@
 \sectionauthor{Sergei Pravdin}
 In diesem Dokument ist der Implementierungsbericht der Webanwendung \textbf{BiBi} dokumentiert. Dabei erfolgt die Gliederung der Implementierung in Milestones mit den geplanten und tatsächlichen Zeitaufwänden. Außerdem sind das \textbf{Änderungen gegenüber der Spezifikation}, die \textbf{Änderungen gegenüber dem Implementierungsplan} und die \textbf{Code-Metriken} zu sehen.
 
-
 %--Meilensteine----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Meilensteine}
 \sectionauthor{Sergei Pravdin}
@@ -125,7 +124,7 @@ Eigene Implementierungen der nötigen Validatoren und Converter für das reibung
 
 %--Metriken----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Code-Metriken}
-\sectionauthor{Yoshi}
+\sectionauthor{Ivan Charviakou}
 
 Im Folgenden werden verschiedene Code-Metriken allgemein vorgestellt und für das erstellte Projekt angegeben.
 Darüber hinaus lassen sich diese Metriken in drei allgemeine Untersuchungsbereiche unterteilen:
@@ -135,51 +134,75 @@ Durch Angabe dieser Metriken wird eine genauere Analyse des Codes aus verschiede
 \subsection{Allgemeine Metriken}
 
 %--Table for facelets
-\begin{longtable}{@{\extracolsep{\fill}}ll@{}}
+\begin{longtable}{@{\extracolsep{\fill}}lcl@{}}
 \toprule
 \multicolumn{2}{l}{\textbf{Facelets}} \\* \midrule
 \endfirsthead
 \endhead
-\textbf{Anzahl Facelets} & Number \\
-\textbf{Anzahl Zeilen XML Code} & Number \\* \bottomrule
+\textbf{Anzahl Facelets} & 29 \\
+\textbf{Anzahl Zeilen XML Code} & 1664 \\* \bottomrule
 \end{longtable}
 
 %--Table for packages
-\begin{longtable}{@{\extracolsep{\fill}}llll@{}}
+\begin{longtable}{@{\extracolsep{\fill}}lclclcl@{}}
 \toprule
 \multicolumn{4}{l}{\textbf{Metriken nach Paket}} \\* \midrule
 \textbf{Paketname} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Zeilen\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Methoden\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Klassen\end{tabular}} \\* \midrule
 \endfirsthead
 \textbf{Paketname} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Zeilen\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Methoden\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Java-Klassen\end{tabular}} \\* \midrule
 \endhead
-Input	 & Input & Input & Input \\
-Input	 & Input & Input & Input \\* \bottomrule
+de.dedede.model.data.dtos 				& 852 		& 200 		& 23 \\
+de.dedede.model.data.exceptions			& 4 			& 1	 		& 1 \\
+de.dedede.model.logic.converters			& 218 		& 14	 		& 10 \\
+de.dedede.model.logic.exceptions			& 183 		& 25	 		& 6 \\
+de.dedede.model.logic.managed\_beans		& 2203		& 240 		& 27 \\
+de.dedede.model.logic.util					& 369		& 23			& 14 \\
+de.dedede.model.logic.validators			& 443 		& 16	 		& 11 \\
+de.dedede.model.persistence.daos			& 2518 		& 111 		& 4 \\
+de.dedede.model.persistence.exceptions		& 407 		& 76	 		& 19 \\
+de.dedede.model.persistence.util			& 950 		& 51	 		& 10 \\
+Insgesamt	 							& 8147 		& 757 		& 125 \\* \bottomrule
 \end{longtable}
 
 \subsection{Komplexitäts-bezogene Metriken}
 
 %--Table for packages
-\begin{longtable}{@{\extracolsep{\fill}}llll@{}}
+\begin{longtable}{@{\extracolsep{\fill}}lclclcl@{}}
 \toprule
 \multicolumn{4}{l}{\textbf{Metriken nach Paket}} \\* \midrule
 \textbf{Paketname} & \textbf{Durchschnittliche zyklomatische Komplexität*} \\* \midrule
 \endfirsthead
 \textbf{Paketname} & \textbf{Durchschnittliche zyklomatische Komplexität} \\* \midrule
 \endhead
-Input	 & Input \\
-Input	 & Input \\* \bottomrule
+de.dedede.model.data.dtos 				& 1.14 \\
+de.dedede.model.logic.converters			& 1.64 \\
+de.dedede.model.logic.exceptions			& 1.24 \\
+de.dedede.model.logic.managed\_beans		& 1.44 \\
+de.dedede.model.logic.util					& 2.48 \\
+de.dedede.model.logic.validators			& 3.06 \\
+de.dedede.model.persistence.daos			& 2.88 \\
+de.dedede.model.persistence.exceptions		& 1 \\
+de.dedede.model.persistence.util			& 2.14 \\* \bottomrule
 \end{longtable}
 
 %--Table for methods
-\begin{longtable}{@{\extracolsep{\fill}}ll@{}}
+\begin{longtable}{@{\extracolsep{\fill}}lcl@{}}
 \toprule
 \multicolumn{2}{l}{\textbf{Die 10 komplexeste Methoden nach kognitiver Komplexität}} \\* \midrule
 \textbf{Methodenname} & \textbf{Kognitive Komplexität*} \\* \midrule
 \endfirsthead
 \textbf{Methodenname} & \textbf{Kognitive Komplexität} \\* \midrule
 \endhead
-Input	 & Input \\
-Input	 & Input \\* \bottomrule
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.persistence.util.\\DataLayerInitializer.consoleDialogue(Connection)\end{tabular}									& 21 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.persistence.util.\\DataLayerInitializer.setUpDatabase()\end{tabular} 											& 20 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.logic.managed\_beans.\\Lending.lendCopies()\end{tabular}													& 18 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.logic.util.\\TrespassListener.afterPhase(PhaseEvent)\end{tabular}												& 18 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.logic.managed\_beans.\\ReturnForm.returnCopies()\end{tabular}												& 15 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.persistence.daos.\\CategoryDao.createCategory(CategoryDto)\end{tabular}										& 14 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.persistence.daos.\\MediumDao.getAppliedLendingLimit(Connection,String,int)\end{tabular}							& 14 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.persistence.util.\\MaintenanceProcess.MaintenanceThread.run()\end{tabular}									& 12 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.persistence.daos.\\MediumDao.translateNuancedSearchQuery\\(StringBuilder,List,NuancedSearchQuery)\end{tabular}		& 11 \\
+\begin{tabular}[c]{@{}l@{}}de.dedede.model.logic.managed\_beans.\\CategoryCreator.onload()\end{tabular}												& 10 \\* \bottomrule
 \end{longtable}
 
 \paragraph{Zyklomatische Komplexität}
@@ -192,46 +215,27 @@ Im Gegensatz zur zyklomatischen Komplexität fasst diese Metrik die Schwierigkei
 \subsection{Abhängigkeits-bezogene Metriken}
 
 %--Table for packages
-\begin{longtable}{@{\extracolsep{\fill}}lll@{}}
+\begin{longtable}{@{\extracolsep{\fill}}lclcl@{}}
 \toprule
 \multicolumn{3}{l}{\textbf{Metriken nach Paket}} \\* \midrule
 \textbf{Paketname} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Paket-\\Abhängigkeiten\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl Paketen\\ mit dieser\\ Abhängigkeit\end{tabular}} \\* \midrule
 \endfirsthead
 \textbf{Paketname} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl\\ Paket-\\Abhängigkeiten\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Anzahl Paketen\\ mit dieser\\ Abhängigkeit\end{tabular}} \\* \midrule
 \endhead
-Input	 & Input & Input \\
-Input	 & Input & Input \\* \bottomrule
+de.dedede.model.data.dtos				& 1		& 8 \\
+de.dedede.model.data.exceptions			& 0		& 2 \\
+de.dedede.model.logic.converters			& 2		& 0 \\
+de.dedede.model.logic.exceptions			& 2		& 1 \\
+de.dedede.model.logic.i18n				& 0		& 0 \\
+de.dedede.model.logic.managed\_beans		& 6		& 2 \\
+de.dedede.model.logic.util					& 4		& 6 \\
+de.dedede.model.logic.validators			& 4		& 0 \\
+de.dedede.model.persistence.daos			& 4		& 4 \\
+de.dedede.model.persistence.exceptions		& 1		& 6 \\
+de.dedede.model.persistence.util			& 4		& 4 \\* \bottomrule
 \end{longtable}
 
-%--Reference--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-\section{Reference}
-\sectionauthor{Wario}
-Cool text
-
-\subsection{Nice looking table}
-\begin{longtable}{@{\extracolsep{\fill}}lllll@{}}
-\toprule
-\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
-\endfirsthead
-%
-\endhead
-%
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
-\end{longtable}
-
-\subsection{Nice looking landscape-table}
-\begin{landscape}
-\begin{longtable}{@{\extracolsep{\fill}}lllll@{}}
-\toprule
-\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
-\endfirsthead
-%
-\endhead
-%
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
-\end{longtable}
-\end{landscape}
 
 \end{document}
+
+
