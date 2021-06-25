@@ -28,19 +28,41 @@
 			</h:panelGroup>
 
 		</h:form>
-
-		<h:form id="form_category_tree">
+		
+		<h:panelGroup layout="block" styleClass="XXX" binding="#{categoryBrowser.categoryTree}" />
+		
+		<!-- <h:form id="form_category_tree">
 
 			<ui:repeat value="#{categoryBrowser.categories}" var="category">
 
 				<h:panelGroup layout="block" styleClass="XXX">
 					<h:commandLink id="link_select_category" value="#{category.name}"
 						action="#{categoryBrowser.selectCategory(category)}" />
+					<h:commandButton id="button_show_subcategories" value="!SUBCATEGROIES!" action="#{}" />
+
+					<h:panelGroup layout="block" style="margin-left: 3rem;">
+						
+						<ui:repeat value="#{category.children}" var="subcategory">
+
+						<h:panelGroup layout="block" styleClass="XXX">
+							<h:commandLink id="link_select_category" value="#{subcategory.name}"
+								action="#{categoryBrowser.selectCategory(subcategory)}" />
+							<h:commandButton id="button_show_subcategories" value="!SUBCATEGROIES!" action="#{}" />
+
+
+						</h:panelGroup>
+
+					</ui:repeat>
+					
+					</h:panelGroup>
+					
+					<bibi:branch value="#{category.children}" />
+
 				</h:panelGroup>
 
 			</ui:repeat>
 
-		</h:form>
+		</h:form> -->
 
 		<h:panelGrid layout="block" styleClass="container-fluid"
 			rendered="#{categoryBrowser.currentCategory != null}">

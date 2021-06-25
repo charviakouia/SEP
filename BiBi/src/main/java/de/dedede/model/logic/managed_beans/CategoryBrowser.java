@@ -10,6 +10,8 @@ import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.MediumDao;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.component.html.HtmlOutputText;
+import jakarta.faces.component.html.HtmlPanelGroup;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -40,13 +42,47 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	// maybe temporary
 	// this is the tree o categories … for now … a flat version of it!!
-	private List<CategoryDto> categories;
+	private List<CategoryDto> categories = CategoryDao.readAllCategoriesTemp();;
 
 	private List<MediumDto> mediums;
 
+	private HtmlPanelGroup categoryTree = new HtmlPanelGroup();
+
+	// initialize the category tree
+	{
+		categoryTree.setLayout("block");
+
+		forEachCategory(categoryTree, categories);
+
+	}
+
+	// @Temproary, bad name
+	private static void forEachCategory(HtmlPanelGroup panel, List<CategoryDto> categories) {
+		for (final var subcategory : categories) {
+			final var subpanel = new HtmlPanelGroup();
+
+			// @Temp should be a link … kinda commandLink
+			final var text = new HtmlOutputText();
+			text.setValue(subcategory.getName());
+
+			subpanel.setLayout("block");
+			subpanel.setStyle("margin-left: 3rem;");
+			subpanel.getChildren().add(text);
+
+			panel.getChildren().add(subpanel);
+
+			forEachCategory(subpanel, subcategory.getChildren());
+		}
+	}
+
 	@PostConstruct
 	public void init() {
-		categories = CategoryDao.readAllCategoriesTemp();
+
+	}
+
+	// @Temporary
+	public String refr() {
+		return "category-browser";
 	}
 
 	public CategorySearchDto getCategorySearch() {
@@ -73,6 +109,14 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		this.categories = categories;
 	}
 
+	public HtmlPanelGroup getCategoryTree() {
+		return categoryTree;
+	}
+
+	public void setCategoryTree(HtmlPanelGroup categoryTree) {
+		this.categoryTree = categoryTree;
+	}
+
 	public boolean writableCategoryName() {
 //		if (session.getUser() == null) {
 //			return false;
@@ -95,7 +139,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	public void selectCategory(CategoryDto category) {
 		currentCategory = category;
-		
+
 		if (currentCategory != null) {
 			mediums = MediumDao.readMediaGivenCategory(currentCategory, getPaginatedList());
 		}

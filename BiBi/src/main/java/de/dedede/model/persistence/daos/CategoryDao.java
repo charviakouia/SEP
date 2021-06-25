@@ -175,13 +175,15 @@ public final class CategoryDao {
 									ct.parentcategoryid = pct.categoryid
 							)
 							select * from categories
-							order by title
+
 					""");
+
+			// @Note "order by title" kills our parent setting logic !!!
 
 			final var resultSet = statement.executeQuery();
 			final var results = new ArrayList<CategoryDto>();
 			final var categories = new HashMap<Integer, CategoryDto>();
-			
+
 			while (resultSet.next()) {
 				final var category = new CategoryDto();
 				category.setId(resultSet.getInt(1));
@@ -189,10 +191,13 @@ public final class CategoryDao {
 				category.setDescription(resultSet.getString(3));
 
 				categories.put(category.getId(), category);
-				
+
 				if (resultSet.getObject(4) != null) {
 					// parent exists by now!
-					category.setParent(categories.get(resultSet.getInt(4)));
+					final var parentCategory = categories.get(resultSet.getInt(4));
+
+					category.setParent(parentCategory);
+					parentCategory.getChildren().add(category);
 				} else {
 					// only put top-level/parentless categories directly into the list of results
 					results.add(category);
@@ -200,7 +205,7 @@ public final class CategoryDao {
 			}
 
 			connection.commit();
-			
+
 			return results;
 
 		} catch (SQLException exception) {
