@@ -31,6 +31,9 @@
 		
 		<h:panelGroup layout="block" styleClass="XXX" binding="#{categoryBrowser.categoryTree}" />
 		
+		<!-- @Temporary -->
+		<h:form><h:commandButton value="BUILD" action="#{categoryBrowser.build()}" /></h:form>
+		
 		<!-- <h:form id="form_category_tree">
 
 			<ui:repeat value="#{categoryBrowser.categories}" var="category">
