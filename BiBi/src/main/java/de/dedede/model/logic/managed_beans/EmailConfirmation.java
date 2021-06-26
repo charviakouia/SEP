@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -55,8 +56,7 @@ public class EmailConfirmation implements Serializable {
 		user.setToken(null);
 		user.setTokenCreation(null);
 		UserDao.updateUser(user);
-		ResourceBundle messages = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		context.addMessage(null, new FacesMessage(messages.getString("emailConfirmation.success")));
+		MessagingUtility.writePositiveMessageWithKey(context, "emailConfirmation.success");
 		context.getExternalContext().getFlash().setKeepMessages(true);
 		return "/view/account/profile.xhtml?faces-redirect=true&id=" + user.getId();
 	}

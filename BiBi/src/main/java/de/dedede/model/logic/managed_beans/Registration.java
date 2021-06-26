@@ -3,10 +3,7 @@ package de.dedede.model.logic.managed_beans;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
-import de.dedede.model.logic.util.EmailUtility;
-import de.dedede.model.logic.util.PasswordHashingModule;
-import de.dedede.model.logic.util.TokenGenerator;
-import de.dedede.model.logic.util.UserVerificationStatus;
+import de.dedede.model.logic.util.*;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
 import de.dedede.model.persistence.util.Logger;
@@ -97,24 +94,20 @@ public class Registration implements Serializable {
 	private void sendVerificationEmail() {
 		try {
 			EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", 
-					EmailUtility.getLink("/view/public/email-confirmation.xhtml", user.getToken().getContent()));
+					EmailUtility.getLink("/view/ffa/email-confirmation.xhtml", user.getToken().getContent()));
 		} catch (MessagingException | UnsupportedEncodingException e) {
 			Logger.severe("Couldn't send a verification email to user: " + user.getEmailAddress());
 		}
 	}
 
 	private String switchUser(){
-		Application app = context.getApplication();
-		ResourceBundle messages = app.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		String msg;
 		if (isAdmin()){
-			msg = messages.getString("registration.success.admin");
+			MessagingUtility.writePositiveMessageWithKey(context, "registration.success.admin");
 		} else {
-			msg = messages.getString("registration.success.own");
+			MessagingUtility.writePositiveMessageWithKey(context, "registration.success.own");
 			session.setUser(user);
 		}
 		context.getExternalContext().getFlash().setKeepMessages(true);
-		context.addMessage(null, new FacesMessage(msg));
 		return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
 	}
 

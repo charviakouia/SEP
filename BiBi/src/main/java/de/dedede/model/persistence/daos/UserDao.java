@@ -58,8 +58,8 @@ public final class UserDao {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			PreparedStatement createStmt = conn
-					.prepareStatement("INSERT INTO Users (emailAddress, passwordHashSalt, passwordHash, name, surname, "
-							+ "postalCode, city, street, houseNumber, token, tokenCreation, userLendPeriod, "
+					.prepareStatement("INSERT INTO Users (emailAddress, passwordHashSalt, passwordHash, name, "
+							+ "surname, postalCode, city, street, houseNumber, token, tokenCreation, userLendPeriod, "
 							+ "lendStatus, verificationStatus, userRole) VALUES "
 							+ "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), "
 							+ "CAST(? AS userlendstatus), CAST(? AS userverificationstatus), "

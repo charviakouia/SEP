@@ -11,26 +11,28 @@
 	<ui:param name="page" value="contact" />
 
 	<ui:define name="content">
-		<h1>#{msg['contact.headline']}</h1>
+
+		<h:outputLabel for="contact_form" value="#{msg['contact.headline']}"
+					   style="font-weight:bold; font-size:x-large;"/>
 		
-				<h:form id="contact_form">
-		<h:panelGrid id="contact_panel" columns="1" border="10" 
-				cellpadding="10" cellspacing="10"
-				rendered="#{contact.renderButton()}">
-               
-		<h:inputTextarea id="contact_text_area" 
-						value="#{contact.textContainer.contactInfo}" 
-						readonly="#{contact.readOnly()}"
-						cols="100" rows="30" 
+		<h:form id="contact_form">
+			<h:panelGrid id="contact_panel" columns="1" border="10"
+					cellpadding="10" cellspacing="10"
+					rendered="#{contact.renderButton()}">
+
+			<h:inputTextarea id="contact_text_area"
+							value="#{contact.textContainer.contactInfo}"
+							readonly="#{contact.readOnly()}"
+							cols="100" rows="30"
+							rendered="#{contact.renderButton()}"/>
+
+			<h:commandButton id="contact_save_changes"
+						action="#{contact.save()}"
+						styleClass="btn btn-primary"
+						value="#{msg['all_three.save_changes']}"
 						rendered="#{contact.renderButton()}"/>
-		
-		<h:commandButton id="contact_save_changes" 
-					action="#{contact.save()}" 
-					styleClass="btn btn-primary" 
-					value="#{msg['all_three.save_changes']}"
-					rendered="#{contact.renderButton()}"/>
-		
-		</h:panelGrid>
+
+			</h:panelGrid>
 		</h:form>
 		
 		<h:outputText id="contact_output_text" 

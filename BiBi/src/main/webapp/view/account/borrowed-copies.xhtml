@@ -17,7 +17,10 @@
 			<f:viewAction action="#{borrowedCopies.onload}" />
 		</f:metadata>
 
-		<bibi:paginatedList value="#{borrowedCopies}">
+		<h:outputLabel for="borrowedCopiesList" value="#{msg['title.borrowed_copies']}"
+					   style="font-weight:bold; font-size:x-large;"/>
+
+		<bibi:paginatedList id="borrowedCopiesList" value="#{borrowedCopies}">
 
 			<h:column>
 				<f:facet name="header">#{msg['copy']}</f:facet>

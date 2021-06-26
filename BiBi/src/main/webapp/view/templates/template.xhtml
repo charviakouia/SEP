@@ -10,8 +10,7 @@
 
 <h:head>
 
-	<title>#{msg['title.'.concat(page)]} &#8226;
-		#{pageHeader.application.name}</title>
+	<title>#{msg['title.'.concat(page)]} &#8226;#{pageHeader.application.name}</title>
 
 	<h:outputStylesheet library="css" name="bootstrap-5.0.1.min.css" />
 	<h:outputStylesheet library="css" name="style.css" />
@@ -36,6 +35,24 @@
 		<ui:include src="header.xhtml" />
 
 		<h:panelGroup layout="block" styleClass="container p-5">
+
+			<h:form id="messageForm">
+
+				<h:panelGrid columns="1">
+
+					<h:panelGroup>
+						<h:inputHidden id="positive"/>
+						<h:message for="positive" style="color: green"/>
+					</h:panelGroup>
+
+					<h:panelGroup>
+						<h:inputHidden id="negative"/>
+						<h:message for="negative" style="color: darkred"/>
+					</h:panelGroup>
+
+				</h:panelGrid>
+
+			</h:form><br/>
 
 			<ui:insert name="content" />
 

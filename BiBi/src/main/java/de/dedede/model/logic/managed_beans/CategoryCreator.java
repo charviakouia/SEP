@@ -75,7 +75,7 @@ public class CategoryCreator {
             CategoryDao.createCategory(category);
             context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.success")));
             context.getExternalContext().getFlash().setKeepMessages(true);
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/category-browser.xhtml?faces-redirect=true");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/category-browser.xhtml?faces-redirect=true");
         } catch (ParentCategoryDoesNotExistException e) {
             context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notParentMatch")));
         } catch (EntityInstanceNotUniqueException exception) {
@@ -110,7 +110,7 @@ public class CategoryCreator {
             } else {
                 context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notLogin")));
                 context.getExternalContext().getFlash().setKeepMessages(true);
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/ffa/login.xhtml?faces-redirect=true");
             }
         } catch (CategoryDoesNotExistException e) {
             context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.invalidID")));

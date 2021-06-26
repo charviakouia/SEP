@@ -12,50 +12,58 @@
 	<ui:param name="page" value="return_form" />
 
 	<ui:define name="content">
-	<h1>#{msg['returnForm.headline']}</h1>
-	
-	<h:form id="form_return_form">
-	
-		<h:panelGroup layout="block" styleClass="form-group">
-			<h:outputLabel for="returnForm_mail_field" 
-							value="#{msg['returnForm.mail_field']}"/>
-			<h:inputText id="returnForm_mail_field" 
-						value="#{returnForm.user.emailAddress}" 
-						styleClass="form-control" required="true" 
-						onchange="submit()" 
-						valueChangelistener="#{returnForm.setUserEmail}"> 
-				<f:validator validatorId="userExistsValidator"/>
-			</h:inputText>
-			<h:message for="returnForm_mail_field" style="color:red"/>
-		</h:panelGroup>
-		
-	<h:panelGroup layout="block" styleClass="container">
-		<ui:repeat var="copy" value="#{returnForm.copies}" varStatus="status">
-					
-			 <h:panelGroup layout="block" styleClass="form-group">
-				<h:outputLabel for="returnForm_signature_field" 
-								value="#{msg['returnForm.signature_field']}"/>
-				<h:inputText id="returnForm_signature_field" 
-							value="#{returnForm.copies[status.index].signature}" 
-							styleClass="form-control">
-					<f:validator validatorId="returnFormSignatureValidator"/>
-				</h:inputText>
-				<h:message for="returnForm_signature_field" style="color:red"/>
-			</h:panelGroup>
-			
-		</ui:repeat>
-	</h:panelGroup>
-		
-		<h:commandButton id="button_add_signature_return_field"
-						action="#{returnForm.addSignatureInputField()}" 
-						value="#{msg['returnForm.add_input']}"
-						styleClass="btn btn-secondary"/>
-		<h:commandButton id="button_return_copies"
-						action="#{returnForm.returnCopies()}" 
-						value="#{msg['returnForm.return_copies']}"
-						styleClass="btn btn-primary"/>			
 
-	</h:form>
+		<f:metadata>
+			<f:viewParam name="userId" value="#{returnForm.user.id}" required="false"/>
+			<f:viewParam name="copySignature" value="#{returnForm.rawParameterSignature}" required="false"/>
+			<f:viewAction action="#{returnForm.preloadUserAndCopies}" /><br/>
+		</f:metadata>
+
+		<h:outputLabel for="form_return_form" value="#{msg['returnForm.headline']}"
+					   style="font-weight:bold; font-size:x-large;"/>
+	
+		<h:form id="form_return_form">
+
+			<h:panelGroup layout="block" styleClass="form-group">
+				<h:outputLabel for="returnForm_mail_field"
+								value="#{msg['returnForm.mail_field']}"/>
+				<h:inputText id="returnForm_mail_field"
+							value="#{returnForm.user.emailAddress}"
+							styleClass="form-control" required="true"
+							onchange="submit()"
+							valueChangelistener="#{returnForm.setUserEmail}">
+					<f:validator validatorId="userExistsValidator"/>
+				</h:inputText>
+				<h:message for="returnForm_mail_field" style="color:red"/>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block" styleClass="container">
+				<ui:repeat var="copy" value="#{returnForm.copies}" varStatus="status">
+
+					 <h:panelGroup layout="block" styleClass="form-group">
+						<h:outputLabel for="returnForm_signature_field"
+										value="#{msg['returnForm.signature_field']}"/>
+						<h:inputText id="returnForm_signature_field"
+									value="#{returnForm.copies[status.index].signature}"
+									styleClass="form-control">
+							<f:validator validatorId="returnFormSignatureValidator"/>
+						</h:inputText>
+						<h:message for="returnForm_signature_field" style="color:red"/>
+					</h:panelGroup>
+
+				</ui:repeat>
+			</h:panelGroup>
+
+			<h:commandButton id="button_add_signature_return_field"
+							action="#{returnForm.addSignatureInputField()}"
+							value="#{msg['returnForm.add_input']}"
+							styleClass="btn btn-secondary"/>
+			<h:commandButton id="button_return_copies"
+							action="#{returnForm.returnCopies()}"
+							value="#{msg['returnForm.return_copies']}"
+							styleClass="btn btn-primary"/>
+
+		</h:form>
 	
 	</ui:define>
 

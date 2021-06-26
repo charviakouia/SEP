@@ -2,6 +2,8 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +13,10 @@ import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
@@ -55,6 +59,31 @@ public class ReturnForm implements Serializable {
 		for(int i = 0; i < 5; i++) {
 			copies.add(new CopyDto());
 		}
+	}
+
+	// Ivan
+	public void preloadUserAndCopies(){
+		try {
+			UserDao.readUserForProfile(user);
+			CopyDto parameterCopy = copies.get(0);
+			parameterCopy.setSignature(URLDecoder.decode(rawParameterSignature, StandardCharsets.UTF_8));
+			MediumDao.readCopyBySignature(copies.get(0));
+		} catch (EntityInstanceDoesNotExistException | UserDoesNotExistException e) {
+			Logger.severe("Couldn't find passed user or copy by their respective identifiers");
+		}
+	}
+
+	// Ivan
+	private String rawParameterSignature;
+
+	// Ivan
+	public String getRawParameterSignature() {
+		return rawParameterSignature;
+	}
+
+	// Ivan
+	public void setRawParameterSignature(String rawParameterSignature) {
+		this.rawParameterSignature = rawParameterSignature;
 	}
 	
 	/**

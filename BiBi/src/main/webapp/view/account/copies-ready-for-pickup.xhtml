@@ -17,7 +17,10 @@
 			<f:viewAction action="#{copiesReadyForPickup.onload}" />
 		</f:metadata>
 
-		<bibi:paginatedList value="#{copiesReadyForPickup}">
+		<h:outputLabel for="copiesReadyForPickupList" value="#{msg['title.copies_ready_for_pickup']}"
+					   style="font-weight:bold; font-size:x-large;"/>
+
+		<bibi:paginatedList id="copiesReadyForPickupList" value="#{copiesReadyForPickup}">
 
 			<h:column>
 				<f:facet name="header">#{msg['copy']}</f:facet>

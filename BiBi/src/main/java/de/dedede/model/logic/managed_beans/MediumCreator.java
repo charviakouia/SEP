@@ -10,6 +10,7 @@ import java.util.List;
 
 import de.dedede.model.data.dtos.*;
 import de.dedede.model.logic.util.MediumType;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
@@ -95,10 +96,7 @@ public class MediumCreator implements Serializable {
 	public String save() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException{
 		MediumDao.createMedium(medium);
 		MediumDao.createCopy(copy, medium);
-		ResourceBundle messages =
-				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		context.addMessage("messageForm:positive",
-				new FacesMessage(messages.getString("mediumCreator.success")));
+		MessagingUtility.writePositiveMessageWithKey(context, "mediumCreator.success");
 		return null;
 	}
 

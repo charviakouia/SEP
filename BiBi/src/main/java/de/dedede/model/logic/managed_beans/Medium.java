@@ -192,7 +192,7 @@ public class Medium extends PaginatedList implements Serializable {
 	 * Go to the return form taking a copy of this medium.
 	 */
 	public String returnCopy() throws IllegalStateException {
-		return "/BiBi/view/staff/return-copy.xhtml?faces-redirect=true";
+		return "/BiBi/view/staff/return-form.xhtml?faces-redirect=true";
 	}
 
 	/**

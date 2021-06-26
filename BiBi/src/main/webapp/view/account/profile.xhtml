@@ -17,6 +17,9 @@
 			<f:viewAction action="#{profile.onload}" /><br/>
 		</f:metadata>
 
+		<h:outputLabel for="form_profile" value="#{msg['title.profile']}"
+					   style="font-weight:bold; font-size:x-large;"/>
+
 		<h:form id="form_profile">
 
 			<h:panelGrid id = "panel" columns = "2"
@@ -83,7 +86,7 @@
 
 			</h:panelGrid>
 
-			<h:panelGrid id = "footer" columns = "1"
+			<h:panelGrid id = "footer" columns = "4"
 						 cellpadding = "10" cellspacing = "1">
 
 				<h:commandButton id="button_save"
@@ -109,7 +112,7 @@
 
 		</h:form>
 		
-		<h:form>
+		<h:form rendered="#{initParam['jakarta.faces.PROJECT_STAGE'] == 'Development'}">
 			
 			<h:commandButton action="#{profile.throwsError()}" value="Throw error"/>
 			

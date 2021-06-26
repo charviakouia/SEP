@@ -116,7 +116,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	public String createCategory() {
 		ectx.getFlash().put("parent-category", currentCategory.getId());
 
-		return "category-creation?faces-redirect=true";
+		return "category-creator?faces-redirect=true";
 	}
 
 	@Override

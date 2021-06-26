@@ -139,19 +139,19 @@
 					</h:panelGroup>
 
 					<h:link value="#{msg['category_browser.short']}"
-						outcome="/view/public/category-browser.xhtml"
+						outcome="/view/opac/category-browser.xhtml"
 						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />
 
 					<h:link value="#{msg['advanced_search']}"
-						outcome="/view/public/medium-search.xhtml"
+						outcome="/view/opac/medium-search.xhtml"
 						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
 
-					<h:link value="#{msg['log_in']}" outcome="/view/public/login.xhtml"
+					<h:link value="#{msg['log_in']}" outcome="/view/ffa/login.xhtml"
 						rendered="#{pageHeader.showingLogin}"
 						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
 
 					<h:link value="#{msg['register']}"
-						outcome="/view/public/registration.xhtml"
+						outcome="/view/ffa/registration.xhtml"
 						rendered="#{pageHeader.showingRegistration}"
 						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
 
