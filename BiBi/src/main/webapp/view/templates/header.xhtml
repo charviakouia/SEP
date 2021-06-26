@@ -75,11 +75,11 @@
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingAccountMenu}">
 
-						<h:link value="#{msg['account']}"
+						<h:link id="accountDropDown" value="#{msg['account']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
 						<h:panelGroup styleClass="dropdown-menu">
-							<h:link value="#{msg['profile']}"
+							<h:link id="prfl" value="#{msg['profile']}"
 								outcome="/view/account/profile.xhtml?id=#{userSession.user.id}"
 								styleClass="dropdown-item #{page == 'profile' ? 'active' : ''}" />
 

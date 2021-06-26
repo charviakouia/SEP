@@ -10,6 +10,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.regex.Pattern;
+
 import static org.junit.Assert.assertNotNull;
 
 @GraphWalker(start = "e_startBrowser", value = "random(edge_coverage(100))")
@@ -32,8 +34,7 @@ public class BiBiBlackBoxTest extends ExecutionContext implements BiBiGraph {
 
     @Override
     public void v_Profile() {
-        waiter.until(ExpectedConditions.textToBe(By.id("form_profile:frstname"),
-                "Langstrumpf"));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:frstname")));
     }
 
     @Override
@@ -72,25 +73,23 @@ public class BiBiBlackBoxTest extends ExecutionContext implements BiBiGraph {
 
     @Override
     public void e_clickSignOut() {
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.className("nav-item dropdown")));
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.className("nav-item dropdown"))).click();
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.className("form_log_out:button_log_out")));
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.className("form_log_out:button_log_out"))).click();
-
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown")));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown"))).click();
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_log_out:button_log_out")));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_log_out:button_log_out"))).click();
     }
 
     @Override
     public void e_clickProfile() {
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.className("nav-item dropdown")));
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.className("nav-item dropdown"))).click();
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.className("dropdown-item")));
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.className("dropdown-item"))).click();
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown")));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown"))).click();
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("prfl")));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("prfl"))).click();
     }
 
     @Override
     public void v_MediumSearch() {
-        waiter.until(ExpectedConditions.textToBe(By.id("navbar_content"),
-                "Account"));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown")));
     }
 
     @Override
@@ -110,6 +109,16 @@ public class BiBiBlackBoxTest extends ExecutionContext implements BiBiGraph {
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:zipCode"))).clear();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:zipCode")))
                 .sendKeys("94032");
+
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:password")));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:password"))).clear();
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:password")))
+                .sendKeys("Password1");
+
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:confirmedPassword")));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:confirmedPassword"))).clear();
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:confirmedPassword")))
+                .sendKeys("Password1");
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:button_save")));
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:button_save"))).click();
 
@@ -135,7 +144,6 @@ public class BiBiBlackBoxTest extends ExecutionContext implements BiBiGraph {
 
     @Override
     public void v_ProfileWithNewZip() {
-        waiter.until(ExpectedConditions.textToBe(By.id("form_profile:zipCode"),
-                "94032"));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:zipCode")));
     }
 }
