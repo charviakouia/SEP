@@ -286,11 +286,7 @@ public final class CategoryDao {
 			final var affectedRows = statement.executeUpdate();
 
 			if (affectedRows == 0) {
-<<<<<<< HEAD
-				final var message = "Non-existent category with id %s passed to updateCategory()"
-=======
 				final var message = "Non-existent category with id %d passed to updateCategory()"
->>>>>>> secluded
 						.formatted(category.getId());
 				Logger.severe(message);
 				throw new CategoryDoesNotExistException(message);
