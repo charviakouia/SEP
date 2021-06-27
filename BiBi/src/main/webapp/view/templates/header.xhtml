@@ -54,17 +54,17 @@
 							</h:panelGroup>
 
 							<h:panelGroup layout="block" styleClass="account"
-								rendered="#{pageHeader.isShowingAccountHelp()}">
+								rendered="#{pageHeader.showingAccountHelp}">
 								#{msg['help.'.concat(page).concat('.account')]}
 							</h:panelGroup>
 
 							<h:panelGroup layout="block" styleClass="staff"
-								rendered="#{pageHeader.isShowingStaffHelp()}">
+								rendered="#{pageHeader.showingStaffHelp}">
 								#{msg['help.'.concat(page).concat('.staff')]}
 							</h:panelGroup>
 
 							<h:panelGroup layout="block" styleClass="admin"
-								rendered="#{pageHeader.isShowingAdminHelp()}">
+								rendered="#{pageHeader.showingAdminHelp}">
 								#{msg['help.'.concat(page).concat('.admin')]}
 							</h:panelGroup>
 
@@ -73,7 +73,7 @@
 					</h:panelGroup>
 
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
-						rendered="#{pageHeader.isShowingAccountMenu()}">
+						rendered="#{pageHeader.showingAccountMenu}">
 
 						<h:link id="accountDropDown" value="#{msg['account']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
@@ -92,7 +92,7 @@
 					</h:panelGroup>
 
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
-						rendered="#{pageHeader.isShowingStaffMenu()}">
+						rendered="#{pageHeader.showingStaffMenu}">
 						<h:link value="#{msg['staff']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
@@ -121,7 +121,7 @@
 					</h:panelGroup>
 
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
-						rendered="#{pageHeader.isShowingAdministratorMenu()}">
+						rendered="#{pageHeader.showingAdministratorMenu}">
 
 						<h:link value="#{msg['administration']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
@@ -147,12 +147,12 @@
 						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
 
 					<h:link id="signIn" value="#{msg['log_in']}" outcome="/view/ffa/login.xhtml"
-						rendered="#{pageHeader.isShowingLogin()}"
+						rendered="#{pageHeader.showingLogin}"
 						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
 
 					<h:link value="#{msg['register']}"
 						outcome="/view/ffa/registration.xhtml"
-						rendered="#{pageHeader.isShowingRegistration()}"
+						rendered="#{pageHeader.showingRegistration}"
 						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
 
 				</h:panelGroup>

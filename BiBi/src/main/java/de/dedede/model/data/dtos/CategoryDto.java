@@ -1,5 +1,8 @@
 package de.dedede.model.data.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This DTO (data transfer object) is responsible for aggregating and
  * encapsulating data about the category of the medium for transfer.
@@ -17,6 +20,8 @@ public class CategoryDto {
 	private String description;
 
 	private CategoryDto parent;
+	
+	private List<CategoryDto> children = new ArrayList<>();
 
 	/**
 	 * Fetches the id of the category.
@@ -94,6 +99,14 @@ public class CategoryDto {
 		this.parent = parent;
 	}
 	
+	public List<CategoryDto> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<CategoryDto> children) {
+		this.children = children;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {

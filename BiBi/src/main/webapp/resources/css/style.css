@@ -9,3 +9,16 @@ html, body {
 .footer {
 	height: var(--footer-height);
 }
+
+.errorMessage {
+	color: darkred;
+}
+
+.pageTitle {
+	font-weight: bold;
+	font-size: x-large;
+}
+
+.accordion-button.disabled::after {
+	background-image: none !important;
+}

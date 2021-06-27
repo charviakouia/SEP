@@ -27,12 +27,12 @@ import jakarta.inject.Named;
 public class MediumSearch extends PaginatedList implements Serializable {
 
 	private static final int NUANCED_SEARCH_QUERIES_DEFAULT_AMOUNT = 3;
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private int searchCriteriaOffset = 0;
-	
+
 	private MediumSearchDto mediumSearch = new MediumSearchDto();
 
 	{
@@ -82,23 +82,24 @@ public class MediumSearch extends PaginatedList implements Serializable {
 
 		mediumSearch.getNuancedSearchQueries().add(nuancedSearchQuery);
 	}
-	
+
 	// @Task use lists/iterators/…
 	public String formatAuthors(MediumDto medium) {
 		final var authors = new StringBuilder();
-		
-		if (medium.getAuthor1() != null) {
+
+		final var author1Exists = medium.getAuthor1() != null && !medium.getAuthor1().trim().isEmpty();
+		if (author1Exists) {
 			authors.append(medium.getAuthor1());
 		}
-		
-		if (medium.getAuthor2() != null) {
-			if (medium.getAuthor1() != null) {
+
+		if (medium.getAuthor2() != null && !medium.getAuthor2().trim().isEmpty()) {
+			if (author1Exists) {
 				authors.append(", ");
 			}
-			
+
 			authors.append(medium.getAuthor2());
 		}
-		
+
 		return authors.toString();
 	}
 
