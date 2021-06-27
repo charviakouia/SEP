@@ -9,3 +9,7 @@ html, body {
 .footer {
 	height: var(--footer-height);
 }
+
+.accordion-button.disabled::after {
+	background-image: none !important;
+}

@@ -2,6 +2,7 @@ package de.dedede.model.persistence.daos;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -118,6 +119,7 @@ public final class CategoryDao {
 	 */
 	// @Task rename to searchCategories
 	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearch, PaginationDto pagination) {
+
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
@@ -175,23 +177,38 @@ public final class CategoryDao {
 		}
 	}
 
+	// @Task docs
 	public static List<CategoryDto> readAllCategoriesTemp() {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
 			final var statement = connection.prepareStatement("""
-							select
-								ct.categoryid, ct.title, ct.description, ct.parentcategoryid
-							from
-								category ct
-							order by
-								title
-									desc
+							with recursive categories(categoryid, title, description, parentcategoryid) as (
+								select
+									ct.categoryid, ct.title, ct.description, ct.parentcategoryid
+								from
+									category ct
+								where
+									ct.parentcategoryid is null
+								union all
+								select
+									ct.categoryid, ct.title, ct.description, ct.parentcategoryid
+								from
+									category ct,
+									categories pct
+								where
+									ct.parentcategoryid = pct.categoryid
+							)
+							select * from categories
+
 					""");
+
+			// @Note "order by title" kills our parent setting logic !!!
 
 			final var resultSet = statement.executeQuery();
 			final var results = new ArrayList<CategoryDto>();
+			final var categories = new HashMap<Integer, CategoryDto>();
 
 			while (resultSet.next()) {
 				final var category = new CategoryDto();
@@ -199,14 +216,21 @@ public final class CategoryDao {
 				category.setName(resultSet.getString(2));
 				category.setDescription(resultSet.getString(3));
 
-				if (resultSet.getObject(4) != null) {
-					final var parentCategory = new CategoryDto();
-					parentCategory.setId(resultSet.getInt(4));
-					category.setParent(parentCategory);
-				}
+				categories.put(category.getId(), category);
 
-				results.add(category);
+				if (resultSet.getObject(4) != null) {
+					// parent exists by now!
+					final var parentCategory = categories.get(resultSet.getInt(4));
+
+					category.setParent(parentCategory);
+					parentCategory.getChildren().add(category);
+				} else {
+					// only put top-level/parentless categories directly into the list of results
+					results.add(category);
+				}
 			}
+
+			connection.commit();
 
 			return results;
 
@@ -262,7 +286,11 @@ public final class CategoryDao {
 			final var affectedRows = statement.executeUpdate();
 
 			if (affectedRows == 0) {
+<<<<<<< HEAD
 				final var message = "Non-existent category with id %s passed to updateCategory()"
+=======
+				final var message = "Non-existent category with id %d passed to updateCategory()"
+>>>>>>> secluded
 						.formatted(category.getId());
 				Logger.severe(message);
 				throw new CategoryDoesNotExistException(message);
