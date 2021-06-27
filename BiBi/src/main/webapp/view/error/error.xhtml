@@ -15,11 +15,11 @@
 		<h:outputLabel value="#{msg['error.title']}:" style="font-weight:bold; font-size:x-large;"/><br/><br/>
 
 		<h:outputLabel value="#{msg['error.navigation']}" for="errorNavigationMenu"
-					   style="font-weight:bold;"/><br/>
+					   style="font-weight:bold;"/><br/><br/>
 
 		<h:form id="errorNavigationMenu">
 
-			<h:outputLabel value="#{msg['error.comingFrom']}: '#{error.urlWithParameters}'"/><br/><br/>
+			<h:outputLabel value="#{msg['error.comingFrom']}: '#{error.urlWithParameters}'"/><br/>
 		
 			<h:button value="#{msg['error.goBackWithParameters']}" outcome="#{error.urlWithParameters}"/>
 			<h:button value="#{msg['error.goBack']}" outcome="#{error.urlWithoutParameters}"/>

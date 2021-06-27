@@ -73,14 +73,14 @@
 							 requiredMessage="#{msg['registration.error.required']}"/>
 				<h:message for="streetNumber" style="color:darkred"/>
 
-				<h:outputLabel for="roleChoice" value="#{msg['user_role']}*" rendered="#{registration.admin}"/>
+				<h:outputLabel for="roleChoice" value="#{msg['user_role']}*" rendered="#{userSession.admin}"/>
 				<h:selectOneMenu id="roleChoice" value="#{registration.user.role}" required="true"
-								 rendered="#{registration.admin}"
+								 rendered="#{userSession.admin}"
 								 requiredMessage="#{msg['registration.error.required']}">
 					<f:selectItems value="#{registration.roles}" var="role"
 								   itemValue="#{role}" itemLabel="#{role.name()}"/>
 				</h:selectOneMenu>
-				<h:message for="roleChoice" style="color:darkred" rendered="#{registration.admin}"/>
+				<h:message for="roleChoice" style="color:darkred" rendered="#{userSession.admin}"/>
 
 			</h:panelGrid><br/>
 

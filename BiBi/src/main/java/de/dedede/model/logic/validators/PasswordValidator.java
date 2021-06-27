@@ -1,5 +1,6 @@
 package de.dedede.model.logic.validators;
 
+import de.dedede.model.logic.util.MessagingUtility;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -7,14 +8,14 @@ import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
-import java.util.ResourceBundle;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
 /**
- * Checks if a new password fulfills the security constraints to have a digit
- * and a capital letter. As well as the password length should be 6 characters
- * or more.
+ * Checks if a new password fulfills the necessary security constraints. In particular, a password should have
+ * a digit, a capital letter, and should be 6 characters or more.
+ *
+ * @author Ivan Charviakou
  */
 @FacesValidator("passwordValidator")
 public class PasswordValidator implements Validator<String> {
@@ -25,57 +26,55 @@ public class PasswordValidator implements Validator<String> {
 	private static final Pattern containsCapitalLetter = Pattern.compile("[A-Z]");
 
 	/**
-	 * Checks if a new password fulfills the security constraints to have a digit
-	 * and a capital letter. As well as the password length should be 6 characters
-	 * or more.
+	 * Checks if a new password fulfills the necessary security constraints. In particular, a password should have
+	 * a digit, a capital letter, and should be 6 characters or more.
 	 *
-	 * @param facesContext The FacesContext where this validator has been called.
-	 * @param uiComponent  The component where this validator has been called.
-	 * @param s            The string of the password to be checked.
-	 * @throws ValidatorException if the password criteria are not fulfilled.
+	 * @param context The FacesContext where this validator has been called.
+	 * @param uiComponent The component on which this validator has been called.
+	 * @param s The password string to be checked.
+	 * @throws ValidatorException Is thrown if one or more of the password criteria are not fulfilled.
 	 */
 	@Override
-	public void validate(FacesContext facesContext, UIComponent uiComponent, String s) throws ValidatorException {
-		ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, "msg");
+	public void validate(FacesContext context, UIComponent uiComponent, String s) throws ValidatorException {
 		StringJoiner sj = new StringJoiner(", ");
-		boolean containsError = !noForbiddenCharacters(s, sj, bundle);
-		containsError = !correctLength(s, sj, bundle) || containsError;
-		containsError = !containsDigit(s, sj, bundle) || containsError;
-		containsError = !containsCapitalLetter(s, sj, bundle) || containsError;
+		boolean containsError = !noForbiddenCharacters(s, sj, context);
+		containsError = !correctLength(s, sj, context) || containsError;
+		containsError = !containsDigit(s, sj, context) || containsError;
+		containsError = !containsCapitalLetter(s, sj, context) || containsError;
 		if (containsError){
 			FacesMessage message = new FacesMessage(sj.toString());
 			throw new ValidatorException(message);
 		}
 	}
 
-	private boolean noForbiddenCharacters(String s, StringJoiner sj, ResourceBundle bundle){
+	private boolean noForbiddenCharacters(String s, StringJoiner sj, FacesContext context){
 		boolean bNoForbiddenCharacters = noForbiddenCharacters.matcher(s).matches();
 		if (!bNoForbiddenCharacters){
-			sj.add(bundle.getString("registration.noForbiddenCharacters"));
+			sj.add(MessagingUtility.getMessage(context, "registration.noForbiddenCharacters"));
 		}
 		return bNoForbiddenCharacters;
 	}
 
-	private boolean correctLength(String s, StringJoiner sj, ResourceBundle bundle){
+	private boolean correctLength(String s, StringJoiner sj, FacesContext context){
 		boolean bCorrectLength = correctLength.matcher(s).matches();
 		if (!bCorrectLength){
-			sj.add(bundle.getString("registration.correctLength"));
+			sj.add(MessagingUtility.getMessage(context, "registration.correctLength"));
 		}
 		return bCorrectLength;
 	}
 
-	private boolean containsDigit(String s, StringJoiner sj, ResourceBundle bundle){
+	private boolean containsDigit(String s, StringJoiner sj, FacesContext context){
 		boolean bContainsDigit = containsDigit.matcher(s).find();
 		if (!bContainsDigit){
-			sj.add(bundle.getString("registration.containsDigit"));
+			sj.add(MessagingUtility.getMessage(context, "registration.containsDigit"));
 		}
 		return bContainsDigit;
 	}
 
-	private boolean containsCapitalLetter(String s, StringJoiner sj, ResourceBundle bundle){
+	private boolean containsCapitalLetter(String s, StringJoiner sj, FacesContext context){
 		boolean bContainsCapitalLetter = containsCapitalLetter.matcher(s).find();
 		if (!bContainsCapitalLetter){
-			sj.add("registration.containsCapitalLetter");
+			sj.add(MessagingUtility.getMessage(context, "registration.containsCapitalLetter"));
 		}
 		return bContainsCapitalLetter;
 	}

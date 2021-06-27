@@ -16,11 +16,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
- * Backing bean for the error page. If it’s a client-side error, the
- * user gets redirected to either the login page or their profile depending on
- * if they are logged in or not. The redirection happens after some fixed amount
- * of time.
+ * Backing bean for the error page. This facelet displays information relating to the context of unhandled,
+ * thrown exceptions and offers the user suitable navigation options.
  *
+ * @author Ivan Charviakou
  */
 @Named
 @RequestScoped
@@ -40,15 +39,12 @@ public class Error implements Serializable {
 		previousUrl = (String) requestMap.get("previousUrl");
 	}
 
-    public ErrorDto[] getErrorDtos() {
-        return errorDtos;
-    }
-
-    public void setErrorDtos(ErrorDto[] errorDtos) {
-        this.errorDtos = errorDtos;
-    }
-    
-    public String getUrlWithParameters() {
+	/**
+	 * Constructs a return link to the previous page, taking into account any previous GET-parameters.
+	 *
+	 * @return The URL to the previous page with the previous GET-parameters.
+	 */
+	public String getUrlWithParameters() {
     	if (parameterMap.isEmpty()) {
     		return previousUrl;
     	} else {
@@ -59,13 +55,38 @@ public class Error implements Serializable {
         	return previousUrl + sj.toString();
     	}
     }
-    
+
+	/**
+	 * Returns a link to the previous page, without taking any previous GET-parameters into account.
+	 *
+	 * @return The URL to the previous page without the previous GET-parameters.
+	 */
     public String getUrlWithoutParameters() {
     	return previousUrl;
     }
-    
+
+	/**
+	 * Returns a link the the app's home page.
+	 *
+	 * @return A link to the app's home page.
+	 */
     public String getHomeUrl() {
     	return "/view/opac/medium-search.xhtml";
     }
+
+	/**
+	 * Returns information regarding the thrown errors that lead to this facelet, in the form of
+	 * error DTOs.
+	 *
+	 * @return An array of error DTOs that encapsulate the original exception-error information.
+	 * @see ErrorDto
+	 */
+	public ErrorDto[] getErrorDtos() {
+		return errorDtos;
+	}
+
+	public void setErrorDtos(ErrorDto[] errorDtos) {
+		this.errorDtos = errorDtos;
+	}
     
 }
