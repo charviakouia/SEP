@@ -62,7 +62,6 @@
     </dependencies>
 
     <build>
-    	<pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.graphwalker</groupId>
@@ -79,8 +78,6 @@
                 </executions>
             </plugin>
         </plugins>
-        
-    	</pluginManagement>
     </build>
 
 </project>
