@@ -85,7 +85,7 @@ public class Contact {
 	 * @return true if the user is not an admin.
 	 */
 	public boolean readOnly() {
-		if (userSession != null 
+		if (userSession != null && userSession.getUser() != null
 				&& userSession.getUser().getRole() == UserRole.ADMIN) {
 			return false;
 		} else {
@@ -99,7 +99,7 @@ public class Contact {
 	 * @return true if the user is an admin.
 	 */
 	public boolean renderButton() {
-		if (userSession != null 
+		if (userSession != null && userSession.getUser() != null
 				&& userSession.getUser().getRole() == UserRole.ADMIN) {
 			return true;
 		} else {
