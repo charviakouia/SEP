@@ -50,9 +50,6 @@ public final class UserDao {
 	 * Otherwise, an exception is thrown.
 	 *
 	 * @param userDto A DTO container with the new user data.
-	 * @throws EntityInstanceNotUniqueException Is thrown when the enclosed ID is
-	 *                                          already associated with an existing
-	 *                                          data entry.
 	 */
 	public static void createUser(UserDto userDto) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
@@ -63,7 +60,8 @@ public final class UserDao {
 							+ "lendStatus, verificationStatus, userRole) VALUES "
 							+ "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), "
 							+ "CAST(? AS userlendstatus), CAST(? AS userverificationstatus), "
-							+ "CAST(? AS userrole));", Statement.RETURN_GENERATED_KEYS);
+							+ "CAST(? AS userrole));",
+							Statement.RETURN_GENERATED_KEYS);
 			populateStatement(createStmt, userDto);
 			int numAffectedRows = createStmt.executeUpdate();
 			if (numAffectedRows > 0) {

@@ -8,17 +8,23 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumCopyUserDto;
+import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.data.dtos.PaginationDto;
 import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 /**
- * Backing bean for the facelet containing the list of lending period
- * violations. This page displays a list of copies which haven’t been returned
- * yet together with the associated user who exceeded the lending period.
+ * Backing bean for the facelet containing the list of lending period violations. This page displays a list
+ * of copies which haven’t been yet returned together with the user who exceeded the lending period.
+ *
+ * @author Ivan Charviakou
  */
 @Named
 @SessionScoped
@@ -38,22 +44,39 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 		setPaginatedList(paginationDetails);
 		refresh();
 	}
-	
+
+	@Override
+	public void refresh() {
+		try {
+			updateNumberOfPages();
+			items = MediumDao.readAllOverdueCopies(getPaginatedList());
+		} catch (LostConnectionException e){
+			String msg = "Couldn't update list of entries";
+			Logger.severe(msg);
+		}
+	}
+
+	private void updateNumberOfPages(){
+		PaginationDto paginationDetails = getPaginatedList();
+		int numRowsPerPage = paginationDetails.getTotalAmountOfRows();
+		int numRows = MediumDao.readNumberOfAllOverdueCopies();
+		long numPages = Math.round(Math.floor(numRows / (double) numRowsPerPage)) + 1;
+		paginationDetails.setTotalAmountOfPages(Math.toIntExact(numPages));
+		setPaginatedList(paginationDetails);
+	}
+
 	@Override
 	public List<MediumCopyUserDto> getItems() {
 		return items;
 	}
 
-	@Override
-	public void refresh() {
-		PaginationDto paginationDetails = getPaginatedList();
-		int numRowsPerPage = paginationDetails.getTotalAmountOfRows();
-		long numPages = Math.round(Math.floor(MediumDao.readNumberOfAllOverdueCopies() / (double) numRowsPerPage));
-		paginationDetails.setTotalAmountOfPages(Math.toIntExact(numPages) + 1);
-		items = MediumDao.readAllOverdueCopies(paginationDetails);
-		setPaginatedList(paginationDetails);
-	}
-	
+	/**
+	 * Returns a navigation link to the medium page for the passed data entry.
+	 *
+	 * @param dto The passed {@link MediumCopyUserDto} data entry
+	 * @return A navigation link for the associated medium DTO
+	 * @see MediumDto
+	 */
 	public String getMediumLink(MediumCopyUserDto dto) {
 		if (dto.getMedium() == null) {
 			return "/view/opac/medium.xhtml?faces-redirect=true";
@@ -61,7 +84,15 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 			return "/view/opac/medium.xhtml?faces-redirect=true&" + "id=" + dto.getMedium().getId();
 		}
 	}
-	
+
+	/**
+	 * Returns the title of the medium for the passed data entry. If the entry contains null in place
+	 * of a medium, the String '---' is returned instead.
+	 *
+	 * @param dto The passed {@link MediumCopyUserDto} data entry
+	 * @return The title of the associated medium DTO
+	 * @see MediumDto
+	 */
 	public String getMediumLabel(MediumCopyUserDto dto) {
 		if (dto.getMedium() == null) {
 			return "---";
@@ -69,13 +100,29 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 			return dto.getMedium().getTitle();
 		}
 	}
-	
+
+	/**
+	 * Returns a navigation link to the medium-copy return page for the passed data entry. Specifically,
+	 * the page's user-email and medium-copy signature fields are filled with data from the medium-copy.
+	 *
+	 * @param dto The passed {@link MediumCopyUserDto} data entry
+	 * @return The navigation link to the return page for the associated medium-copy
+	 * @see CopyDto
+	 */
 	public String getCopyLink(MediumCopyUserDto dto) {
 		return "/view/staff/return-form.xhtml?faces-redirect=true&"
 				+ "userId=" + dto.getUser().getId() + "&copySignature="
 				+ URLEncoder.encode(dto.getCopy().getSignature(), StandardCharsets.UTF_8);
 	}
-	
+
+	/**
+	 * Returns the signature of the medium-copy for the passed data entry. If the entry contains null in place
+	 * of a medium-copy, the String '---' is returned instead.
+	 *
+	 * @param dto The passed {@link MediumCopyUserDto} data entry
+	 * @return The signature of the associated medium-copy DTO
+	 * @see CopyDto
+	 */
 	public String getCopyLabel(MediumCopyUserDto dto) {
 		if (dto.getCopy() == null) {
 			return "---";
@@ -84,6 +131,12 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 		}
 	}
 
+	/**
+	 * Returns a navigation link to the user-profile page for the passed data entry.
+	 *
+	 * @param dto The passed {@link MediumCopyUserDto} data entry
+	 * @return The navigation link to the user-profile page for the associated user
+	 */
 	public String getUserLink(MediumCopyUserDto dto) {
 		if (dto.getUser() == null) {
 			return "/view/account/profile.xhtml?faces-redirect=true";
@@ -91,7 +144,14 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 			return "/view/account/profile.xhtml?faces-redirect=true&" + "id=" + dto.getUser().getId();
 		}
 	}
-	
+
+	/**
+	 * Returns the email-address of the user associated with the passed data entry. If the entry contains null
+	 * in place of a user, the String '---' is returned instead.
+	 *
+	 * @param dto The passed {@link MediumCopyUserDto} data entry
+	 * @return The email-address of the associated user
+	 */
 	public String getUserLabel(MediumCopyUserDto dto) {
 		if (dto.getUser() == null) {
 			return "---";
@@ -99,7 +159,14 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 			return dto.getUser().getEmailAddress();
 		}
 	}
-	
+
+	/**
+	 * Returns the amount of time that a medium-copy, as represented by the passed data entry, has been
+	 * overdrawn. If the entry contains null in place of a duration-value, the String '---' is returned instead.
+	 *
+	 * @param dto The passed {@link MediumCopyUserDto} data entry
+	 * @return Amount of time by which the given medium-copy has been overdrawn, formatted as: 'DAYS, HOURS:MINUTES'
+	 */
 	public String getOverdraftText(MediumCopyUserDto dto) {
 		if (dto.getOverdraft() == null) {
 			return "---";

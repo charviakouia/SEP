@@ -3,31 +3,38 @@ package de.dedede.model.logic.util;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 public class MessagingUtility {
 
-    public static void writePositiveMessage(FacesContext context, String message){
+    public static void writePositiveMessage(FacesContext context, boolean fScope, String message){
         context.addMessage("messageForm:positive", new FacesMessage(message));
+        if (fScope){
+            context.getExternalContext().getFlash().setKeepMessages(true);
+        }
     }
 
-    public static void writePositiveMessageWithKey(FacesContext context, String key, Object... params){
-        writePositiveMessage(context, getMessage(context, key, params));
+    public static void writePositiveMessageWithKey(FacesContext context, boolean fScope, String key, Object... params){
+        writePositiveMessage(context, fScope, getMessage(context, key, params));
     }
 
-    public static void writeNegativeMessage(FacesContext context, String message){
+    public static void writeNegativeMessage(FacesContext context, boolean fScope, String message){
         context.addMessage("messageForm:negative", new FacesMessage(message));
+        if (fScope){
+            context.getExternalContext().getFlash().setKeepMessages(true);
+        }
     }
 
-    public static void writeNegativeMessageWithKey(FacesContext context, String key, Object... params){
-        writeNegativeMessage(context, getMessage(context, key, params));
+    public static void writeNegativeMessageWithKey(FacesContext context, boolean fScope, String key, Object... params){
+        writeNegativeMessage(context, fScope, getMessage(context, key, params));
     }
 
-    private static String getMessage(FacesContext context, String key, Object... params){
+    public static String getMessage(FacesContext context, String key, Object... params){
         ResourceBundle bundle;
         bundle = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-        String message = String.format(bundle.getString(key), params);
-        return message;
+        MessageFormat mf = new MessageFormat(bundle.getString(key));
+        return mf.format(params, new StringBuffer(), null).toString();
     }
 
 }

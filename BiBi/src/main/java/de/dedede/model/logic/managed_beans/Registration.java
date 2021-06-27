@@ -3,9 +3,11 @@ package de.dedede.model.logic.managed_beans;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.logic.util.*;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.Application;
@@ -29,6 +31,8 @@ import java.util.ResourceBundle;
  * The backing bean for the registration page. On this page an anonymous user
  * can register themself. Additionally, it can be used by administrators to
  * register new users.
+ *
+ * @author Ivan Charviakou
  */
 @Named
 @ViewScoped
@@ -49,7 +53,62 @@ public class Registration implements Serializable {
 		user.setUserVerificationStatus(UserVerificationStatus.UNVERIFIED);
 		user.setUserLendStatus(UserLendStatus.ENABLED);
 		user.setRole(UserRole.REGISTERED);
-		user.setZipCode(99999);
+		user.setZipCode(12345);
+	}
+
+	/**
+	 * Saves the inputted user data into the datastore, thereby creating a newly registered user. In addition,
+	 * a token is generated and sent to the given email-address, if the address is valid. In the case of a
+	 * non-administrative account, the user session is also changed to reflect the new registration.
+	 *
+	 * @return A navigation reference to the profile-page for the newly confirmed user
+	 */
+	public String register() {
+		setPasswordHash();
+		user.setToken(TokenGenerator.generateToken());
+		createUser();
+		sendVerificationEmail();
+		switchUserAndSetMessages();
+		return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
+	}
+
+	private void setPasswordHash() {
+		String salt = PasswordHashingModule.generateSalt();
+		String hash = PasswordHashingModule.hashPassword(password, salt);
+		user.setPasswordHash(hash);
+		user.setPasswordSalt(salt);
+	}
+
+	private void createUser() throws BusinessException {
+		try {
+			UserDao.createUser(user);
+		} catch (LostConnectionException e){
+			String msg = "Couldn't create user due to a connection error";
+			Logger.severe(msg);
+			throw new BusinessException(msg, e);
+		}
+	}
+	
+	private void sendVerificationEmail() {
+		try {
+			String link = EmailUtility.getLink("/view/ffa/email-confirmation.xhtml", user.getToken().getContent());
+			String content = MessagingUtility.getMessage(context, "registration.email.content", link);
+			String subject = MessagingUtility.getMessage(context, "registration.email.subject");
+			EmailUtility.sendEmail(user.getEmailAddress(), subject, content);
+		} catch (MessagingException | UnsupportedEncodingException e) {
+			String msg = MessagingUtility.getMessage(context, "registration.error.emailNotSent", user.getEmailAddress());
+			MessagingUtility.writeNegativeMessage(context, true, msg);
+			Logger.severe(msg);
+		}
+	}
+
+	private void switchUserAndSetMessages(){
+		if (session.isAdmin()){
+			MessagingUtility.writePositiveMessageWithKey(context, true, "registration.success.admin");
+		} else {
+			MessagingUtility.writePositiveMessageWithKey(context, true, "registration.success.own");
+			session.setUser(user);
+		}
 	}
 
 	public UserDto getUser() {
@@ -78,49 +137,6 @@ public class Registration implements Serializable {
 
 	public void setRepeatedPassword(String repeatedPassword) {
 		this.repeatedPassword = repeatedPassword;
-	}
-
-	/**
-	 * As an anonymous user register to the system.
-	 */
-	public String register() {
-		setPasswordHash();
-		user.setToken(TokenGenerator.generateToken());
-		UserDao.createUser(user);
-		sendVerificationEmail();
-		return switchUser();
-	}
-	
-	private void sendVerificationEmail() {
-		try {
-			EmailUtility.sendEmail(user.getEmailAddress(), "Email-Link", 
-					EmailUtility.getLink("/view/ffa/email-confirmation.xhtml", user.getToken().getContent()));
-		} catch (MessagingException | UnsupportedEncodingException e) {
-			Logger.severe("Couldn't send a verification email to user: " + user.getEmailAddress());
-		}
-	}
-
-	private String switchUser(){
-		if (isAdmin()){
-			MessagingUtility.writePositiveMessageWithKey(context, "registration.success.admin");
-		} else {
-			MessagingUtility.writePositiveMessageWithKey(context, "registration.success.own");
-			session.setUser(user);
-		}
-		context.getExternalContext().getFlash().setKeepMessages(true);
-		return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
-	}
-
-	private void setPasswordHash(){
-		String salt = PasswordHashingModule.generateSalt();
-		String hash = PasswordHashingModule.hashPassword(password, salt);
-		user.setPasswordHash(hash);
-		user.setPasswordSalt(salt);
-	}
-	
-	public boolean isAdmin() {
-		UserDto currentUser = session.getUser();
-		return currentUser != null && currentUser.getRole() != null && currentUser.getRole().equals(UserRole.ADMIN);
 	}
 	
 }

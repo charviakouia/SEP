@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.data.dtos.UserRole;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
@@ -39,6 +40,10 @@ public class UserSession implements Serializable {
 	 */
 	public void setUser(UserDto user) {
 		this.user = user;
+	}
+
+	public boolean isAdmin() {
+		return user != null && user.getRole() != null && user.getRole().equals(UserRole.ADMIN);
 	}
 
 }
