@@ -30,7 +30,7 @@
 				<h:panelGroup styleClass="navbar-nav me-auto mb-2 mb-lg-0">
 
 					<h:outputLink value="#help" styleClass="nav-item"
-						p:data-bs-toggle="offcanvas" p:role="button">
+						p:data-bs-toggle="offcanvas">
 						<h:graphicImage library="icons" name="question-mark-circle.svg"
 							title="#{msg['show_help']}" styleClass="nav-link" />
 					</h:outputLink>
@@ -43,7 +43,7 @@
 								styleClass="h5 offcanvas-title" />
 							<h:form id="button_close_help">
 								<h:commandButton styleClass="btn-close text-reset"
-									p:data-bs-dismiss="offcanvas" p:aria-label="Close" />
+									p:data-bs-dismiss="offcanvas" />
 							</h:form>
 						</h:panelGroup>
 
@@ -146,7 +146,8 @@
 						outcome="/view/opac/medium-search.xhtml"
 						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
 
-					<h:link id="signIn" value="#{msg['log_in']}" outcome="/view/ffa/login.xhtml"
+					<h:link id="signIn" value="#{msg['log_in']}"
+						outcome="/view/ffa/login.xhtml"
 						rendered="#{pageHeader.showingLogin}"
 						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
 

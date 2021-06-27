@@ -318,29 +318,44 @@ public final class CategoryDao {
 	 * ID must be present in the data store and is used to identify and remove the
 	 * referenced data entry. Otherwise, an exception is thrown.
 	 *
-	 * @param category A DTO container with the ID of the category data entry to
-	 *                    be deleted
-	 * @return A DTO container with the deleted category data entry.
-	 * @throws CategoryDoesNotExistException Is thrown if the passed ID isn't
-	 *                                       associated with any data entry.
+	 * @param category A DTO container with the ID of the category data entry to be
+	 *                 deleted
 	 * @see CategoryDto
 	 */
-	public static CategoryDto deleteCategory(CategoryDto category) throws CategoryDoesNotExistException {
+	public static void deleteCategory(CategoryDto category) {
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
-		// hack??
+		// Sergei Pravdin
 		if (category.getId() == 0) {
 			int categoryId = getCategoryIdByName(connection, category);
 			category.setId(categoryId);
 		}
 
 		try {
-			deleteCategoryHelper(connection, category);
-			return category;
-		} catch (SQLException e) {
-			String msg = "Database error occurred while deleting category entity with id: " + category.getId();
-			// Logger.severe(msg);
-			throw new LostConnectionException(msg, e);
+
+			final var statement = connection.prepareStatement("""
+					delete from
+						category
+					where
+						categoryid = ?
+					""");
+			statement.setInt(1, category.getId());
+			statement.executeUpdate();
+			connection.commit();
+
+		} catch (SQLException exception) {
+
+			try {
+				connection.rollback();
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while deleting category entity with id: " + category.getId();
+			Logger.severe(message);
+			throw new LostConnectionException(message, exception);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(connection);
 		}
@@ -398,14 +413,6 @@ public final class CategoryDao {
 		if (resultSet.next()) {
 			categoryDto.setId(resultSet.getInt(1));
 		}
-	}
-
-	/** @author Sergei Pravdin */
-	private static void deleteCategoryHelper(Connection conn, CategoryDto categoryDto) throws SQLException {
-		PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM category " + "WHERE categoryid = ?;");
-		deleteStmt.setInt(1, Math.toIntExact(categoryDto.getId()));
-		deleteStmt.executeUpdate();
-		conn.commit();
 	}
 
 	/** @author Sergei Pravdin */

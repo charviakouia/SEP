@@ -10,19 +10,20 @@
 
 <h:head>
 
-	<title>#{msg['title.'.concat(page)]} &#8226;#{pageHeader.application.name}</title>
+	<title>#{msg['title.'.concat(page)]} &#8226;
+		#{pageHeader.application.name}</title>
 
 	<h:outputStylesheet library="css" name="bootstrap-5.0.1.min.css" />
 	<h:outputStylesheet library="css" name="style.css" />
 
-	<style>
+	<!-- <style>
 		body {
 			background-image: linear-gradient(to right, white 20%, rgba(255,255,255,0.8) 50%, transparent 80%),
 				url("#{resource['images:backgroundImage.svg']}"),
 				linear-gradient(to right, white 30%, transparent 80%);
 			background-size: 100%, cover;
 		}
-	</style>
+	</style> -->
 
 	<!-- @Task favicon -->
 
@@ -30,7 +31,8 @@
 
 <h:body>
 
-	<h:panelGroup layout="block" styleClass="position-relative" style="min-height: 100vh;">
+	<h:panelGroup layout="block" styleClass="position-relative"
+		style="min-height: 100vh;">
 
 		<ui:include src="header.xhtml" />
 
@@ -41,23 +43,24 @@
 				<h:panelGrid columns="1">
 
 					<h:panelGroup>
-						<h:inputHidden id="positive"/>
-						<h:message for="positive" style="color: green"/>
+						<h:inputHidden id="positive" />
+						<h:message for="positive" style="color: green" />
 					</h:panelGroup>
 
 					<h:panelGroup>
-						<h:inputHidden id="negative"/>
-						<h:message for="negative" style="color: darkred"/>
+						<h:inputHidden id="negative" />
+						<h:message for="negative" style="color: darkred" />
 					</h:panelGroup>
 
 				</h:panelGrid>
 
-			</h:form><br/>
+			</h:form>
+			<br />
 
 			<ui:insert name="content" />
 
 		</h:panelGroup>
-		
+
 		<h:panelGroup layout="block" style="height: var(--footer-height);" />
 
 		<ui:include src="footer.xhtml" />

@@ -9,6 +9,7 @@ import de.dedede.model.data.dtos.CategorySearchDto;
 import de.dedede.model.data.dtos.MediumDto;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
@@ -50,7 +51,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	private CategoryDto currentCategory;
 
-	private List<CategoryDto> categories = CategoryDao.readAllCategoriesTemp();;
+	private List<CategoryDto> categories = CategoryDao.readAllCategoriesTemp();
 
 	private List<MediumDto> mediums;
 
@@ -194,6 +195,21 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 		return true; // @Temporary
 	}
+	
+	/**
+	 * Dictates whether category-modifying actions are displayed to the user.
+	 * 
+	 * @return If the category actions are shown.
+	 */
+	public boolean isShowingCategoryActions() {
+//		if (session.getUser() == null) {
+//			return false;
+//		}
+//		
+//		return session.getUser().getRole().isStaffOrHigher();
+		
+		return true; // @Temporary
+	}
 
 	public void selectCategory(CategoryDto category) {
 		currentCategory = category;
@@ -207,8 +223,11 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		CategoryDao.updateCategory(currentCategory);
 	}
 
-	public void deleteCategory() {
-
+	public String deleteCategory() {
+		CategoryDao.deleteCategory(currentCategory);
+		currentCategory = null;
+		
+		return "category-browser";
 	}
 
 	public void searchCategories() {

@@ -6,6 +6,7 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
 	template="/view/templates/template.xhtml">
 
 	<ui:param name="page" value="category_browser" />
@@ -15,33 +16,26 @@
 		<h:panelGroup layout="block" styleClass="container">
 			<h:panelGroup layout="block" styleClass="row">
 
-				<!-- left column -->
 				<h:panelGroup layout="block" styleClass="col-4">
 					<h:form id="form_category_search" styleClass="mb-2">
-
 						<h:panelGroup layout="block" styleClass="input-group">
-
 							<h:inputText id="input_category_search_term"
 								value="#{categoryBrowser.categorySearch.searchTerm}"
 								styleClass="form-control" title="#{msg['search_term']}" />
-
 							<h:commandButton id="button_search_category"
 								value="#{msg['search']}"
 								action="#{categoryBrowser.searchCategories()}"
 								styleClass="btn btn-primary" />
-
 						</h:panelGroup>
-
 					</h:form>
 
 					<h:panelGroup id="category_tree_1"
 						binding="#{categoryBrowser.categoryTree}" />
 				</h:panelGroup>
 
-				<!-- right column -->
 				<h:panelGroup layout="block" styleClass="col">
 
-					<h:panelGrid layout="block" styleClass="container-fluid"
+					<h:panelGroup layout="block" styleClass="container-fluid"
 						rendered="#{categoryBrowser.currentCategory != null}">
 
 						<h:form id="form_category_controls">
@@ -49,30 +43,56 @@
 							<h:inputText id="input_category_name"
 								value="#{categoryBrowser.currentCategory.name}"
 								readonly="#{!categoryBrowser.writableCategoryName()}"
-								styleClass="readonly-as-plain-text form-control">
+								styleClass="readonly-as-plain-text form-control mb-3"
+								p:placeholder="#{msg['category_browser.category.name']}">
 								<f:validateLength minimum="1" maximum="100" />
 							</h:inputText>
 
 							<h:inputTextarea id="input_category_description"
 								value="#{categoryBrowser.currentCategory.description}"
 								readonly="#{!categoryBrowser.writableCategoryDescription()}"
-								styleClass="readonly-as-plain-text form-control" />
+								styleClass="readonly-as-plain-text form-control mb-3"
+								p:placeholder="#{msg['category_browser.category.description']}" />
 
-							<h:commandButton id="button_save_category"
-								value="#{msg['category_browser.category.save_changes']}"
-								action="#{categoryBrowser.saveCategory()}"
-								styleClass="btn btn-outline-secondary" />
+							<h:panelGroup layout="block" styleClass="btn-group"
+								rendered="#{categoryBrowser.showingCategoryActions}">
+								<h:commandButton id="button_save_category"
+									value="#{msg['category_browser.category.save_changes']}"
+									action="#{categoryBrowser.saveCategory()}"
+									styleClass="btn btn-outline-secondary" />
 
-							<h:commandButton id="button_delete_category"
-								value="#{msg['category_browser.category.delete']}"
-								action="#{categoryBrowser.deleteCategory()}"
-								styleClass="btn btn-outline-danger" />
+								<h:link id="link_delete_category"
+									value="#{msg['category_browser.category.delete']}"
+									styleClass="btn btn-outline-danger" p:data-bs-toggle="modal"
+									p:data-bs-target="#confirm_deletion_modal" />
+								
+								<h:panelGroup layout="block" p:id="confirm_deletion_modal"
+									styleClass="modal fade" p:tabindex="-1">
+									<h:panelGroup layout="block" styleClass="modal-dialog modal-dialog-centered">
+										<h:panelGroup layout="block" styleClass="modal-content">
+											<h:panelGroup layout="block" styleClass="modal-header">
+												<h:outputText styleClass="h5 modal-title" value="#{msg['category_browser.confirm_deletion.title']}" />
+											</h:panelGroup>
+											<h:panelGroup layout="block" styleClass="modal-body">
+												#{msg['category_browser.confirm_deletion.message']}
+											</h:panelGroup>
+											<h:panelGroup layout="block" styleClass="modal-footer">
+												<h:commandButton id="button_disallow_category_deletion"
+													styleClass="btn btn-secondary" value="#{msg['category_browser.confirm_deletion.cancel']}"
+													p:data-bs-dismiss="modal" />
+												<h:commandButton id="button_confirm_category_deletion"
+													styleClass="btn btn-danger" value="#{msg['category_browser.confirm_deletion.confirm']}"
+													action="#{categoryBrowser.deleteCategory()}" />
+											</h:panelGroup>
+										</h:panelGroup>
+									</h:panelGroup>
+								</h:panelGroup>
 
-							<h:commandButton id="button_create_category"
-								value="#{msg['category_browser.category.create_subcategory']}"
-								action="#{categoryBrowser.createCategory()}"
-								styleClass="btn btn-outline-primary" />
-
+								<h:commandButton id="button_create_category"
+									value="#{msg['category_browser.category.create_subcategory']}"
+									action="#{categoryBrowser.createCategory()}"
+									styleClass="btn btn-outline-primary" />
+							</h:panelGroup>
 						</h:form>
 
 						<bibi:paginatedList value="#{categoryBrowser}" styleClass="mt-5">
@@ -90,7 +110,7 @@
 								<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
 
 								<bibi:columnContent>
-									<!-- put that method somewhere else! -->
+									put that method somewhere else!
 									#{mediumSearch.formatAuthors(item)}
 								</bibi:columnContent>
 							</h:column>
@@ -113,10 +133,9 @@
 
 						</bibi:paginatedList>
 
-					</h:panelGrid>
+					</h:panelGroup>
 
 				</h:panelGroup>
-
 			</h:panelGroup>
 		</h:panelGroup>
 
