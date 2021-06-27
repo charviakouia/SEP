@@ -85,7 +85,8 @@ public class Login {
 		UserDto completeUserData = UserDao.readUserByEmail(userData);
 		String salt = completeUserData.getPasswordSalt();
 		String passwordHash = completeUserData.getPasswordHash();
-		String inputHash = PasswordHashingModule.hashPassword(passwordInput, salt);
+		String inputHash = PasswordHashingModule.hashPassword(passwordInput,
+				salt);
 		if (inputHash.equals(passwordHash)) {
 				ExternalContext externalContext = context.getExternalContext();
 				HttpServletRequest request = 

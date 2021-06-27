@@ -44,7 +44,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	 * a) the user field wasn't left empty
 	 * b) the copies signature exists
 	 * c) the copy is to be returned by this user
-	 * in this order and
+	 * in this order and adds a message if the deadline was exceeded, 
 	 * @throws a validatorException if one condition isn't met
 	 */
 	@Override
@@ -100,7 +100,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    			+ "_deadline_return_long");
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
-	    	context.addMessage("return_form:returnForm_signature_field", msg);
+	    	context.addMessage(null, msg);
 	    }
 		
 	}

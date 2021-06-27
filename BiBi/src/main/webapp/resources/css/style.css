@@ -18,3 +18,7 @@ html, body {
 	font-weight: bold;
 	font-size: x-large;
 }
+
+.accordion-button.disabled::after {
+	background-image: none !important;
+}
