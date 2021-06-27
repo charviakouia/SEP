@@ -177,8 +177,12 @@ public final class CategoryDao {
 		}
 	}
 
-	// @Task docs
-	public static List<CategoryDto> readAllCategoriesTemp() {
+	/**
+	 * Fetches all the categories as a forest of categories.
+	 * 
+	 * @return A list of all top-level/parentless categories.
+	 */
+	public static List<CategoryDto> readAllCategories() {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
@@ -203,8 +207,6 @@ public final class CategoryDao {
 							select * from categories
 
 					""");
-
-			// @Note "order by title" kills our parent setting logic !!!
 
 			final var resultSet = statement.executeQuery();
 			final var results = new ArrayList<CategoryDto>();

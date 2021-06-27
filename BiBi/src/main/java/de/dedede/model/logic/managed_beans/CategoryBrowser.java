@@ -51,7 +51,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	private CategoryDto currentCategory;
 
-	private List<CategoryDto> categories = CategoryDao.readAllCategoriesTemp();
+	private List<CategoryDto> categories = CategoryDao.readAllCategories();
 
 	private List<MediumDto> mediums;
 
