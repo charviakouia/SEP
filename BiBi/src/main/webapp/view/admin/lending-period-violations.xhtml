@@ -12,9 +12,10 @@
 
 	<ui:define name="content">
 
-		<h:outputLabel value="#{msg['lendingPeriodViolations.title']}" style="font-weight:bold; font-size:x-large;"/>
+		<h:outputLabel for="lendingPeriodViolationsList" value="#{msg['lendingPeriodViolations.title']}"
+					   style="font-weight:bold; font-size:x-large;"/>
 
-		<bibi:paginatedList value="#{lendingPeriodViolation}">
+		<bibi:paginatedList id="lendingPeriodViolationsList" value="#{lendingPeriodViolation}">
 
 			<h:column>
 				<f:facet name="header">#{msg['lendingPeriodViolations.mediumTitle']}</f:facet>

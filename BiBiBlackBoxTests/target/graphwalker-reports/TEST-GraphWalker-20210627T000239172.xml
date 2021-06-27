@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<testsuites time="6.744" tests="1" failures="0" errors="1">
+    <testsuite name="GraphWalker" tests="1" failures="0" errors="1" time="6.744" timestamp="2021-06-27T00:02:39">
+        <properties>
+            <property name="classworlds.conf" value="/Applications/IntelliJ IDEA.app/Contents/plugins/maven/lib/maven3/bin/m2.conf"/>
+            <property name="env.COMMAND_MODE" value="unix2003"/>
+            <property name="env.HOME" value="/Users/serg"/>
+            <property name="env.JAVA_MAIN_CLASS_76913" value="org.codehaus.classworlds.Launcher"/>
+            <property name="env.LC_CTYPE" value="de_DE.UTF-8"/>
+            <property name="env.LOGNAME" value="serg"/>
+            <property name="env.PATH" value="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin"/>
+            <property name="env.PWD" value="/Users/serg/Lokale Dokumente/IT/bibliothekssystem/BiBiBlackBoxTests"/>
+            <property name="env.SHELL" value="/bin/bash"/>
+            <property name="env.SSH_AUTH_SOCK" value="/private/tmp/com.apple.launchd.89nh7LuOK5/Listeners"/>
+            <property name="env.TMPDIR" value="/var/folders/dz/9nzcks291xz7t18cbr2_k19h0000gn/T/"/>
+            <property name="env.USER" value="serg"/>
+            <property name="env.VERSIONER_PYTHON_VERSION" value="2.7"/>
+            <property name="env.XPC_FLAGS" value="0x0"/>
+            <property name="env.XPC_SERVICE_NAME" value="application.com.jetbrains.intellij.7566841.22194517"/>
+            <property name="env.__CFBundleIdentifier" value="com.jetbrains.intellij"/>
+            <property name="env.__CF_USER_TEXT_ENCODING" value="0x1F5:0x0:0x3"/>
+            <property name="file.encoding" value="UTF-8"/>
+            <property name="file.separator" value="/"/>
+            <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+            <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+            <property name="idea.version" value="2021.1.1"/>
+            <property name="java.class.path" value="/Applications/IntelliJ IDEA.app/Contents/plugins/maven/lib/maven3/boot/plexus-classworlds.license:/Applications/IntelliJ IDEA.app/Contents/plugins/maven/lib/maven3/boot/plexus-classworlds-2.6.0.jar"/>
+            <property name="java.class.version" value="59.0"/>
+            <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk-15.0.2.jdk/Contents/Home"/>
+            <property name="java.io.tmpdir" value="/var/folders/dz/9nzcks291xz7t18cbr2_k19h0000gn/T/"/>
+            <property name="java.library.path" value="/Users/serg/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+            <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+            <property name="java.runtime.version" value="15.0.2+7-27"/>
+            <property name="java.specification.name" value="Java Platform API Specification"/>
+            <property name="java.specification.vendor" value="Oracle Corporation"/>
+            <property name="java.specification.version" value="15"/>
+            <property name="java.vendor" value="Oracle Corporation"/>
+            <property name="java.vendor.url" value="https://java.oracle.com/"/>
+            <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+            <property name="java.version" value="15.0.2"/>
+            <property name="java.version.date" value="2021-01-19"/>
+            <property name="java.vm.compressedOopsMode" value="Zero based"/>
+            <property name="java.vm.info" value="mixed mode, sharing"/>
+            <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+            <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+            <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+            <property name="java.vm.specification.version" value="15"/>
+            <property name="java.vm.vendor" value="Oracle Corporation"/>
+            <property name="java.vm.version" value="15.0.2+7-27"/>
+            <property name="jdk.debug" value="release"/>
+            <property name="line.separator" value="&#10;"/>
+            <property name="maven.build.version" value="Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)"/>
+            <property name="maven.conf" value="/Applications/IntelliJ IDEA.app/Contents/plugins/maven/lib/maven3/conf"/>
+            <property name="maven.ext.class.path" value="/Applications/IntelliJ IDEA.app/Contents/plugins/maven/lib/maven-event-listener.jar"/>
+            <property name="maven.home" value="/Applications/IntelliJ IDEA.app/Contents/plugins/maven/lib/maven3"/>
+            <property name="maven.multiModuleProjectDirectory" value="/Users/serg/Lokale Dokumente/IT/bibliothekssystem/BiBiBlackBoxTests"/>
+            <property name="maven.version" value="3.6.3"/>
+            <property name="os.arch" value="x86_64"/>
+            <property name="os.name" value="Mac OS X"/>
+            <property name="os.version" value="10.16"/>
+            <property name="path.separator" value=":"/>
+            <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+            <property name="sun.arch.data.model" value="64"/>
+            <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-15.0.2.jdk/Contents/Home/lib"/>
+            <property name="sun.cpu.endian" value="little"/>
+            <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+            <property name="sun.java.command" value="org.codehaus.classworlds.Launcher -Didea.version=2021.1.1 org.graphwalker:graphwalker-maven-plugin:4.3.0:test"/>
+            <property name="sun.java.launcher" value="SUN_STANDARD"/>
+            <property name="sun.jnu.encoding" value="UTF-8"/>
+            <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+            <property name="user.country" value="DE"/>
+            <property name="user.dir" value="/Users/serg/Lokale Dokumente/IT/bibliothekssystem/BiBiBlackBoxTests"/>
+            <property name="user.home" value="/Users/serg"/>
+            <property name="user.language" value="de"/>
+            <property name="user.name" value="serg"/>
+        </properties>
+        <testcase name="BiBiBlackBoxTest" time="6.744" classname="BiBiBlackBoxTest">
+            <error type="java.lang.reflect.InvocationTargetException">
+                java.lang.reflect.InvocationTargetException
+                	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+                	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+                	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+                	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+                	at org.graphwalker.core.machine.ExecutionContext.execute(ExecutionContext.java:257)
+                	at org.graphwalker.core.machine.SimpleMachine.execute(SimpleMachine.java:282)
+                	at org.graphwalker.core.machine.SimpleMachine.getNextStep(SimpleMachine.java:105)
+                	at org.graphwalker.java.test.TestExecutor.execute(TestExecutor.java:249)
+                	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+                	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+                	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+                	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+                	at org.graphwalker.java.test.Reflections.invoke(Reflections.java:73)
+                	at org.graphwalker.java.test.Reflector.execute(Reflector.java:123)
+                	at org.graphwalker.maven.plugin.TestMojo.execute(TestMojo.java:161)
+                	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:137)
+                	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:210)
+                	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:156)
+                	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:148)
+                	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:117)
+                	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:81)
+                	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:56)
+                	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:128)
+                	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:305)
+                	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:192)
+                	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:105)
+                	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:957)
+                	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:289)
+                	at org.apache.maven.cli.MavenCli.main(MavenCli.java:193)
+                	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+                	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+                	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+                	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+                	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:282)
+                	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:225)
+                	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:406)
+                	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:347)
+                	at org.codehaus.classworlds.Launcher.main(Launcher.java:47)
+                Caused by: org.openqa.selenium.TimeoutException: Expected condition failed: waiting for element found by By.id: navbar_content to have text "Account". Current text: "Account
+                Kategorien
+                Erweiterte Suche" (tried for 10 second(s) with 500 milliseconds interval)
+                Build info: version: '3.141.59', revision: 'e82be7d358', time: '2018-11-14T08:17:03'
+                System info: host: 'MacBook-Pro.local', ip: '192.168.1.109', os.name: 'Mac OS X', os.arch: 'x86_64', os.version: '10.16', java.version: '15.0.2'
+                Driver info: org.openqa.selenium.firefox.FirefoxDriver
+                Capabilities {acceptInsecureCerts: true, browserName: firefox, browserVersion: 89.0.2, javascriptEnabled: true, moz:accessibilityChecks: false, moz:buildID: 20210622155641, moz:geckodriverVersion: 0.29.0, moz:headless: false, moz:processID: 76924, moz:profile: /var/folders/dz/9nzcks291xz..., moz:shutdownTimeout: 60000, moz:useNonSpecCompliantPointerOrigin: false, moz:webdriverClick: true, pageLoadStrategy: normal, platform: MAC, platformName: MAC, platformVersion: 20.4.0, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify}
+                Session ID: 181b8d65-ea2c-b046-b184-b75416716cf7
+                	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:95)
+                	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:272)
+                	at BiBiBlackBoxTest.v_MediumSearch(BiBiBlackBoxTest.java:92)
+                	... 38 more
+</error>
+        </testcase>
+    </testsuite>
+</testsuites>

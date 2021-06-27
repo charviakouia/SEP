@@ -65,7 +65,7 @@ public class Error implements Serializable {
     }
     
     public String getHomeUrl() {
-    	return "/view/public/medium-search.xhtml";
+    	return "/view/opac/medium-search.xhtml";
     }
     
 }

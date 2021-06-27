@@ -2,6 +2,8 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
@@ -54,9 +56,9 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 	
 	public String getMediumLink(MediumCopyUserDto dto) {
 		if (dto.getMedium() == null) {
-			return "/view/public/medium.xhtml?faces-redirect=true";
+			return "/view/opac/medium.xhtml?faces-redirect=true";
 		} else {
-			return "/view/public/medium.xhtml?faces-redirect=true&" + "id=" + dto.getMedium().getId();
+			return "/view/opac/medium.xhtml?faces-redirect=true&" + "id=" + dto.getMedium().getId();
 		}
 	}
 	
@@ -69,7 +71,9 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 	}
 	
 	public String getCopyLink(MediumCopyUserDto dto) {
-		return "/view/staff/return-form.xhtml?faces-redirect=true";
+		return "/view/staff/return-form.xhtml?faces-redirect=true&"
+				+ "userId=" + dto.getUser().getId() + "&copySignature="
+				+ URLEncoder.encode(dto.getCopy().getSignature(), StandardCharsets.UTF_8);
 	}
 	
 	public String getCopyLabel(MediumCopyUserDto dto) {

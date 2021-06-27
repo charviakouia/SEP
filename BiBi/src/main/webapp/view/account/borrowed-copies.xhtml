@@ -17,7 +17,10 @@
 			<f:viewAction action="#{borrowedCopies.onload}" />
 		</f:metadata>
 
-		<bibi:paginatedList value="#{borrowedCopies}">
+		<h:outputLabel for="borrowedCopiesList" value="#{msg['title.borrowed_copies']}"
+					   style="font-weight:bold; font-size:x-large;"/>
+
+		<bibi:paginatedList id="borrowedCopiesList" value="#{borrowedCopies}">
 
 			<h:column>
 				<f:facet name="header">#{msg['copy']}</f:facet>
@@ -37,7 +40,7 @@
 				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
 				<bibi:columnContent>
 					<h:link value="#{item.medium.title}"
-							outcome="/view/public/medium.xhtml?id=#{item.medium.id}" />
+							outcome="/view/opac/medium.xhtml?id=#{item.medium.id}" />
 				</bibi:columnContent>
 			</h:column>
 

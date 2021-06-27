@@ -11,7 +11,9 @@
 	<ui:param name="page" value="privacy_policy" />
 
 	<ui:define name="content">
-		<h1>#{msg['privacy_policy.headline']}</h1>
+
+		<h:outputLabel for="privacy_policy_form" value="#{msg['privacy_policy.headline']}"
+					   style="font-weight:bold; font-size:x-large;"/>
 
 		<h:form id="privacy_policy_form">
 		<h:panelGrid id="privacy_policy_panel" columns="1" border="10" 

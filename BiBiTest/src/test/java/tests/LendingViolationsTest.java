@@ -9,12 +9,15 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
+import de.dedede.model.persistence.exceptions.*;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -37,31 +40,133 @@ import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.ApplicationDao;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
-import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
-import de.dedede.model.persistence.exceptions.LostConnectionException;
-import de.dedede.model.persistence.exceptions.MaxConnectionsException;
-import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
-import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.ConnectionPool;
 
+/**
+ * Tests the functionality of the {@link MediumDao#readAllOverdueCopies(PaginationDto)} method, which
+ * returns all the overdue medium-copies in the system. To do this, medium-copies are created and queried with
+ * different deadline lengths. To ensure testing accuracy, this test can only be run if the specified
+ * {@link UserDto} is unique.
+ *
+ * @author Ivan Charviakou
+ */
 class LendingViolationsTest {
 	
 	private static final int PAGE_SIZE = 10;
-	private static final int LATENESS_LENGTH = 10;
+	private static final int SHORT_TIME_SECONDS = 10;
+	private static final int LONG_TIME_SECONDS = 5 * 60 * 60;
+	private static final int EXTRA_DELAY_SECONDS = 2;
+
 	private static UserDto user;
 	private static MediumDto medium;
-	private static int singatureCounter = 0;
+
+	private int signatureCounter = 0;
+	private Collection<Integer> createdCopies = new LinkedList<>();
 	
 	@BeforeAll
 	public static void setUp() throws ClassNotFoundException, SQLException, MaxConnectionsException,
 			LostConnectionException, InvalidConfigurationException, UserDoesNotExistException {
 		PreTest.setUp();
 		initializeUserDto();
-		saveUserIfExists();
+		saveUser();
 		initializeMediumDto();
+		MediumDao.createMedium(medium);
 	}
 	
+	@AfterAll
+	public static void tearDown() throws LostConnectionException, MaxConnectionsException,
+			EntityInstanceDoesNotExistException, MediumDoesNotExistException, UserDoesNotExistException {
+		UserDao.deleteUser(user);
+		MediumDao.deleteMedium(medium);
+		ConnectionPool.destroyConnectionPool();
+	}
+
+	/**
+	 * Ensures that the returned set of overdue copies is of the correct size and adheres to the specified
+	 * pagination settings.
+	 *
+	 * @throws LostConnectionException            	Is thrown when the used connection stopped working correctly
+	 * 												before completing the transaction.
+	 * @throws MaxConnectionsException              Is thrown when no connection is available to carry out the
+	 *  											operation
+	 * @throws EntityInstanceNotUniqueException     Is thrown if the queried id isn't present in the datastore,
+	 * 												typically the result of a race-condition
+	 */
+	@Test
+	public void testResultSetSize() throws LostConnectionException, MaxConnectionsException,
+			EntityInstanceNotUniqueException {
+		for (int i = 0; i < PAGE_SIZE + 2; i++) {
+			saveCopy(true, medium);
+		}
+		List<MediumCopyUserDto> readList = readOverdueCopiesForPage(1);
+		assertEquals(2, readList.size());
+	}
+
+	/**
+	 * Ensures that the returned set of overdue copies reflects overdue entries only.
+	 *
+	 * @throws LostConnectionException            	Is thrown when the used connection stopped working correctly
+	 * 												before completing the transaction.
+	 * @throws MaxConnectionsException              Is thrown when no connection is available to carry out the
+	 *  											operation
+	 * @throws EntityInstanceNotUniqueException     Is thrown if the queried id isn't present in the datastore,
+	 * 												typically the result of a race-condition
+	 */
+	@Test
+	public void testInsertingAndReading() throws LostConnectionException, MaxConnectionsException,
+			EntityInstanceNotUniqueException {
+		for (int i = 0; i < PAGE_SIZE / 3; i++) {
+			saveCopy(true, medium);
+		}
+		for (int i = 0; i < 2 * PAGE_SIZE / 3; i++) {
+			saveCopy(false, medium);
+		}
+		List<MediumCopyUserDto> readList = readOverdueCopiesForPage(0);
+		assertEquals(PAGE_SIZE / 3, readList.size());
+	}
+
+	@AfterEach
+	public void deleteCopies() throws CopyDoesNotExistException {
+		CopyDto copy = new CopyDto();
+		copy.setMediumId(medium.getId());
+		for (Integer integer : createdCopies){
+			copy.setId(integer);
+			MediumDao.deleteCopy(copy);
+		}
+	}
+
+	private void saveCopy(boolean late, MediumDto medium) throws EntityInstanceNotUniqueException {
+		CopyDto copy = createCopyDto(late);
+		MediumDao.createCopy(copy, medium);
+		createdCopies.add(copy.getId());
+	}
+
+	private CopyDto createCopyDto(boolean late) {
+		CopyDto copy = new CopyDto();
+		do {
+			copy.setSignature("uniqueness835" + signatureCounter++);
+		} while (MediumDao.signatureExists(copy));
+		copy.setMediumId(medium.getId());
+		copy.setLocation("location");
+		int timestampOffset = (late ? SHORT_TIME_SECONDS : LONG_TIME_SECONDS);
+		copy.setDeadline(Timestamp.from(Instant.now().plusSeconds(timestampOffset)));
+		copy.setCopyStatus(CopyStatus.BORROWED);
+		copy.setActor(user.getId());
+		return copy;
+	}
+	
+	private static List<MediumCopyUserDto> readOverdueCopiesForPage(int page){
+		PaginationDto paginationDetails = new PaginationDto();
+		paginationDetails.setPageNumber(page);
+		paginationDetails.setTotalAmountOfRows(PAGE_SIZE);
+		try {
+		    TimeUnit.SECONDS.sleep(SHORT_TIME_SECONDS + EXTRA_DELAY_SECONDS);
+		} catch (InterruptedException ie) {
+		    Thread.currentThread().interrupt();
+		}
+		return MediumDao.readAllOverdueCopies(paginationDetails);
+	}
+
 	private static void initializeUserDto() {
 		user = new UserDto();
 		user.setFirstName("Luigi");
@@ -70,7 +175,7 @@ class LendingViolationsTest {
 		String hash = PasswordHashingModule.hashPassword("lStandsForWinner7", salt);
 		user.setPasswordSalt(salt);
 		user.setPasswordHash(hash);
-		user.setEmailAddress("ivancharviakou@gmail.com");
+		user.setEmailAddress("luigiNumberOne@gmail.com");
 		user.setUserRole(UserRole.REGISTERED);
 		user.setZipCode(12345);
 		user.setCity("Toad town");
@@ -80,15 +185,15 @@ class LendingViolationsTest {
 		user.setUserLendStatus(UserLendStatus.ENABLED);
 		user.setUserVerificationStatus(UserVerificationStatus.VERIFIED);
 	}
-	
-	private static void saveUserIfExists() throws LostConnectionException, MaxConnectionsException, UserDoesNotExistException {
+
+	private static void saveUser() throws LostConnectionException, MaxConnectionsException {
 		if (UserDao.userExists(user)) {
-			UserDao.readUserByEmail(user);
+			throw new IllegalStateException("Cannot perform test for existing user");
 		} else {
 			UserDao.createUser(user);
 		}
 	}
-	
+
 	private static void initializeMediumDto() {
 		medium = new MediumDto();
 		medium.setReturnPeriod(Duration.of(5, ChronoUnit.MINUTES));
@@ -98,74 +203,6 @@ class LendingViolationsTest {
 		medium.setPublisher("Publisher");
 		medium.setReleaseYear(1999);
 		medium.setIsbn("ISBN");
-	}
-	
-	private static CopyDto createCopyDto(boolean late, int seconds) {
-		CopyDto copy = new CopyDto();
-		copy.setMediumId(medium.getId());
-		copy.setLocation("location");
-		copy.setSignature(String.valueOf("uniqueness85335" + singatureCounter++));
-		if (late) {
-			copy.setDeadline(Timestamp.from(Instant.now().plusSeconds(seconds)));
-		} else {
-			copy.setDeadline(Timestamp.from(Instant.now().plusSeconds(5 * 60 * 60)));
-		}
-		copy.setCopyStatus(CopyStatus.BORROWED);
-		copy.setActor(user.getId());
-		return copy;
-	}
-	
-	@AfterAll
-	public static void tearDown() throws LostConnectionException, MaxConnectionsException, EntityInstanceDoesNotExistException {
-		ConnectionPool.destroyConnectionPool();
-	}
-
-	@Test
-	public void testPagination() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException, 
-			MediumDoesNotExistException, EntityInstanceDoesNotExistException {
-		MediumDao.createMedium(medium);
-		MediumDao.returnOverdueCopies();
-		for (int i = 0; i < PAGE_SIZE + 2; i++) {
-			createCopyIfExists(true);
-		}
-		List<MediumCopyUserDto> readList = readOverdueCopiesForPage(1);
-		assertEquals(2, readList.size());
-	}
-	
-	@Test
-	public void testInsertingAndReading() throws LostConnectionException, MaxConnectionsException, EntityInstanceNotUniqueException, 
-			MediumDoesNotExistException, EntityInstanceDoesNotExistException {
-		MediumDao.createMedium(medium);
-		MediumDao.returnOverdueCopies();
-		for (int i = 0; i < PAGE_SIZE / 3; i++) {
-			createCopyIfExists(true);
-		}
-		for (int i = 0; i < 2 * PAGE_SIZE / 3; i++) {
-			createCopyIfExists(false);
-		}
-		List<MediumCopyUserDto> readList = readOverdueCopiesForPage(0);
-		assertEquals(PAGE_SIZE / 3, readList.size());
-	}
-	
-	private static void createCopyIfExists(boolean late) throws LostConnectionException, MaxConnectionsException, 
-			MediumDoesNotExistException, EntityInstanceNotUniqueException, EntityInstanceDoesNotExistException {
-		CopyDto copy = createCopyDto(late, LATENESS_LENGTH);
-		if (MediumDao.copyExists(copy)) {
-			MediumDao.deleteCopyBySignature(copy);
-		}
-		MediumDao.createCopy(copy, medium);
-	}
-	
-	private static List<MediumCopyUserDto> readOverdueCopiesForPage(int page){
-		PaginationDto paginationDetails = new PaginationDto();
-		paginationDetails.setPageNumber(page);
-		paginationDetails.setTotalAmountOfRows(PAGE_SIZE);
-		try {
-		    TimeUnit.SECONDS.sleep(LATENESS_LENGTH + 2);
-		} catch (InterruptedException ie) {
-		    Thread.currentThread().interrupt();
-		}
-		return MediumDao.readAllOverdueCopies(paginationDetails);
 	}
 	
 }

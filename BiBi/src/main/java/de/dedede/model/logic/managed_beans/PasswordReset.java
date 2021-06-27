@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
@@ -32,7 +33,6 @@ public class PasswordReset implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Inject FacesContext context;
-	@Inject UserSession session;
 	
 	private TokenDto token;
 	private UserDto userDto;
@@ -101,10 +101,8 @@ public class PasswordReset implements Serializable {
 		userDto.setToken(null);
 		userDto.setTokenCreation(null);
 		UserDao.updateUser(userDto);
-		Application app = context.getApplication();
-		ResourceBundle messages = app.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		context.addMessage(null, new FacesMessage(messages.getString("passwordReset.success")));
+		MessagingUtility.writePositiveMessageWithKey(context, "passwordReset.success");
 		context.getExternalContext().getFlash().setKeepMessages(true);
-		return "/view/public/login.xhtml?faces-redirect=true";
+		return "/view/ffa/login.xhtml?faces-redirect=true";
 	}
 }

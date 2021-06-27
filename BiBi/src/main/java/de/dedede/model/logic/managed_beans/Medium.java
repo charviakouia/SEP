@@ -1,16 +1,16 @@
 package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.*;
-import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.*;
-import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -40,16 +40,33 @@ public class Medium extends PaginatedList implements Serializable {
 
 	private CopyDto newCopy;
 
+	private int currentCopyId;
+
+	private String editCopyLocation;
+
+	private String editCopySignature;
+
+	private CopyDto editCopyDto;
+
+	private String signatureForPickUp;
+
 	@Inject
 	private UserSession userSession;
 
 	@Inject
 	private FacesContext context;
 
+	@Inject
+	private Lending lending;
+
+	@Inject
+	private ReturnForm returnForm;
+
 	@PostConstruct
 	private void init() {
 		mediumDto = new MediumDto();
 		newCopy = new CopyDto();
+		editCopyDto = new CopyDto();
 	}
 
 	@Override
@@ -87,24 +104,26 @@ public class Medium extends PaginatedList implements Serializable {
 		} catch (EntityInstanceDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
 		}
 	}
 
 	/**
 	 * Insert a new copy of this medium.
 	 */
-	public void createCopy() {
+	public String createCopy() {
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			prepareNewCopy(newCopy);
 			MediumDao.createCopy(newCopy, mediumDto);
 			newCopyClean(newCopy);
+			context.addMessage(null, new FacesMessage(messages.getString("copy.create.success")));
 			refresh();
 		} catch (EntityInstanceNotUniqueException exception) {
 			context.addMessage(null, new FacesMessage(messages.getString("copy.notUnique")));
 		}
+		return "";
 	}
 
 	private void newCopyClean(CopyDto newCopy) {
@@ -127,33 +146,56 @@ public class Medium extends PaginatedList implements Serializable {
 
 	/**
 	 * Delete a copy of this medium.
-	 * 
-	 * @param copyDto The id of the deleted copy.
 	 */
-	public void deleteCopy(CopyDto copyDto) throws IOException {
+	public void deleteCopy() throws IOException {
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		if (mediumDto.getCopy(currentCopyId) == null) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.invalidId")));
+			return;
+		}
 		try {
-			MediumDao.deleteCopy(copyDto);
-			refresh();
+			MediumDao.deleteCopy(mediumDto.getCopy(currentCopyId));
+			cleanEditedAttributes();
+			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+			ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI()
+					+ "?id=" + mediumDto.getId());
+			context.addMessage(null, new FacesMessage(messages.getString("copy.del.success")));
 		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("medium.doesntExist")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
 		}
+	}
+
+	private void cleanEditedAttributes() {
+		editCopySignature = null;
+		editCopyLocation = null;
+		currentCopyId = 0;
 	}
 
 	/**
 	 * Save changes made to a copy of this medium.
-	 * 
-	 * @param copyDto a DTO container with data about the copy whose attributes need to be changed.
+	 *
 	 */
-	public void saveCopy(CopyDto copyDto) {
+	public void updateCopy() {
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		if (mediumDto.getCopy(currentCopyId) == null) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.invalidId")));
+			return;
+		}
+		if (editCopyLocation.isEmpty() || editCopySignature.isEmpty()) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.invalidParam")));
+			return;
+		}
 		try {
-			MediumDao.updateCopy(copyDto);
+			mediumDto.getCopy(currentCopyId).setLocation(editCopyLocation);
+			mediumDto.getCopy(currentCopyId).setSignature(editCopySignature);
+			MediumDao.updateCopy(mediumDto.getCopy(currentCopyId));
+			cleanEditedAttributes();
 			refresh();
+			context.addMessage(null, new FacesMessage(messages.getString("copy.editSuccess")));
 		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
 		} catch (CopyIsNotAvailableException e) {
@@ -163,17 +205,22 @@ public class Medium extends PaginatedList implements Serializable {
 
 	/**
 	 * Cancel any pending pickup of the a copy this medium.
-	 * 
-	 * @param copyDto a DTO container with data about the copy, which should be available for pickup again.
 	 */
-	public void cancelPickup(CopyDto copyDto) {
+	public void cancelPickup() {
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		copyDto.setActor(null);
-		copyDto.setCopyStatus(CopyStatus.AVAILABLE);
+		if (mediumDto.getCopy(currentCopyId) == null
+				|| mediumDto.getCopy(currentCopyId).getCopyStatus() != CopyStatus.READY_FOR_PICKUP) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.invalidId")));
+			return;
+		}
+		mediumDto.getCopy(currentCopyId).setActor(null);
+		mediumDto.getCopy(currentCopyId).setCopyStatus(CopyStatus.AVAILABLE);
 		try {
-			MediumDao.updateCopy(copyDto);
+			MediumDao.updateCopy(mediumDto.getCopy(currentCopyId));
+			cleanEditedAttributes();
 			refresh();
+			context.addMessage(null, new FacesMessage(messages.getString("copy.cancelPickUp.access")));
 		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
 		} catch (CopyIsNotAvailableException e) {
@@ -184,31 +231,71 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Go to the direct lending page taking a copy of this medium.
 	 */
-	public String lendCopy() {
-		return "/BiBi/view/staff/lending.xhtml?faces-redirect=true";
+	public void lendCopy() throws IOException {
+		ResourceBundle messages = context.getApplication()
+				.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		if (mediumDto.getCopy(currentCopyId) == null) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.invalidId")));
+			return;
+		}
+		if (mediumDto.getCopy(currentCopyId).getCopyStatus() == CopyStatus.BORROWED) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.isBorrowed")));
+			return;
+		}
+		List<CopyDto> copies = new ArrayList<CopyDto>();
+		CopyDto copyToLend = mediumDto.getCopy(currentCopyId);
+		copies.add(copyToLend);
+		lending.setCopies(copies);
+		cleanEditedAttributes();
+		FacesContext.getCurrentInstance().getExternalContext()
+				.redirect("/BiBi/view/staff/lending.xhtml?faces-redirect=true");
 	}
 
 	/**
 	 * Go to the return form taking a copy of this medium.
 	 */
-	public String returnCopy() throws IllegalStateException {
-		return "/BiBi/view/staff/return-copy.xhtml?faces-redirect=true";
+	public void returnCopy() throws IllegalStateException, IOException {
+		ResourceBundle messages = context.getApplication()
+				.evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
+		if (mediumDto.getCopy(currentCopyId) == null) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.invalidId")));
+			return;
+		}
+		if (mediumDto.getCopy(currentCopyId).getCopyStatus() != CopyStatus.BORROWED) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.isNotBorrowed")));
+			return;
+		}
+		cleanEditedAttributes();
+		FacesContext.getCurrentInstance().getExternalContext()
+				.redirect("/BiBi/view/staff/return-form.xhtml?userId="
+						+ userSession.getUser().getId() + "&copySignature="
+						+ mediumDto.getCopy(currentCopyId).getSignature());
 	}
 
 	/**
 	 * Pick up a copy of this medium.
-	 * 
-	 * @param copyDto a DTO container of the copy marked for pickup.
-	 * @param user who marks the copy for the pickup.
 	 */
-	public void pickUpCopy(CopyDto copyDto, UserDto user) {
+	public void pickUpCopy() {
 		ResourceBundle messages =
 				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		copyDto.setActor(user.getId());
-		copyDto.setCopyStatus(CopyStatus.READY_FOR_PICKUP);
+		CopyDto copyDtoForPickUp = new CopyDto();
+		copyDtoForPickUp.setSignature(signatureForPickUp);
 		try {
-			MediumDao.updateCopy(copyDto);
+			MediumDao.readCopyBySignature(copyDtoForPickUp);
+		} catch (EntityInstanceDoesNotExistException exception) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
+		}
+		if (copyDtoForPickUp.getCopyStatus() != CopyStatus.AVAILABLE) {
+			context.addMessage(null, new FacesMessage(messages.getString("copy.isNotAvailableForPickup")));
+			return;
+		}
+		mediumDto.getCopy(copyDtoForPickUp.getId()).setActor(userSession.getUser().getId());
+		mediumDto.getCopy(copyDtoForPickUp.getId()).setCopyStatus(CopyStatus.READY_FOR_PICKUP);
+		try {
+			MediumDao.updateCopy(mediumDto.getCopy(copyDtoForPickUp.getId()));
+			signatureForPickUp = null;
 			refresh();
+			context.addMessage(null, new FacesMessage(messages.getString("copy.pickUpWasSuccess")));
 		} catch (CopyDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("copy.doesntExist")));
 		} catch (CopyIsNotAvailableException e) {
@@ -236,9 +323,9 @@ public class Medium extends PaginatedList implements Serializable {
 			MediumDao.deleteMedium(mediumDto);
 			context.addMessage(null, new FacesMessage(messages.getString("medium.deleteSuccess")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			return "/view/public/medium-search?faces-redirect=true";
+			return "/view/opac/medium-search?faces-redirect=true";
 		} catch (MediumDoesNotExistException e) {
-			return "/view/public/medium-search?faces-redirect=true";
+			return "/view/opac/medium-search?faces-redirect=true";
 		}
 	}
 
@@ -264,5 +351,45 @@ public class Medium extends PaginatedList implements Serializable {
 
 	public void setContext(FacesContext context) {
 		this.context = context;
+	}
+
+	public int getCurrentCopyId() {
+		return currentCopyId;
+	}
+
+	public void setCurrentCopyId(int currentCopyId) {
+		this.currentCopyId = currentCopyId;
+	}
+
+	public String getEditCopyLocation() {
+		return editCopyLocation;
+	}
+
+	public void setEditCopyLocation(String editCopyLocation) {
+		this.editCopyLocation = editCopyLocation;
+	}
+
+	public String getEditCopySignature() {
+		return editCopySignature;
+	}
+
+	public void setEditCopySignature(String editCopySignature) {
+		this.editCopySignature = editCopySignature;
+	}
+
+	public CopyDto getEditCopyDto() {
+		return editCopyDto;
+	}
+
+	public void setEditCopyDto(CopyDto editCopyDto) {
+		this.editCopyDto = editCopyDto;
+	}
+
+	public String getSignatureForPickUp() {
+		return signatureForPickUp;
+	}
+
+	public void setSignatureForPickUp(String signatureForPickUp) {
+		this.signatureForPickUp = signatureForPickUp;
 	}
 }

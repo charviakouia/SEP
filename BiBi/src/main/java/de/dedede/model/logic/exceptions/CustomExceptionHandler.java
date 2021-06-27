@@ -56,7 +56,7 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
             requestMap.put("parameterMap", getParameterMap());
             
             NavigationHandler nav = context.getApplication().getNavigationHandler();
-    		nav.handleNavigation(context, null, "/view/public/error");
+    		nav.handleNavigation(context, null, "/view/error/error");
     		
     		context.renderResponse();
     		

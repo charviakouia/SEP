@@ -60,12 +60,11 @@
 		</h:panelGrid>
 		</h:form>
 		
-		<h:form>
+		<h:form rendered="#{initParam['jakarta.faces.PROJECT_STAGE'] == 'Development'}">
 			
 			<h:commandButton action="#{login.throwsError()}" value="Throw error"/>
 			
 		</h:form>
-        
 
 	</ui:define>
 

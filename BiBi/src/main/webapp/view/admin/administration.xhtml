@@ -11,106 +11,106 @@
 	<ui:param name="page" value="administration" />
 
 	<ui:define name="content">
-	
-	<h1>#{msg['administration.headline']}</h1>
-	
-		
-		<h:form>
-		<h:panelGrid id="administration_form_panel" columns="3"
-					 border="1" cellpadding ="10" cellspacing="1">	
-					 
-			<h:outputLabel for="administration_return_period" 
-						value="#{msg['administration.return_period_label']}"/>
-			<h:inputText id="administration_return_period" 
-						title="#{msg['administration.return_period_days']}"
-						converter="DurationConverter"
-						value="#{administration.application.returnPeriod}"> 
-			</h:inputText>
-			<h:message id="administration_return_period_message" 
-						for="administration_return_period"/>
-			
-			<h:outputLabel for="administration_reminder_offset" 
-						value="#{msg['administration.reminder_offset_label']}"/>
-			<h:inputText id="administration_reminder_offset" 
-						title="#{msg['administration.reminder_offset_hours']}"
-						converter="hoursToDurationConverter"
-						value="#{administration.application.warningPeriod}">
-			</h:inputText>
-			<h:message id="administration_reminder_offset_message" 
-						for="administration_reminder_offset"/>
-			
-			<h:outputLabel for="administration_pickup_period" 
-						value="#{msg['administration.pickup_period_label']}"/>
-			<h:inputText id="administration_pickup_period" 
-						title="#{msg['administration.pickup_period_hours']}"
-						converter="hoursToDurationConverter"
-						value="#{administration.application.pickupPeriod}">
-			</h:inputText>
-			<h:message id="administration_pickup_period_message" 
-						for="administration_pickup_period"/>
-			
-			<h:outputLabel for="administration_system_name" 
-						value="#{msg['administration.system_name_label']}"/>
-			<h:inputText id="administration_system_name"
-						title="#{msg['administration.diplayed_system_name']}"
-						value="#{administration.application.name}">
-				<f:validateLength minimum = "1" maximum = "100"/>
-			</h:inputText>
-			<h:message id="administration_system_name_message" 
-						for="administration_system_name"/>
-			
-			<h:outputLabel for="administration_registration_status_menu" 
-						value="#{msg['administration.registration_status']}"/>
-			<h:selectOneRadio id="administration_registration_status_menu"
-							value="#{administration.application.systemRegistrationStatus}"
-							title="#{msg['administration.registration_status_tooltip']}">
-				<f:selectItems value="#{administration.systemRegistrationStatusValues()}"/>
-			</h:selectOneRadio>
-			<h:message id="administration_registration_status_message" 
-						for="administration_registration_status_menu"/>
-						
-			<h:outputLabel for="administration_anon_access_menu" 
-						value="#{msg['administration.anon_access']}"/>
-			<h:selectOneRadio id="administration_anon_access_menu"
-							value="#{administration.application.anonRights}"
-							title="#{msg['administration.anon_access_tooltip']}">
-				<f:selectItems value="#{administration.systemAnonAccessValues()}"/>
-			</h:selectOneRadio>
-			<h:message id="administration_anon_access_message" 
-						for="administration_anon_access_menu"/>
-						
-			<h:outputLabel for="administration_registered_lend_status_menu" 
-						value="#{msg['administration.registered_lend_status']}"/>
-			<h:selectOneRadio id="administration_registered_lend_status_menu"
-							value="#{administration.application.lendingStatus}"
-							title="#{msg['administration.lend_status_tooltip']}">
-				<f:selectItems value="#{administration.registeredUserLendStatusValues()}"/>
-			</h:selectOneRadio>
-			<h:message id="administration_registered_lend_status_message" 
-						for="administration_registered_lend_status_menu"/>		
-			
-			<h:outputLabel for="administration_email_regex" 
-						value="#{msg['administration.email_regex_input']}"/>
-			<h:inputText id="administration_email_regex"
-						title="#{msg['administration.email_regex_tooltip']}"
-						value="#{administration.application.emailSuffixRegEx}">
-			</h:inputText>
-			<h:message id="administration_email_regex_message" 
-						for="administration_email_regex"/>
-			
-			<h:commandButton id="administration_save_changes" 
-							action="#{administration.save()}"
-							styleClass="btn btn-primary"
-							value="#{msg['administration.save_changes']}"/>	
-							
-		</h:panelGrid>
+
+		<h:outputLabel for="adminForm" value="#{msg['administration.headline']}"
+					   style="font-weight:bold; font-size:x-large;"/>
+
+		<h:form id="adminForm">
+			<h:panelGrid id="administration_form_panel" columns="3"
+						 border="1" cellpadding ="10" cellspacing="1">
+
+				<h:outputLabel for="administration_return_period"
+							value="#{msg['administration.return_period_label']}"/>
+				<h:inputText id="administration_return_period"
+							title="#{msg['administration.return_period_days']}"
+							converter="DurationConverter"
+							value="#{administration.application.returnPeriod}">
+				</h:inputText>
+				<h:message id="administration_return_period_message"
+							for="administration_return_period"/>
+
+				<h:outputLabel for="administration_reminder_offset"
+							value="#{msg['administration.reminder_offset_label']}"/>
+				<h:inputText id="administration_reminder_offset"
+							title="#{msg['administration.reminder_offset_hours']}"
+							converter="hoursToDurationConverter"
+							value="#{administration.application.warningPeriod}">
+				</h:inputText>
+				<h:message id="administration_reminder_offset_message"
+							for="administration_reminder_offset"/>
+
+				<h:outputLabel for="administration_pickup_period"
+							value="#{msg['administration.pickup_period_label']}"/>
+				<h:inputText id="administration_pickup_period"
+							title="#{msg['administration.pickup_period_hours']}"
+							converter="hoursToDurationConverter"
+							value="#{administration.application.pickupPeriod}">
+				</h:inputText>
+				<h:message id="administration_pickup_period_message"
+							for="administration_pickup_period"/>
+
+				<h:outputLabel for="administration_system_name"
+							value="#{msg['administration.system_name_label']}"/>
+				<h:inputText id="administration_system_name"
+							title="#{msg['administration.diplayed_system_name']}"
+							value="#{administration.application.name}">
+					<f:validateLength minimum = "1" maximum = "100"/>
+				</h:inputText>
+				<h:message id="administration_system_name_message"
+							for="administration_system_name"/>
+
+				<h:outputLabel for="administration_registration_status_menu"
+							value="#{msg['administration.registration_status']}"/>
+				<h:selectOneRadio id="administration_registration_status_menu"
+								value="#{administration.application.systemRegistrationStatus}"
+								title="#{msg['administration.registration_status_tooltip']}">
+					<f:selectItems value="#{administration.systemRegistrationStatusValues()}"/>
+				</h:selectOneRadio>
+				<h:message id="administration_registration_status_message"
+							for="administration_registration_status_menu"/>
+
+				<h:outputLabel for="administration_anon_access_menu"
+							value="#{msg['administration.anon_access']}"/>
+				<h:selectOneRadio id="administration_anon_access_menu"
+								value="#{administration.application.anonRights}"
+								title="#{msg['administration.anon_access_tooltip']}">
+					<f:selectItems value="#{administration.systemAnonAccessValues()}"/>
+				</h:selectOneRadio>
+				<h:message id="administration_anon_access_message"
+							for="administration_anon_access_menu"/>
+
+				<h:outputLabel for="administration_registered_lend_status_menu"
+							value="#{msg['administration.registered_lend_status']}"/>
+				<h:selectOneRadio id="administration_registered_lend_status_menu"
+								value="#{administration.application.lendingStatus}"
+								title="#{msg['administration.lend_status_tooltip']}">
+					<f:selectItems value="#{administration.registeredUserLendStatusValues()}"/>
+				</h:selectOneRadio>
+				<h:message id="administration_registered_lend_status_message"
+							for="administration_registered_lend_status_menu"/>
+
+				<h:outputLabel for="administration_email_regex"
+							value="#{msg['administration.email_regex_input']}"/>
+				<h:inputText id="administration_email_regex"
+							title="#{msg['administration.email_regex_tooltip']}"
+							value="#{administration.application.emailSuffixRegEx}">
+				</h:inputText>
+				<h:message id="administration_email_regex_message"
+							for="administration_email_regex"/>
+
+				<h:commandButton id="administration_save_changes"
+								action="#{administration.save()}"
+								styleClass="btn btn-primary"
+								value="#{msg['administration.save_changes']}"/>
+
+			</h:panelGrid>
 		</h:form>
 		
 		
 		<h:panelGroup layout="block" styleClass="form-group">
-		<h:link value="#{msg['administration.user_registration_link']}"
-				outcome="/view/ffa/registration.xhtml" 
-				styleClass="nav-link"/>
+			<h:link value="#{msg['administration.user_registration_link']}"
+					outcome="/view/ffa/registration.xhtml"
+					styleClass="nav-link"/>
 		</h:panelGroup>
 		
 		<!-- Nutzersuchformular? -->

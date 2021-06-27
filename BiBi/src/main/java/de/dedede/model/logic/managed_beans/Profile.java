@@ -104,7 +104,7 @@ public class Profile implements Serializable {
 			externalContext.invalidateSession();
 			context.addMessage(null, new FacesMessage(messages.getString("delUser.success")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			return "/view/public/login?faces-redirect=true";
+			return "/view/ffa/login?faces-redirect=true";
 		}
 	}
 
@@ -136,7 +136,7 @@ public class Profile implements Serializable {
 			externalContext.invalidateSession();
 			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.notUser")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			externalContext.redirect("/BiBi/view/public/login.xhtml?faces-redirect=true");
+			externalContext.redirect("/BiBi/view/ffa/login.xhtml?faces-redirect=true");
 		}
 	}
 
@@ -156,18 +156,18 @@ public class Profile implements Serializable {
 				} else {
 					context.addMessage(null, new FacesMessage(messages.getString("profile.notAccess")));
 					context.getExternalContext().getFlash().setKeepMessages(true);
-					FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+					FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
 
 				}
 			} else {
 				context.addMessage(null, new FacesMessage(messages.getString("profile.notLogin")));
 				context.getExternalContext().getFlash().setKeepMessages(true);
-				FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/login.xhtml");
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/ffa/login.xhtml");
 			}
 		} catch (UserDoesNotExistException e) {
 			context.addMessage(null, new FacesMessage(messages.getString("profile.invalidID")));
 			context.getExternalContext().getFlash().setKeepMessages(true);
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/public/medium-search.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
 		}
 	}
 	
