@@ -65,9 +65,12 @@ public class ReturnForm implements Serializable {
 		}	
 	}
 
-	// Ivan
+	/**
+	 * Used to fill in the form fields with flash parameters.
+	 */
 	public void preloadUserAndCopies(){
-		Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Flash flash = facesContext.getExternalContext().getFlash();
 		Integer userId = (Integer) flash.get("userId");
 		String copySignature = (String) flash.get("copySignature");
 		if (userId != null && copySignature != null){
@@ -75,13 +78,15 @@ public class ReturnForm implements Serializable {
 			try {
 				UserDao.readUserForProfile(user);
 			} catch (UserDoesNotExistException e1) {
-				Logger.severe("Couldn't read user or medium copy from previous page");
+				Logger.severe("Couldn't read user "
+						+ "from previous page");
 			}
 			copies.get(0).setSignature(copySignature);
 			try {
 				MediumDao.readCopyBySignature(copies.get(0));
 			} catch (EntityInstanceDoesNotExistException e) {
-				Logger.severe("Couldn't read user or medium copy from previous page");
+				Logger.severe("Couldn't read medium copy "
+						+ "from previous page");
 			}
 		}
 	}
@@ -150,7 +155,7 @@ public class ReturnForm implements Serializable {
 	}
 	
 	/**
-	 * Called by a Listener for value change on email address input field
+	 * Called by a listener for value change on email address input field
 	 * 
 	 * @param change The new email address input
 	 */
