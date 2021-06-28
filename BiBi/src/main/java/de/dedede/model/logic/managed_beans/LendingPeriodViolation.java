@@ -18,6 +18,9 @@ import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -30,8 +33,7 @@ import jakarta.inject.Named;
 @SessionScoped
 public class LendingPeriodViolation extends PaginatedList implements Serializable {
 
-	@Serial
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 	private static final int NUM_ROWS = 10;
 
 	private List<MediumCopyUserDto> items;
@@ -102,17 +104,18 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 	}
 
 	/**
-	 * Returns a navigation link to the medium-copy return page for the passed data entry. Specifically,
+	 * Executes a navigation link to the medium-copy return page for the passed data entry. Specifically,
 	 * the page's user-email and medium-copy signature fields are filled with data from the medium-copy.
 	 *
 	 * @param dto The passed {@link MediumCopyUserDto} data entry
 	 * @return The navigation link to the return page for the associated medium-copy
 	 * @see CopyDto
 	 */
-	public String getCopyLink(MediumCopyUserDto dto) {
-		return "/view/staff/return-form.xhtml?faces-redirect=true&"
-				+ "userId=" + dto.getUser().getId() + "&copySignature="
-				+ URLEncoder.encode(dto.getCopy().getSignature(), StandardCharsets.UTF_8);
+	public String executeCopyLink(MediumCopyUserDto dto){
+		Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+		flash.put("userId", dto.getUser().getId());
+		flash.put("copySignature", dto.getCopy().getSignature());
+		return "/view/staff/return-form.xhtml?faces-redirect=true";
 	}
 
 	/**

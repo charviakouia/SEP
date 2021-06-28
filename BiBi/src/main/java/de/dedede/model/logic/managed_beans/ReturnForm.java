@@ -23,6 +23,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
@@ -63,34 +64,26 @@ public class ReturnForm implements Serializable {
 
 	// Ivan
 	public void preloadUserAndCopies(){
-		try {
-			UserDao.readUserForProfile(user);
-			CopyDto parameterCopy = copies.get(0);
-			parameterCopy.setSignature(URLDecoder.decode(rawParameterSignature, StandardCharsets.UTF_8));
-			MediumDao.readCopyBySignature(copies.get(0));
-		} catch (EntityInstanceDoesNotExistException | UserDoesNotExistException e) {
-			Logger.severe("Couldn't find passed user or copy by their respective identifiers");
+		Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+		Integer userId = (Integer) flash.get("userId");
+		String copySignature = (String) flash.get("copySignature");
+		if (userId != null && copySignature != null){
+			try {
+				user.setId(userId);
+				UserDao.readUserForProfile(user);
+				copies.get(0).setSignature(copySignature);
+				MediumDao.readCopyBySignature(copies.get(0));
+			} catch (UserDoesNotExistException | EntityInstanceDoesNotExistException e) {
+				Logger.severe("Couldn't read user or medium copy from previous page");
+			}
 		}
-	}
-
-	// Ivan
-	private String rawParameterSignature;
-
-	// Ivan
-	public String getRawParameterSignature() {
-		return rawParameterSignature;
-	}
-
-	// Ivan
-	public void setRawParameterSignature(String rawParameterSignature) {
-		this.rawParameterSignature = rawParameterSignature;
 	}
 	
 	/**
 	 * Return the list of existing signatures lent by the existing user into
 	 * the libraries inventory.
 	 * 
-	 * @throws BuisnessException if unknown copy, user or invalid return action
+	 * @throws BusinessException if unknown copy, user or invalid return action
 	 */
 	public void returnCopies() {
 		int returned = 0;
