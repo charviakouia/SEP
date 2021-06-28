@@ -181,7 +181,7 @@ public class Header {
 	public void logOut() throws IOException {
 		session.setUser(null);
 		ectx.invalidateSession();
-		ectx.redirect(ectx.getRequestContextPath() + "/view/ffa/login.xhtml?faces-redirect=true");
+		ectx.redirect(ectx.getRequestContextPath() + "/view/ffa/login.xhtml");
 	}
 
 	public String searchMedium() {
