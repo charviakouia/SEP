@@ -29,7 +29,7 @@
 						</h:panelGroup>
 					</h:form>
 
-					<h:panelGroup layout="block" binding="#{categoryBrowser.categoryTreeHook}" />
+					<h:panelGroup layout="block" id="category_tree_hook" binding="#{categoryBrowser.categoryTreeHook}" />
 					
 				</h:panelGroup>
 
@@ -138,6 +138,8 @@
 				</h:panelGroup>
 			</h:panelGroup>
 		</h:panelGroup>
+
+		<h:outputScript library="js" name="accordionTree.js" />
 
 	</ui:define>
 

@@ -19,6 +19,10 @@ html, body {
 	font-size: x-large;
 }
 
+#category_tree_hook .accordion-button:not(.disabled) {
+	cursor: pointer;
+}
+
 .accordion-button.disabled::after {
 	background-image: none !important;
 }
