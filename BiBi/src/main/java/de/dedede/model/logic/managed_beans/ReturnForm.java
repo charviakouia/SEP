@@ -2,8 +2,6 @@ package de.dedede.model.logic.managed_beans;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +21,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
@@ -44,7 +43,7 @@ public class ReturnForm implements Serializable {
 	 * Recieves the email address of the user to make the return after value 
 	 * change.
 	 */
-	private UserDto user = new UserDto();
+	private UserDto user;
 
 	/**
 	 * Holds one copy signature for each input field.
@@ -56,41 +55,42 @@ public class ReturnForm implements Serializable {
 	 */
 	@PostConstruct
 	public void init() {
-		for(int i = 0; i < 5; i++) {
-			copies.add(new CopyDto());
+		if (user == null) {
+			user = new UserDto();
 		}
+		if (copies.isEmpty()) {
+			for(int i = 0; i < 5; i++) {
+				copies.add(new CopyDto());
+			}
+		}	
 	}
 
 	// Ivan
 	public void preloadUserAndCopies(){
-		try {
-			UserDao.readUserForProfile(user);
-			CopyDto parameterCopy = copies.get(0);
-			parameterCopy.setSignature(URLDecoder.decode(rawParameterSignature, StandardCharsets.UTF_8));
-			MediumDao.readCopyBySignature(copies.get(0));
-		} catch (EntityInstanceDoesNotExistException | UserDoesNotExistException e) {
-			Logger.severe("Couldn't find passed user or copy by their respective identifiers");
+		Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+		Integer userId = (Integer) flash.get("userId");
+		String copySignature = (String) flash.get("copySignature");
+		if (userId != null && copySignature != null){
+			user.setId(userId);
+			try {
+				UserDao.readUserForProfile(user);
+			} catch (UserDoesNotExistException e1) {
+				Logger.severe("Couldn't read user or medium copy from previous page");
+			}
+			copies.get(0).setSignature(copySignature);
+			try {
+				MediumDao.readCopyBySignature(copies.get(0));
+			} catch (EntityInstanceDoesNotExistException e) {
+				Logger.severe("Couldn't read user or medium copy from previous page");
+			}
 		}
-	}
-
-	// Ivan
-	private String rawParameterSignature;
-
-	// Ivan
-	public String getRawParameterSignature() {
-		return rawParameterSignature;
-	}
-
-	// Ivan
-	public void setRawParameterSignature(String rawParameterSignature) {
-		this.rawParameterSignature = rawParameterSignature;
 	}
 	
 	/**
 	 * Return the list of existing signatures lent by the existing user into
 	 * the libraries inventory.
 	 * 
-	 * @throws BuisnessException if unknown copy, user or invalid return action
+	 * @throws BusinessException if unknown copy, user or invalid return action
 	 */
 	public void returnCopies() {
 		int returned = 0;
@@ -211,4 +211,5 @@ public class ReturnForm implements Serializable {
 		
 		return contentWithParam;
 	}
+	
 }

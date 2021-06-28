@@ -84,13 +84,11 @@ public class TrespassListener implements PhaseListener, Serializable{
         } else if (!isLoggedIn && !url.startsWith("/view/ffa/") 
         		&& !url.startsWith("/view/opac/") 
         		&& (accessMode == SystemAnonAccess.OPAC)) {
-        	if (!url.startsWith("/view/opac/")) { // Redundant, public folder was deleted
-        		redirectToLogin(facesCtx, externalCtx, navigationHandler,
+        	redirectToLogin(facesCtx, externalCtx, navigationHandler,
         				shortMessageLogin, longMessageLogin);
-        	}
         } else if (isLoggedIn && !url.startsWith("/view/ffa/")
         		&& (userRole == UserRole.REGISTERED)) {
-        	if (!url.startsWith("/view/opac/") // Registered users should be able to access OPAC too
+        	if (!url.startsWith("/view/opac/") 
         			&& !url.startsWith("/view/account/")) {
         		redirectToError404(facesCtx, externalCtx, navigationHandler);
         	}

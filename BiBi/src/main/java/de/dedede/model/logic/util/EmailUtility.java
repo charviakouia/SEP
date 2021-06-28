@@ -39,7 +39,17 @@ public final class EmailUtility {
 	 * @throws MessagingException 
 	 * @throws AddressException 
 	 */
-	public static void sendEmail(String recipient, String subject, String body) throws AddressException, MessagingException {
+	public static void sendEmail(String recipient, String subject, String body) throws MessagingException {
+		new Thread(() -> {
+			try {
+				sendEmailConcurrently(recipient, subject, body);
+			} catch (MessagingException e) {
+				Logger.severe("Couldn't send email message");
+			}
+		}).start();
+	}
+
+	private static void sendEmailConcurrently(String recipient, String subject, String body) throws MessagingException {
 		Session session = Session.getInstance(props, new CustomAuthenticator());
 		Message message = new MimeMessage(session);
 		message.setFrom(new InternetAddress(from));
