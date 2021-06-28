@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
@@ -177,23 +178,19 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	}
 
 	public boolean writableCategoryName() {
-//		if (session.getUser() == null) {
-//			return false;
-//		}
-//		
-//		return session.getUser().getRole().isStaffOrHigher();
-
-		return true; // @Temporary
+		if (session.getUser() == null) {
+			return false;
+		}
+		
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public boolean writableCategoryDescription() {
-//		if (session.getUser() == null) {
-//			return false;
-//		}
-//		
-//		return session.getUser().getRole().isStaffOrHigher();
-
-		return true; // @Temporary
+		if (session.getUser() == null) {
+			return false;
+		}
+		
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 	
 	/**
@@ -202,13 +199,11 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	 * @return If the category actions are shown.
 	 */
 	public boolean isShowingCategoryActions() {
-//		if (session.getUser() == null) {
-//			return false;
-//		}
-//		
-//		return session.getUser().getRole().isStaffOrHigher();
+		if (session.getUser() == null) {
+			return false;
+		}
 		
-		return true; // @Temporary
+		return session.getUser().getRole().isStaffOrHigher();
 	}
 
 	public void selectCategory(CategoryDto category) {
@@ -234,10 +229,9 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	}
 
-	public String createCategory() {
+	public void createCategory() throws IOException {
 		ectx.getFlash().put("parent-category", currentCategory.getId());
-
-		return "category-creator?faces-redirect=true";
+		ectx.redirect(ectx.getRequestContextPath() + "/view/staff/category-creator.xhtml");
 	}
 
 	@Override
