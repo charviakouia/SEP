@@ -134,7 +134,7 @@ public final class CategoryDao {
 			result.setParent(parentCategory);
 
 			connection.commit();
-			
+
 			return result;
 
 		} catch (SQLException exception) {
@@ -173,26 +173,39 @@ public final class CategoryDao {
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
-			// @Task count
-			final var statement = connection.prepareStatement("""
+
+			final var statementBody = """
+					from
+						category ct
+					where
+						position(lower(?) in lower(ct.title)) > 0
+					""";
+			
+			{
+				final var countStatement = connection.prepareStatement("select count(ct.categoryid) " + statementBody);
+				countStatement.setString(1, categorySearch.getSearchTerm());
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+				
+				Pagination.update(pagination, resultSet.getInt(1));
+			}
+			
+			final var itemsStatement = connection.prepareStatement("""
 							select
 								ct.categoryid, ct.title, ct.description, ct.parentcategoryid
-							from
-								category ct
-							where
-								position(lower(?) in lower(ct.title)) > 0
+							%s
 							order by
 								title
 									desc
 							offset ?
 							limit ?
-					""");
+					""".formatted(statementBody));
 			var parameterIndex = 0;
-			statement.setString(parameterIndex += 1, categorySearch.getSearchTerm());
-			statement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
-			statement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
+			itemsStatement.setString(parameterIndex += 1, categorySearch.getSearchTerm());
+			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
-			final var resultSet = statement.executeQuery();
+			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<CategoryDto>();
 
 			while (resultSet.next()) {
@@ -206,7 +219,7 @@ public final class CategoryDao {
 				category.setParent(parentCategory);
 				results.add(category);
 			}
-			
+
 			connection.commit();
 
 			return results;
