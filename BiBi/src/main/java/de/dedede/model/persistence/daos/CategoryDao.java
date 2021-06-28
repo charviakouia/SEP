@@ -133,6 +133,8 @@ public final class CategoryDao {
 			parentCategory.setId(resultSet.getInt(3));
 			result.setParent(parentCategory);
 
+			connection.commit();
+			
 			return result;
 
 		} catch (SQLException exception) {
@@ -204,6 +206,8 @@ public final class CategoryDao {
 				category.setParent(parentCategory);
 				results.add(category);
 			}
+			
+			connection.commit();
 
 			return results;
 
