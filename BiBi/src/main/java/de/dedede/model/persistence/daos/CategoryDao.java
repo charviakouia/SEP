@@ -96,14 +96,62 @@ public final class CategoryDao {
 	 * Fetches category data from the persistent data store. The enclosed ID must be
 	 * associated with an existing data entry. Otherwise, an exception is thrown.
 	 *
-	 * @param categoryDto A DTO container with the ID of the category data to be
-	 *                    fetched.
+	 * @param category A DTO container with the ID of the category data to be
+	 *                 fetched.
 	 * @throws CategoryDoesNotExistException Is thrown if the passed ID is not
 	 *                                       associated with a data entry.
 	 * @see CategoryDto
 	 */
-	public static CategoryDto readCategory(CategoryDto categoryDto) throws CategoryDoesNotExistException {
-		return null;
+	public static CategoryDto readCategory(CategoryDto category) {
+
+		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+
+		try {
+			final var statement = connection.prepareStatement("""
+							select
+								ct.title, ct.description, ct.parentcategoryid
+							from
+								category ct
+							where
+								ct.categoryid = ?
+					""");
+			statement.setInt(1, category.getId());
+
+			final var resultSet = statement.executeQuery();
+			final var result = new CategoryDto();
+			final var rowExists = resultSet.next();
+
+			if (!rowExists) {
+				throw new CategoryDoesNotExistException(
+						"Category with ID %d does not exist".formatted(category.getId()));
+			}
+
+			result.setId(category.getId());
+			result.setName(resultSet.getString(1));
+			result.setDescription(resultSet.getString(2));
+			final var parentCategory = new CategoryDto();
+			parentCategory.setId(resultSet.getInt(3));
+			result.setParent(parentCategory);
+
+			return result;
+
+		} catch (SQLException exception) {
+
+			try {
+				connection.rollback();
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while reading category: " + exception.getMessage();
+			Logger.severe(message);
+			throw new LostConnectionException(message, exception);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(connection);
+		}
+
 	}
 
 	/**
