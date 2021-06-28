@@ -122,8 +122,9 @@ public final class CategoryDao {
 			final var rowExists = resultSet.next();
 
 			if (!rowExists) {
-				throw new CategoryDoesNotExistException(
-						"Category with ID %d does not exist".formatted(category.getId()));
+				final var message = "Category with ID %d does not exist".formatted(category.getId());
+				Logger.severe(message);
+				throw new CategoryDoesNotExistException(message);
 			}
 
 			result.setId(category.getId());
@@ -167,7 +168,6 @@ public final class CategoryDao {
 	 *         specified search term and pagination details.
 	 * @see CategoryDto
 	 */
-	// @Task rename to searchCategories
 	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearch, PaginationDto pagination) {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
@@ -180,16 +180,16 @@ public final class CategoryDao {
 					where
 						position(lower(?) in lower(ct.title)) > 0
 					""";
-			
+
 			{
 				final var countStatement = connection.prepareStatement("select count(ct.categoryid) " + statementBody);
 				countStatement.setString(1, categorySearch.getSearchTerm());
 				final var resultSet = countStatement.executeQuery();
 				resultSet.next();
-				
+
 				Pagination.update(pagination, resultSet.getInt(1));
 			}
-			
+
 			final var itemsStatement = connection.prepareStatement("""
 							select
 								ct.categoryid, ct.title, ct.description, ct.parentcategoryid
@@ -247,7 +247,7 @@ public final class CategoryDao {
 	 * 
 	 * @return A list of all top-level/parentless categories.
 	 */
-	public static List<CategoryDto> readAllCategories() {
+	public static List<CategoryDto> readCategoryForest() {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
