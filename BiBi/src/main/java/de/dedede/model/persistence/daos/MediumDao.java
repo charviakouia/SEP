@@ -307,7 +307,6 @@ public final class MediumDao {
 		}
 	}
 
-	// @Task needs a lotta love!!
 	private static void translateGeneralSearchTerm(StringBuilder query, List<Object> parameters,
 			String generalSearchTerm) {
 
@@ -318,7 +317,6 @@ public final class MediumDao {
 
 		query.append("(false ");
 
-		// @Question only search a subset of these?
 		for (final var searchCriterion : MediumSearchCriterion.values()) {
 			if (!searchCriterion.isGeneralSearchCriterion()) {
 				continue;
@@ -398,7 +396,7 @@ public final class MediumDao {
 			case ISBN -> "isbn";
 			case URL -> "mediumlink";
 			case SUMMARY -> "demotext";
-			default -> throw new IllegalStateException();
+			default -> throw new IllegalStateException("Unreachable");
 			};
 
 			parameters.add(nuancedQuery.getTerm());
@@ -410,8 +408,7 @@ public final class MediumDao {
 		query.append(") ");
 	}
 
-	// existence of this function necessitated by an internal compiler error
-	// (eclipse codegen)
+	// existence of this function necessitated by an internal compiler error (eclipse codegen)
 	private static Optional<Integer> parseInt(String source) {
 		try {
 			return Optional.of(Integer.parseInt(source));
@@ -420,7 +417,13 @@ public final class MediumDao {
 		}
 	}
 	
-	// @Task docs
+	/**
+	 * Fetches all the media in the given category.
+	 * 
+	 * @param category The category in whose media we are interested.
+	 * @param pagination The pagination details.
+	 * @return The list of media of the given category.
+	 */
 	public static List<MediumDto> readMediaGivenCategory(CategoryDto category, PaginationDto pagination) {
 		
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);

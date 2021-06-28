@@ -13,10 +13,9 @@
 
 	<ui:define name="content">
 
+		<!-- Ivan -->
 		<f:metadata>
-			<f:viewParam name="userId" value="#{returnForm.user.id}" required="false"/>
-			<f:viewParam name="copySignature" value="#{returnForm.rawParameterSignature}" required="false"/>
-			<f:viewAction action="#{returnForm.preloadUserAndCopies}" /><br/>
+			<f:viewAction action="#{returnForm.preloadUserAndCopies}"/>
 		</f:metadata>
 
 		<h:outputLabel for="form_return_form" value="#{msg['returnForm.headline']}"

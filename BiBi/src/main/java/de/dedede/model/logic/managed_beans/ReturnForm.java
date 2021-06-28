@@ -11,14 +11,17 @@ import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
@@ -61,12 +64,33 @@ public class ReturnForm implements Serializable {
 			}
 		}	
 	}
+
+	// Ivan
+	public void preloadUserAndCopies(){
+		Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+		Integer userId = (Integer) flash.get("userId");
+		String copySignature = (String) flash.get("copySignature");
+		if (userId != null && copySignature != null){
+			user.setId(userId);
+			try {
+				UserDao.readUserForProfile(user);
+			} catch (UserDoesNotExistException e1) {
+				Logger.severe("Couldn't read user or medium copy from previous page");
+			}
+			copies.get(0).setSignature(copySignature);
+			try {
+				MediumDao.readCopyBySignature(copies.get(0));
+			} catch (EntityInstanceDoesNotExistException e) {
+				Logger.severe("Couldn't read user or medium copy from previous page");
+			}
+		}
+	}
 	
 	/**
 	 * Return the list of existing signatures lent by the existing user into
 	 * the libraries inventory.
 	 * 
-	 * @throws BuisnessException if unknown copy, user or invalid return action
+	 * @throws BusinessException if unknown copy, user or invalid return action
 	 */
 	public void returnCopies() {
 		int returned = 0;

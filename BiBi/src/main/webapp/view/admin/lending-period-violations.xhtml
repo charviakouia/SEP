@@ -36,8 +36,12 @@
 			<h:column>
 				<f:facet name="header">#{msg['lendingPeriodViolations.copyTitle']}</f:facet>
 				<bibi:columnContent>
-					<h:link value="#{lendingPeriodViolation.getCopyLabel(item)}"
-							outcome="#{lendingPeriodViolation.getCopyLink(item)}"/>
+					<h:form>
+						<h:commandLink value="#{lendingPeriodViolation.getCopyLabel(item)}"
+									   action="#{lendingPeriodViolation.executeCopyLink(item)}"/>
+					</h:form>
+					<!-- <h:link value="#{lendingPeriodViolation.getCopyLabel(item)}"
+							outcome="#{lendingPeriodViolation.getCopyLink(item)}"/> -->
 				</bibi:columnContent>
 			</h:column>
 
