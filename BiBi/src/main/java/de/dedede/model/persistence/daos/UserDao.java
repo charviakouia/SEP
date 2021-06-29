@@ -361,7 +361,7 @@ public final class UserDao {
 				final var resultSet = countStatement.executeQuery();
 				resultSet.next();
 
-				Pagination.updatePagination(pagination, resultSet.getInt(1));
+				Pagination.update(pagination, resultSet.getInt(1));
 			}
 
 			final var itemsStatement = connection.prepareStatement("""
