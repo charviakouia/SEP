@@ -183,15 +183,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		return path;
 	}
 
-	public boolean writableCategoryName() {
-		if (session.getUser() == null) {
-			return false;
-		}
-
-		return session.getUser().getRole().isStaffOrHigher();
-	}
-
-	public boolean writableCategoryDescription() {
+	public boolean writableCategoryControls() {
 		if (session.getUser() == null) {
 			return false;
 		}

@@ -59,16 +59,16 @@
 
 							<h:inputText id="input_category_name"
 								value="#{categoryBrowser.currentCategory.name}"
-								readonly="#{!categoryBrowser.writableCategoryName()}"
-								styleClass="readonly-as-plain-text form-control mb-3"
+								readonly="#{!categoryBrowser.writableCategoryControls()}"
+								styleClass="readonly-means-plain-text #{categoryBrowser.writableCategoryControls() ? 'form-control' : 'h2'} mb-3"
 								p:placeholder="#{msg['category_browser.category.name']}">
 								<f:validateLength minimum="1" maximum="100" />
 							</h:inputText>
 
 							<h:inputTextarea id="input_category_description"
 								value="#{categoryBrowser.currentCategory.description}"
-								readonly="#{!categoryBrowser.writableCategoryDescription()}"
-								styleClass="readonly-as-plain-text form-control mb-3"
+								readonly="#{!categoryBrowser.writableCategoryControls()}"
+								styleClass="readonly-means-plain-text #{categoryBrowser.writableCategoryControls() ? 'form-control' : ''} mb-3"
 								p:placeholder="#{msg['category_browser.category.description']}" />
 
 							<h:panelGroup layout="block" styleClass="btn-group"

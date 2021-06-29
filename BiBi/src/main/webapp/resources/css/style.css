@@ -6,6 +6,12 @@ html, body {
 	min-height: 100vh;
 }
 
+/* body {
+	background-image: linear-gradient(to right, white 80%, transparent 100%),
+				url("#{resource['images:backgroundImage.svg']}");
+	background-size: 100%, cover;
+} */
+
 .footer {
 	height: var(--footer-height);
 }
@@ -25,4 +31,20 @@ html, body {
 
 .accordion-button.disabled::after {
 	background-image: none !important;
+}
+
+.readonly-means-plain-text[readonly="readonly"] {
+	resize: none;
+	border: none;
+	font-size: normal;
+	padding: 0;
+	margin: 0;
+	overflow: auto;
+	outline: none;
+	height: 100%;
+	width: 100%;
+}
+
+.readonly-means-plain-text[readonly="readonly"]::placeholder {
+	color: transparent;
 }
