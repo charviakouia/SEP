@@ -13,7 +13,6 @@ public class MultiThreadRunner {
 		TestSuiteThread suiteThread2 = new TestSuiteThread(webDriver2);
 		suiteThread1.start();
 		suiteThread2.start();
-		
 	}
 
 }

@@ -21,7 +21,7 @@ public class TestSuite {
     @BeforeClass
     public static void setUp() {
         WebDriver driver = Driver.getDriver();
-        driver.get(BASE_URL);
+        //driver.get(BASE_URL);
         // driver.manage().windowS().setSize(new Dimension(968, 827));
     }
 
