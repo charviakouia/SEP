@@ -11,7 +11,9 @@ import de.dedede.model.data.dtos.MediumSearchDto.NuancedSearchQuery;
 import de.dedede.model.data.dtos.SearchOperator;
 import de.dedede.model.persistence.daos.MediumDao;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -26,10 +28,16 @@ import jakarta.inject.Named;
 @ViewScoped
 public class MediumSearch extends PaginatedList implements Serializable {
 
+	// @Task doc
+	public static final String GENERAL_SEARCH_TERM_PARAMETER_NAME = "medium-search-term";
+	
 	private static final int NUANCED_SEARCH_QUERIES_DEFAULT_AMOUNT = 3;
 
 	@Serial
 	private static final long serialVersionUID = 1L;
+	
+	@Inject
+	private ExternalContext ectx;
 
 	private int searchCriteriaOffset = 0;
 
@@ -45,6 +53,13 @@ public class MediumSearch extends PaginatedList implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		
+		if (ectx.getFlash().containsKey(GENERAL_SEARCH_TERM_PARAMETER_NAME)) {
+			final var generalSearchTerm = (String)ectx.getFlash().get(GENERAL_SEARCH_TERM_PARAMETER_NAME);
+			mediumSearch.setGeneralSearchTerm(generalSearchTerm);
+			searchMedia();
+		}
+		
 	}
 
 	public MediumSearchDto getMediumSearch() {

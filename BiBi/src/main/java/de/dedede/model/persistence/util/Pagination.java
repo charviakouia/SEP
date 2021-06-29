@@ -31,7 +31,7 @@ public final class Pagination {
 	 * @param pagination The pagination details to be updated.
 	 * @param pageCount The amount of pages as fetched from the database.
 	 */
-	public static void updatePagination(PaginationDto pagination, int pageCount) {
+	public static void update(PaginationDto pagination, int pageCount) {
 		pagination.setTotalAmountOfPages(ceilDiv(pageCount, getEntriesPerPage()));
 		// in general not entirely "correct"
 		pagination.setPageNumber(Math.min(pagination.getPageNumber(), pagination.getTotalAmountOfPages() - 1));

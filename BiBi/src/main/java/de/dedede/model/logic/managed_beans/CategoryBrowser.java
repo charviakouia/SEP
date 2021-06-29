@@ -3,6 +3,7 @@ package de.dedede.model.logic.managed_beans;
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CategoryDto;
@@ -34,7 +35,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
-	
+
 	@Inject
 	private FacesContext ctx;
 
@@ -52,20 +53,11 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	private CategoryDto currentCategory;
 
-	private List<CategoryDto> categories = CategoryDao.readAllCategories();
+	private List<CategoryDto> categories;
 
 	private List<MediumDto> mediums;
 
-	private HtmlPanelGroup categoryTree;
-
-	/**
-	 * The previous category tree category identifier. This field is used as counter
-	 * to get the next identifier.
-	 * 
-	 * The latter is a number uniquely identifying a category inside of the category
-	 * tree.
-	 */
-	private int previousCategoryTreeCategoryId = 0;
+	private HtmlPanelGroup categoryTreeHook = new HtmlPanelGroup();
 
 	private int previousCategoryTreeId = 0;
 
@@ -84,12 +76,13 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	 */
 	@PostConstruct
 	public void init() {
+		categories = CategoryDao.readCategoryForest();
 		expr = ctx.getApplication().getExpressionFactory();
 		elctx = ctx.getELContext();
-		categoryTree = bundleCategories(categories);
+		categoryTreeHook.getChildren().add(bundleCategoryForest(categories));
 	}
 
-	private HtmlPanelGroup bundleCategories(List<CategoryDto> categories) {
+	private HtmlPanelGroup bundleCategoryForest(List<CategoryDto> categories) {
 
 		final var tree = createContainer("accordion accordion-flush");
 		final var treeId = (previousCategoryTreeId += 1);
@@ -97,27 +90,25 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		tree.setId(qualifiedTreeId);
 
 		for (final var category : categories) {
-			final var categoryId = (previousCategoryTreeCategoryId += 1);
-
 			final var categoryNameLink = new HtmlCommandLink();
-			categoryNameLink.setId("link_category_name_" + categoryId);
+			categoryNameLink.setId("link_category_name_" + category.getId());
 			categoryNameLink.setValue(category.getName());
 			elctx.getVariableMapper().setVariable("category", expr.createValueExpression(category, CategoryDto.class));
 			categoryNameLink.setActionExpression(expr.createMethodExpression(elctx,
 					"#{categoryBrowser.selectCategory(category)}", Void.class, new Class<?>[] { CategoryDto.class }));
 			
-			final var qualifiedAccordionCollapseId = "accordion_collapse_" + categoryId;
+			final var qualifiedAccordionCollapseId = "accordion_collapse_" + category.getId();
 			final var accordionButton = new HtmlForm();
 			{
 				final var styleClass = new StringBuilder();
 				styleClass.append("accordion-button collapsed");
-				
+
 				if (category.getChildren().isEmpty()) {
 					styleClass.append(" disabled");
 				} else {
 					accordionButton.getPassThroughAttributes().put("data-bs-toggle", "collapse");
 				}
-				
+
 				accordionButton.getChildren().add(categoryNameLink);
 				accordionButton.getPassThroughAttributes().put("data-bs-target", "#" + qualifiedAccordionCollapseId);
 				accordionButton.setStyleClass(styleClass.toString());
@@ -139,7 +130,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 			tree.getChildren().add(accordionItem);
 
-			accordionBody.getChildren().add(bundleCategories(category.getChildren()));
+			accordionBody.getChildren().add(bundleCategoryForest(category.getChildren()));
 		}
 
 		return tree;
@@ -169,19 +160,19 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		this.categories = categories;
 	}
 
-	public HtmlPanelGroup getCategoryTree() {
-		return categoryTree;
+	public HtmlPanelGroup getCategoryTreeHook() {
+		return categoryTreeHook;
 	}
 
-	public void setCategoryTree(HtmlPanelGroup categoryTree) {
-		this.categoryTree = categoryTree;
+	public void setCategoryTreeHook(HtmlPanelGroup categoryTreeHook) {
+		this.categoryTreeHook = categoryTreeHook;
 	}
 
 	public boolean writableCategoryName() {
 		if (session.getUser() == null) {
 			return false;
 		}
-		
+
 		return session.getUser().getRole().isStaffOrHigher();
 	}
 
@@ -189,10 +180,10 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		if (session.getUser() == null) {
 			return false;
 		}
-		
+
 		return session.getUser().getRole().isStaffOrHigher();
 	}
-	
+
 	/**
 	 * Dictates whether category-modifying actions are displayed to the user.
 	 * 
@@ -202,7 +193,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		if (session.getUser() == null) {
 			return false;
 		}
-		
+
 		return session.getUser().getRole().isStaffOrHigher();
 	}
 
@@ -214,14 +205,16 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		}
 	}
 
-	public void saveCategory() {
+	public String saveCategory() {
 		CategoryDao.updateCategory(currentCategory);
+
+		return "category-browser";
 	}
 
 	public String deleteCategory() {
 		CategoryDao.deleteCategory(currentCategory);
 		currentCategory = null;
-		
+
 		return "category-browser";
 	}
 

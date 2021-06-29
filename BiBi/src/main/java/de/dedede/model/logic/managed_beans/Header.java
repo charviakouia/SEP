@@ -184,9 +184,8 @@ public class Header {
 		ectx.redirect(ectx.getRequestContextPath() + "/view/ffa/login.xhtml");
 	}
 
-	public String searchMedium() {
-		ectx.getFlash().put("medium_search_term", mediumSearch.getGeneralSearchTerm());
-
-		return "medium-search?faces-redirect=true";
+	public void searchMedium() throws IOException {
+		ectx.getFlash().put(MediumSearch.GENERAL_SEARCH_TERM_PARAMETER_NAME, mediumSearch.getGeneralSearchTerm());
+		ectx.redirect(ectx.getRequestContextPath() + "/view/opac/medium-search.xhtml");
 	}
 }

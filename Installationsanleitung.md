@@ -18,12 +18,7 @@ Unsere Applikation wird im .war-Format ausgeliefert, welches, wie [hier](https:/
 
 ## Verbindungsdaten des Datenbankservers  
 
-Unsere Applikation sollte nun unter dem Tomcat Installationsverzeichnis in einem Ordner zu finden sein. Navigieren Sie vor dem Start der Anwendung in den Ordner /WEB\-INF und öffnen Sie das Textdokument config.properties. Sie finden dort Zeilen mit den Einträgen DB\_HOST, DB\_PORT, DB\_NAME, DB\_USER und DB\_PASSWORD. Befüllen Sie diese Zeilen nach dem Doppelpunkt mit einem Leerzeichen und folgenden Daten:
-+ DB\_HOST: Die URL unter der der Datenbankserver erreichbar ist
-+ DB\_PORT: Der Port über den Anfragen an den Datenbankserver geleitet werden
-+ DB\_NAME: Der Name der Datenbank am Server
-+ DB\_USER: Der Name des Benutzers der Datenbank
-+ DB\_PASSWORD: Das Passwort zum Benutzernamen
+Unsere Applikation sollte nun unter dem Tomcat Installationsverzeichnis in einem Ordner zu finden sein. Navigieren Sie vor dem Start der Anwendung in den Ordner /WEB-INF/ und öffnen Sie das Dokument config.properties. Die weiteren Schritte zum konfigurieren des Systems finden Sie dort beschrieben. 
 
 ## Starten der Webanwendung  
 

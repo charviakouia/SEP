@@ -96,14 +96,65 @@ public final class CategoryDao {
 	 * Fetches category data from the persistent data store. The enclosed ID must be
 	 * associated with an existing data entry. Otherwise, an exception is thrown.
 	 *
-	 * @param categoryDto A DTO container with the ID of the category data to be
-	 *                    fetched.
+	 * @param category A DTO container with the ID of the category data to be
+	 *                 fetched.
 	 * @throws CategoryDoesNotExistException Is thrown if the passed ID is not
 	 *                                       associated with a data entry.
 	 * @see CategoryDto
 	 */
-	public static CategoryDto readCategory(CategoryDto categoryDto) throws CategoryDoesNotExistException {
-		return null;
+	public static CategoryDto readCategory(CategoryDto category) {
+
+		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+
+		try {
+			final var statement = connection.prepareStatement("""
+							select
+								ct.title, ct.description, ct.parentcategoryid
+							from
+								category ct
+							where
+								ct.categoryid = ?
+					""");
+			statement.setInt(1, category.getId());
+
+			final var resultSet = statement.executeQuery();
+			final var result = new CategoryDto();
+			final var rowExists = resultSet.next();
+
+			if (!rowExists) {
+				final var message = "Category with ID %d does not exist".formatted(category.getId());
+				Logger.severe(message);
+				throw new CategoryDoesNotExistException(message);
+			}
+
+			result.setId(category.getId());
+			result.setName(resultSet.getString(1));
+			result.setDescription(resultSet.getString(2));
+			final var parentCategory = new CategoryDto();
+			parentCategory.setId(resultSet.getInt(3));
+			result.setParent(parentCategory);
+
+			connection.commit();
+
+			return result;
+
+		} catch (SQLException exception) {
+
+			try {
+				connection.rollback();
+			} catch (SQLException rollbackException) {
+				final var message = "Failed to rollback database transaction: " + rollbackException.getMessage();
+				Logger.severe(message);
+				throw new LostConnectionException(message);
+			}
+
+			final var message = "Database error occurred while reading category: " + exception.getMessage();
+			Logger.severe(message);
+			throw new LostConnectionException(message, exception);
+		} finally {
+			ConnectionPool.getInstance().releaseConnection(connection);
+		}
+
 	}
 
 	/**
@@ -117,32 +168,44 @@ public final class CategoryDao {
 	 *         specified search term and pagination details.
 	 * @see CategoryDto
 	 */
-	// @Task rename to searchCategories
 	public static List<CategoryDto> readCategoriesByName(CategorySearchDto categorySearch, PaginationDto pagination) {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
-			// @Task count
-			final var statement = connection.prepareStatement("""
+
+			final var statementBody = """
+					from
+						category ct
+					where
+						position(lower(?) in lower(ct.title)) > 0
+					""";
+
+			{
+				final var countStatement = connection.prepareStatement("select count(ct.categoryid) " + statementBody);
+				countStatement.setString(1, categorySearch.getSearchTerm());
+				final var resultSet = countStatement.executeQuery();
+				resultSet.next();
+
+				Pagination.update(pagination, resultSet.getInt(1));
+			}
+
+			final var itemsStatement = connection.prepareStatement("""
 							select
 								ct.categoryid, ct.title, ct.description, ct.parentcategoryid
-							from
-								category ct
-							where
-								position(lower(?) in lower(ct.title)) > 0
+							%s
 							order by
 								title
 									desc
 							offset ?
 							limit ?
-					""");
+					""".formatted(statementBody));
 			var parameterIndex = 0;
-			statement.setString(parameterIndex += 1, categorySearch.getSearchTerm());
-			statement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
-			statement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
+			itemsStatement.setString(parameterIndex += 1, categorySearch.getSearchTerm());
+			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
-			final var resultSet = statement.executeQuery();
+			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<CategoryDto>();
 
 			while (resultSet.next()) {
@@ -156,6 +219,8 @@ public final class CategoryDao {
 				category.setParent(parentCategory);
 				results.add(category);
 			}
+
+			connection.commit();
 
 			return results;
 
@@ -182,7 +247,7 @@ public final class CategoryDao {
 	 * 
 	 * @return A list of all top-level/parentless categories.
 	 */
-	public static List<CategoryDto> readAllCategories() {
+	public static List<CategoryDto> readCategoryForest() {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
