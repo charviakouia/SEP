@@ -93,7 +93,7 @@
 
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingStaffMenu}">
-						<h:link value="#{msg['staff']}"
+						<h:link id="header_staff_dropdown" value="#{msg['staff']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
 						<h:panelGroup styleClass="dropdown-menu">
@@ -123,15 +123,15 @@
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingAdministratorMenu}">
 
-						<h:link value="#{msg['administration']}"
+						<h:link id="header_admin_dropdown" value="#{msg['administration']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
 						<h:panelGroup styleClass="dropdown-menu">
-							<h:link value="#{msg['user_search']}"
+							<h:link id="header_admin_user_search" value="#{msg['user_search']}"
 								outcome="/view/admin/user-search.xhtml"
 								styleClass="dropdown-item #{page == 'user_search' ? 'active' : ''}" />
 
-							<h:link value="#{msg['settings']}"
+							<h:link id="header_admin_configurations" value="#{msg['settings']}"
 								outcome="/view/admin/administration.xhtml"
 								styleClass="dropdown-item #{page == 'administration' ? 'active' : ''}" />
 						</h:panelGroup>
