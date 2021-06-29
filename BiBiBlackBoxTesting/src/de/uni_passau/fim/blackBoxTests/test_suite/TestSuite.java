@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        T08.class, T09.class, T10.class, T11.class, T20.class, T30.class, T40.class
+        T08.class, T09.class, T10.class, T11.class, T20.class, T30.class, T40.class, T50.class
 })
 public class TestSuite {
 
