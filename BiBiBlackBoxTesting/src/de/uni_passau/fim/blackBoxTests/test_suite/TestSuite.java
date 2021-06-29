@@ -13,9 +13,7 @@ import org.openqa.selenium.WebDriver;
 import de.uni_passau.fim.blackBoxTests.tests.T01;
 
 @RunWith(Suite.class)
-@SuiteClasses({
-    T01.class, T02.class
-})
+@SuiteClasses({T01.class, T02.class})
 public class TestSuite {
 
     @BeforeClass

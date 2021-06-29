@@ -1,8 +1,8 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
 import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -16,11 +16,11 @@ import static org.junit.Assert.fail;
 
 public class T02 {
     
-    private WebDriver driver;
-    private WebDriverWait waiter;
+    private static WebDriver driver;
+    private static WebDriverWait waiter;
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         driver = Driver.getDriver();
         waiter = Driver.getDriverWait();
         driver.get(BASE_URL + "/view/ffa/login.xhtml");
@@ -53,8 +53,8 @@ public class T02 {
             fail("Element not found.");
         }
     }
-    
-    @After
-    public void tearDown() {
-    }
+
+    @AfterClass
+    public static void tearDown() {}
+
 }

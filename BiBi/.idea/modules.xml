@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BiBi.iml" filepath="$PROJECT_DIR$/BiBi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../BiBiBlackBoxTesting/BiBiBlackBoxTesting.iml" filepath="$PROJECT_DIR$/../BiBiBlackBoxTesting/BiBiBlackBoxTesting.iml" />
       <module fileurl="file://$PROJECT_DIR$/../BiBiTest/BiBiTest.iml" filepath="$PROJECT_DIR$/../BiBiTest/BiBiTest.iml" />
     </modules>
   </component>

@@ -17,3 +17,21 @@
 
 # eclipse settings
 *.classpath
+
+# Intellij settings
+
+/BiBi/.idea/**
+/BiBi/BiBi.iml
+/BiBi/artifacts/**
+/BiBi/classes/**
+
+/BiBiBlackBoxTesting/.idea
+/BiBiBlackBoxTesting/BiBiBlackBoxTesting.iml/**
+/BiBiBlackBoxTesting/artifacts/**
+
+/BiBiTest/.idea
+/BiBiTest/BiBiTest.iml/**
+/BiBiTest/artifacts/**
+
+
+
