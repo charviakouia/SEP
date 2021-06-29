@@ -1,7 +1,6 @@
 package de.dedede.model.logic.converters;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
 import jakarta.faces.application.Application;
@@ -18,8 +17,8 @@ import jakarta.faces.convert.FacesConverter;
  * 
  * @author Jonas Picker
  */
-@FacesConverter("hoursToDurationConverter")
-public class HoursToDurationConverter implements Converter<Duration> {
+@FacesConverter("decimalToDurationConverter")
+public class DecimalToDurationConverter implements Converter<Duration> {
 
 	@Override
 	public Duration getAsObject(FacesContext context, UIComponent component, 
@@ -28,8 +27,8 @@ public class HoursToDurationConverter implements Converter<Duration> {
 		ResourceBundle messages = application.evaluateExpressionGet(context, 
 				"#{msg}", ResourceBundle.class);
 		try {
-            int numberOfHours = Integer.parseInt(input);
-            if (numberOfHours < 0) {
+            double numberOfDays = Double.valueOf(input);
+            if (numberOfDays < 0) {
             	String shortMessage = messages.getString("administration.no"
             			+ "_negatives_short");
             	String longMessage = messages.getString("administration.no"
@@ -38,8 +37,9 @@ public class HoursToDurationConverter implements Converter<Duration> {
             			shortMessage, longMessage);
             	throw new ConverterException(msg);
             } else {
-            	return Duration.of(Integer.toUnsignedLong(numberOfHours),
-            			ChronoUnit.HOURS);
+            	double numberOfNanos = 
+            			numberOfDays * Duration.ofDays(1).toNanos();
+            	return Duration.ofNanos(Math.round(numberOfNanos));
             }
         } catch (NumberFormatException e){
         	String shortMessage = messages.getString("administration.invalid"
@@ -55,9 +55,9 @@ public class HoursToDurationConverter implements Converter<Duration> {
 	@Override
 	public String getAsString(FacesContext context, UIComponent component,
 			Duration duration) {
-		double divResult = ((double) duration.getSeconds()) / (60 * 60);
+		double divResult = ((double) duration.getSeconds()) / (60 * 60 * 24);
         String resultValue = 
-        	  String.valueOf(Math.toIntExact(Math.round(Math.ceil(divResult))));
+        	  String.valueOf(divResult);
 		return resultValue;
 	}
 

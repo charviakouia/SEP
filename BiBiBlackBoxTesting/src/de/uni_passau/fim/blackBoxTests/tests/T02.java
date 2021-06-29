@@ -14,11 +14,17 @@ import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class T02 {
+public class T02 extends TestBlueprint{
     
-    private WebDriver driver;
-    private WebDriverWait waiter;
+	public T02(String threadName, WebDriver webDriver, WebDriverWait webDriverWait) {
+    	super(threadName);
+    	driver = webDriver;
+    	waiter = webDriverWait;
+    	driver.get(BASE_URL + "/view/ffa/login.xhtml");
+    }
+	
 
+	
     @Before
     public void setUp() {
         driver = Driver.getDriver();
@@ -27,7 +33,7 @@ public class T02 {
     }
 
     @Test
-    public void t10() {
+    public void doTest() {
 
         //Hier melde ich mich
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field")));

@@ -23,7 +23,7 @@
 							value="#{msg['administration.return_period_label']}"/>
 				<h:inputText id="administration_return_period"
 							title="#{msg['administration.return_period_days']}"
-							converter="DurationConverter"
+							converter="decimalToDurationConverter"
 							value="#{administration.application.returnPeriod}">
 				</h:inputText>
 				<h:message id="administration_return_period_message"
@@ -33,7 +33,7 @@
 							value="#{msg['administration.reminder_offset_label']}"/>
 				<h:inputText id="administration_reminder_offset"
 							title="#{msg['administration.reminder_offset_hours']}"
-							converter="hoursToDurationConverter"
+							converter="decimalToDurationConverter"
 							value="#{administration.application.warningPeriod}">
 				</h:inputText>
 				<h:message id="administration_reminder_offset_message"
@@ -43,7 +43,7 @@
 							value="#{msg['administration.pickup_period_label']}"/>
 				<h:inputText id="administration_pickup_period"
 							title="#{msg['administration.pickup_period_hours']}"
-							converter="hoursToDurationConverter"
+							converter="decimalToDurationConverter"
 							value="#{administration.application.pickupPeriod}">
 				</h:inputText>
 				<h:message id="administration_pickup_period_message"
@@ -106,14 +106,11 @@
 			</h:panelGrid>
 		</h:form>
 		
-		
 		<h:panelGroup layout="block" styleClass="form-group">
 			<h:link value="#{msg['administration.user_registration_link']}"
 					outcome="/view/ffa/registration.xhtml"
 					styleClass="nav-link"/>
 		</h:panelGroup>
-		
-		<!-- Nutzersuchformular? -->
 	
 	</ui:define>
 	
