@@ -34,20 +34,22 @@ public final class Driver {
      */
     public static WebDriver getDriver() {
         if (Objects.isNull(driver)) {
-//          System.setProperty("webdriver.gecko.driver","geckodriverMacOs");
-        	System.setProperty("webdriver.gecko.driver","geckodriver.exe");
-//          System.setProperty("webdriver.gecko.driver","geckodriver");
-//          driver = new FirefoxDriver();
+            switch (OsUtil.getMyOS()) {
+                case WINDOWS -> System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
+                case LINUX -> System.setProperty("webdriver.gecko.driver", "geckodriver");
+                case MAC -> System.setProperty("webdriver.gecko.driver", "geckodriverMacOs");
+            }
             driver = new FirefoxDriver(GeckoDriverService.createDefaultService());
         }
         return driver;
     }
     
     public static FirefoxDriver getNewDriver() {
-//      System.setProperty("webdriver.gecko.driver","geckodriverMacOs");
-    	System.setProperty("webdriver.gecko.driver","geckodriver.exe");
-//      System.setProperty("webdriver.gecko.driver","geckodriver");
-//      driver = new FirefoxDriver();
+        switch (OsUtil.getMyOS()) {
+            case WINDOWS -> System.setProperty("webdriver.gecko.driver","geckodriver.exe");
+            case LINUX -> System.setProperty("webdriver.gecko.driver","geckodriver");
+            case MAC -> System.setProperty("webdriver.gecko.driver","geckodriverMacOs");
+        }
         return new FirefoxDriver(GeckoDriverService.createDefaultService());
     }
 
@@ -83,5 +85,7 @@ public final class Driver {
             driver.quit();
         }
     }
+
+
     
 }
