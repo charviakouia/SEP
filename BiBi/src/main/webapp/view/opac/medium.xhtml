@@ -88,9 +88,8 @@
                              readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
 
-                <h:outputLabel value="#{msg['medium.hasCategory']}" rendered="false"/>
-                <h:inputText id="category" value="#{medium.mediumDto.category}"
-                             rendered="false"
+                <h:outputLabel value="#{msg['medium.hasCategory']}"/>
+                <h:inputText id="category" value="#{medium.mediumDto.category.name}"
                              readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
 

@@ -448,7 +448,7 @@ public final class CategoryDao {
 	}
 
 	/** @author Sergei Pravdin */
-	private static int getCategoryIdByName(Connection conn, CategoryDto categoryDto)
+	public static int getCategoryIdByName(Connection conn, CategoryDto categoryDto)
 			throws CategoryDoesNotExistException {
 		try {
 			PreparedStatement readCategoryId = conn
