@@ -73,25 +73,50 @@
 
 					</h:panelGroup>
 
-					<h:panelGroup layout="block" styleClass="nav-item dropdown"
-						rendered="#{pageHeader.showingAccountMenu}">
+					<h:link value="#{msg['advanced_search']}"
+						outcome="/view/opac/medium-search.xhtml"
+						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
 
-						<h:link id="accountDropDown" value="#{msg['account']}"
+					<h:link id="category-browser"
+						value="#{msg['category_browser.short']}"
+						outcome="/view/opac/category-browser.xhtml"
+						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />					
+
+					<h:link id="signIn" value="#{msg['log_in']}"
+						outcome="/view/ffa/login.xhtml"
+						rendered="#{pageHeader.showingLogin}"
+						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
+
+					<h:link value="#{msg['register']}"
+						outcome="/view/ffa/registration.xhtml"
+						rendered="#{pageHeader.showingRegistration}"
+						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
+
+					<h:panelGroup layout="block" styleClass="nav-item dropdown"
+						rendered="#{pageHeader.showingAdministratorMenu}">
+
+						<h:link id="header_admin_dropdown"
+							value="#{msg['administration']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
 						<h:panelGroup styleClass="dropdown-menu">
-							<h:link id="prfl" value="#{msg['profile']}"
-								outcome="/view/account/profile.xhtml?id=#{userSession.user.id}"
-								styleClass="dropdown-item #{page == 'profile' ? 'active' : ''}" />
+							<h:link id="header_admin_user_search"
+								value="#{msg['user_search']}"
+								outcome="/view/admin/user-search.xhtml"
+								styleClass="dropdown-item #{page == 'user_search' ? 'active' : ''}" />
 
-							<h:form id="form_log_out" styleClass="nav-item">
-								<h:commandLink id="button_log_out" value="#{msg['log_out']}"
-									action="#{pageHeader.logOut()}" styleClass="dropdown-item" />
-							</h:form>
+							<h:link value="#{msg['registration']}"
+								outcome="/view/ffa/registration.xhtml"
+								styleClass="dropdown-item #{page == 'registration' ? 'active' : ''}" />
+
+							<h:link id="header_admin_configurations"
+								value="#{msg['settings']}"
+								outcome="/view/admin/administration.xhtml"
+								styleClass="dropdown-item #{page == 'administration' ? 'active' : ''}" />
 						</h:panelGroup>
 
 					</h:panelGroup>
-
+					
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingStaffMenu}">
 						<h:link id="header_staff_dropdown" value="#{msg['staff']}"
@@ -122,48 +147,23 @@
 					</h:panelGroup>
 
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
-						rendered="#{pageHeader.showingAdministratorMenu}">
+						rendered="#{pageHeader.showingAccountMenu}">
 
-						<h:link id="header_admin_dropdown"
-							value="#{msg['administration']}"
+						<h:link id="accountDropDown" value="#{msg['account']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
 						<h:panelGroup styleClass="dropdown-menu">
-							<h:link id="header_admin_user_search"
-								value="#{msg['user_search']}"
-								outcome="/view/admin/user-search.xhtml"
-								styleClass="dropdown-item #{page == 'user_search' ? 'active' : ''}" />
+							<h:link id="prfl" value="#{msg['profile']}"
+								outcome="/view/account/profile.xhtml?id=#{userSession.user.id}"
+								styleClass="dropdown-item #{page == 'profile' ? 'active' : ''}" />
 
-							<h:link value="#{msg['registration']}"
-								outcome="/view/ffa/registration.xhtml"
-								styleClass="dropdown-item #{page == 'registration' ? 'active' : ''}" />
-
-							<h:link id="header_admin_configurations"
-								value="#{msg['settings']}"
-								outcome="/view/admin/administration.xhtml"
-								styleClass="dropdown-item #{page == 'administration' ? 'active' : ''}" />
+							<h:form id="form_log_out" styleClass="nav-item">
+								<h:commandLink id="button_log_out" value="#{msg['log_out']}"
+									action="#{pageHeader.logOut()}" styleClass="dropdown-item" />
+							</h:form>
 						</h:panelGroup>
 
 					</h:panelGroup>
-
-					<h:link id="category-browser"
-						value="#{msg['category_browser.short']}"
-						outcome="/view/opac/category-browser.xhtml"
-						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />
-
-					<h:link value="#{msg['advanced_search']}"
-						outcome="/view/opac/medium-search.xhtml"
-						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
-
-					<h:link id="signIn" value="#{msg['log_in']}"
-						outcome="/view/ffa/login.xhtml"
-						rendered="#{pageHeader.showingLogin}"
-						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
-
-					<h:link value="#{msg['register']}"
-						outcome="/view/ffa/registration.xhtml"
-						rendered="#{pageHeader.showingRegistration}"
-						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
 
 				</h:panelGroup>
 
