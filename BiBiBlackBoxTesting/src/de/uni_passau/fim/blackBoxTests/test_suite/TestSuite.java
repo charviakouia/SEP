@@ -10,7 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({T08.class, T09.class, T10.class, T11.class, T20.class, T30.class, T40.class,
         T50.class, T60.class, T70.class, T80.class, T90.class, T100.class, T110.class,
-        T120.class, T130.class, T131.class, DatabaseCleaner.class})
+        T120.class, T130.class, DatabaseCleaner.class})
 public class TestSuite {
 
     @BeforeClass
