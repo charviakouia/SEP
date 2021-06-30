@@ -59,17 +59,26 @@
 
 							<h:inputText id="input_category_name"
 								value="#{categoryBrowser.currentCategory.name}"
-								readonly="#{!categoryBrowser.writableCategoryControls()}"
-								styleClass="readonly-means-plain-text #{categoryBrowser.writableCategoryControls() ? 'form-control' : 'h2'} mb-3"
+								styleClass="form-control mb-3"
+								rendered="#{categoryBrowser.writableCategoryControls()}"
 								p:placeholder="#{msg['category_browser.category.name']}">
 								<f:validateLength minimum="1" maximum="100" />
 							</h:inputText>
 
+							<h:outputText value="#{categoryBrowser.currentCategory.name}"
+								styleClass="d-block h2 mb-3"
+								rendered="#{not categoryBrowser.writableCategoryControls()}" />
+
 							<h:inputTextarea id="input_category_description"
 								value="#{categoryBrowser.currentCategory.description}"
-								readonly="#{!categoryBrowser.writableCategoryControls()}"
-								styleClass="readonly-means-plain-text #{categoryBrowser.writableCategoryControls() ? 'form-control' : ''} mb-3"
+								styleClass="form-control mb-3"
+								rendered="#{categoryBrowser.writableCategoryControls()}"
 								p:placeholder="#{msg['category_browser.category.description']}" />
+
+							<h:outputText
+								value="#{categoryBrowser.currentCategory.description}"
+								styleClass="d-block mb-3"
+								rendered="#{not categoryBrowser.writableCategoryControls()}" />
 
 							<h:panelGroup layout="block" styleClass="btn-group"
 								rendered="#{categoryBrowser.showingCategoryActions}">
