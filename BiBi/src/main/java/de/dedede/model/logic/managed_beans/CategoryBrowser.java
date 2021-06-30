@@ -3,7 +3,9 @@ package de.dedede.model.logic.managed_beans;
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.dedede.model.data.dtos.CategoryDto;
@@ -35,6 +37,8 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
+	
+	private static final String CATEGORY_NAME_LINK_PREFIX = "link_category_name_";
 
 	@Inject
 	private FacesContext ctx;
@@ -91,12 +95,12 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 		for (final var category : categories) {
 			final var categoryNameLink = new HtmlCommandLink();
-			categoryNameLink.setId("link_category_name_" + category.getId());
+			categoryNameLink.setId(CATEGORY_NAME_LINK_PREFIX + category.getId());
 			categoryNameLink.setValue(category.getName());
 			elctx.getVariableMapper().setVariable("category", expr.createValueExpression(category, CategoryDto.class));
 			categoryNameLink.setActionExpression(expr.createMethodExpression(elctx,
 					"#{categoryBrowser.selectCategory(category)}", Void.class, new Class<?>[] { CategoryDto.class }));
-			
+
 			final var qualifiedAccordionCollapseId = "accordion_collapse_" + category.getId();
 			final var accordionButton = new HtmlForm();
 			{
@@ -113,7 +117,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 				accordionButton.getPassThroughAttributes().put("data-bs-target", "#" + qualifiedAccordionCollapseId);
 				accordionButton.setStyleClass(styleClass.toString());
 			}
-
+			
 			final var accordionHeader = createContainer("accordion-header");
 			accordionHeader.getChildren().add(accordionButton);
 
@@ -168,15 +172,18 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		this.categoryTreeHook = categoryTreeHook;
 	}
 
-	public boolean writableCategoryName() {
-		if (session.getUser() == null) {
-			return false;
+	public Collection<CategoryDto> getCurrentCategoryPath() {
+		final var TYPICAL_LONGEST_PATH_LENGTH = 3;
+		final var path = new ArrayDeque<CategoryDto>(TYPICAL_LONGEST_PATH_LENGTH);
+		
+		for (var category = currentCategory; category != null; category = category.getParent()) {
+			path.addFirst(category);
 		}
 
-		return session.getUser().getRole().isStaffOrHigher();
+		return path;
 	}
 
-	public boolean writableCategoryDescription() {
+	public boolean writableCategoryControls() {
 		if (session.getUser() == null) {
 			return false;
 		}
@@ -205,10 +212,8 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		}
 	}
 
-	public String saveCategory() {
+	public void saveCategory() {
 		CategoryDao.updateCategory(currentCategory);
-
-		return "category-browser";
 	}
 
 	public String deleteCategory() {

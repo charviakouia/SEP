@@ -3,6 +3,7 @@ package de.dedede.model.logic.managed_beans;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.daos.UserDao;
@@ -89,21 +90,15 @@ public class Profile implements Serializable {
 	 * a user as an admin.
 	 */
 	public String delete() throws UserDoesNotExistException, IOException {
-		ResourceBundle messages =
-				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		UserDao.deleteUser(user);
 		if (userSession.getUser().getUserRole() == UserRole.ADMIN) {
-			context.addMessage(null, new FacesMessage(messages.getString("delUser.success")));
-			context.getExternalContext().getFlash().setKeepMessages(true);
-			String result = "administration?" + userSession.getUser().getId()
-					+ "&faces-redirect=true";
-			return result;
+			MessagingUtility.writePositiveMessageWithKey(context, true, "delUser.success");
+			return "/view/admin/administration?faces-redirect=true";
 		} else {
 			userSession.setUser(null);
 			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 			externalContext.invalidateSession();
-			context.addMessage(null, new FacesMessage(messages.getString("delUser.success")));
-			context.getExternalContext().getFlash().setKeepMessages(true);
+			MessagingUtility.writePositiveMessageWithKey(context, true, "delUser.success");
 			return "/view/ffa/login?faces-redirect=true";
 		}
 	}
@@ -112,31 +107,43 @@ public class Profile implements Serializable {
 	 * Save the changes made to the profile.
 	 */
 	public void save() throws IOException {
-		ResourceBundle messages =
-				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
-		if (!password.equals(confirmedPassword)) {
-			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.noMatch")));
-			return;
-		}
 		try {
-			if (!password.isEmpty()) {
-				String salt = PasswordHashingModule.generateSalt();
-				String hash = PasswordHashingModule.hashPassword(password, salt);
-				user.setPasswordHash(hash);
-				user.setPasswordSalt(salt);
-			}
 			user.setToken(null);
 			user.setTokenCreation(null);
 			UserDao.updateUser(user);
-			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.success")));
+			MessagingUtility.writePositiveMessageWithKey(context, false, "saveProfile.success");
 		} catch (EntityInstanceDoesNotExistException e) {
 			userSession.setUser(null);
 			FacesContext.getCurrentInstance().getExternalContext();
 			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 			externalContext.invalidateSession();
-			context.addMessage(null, new FacesMessage(messages.getString("saveProfile.notUser")));
-			context.getExternalContext().getFlash().setKeepMessages(true);
-			externalContext.redirect("/BiBi/view/ffa/login.xhtml?faces-redirect=true");
+			MessagingUtility.writeNegativeMessageWithKey(context, true, "saveProfile.notUser");
+		}
+	}
+
+	/**
+	 * Save the changes made to the password.
+	 */
+	public void updatePassword() {
+		if (!password.equals(confirmedPassword)) {
+			MessagingUtility.writeNegativeMessageWithKey(context, false, "saveProfile.noMatch");
+			return;
+		}
+		if (!password.isEmpty()) {
+			String salt = PasswordHashingModule.generateSalt();
+			String hash = PasswordHashingModule.hashPassword(password, salt);
+			user.setPasswordHash(hash);
+			user.setPasswordSalt(salt);
+			try {
+				UserDao.updateUser(user);
+				MessagingUtility.writePositiveMessageWithKey(context, false, "saveProfile.success");
+			} catch (EntityInstanceDoesNotExistException e) {
+				userSession.setUser(null);
+				FacesContext.getCurrentInstance().getExternalContext();
+				ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+				externalContext.invalidateSession();
+				MessagingUtility.writeNegativeMessageWithKey(context, true, "saveProfile.notUser");
+			}
 		}
 	}
 
@@ -146,27 +153,21 @@ public class Profile implements Serializable {
 	 * @throws IOException 
 	 */
 	public void onload() throws IOException {
-		ResourceBundle messages =
-				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			if (userSession.getUser() != null) {
 				if (userSession.getUser().getUserRole().equals(UserRole.ADMIN)
 						|| userSession.getUser().getId() == user.getId()) {
 					user = UserDao.readUserForProfile(user);
 				} else {
-					context.addMessage(null, new FacesMessage(messages.getString("profile.notAccess")));
-					context.getExternalContext().getFlash().setKeepMessages(true);
+					MessagingUtility.writeNegativeMessageWithKey(context, true, "profile.notAccess");
 					FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
-
 				}
 			} else {
-				context.addMessage(null, new FacesMessage(messages.getString("profile.notLogin")));
-				context.getExternalContext().getFlash().setKeepMessages(true);
+				MessagingUtility.writeNegativeMessageWithKey(context, true, "profile.notLogin");
 				FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/ffa/login.xhtml");
 			}
 		} catch (UserDoesNotExistException e) {
-			context.addMessage(null, new FacesMessage(messages.getString("profile.invalidID")));
-			context.getExternalContext().getFlash().setKeepMessages(true);
+			MessagingUtility.writeNegativeMessageWithKey(context, true, "profile.invalidID");
 			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
 		}
 	}
