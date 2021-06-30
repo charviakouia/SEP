@@ -47,7 +47,8 @@
 							</h:form>
 						</h:panelGroup>
 
-						<h:panelGroup layout="block" styleClass="offcanvas-body p-3" style="text-align: justify; line-height: 1.8">
+						<h:panelGroup layout="block" styleClass="offcanvas-body p-3"
+							style="text-align: justify; line-height: 1.8">
 
 							<h:panelGroup layout="block" styleClass="public">
 								#{msg['help.'.concat(page).concat('.public')]}
@@ -123,22 +124,30 @@
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingAdministratorMenu}">
 
-						<h:link id="header_admin_dropdown" value="#{msg['administration']}"
+						<h:link id="header_admin_dropdown"
+							value="#{msg['administration']}"
 							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
 
 						<h:panelGroup styleClass="dropdown-menu">
-							<h:link id="header_admin_user_search" value="#{msg['user_search']}"
+							<h:link id="header_admin_user_search"
+								value="#{msg['user_search']}"
 								outcome="/view/admin/user-search.xhtml"
 								styleClass="dropdown-item #{page == 'user_search' ? 'active' : ''}" />
 
-							<h:link id="header_admin_configurations" value="#{msg['settings']}"
+							<h:link value="#{msg['registration']}"
+								outcome="/view/ffa/registration.xhtml"
+								styleClass="dropdown-item #{page == 'registration' ? 'active' : ''}" />
+
+							<h:link id="header_admin_configurations"
+								value="#{msg['settings']}"
 								outcome="/view/admin/administration.xhtml"
 								styleClass="dropdown-item #{page == 'administration' ? 'active' : ''}" />
 						</h:panelGroup>
 
 					</h:panelGroup>
 
-					<h:link id="category-browser" value="#{msg['category_browser.short']}"
+					<h:link id="category-browser"
+						value="#{msg['category_browser.short']}"
 						outcome="/view/opac/category-browser.xhtml"
 						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />
 
