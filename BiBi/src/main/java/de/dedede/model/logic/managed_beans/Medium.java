@@ -151,10 +151,10 @@ public class Medium extends PaginatedList implements Serializable {
 		try {
 			MediumDao.deleteCopy(mediumDto.getCopy(currentCopyId));
 			cleanEditedAttributes();
+			MessagingUtility.writePositiveMessageWithKey(context, true, "copy.del.success");
 			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 			ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI()
 					+ "?id=" + mediumDto.getId());
-			MessagingUtility.writePositiveMessageWithKey(context, false, "copy.del.success");
 		} catch (CopyDoesNotExistException e) {
 			MessagingUtility.writeNegativeMessageWithKey(context, true, "medium.doesntExist");
 			FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
