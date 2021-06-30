@@ -36,6 +36,7 @@ public class PasswordReset implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Inject FacesContext context;
+	@Inject UserSession session;
 	
 	private TokenDto token;
 	private UserDto userDto;
@@ -89,8 +90,9 @@ public class PasswordReset implements Serializable {
 		userDto.setTokenCreation(null);
 		try {
 			UserDao.updateUser(userDto);
+			session.setUser(userDto);
 			MessagingUtility.writePositiveMessageWithKey(context, true, "passwordReset.success");
-			return "/view/ffa/login.xhtml?faces-redirect=true";
+			return "/view/account/profile.xhtml?faces-redirect=true&id=" + userDto.getId();
 		} catch (EntityInstanceDoesNotExistException e){
 			throw new BusinessException("Couldn't find a suitable user to update", e);
 		}

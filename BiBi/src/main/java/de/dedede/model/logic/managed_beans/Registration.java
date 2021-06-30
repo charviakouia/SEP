@@ -1,5 +1,6 @@
 package de.dedede.model.logic.managed_beans;
 
+import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
@@ -65,11 +66,22 @@ public class Registration implements Serializable {
 	 */
 	public String register() {
 		setPasswordHash();
-		user.setToken(TokenGenerator.generateToken());
+		setToken();
 		createUser();
 		sendVerificationEmail();
 		switchUserAndSetMessages();
 		return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
+	}
+
+	private void setToken(){
+		TokenDto token = TokenGenerator.generateToken();
+		user.setToken(token);
+		if (context.getExternalContext().getInitParameter("jakarta.faces.PROJECT_STAGE").equals("Development")){
+			try {
+				String link = EmailUtility.getLink("/view/ffa/email-confirmation.xhtml", user.getToken().getContent());
+				MessagingUtility.writeNeutralMessage(context, true, link);
+			} catch (UnsupportedEncodingException ignored) {}
+		}
 	}
 
 	private void setPasswordHash() {

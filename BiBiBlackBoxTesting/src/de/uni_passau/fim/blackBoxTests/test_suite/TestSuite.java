@@ -2,7 +2,7 @@ package de.uni_passau.fim.blackBoxTests.test_suite;
 
 import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
 
-import de.uni_passau.fim.blackBoxTests.tests.T02;
+import de.uni_passau.fim.blackBoxTests.tests.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -10,10 +10,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.openqa.selenium.WebDriver;
 
-import de.uni_passau.fim.blackBoxTests.tests.T01;
-
 @RunWith(Suite.class)
-@SuiteClasses({T01.class, T02.class})
+@SuiteClasses({T01.class, T02.class, T80.class, T90.class, T100.class, T110.class, T120.class})
 public class TestSuite {
 
     @BeforeClass

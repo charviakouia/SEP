@@ -11,26 +11,28 @@
 	<ui:param name="page" value="site_notice" />
 
 	<ui:define name="content">
-	<h1>#{msg['site_notice.headline']}</h1>
+
+		<h:outputLabel for="site_notice_form" value="#{msg['site_notice.headline']}"
+					   style="font-weight:bold; font-size:x-large;" id="site_notice_title"/>
 	
 		<h:form id="site_notice_form">
-		<h:panelGrid id="site_notice_panel" columns="1" border="10" 
-				cellpadding="10" cellspacing="10"
-				rendered="#{siteNotice.renderButton()}">
-               
-		<h:inputTextarea id="site_notice_text_area" 
-						value="#{siteNotice.textContainer.siteNotice}" 
-						readonly="#{siteNotice.readOnly()}"
-						cols="100" rows="30" 
-						rendered="#{siteNotice.renderButton()}"/>
-		
-		<h:commandButton id="site_notice_save_changes" 
-					action="#{siteNotice.save()}" 
-					styleClass="btn btn-primary" 
-					value="#{msg['all_three.save_changes']}"
-					rendered="#{siteNotice.renderButton()}"/>
-		
-		</h:panelGrid>
+			<h:panelGrid id="site_notice_panel" columns="1" border="10"
+					cellpadding="10" cellspacing="10"
+					rendered="#{siteNotice.renderButton()}">
+
+				<h:inputTextarea id="site_notice_text_area"
+								value="#{siteNotice.textContainer.siteNotice}"
+								readonly="#{siteNotice.readOnly()}"
+								cols="100" rows="30"
+								rendered="#{siteNotice.renderButton()}"/>
+
+				<h:commandButton id="site_notice_save_changes"
+							action="#{siteNotice.save()}"
+							styleClass="btn btn-primary"
+							value="#{msg['all_three.save_changes']}"
+							rendered="#{siteNotice.renderButton()}"/>
+
+			</h:panelGrid>
 		</h:form>
 		
 		<h:outputText id="site_notice_output_text" 

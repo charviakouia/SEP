@@ -144,7 +144,7 @@
 
 					<h:link value="#{msg['advanced_search']}"
 						outcome="/view/opac/medium-search.xhtml"
-						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
+						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" id="advancedSearchLink"/>
 
 					<h:link id="signIn" value="#{msg['log_in']}"
 						outcome="/view/ffa/login.xhtml"
@@ -154,7 +154,7 @@
 					<h:link value="#{msg['register']}"
 						outcome="/view/ffa/registration.xhtml"
 						rendered="#{pageHeader.showingRegistration}"
-						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
+						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" id="registrationLink"/>
 
 				</h:panelGroup>
 

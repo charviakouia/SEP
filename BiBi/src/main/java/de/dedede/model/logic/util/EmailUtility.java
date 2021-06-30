@@ -2,6 +2,7 @@ package de.dedede.model.logic.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import de.dedede.model.persistence.util.ConfigReader;
@@ -94,10 +95,9 @@ public final class EmailUtility {
 	
 	public static String getLink(String nav, String token) throws UnsupportedEncodingException {
 		ExternalContext e = FacesContext.getCurrentInstance().getExternalContext();
-		// UIViewRoot vr = FacesContext.getCurrentInstance().getViewRoot();
 		String url = String.format("%s://%s:%s%s%s", e.getRequestScheme(), e.getRequestServerName(), 
 				e.getRequestServerPort(), e.getRequestContextPath(), nav);
-		return url + "?token=" + URLEncoder.encode(token, "UTF-8");
+		return url + "?token=" + URLEncoder.encode(token, StandardCharsets.UTF_8);
 	}
 
 }
