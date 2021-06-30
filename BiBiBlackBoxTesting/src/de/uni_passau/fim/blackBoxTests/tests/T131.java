@@ -11,6 +11,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -37,15 +39,13 @@ public class T131 {
                 clear();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_lending:lending_mail_field"))).
                 sendKeys("nutzer.sep2021test@gmail.com");
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=lending_signature_field]")))
-                .clear();
+        try { TimeUnit.SECONDS.sleep(5); } catch (InterruptedException e){}
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=lending_signature_field]")))
                 .sendKeys("17RE (1)");
-
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_lending:button_direct_lend_copies")));
+        try { TimeUnit.SECONDS.sleep(5); } catch (InterruptedException e){}
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_lending:button_direct_lend_copies")))
                 .click();
-
+        try { TimeUnit.SECONDS.sleep(5); } catch (InterruptedException e){}
         // Verify data in page
         assertTrue(driver.getPageSource().contains("1 Exemplar(e) an nutzer.sep2021test@gmail.com verliehen."));
     }

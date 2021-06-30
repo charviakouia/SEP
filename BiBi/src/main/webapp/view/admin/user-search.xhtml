@@ -55,7 +55,7 @@
 				<f:facet name="header">#{msg['userEmailAddress']}</f:facet>
 
 				<bibi:columnContent>
-					<h:link value="#{item.emailAddress}"
+					<h:link id="emailLink" value="#{item.emailAddress}"
 						outcome="/view/account/profile.xhtml?id=#{item.id}" />
 				</bibi:columnContent>
 			</h:column>
