@@ -34,13 +34,19 @@ public class T50 {
 			//sets a new copy's attributes
 			driver.findElement(By.id("createCopy:newCopyLocation")).sendKeys("FIM");
 			driver.findElement(By.id("createCopy:newCopySignature")).sendKeys("17RE (2)");
-
+		} catch (Exception e) {
+			fail("Attributen wurden erfolglos angegeben.");
+		}
+        try {
 			//create
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("createCopy:createCopyButton")));
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("createCopy:createCopyButton"))).click();
-
+		} catch (Exception e) {
+			fail("Create-Button wurde nicht gefunden.");
+		}
+        try {
 			//checks a result
-			assertTrue(driver.getPageSource().contains("17RE (2)"));
+			assertTrue(driver.getPageSource().contains("Das Exemplar wurde erfolgreich erstellt."));
         } catch (Exception e) {
         	fail("A new signature not found.");
         }
