@@ -38,8 +38,6 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 	
-	private static final String CATEGORY_NAME_LINK_PREFIX = "link_category_name_";
-
 	@Inject
 	private FacesContext ctx;
 
@@ -53,7 +51,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 	@Inject
 	private UserSession session;
 
-	private CategorySearchDto categorySearch;
+	private CategorySearchDto categorySearch = new CategorySearchDto();
 
 	private CategoryDto currentCategory;
 
@@ -95,7 +93,7 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 
 		for (final var category : categories) {
 			final var categoryNameLink = new HtmlCommandLink();
-			categoryNameLink.setId(CATEGORY_NAME_LINK_PREFIX + category.getId());
+			categoryNameLink.setId("link_category_name_" + category.getId());
 			categoryNameLink.setValue(category.getName());
 			elctx.getVariableMapper().setVariable("category", expr.createValueExpression(category, CategoryDto.class));
 			categoryNameLink.setActionExpression(expr.createMethodExpression(elctx,
@@ -223,8 +221,9 @@ public class CategoryBrowser extends PaginatedList implements Serializable {
 		return "category-browser";
 	}
 
-	public void searchCategories() {
-
+	public String searchCategories() {
+		
+		return "category-browser";
 	}
 
 	public void createCategory() throws IOException {
