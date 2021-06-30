@@ -5,10 +5,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd">
 
-	<!-- https://github.com/eclipse-ee4j/faces-api/blob/master/spec/src/main/asciidoc/FacesMetadata.adoc -->
+	<!-- 
+	https://github.com/eclipse-ee4j/faces-api/blob/master/spec/src/main/asciidoc/FacesMetadata.adoc
+	https://stackoverflow.com/questions/10698726/xml-prolog-instruction-not-removed-from-xhtml-output/10706157#10706157
+	-->
 	<faces-config-extension>
 		<facelets-processing>
-			<process-as>xml</process-as>
+			<file-extension>.xhtml</file-extension>
+			<process-as>html5</process-as>
 		</facelets-processing>
 	</faces-config-extension>
 
@@ -34,7 +38,7 @@
 		</system-event-listener>
 
 	</application>
-	
+
 	<factory>
 		<exception-handler-factory>de.dedede.model.logic.exceptions.CustomExceptionHandlerFactory</exception-handler-factory>
 	</factory>
