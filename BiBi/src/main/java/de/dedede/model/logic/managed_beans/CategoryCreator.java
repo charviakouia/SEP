@@ -3,6 +3,7 @@ package de.dedede.model.logic.managed_beans;
 
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.persistence.daos.CategoryDao;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
@@ -68,18 +69,15 @@ public class CategoryCreator {
      * @author Sergei Pravdin
      */
     public void createCategory() throws IOException {
-        ResourceBundle messages =
-                context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
         try {
             category.setId(generateId());
             CategoryDao.createCategory(category);
-            context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.success")));
-            context.getExternalContext().getFlash().setKeepMessages(true);
+            MessagingUtility.writePositiveMessageWithKey(context, true, "categoryCreator.success");
             FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/category-browser.xhtml?faces-redirect=true");
         } catch (ParentCategoryDoesNotExistException e) {
-            context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notParentMatch")));
+            MessagingUtility.writeNegativeMessageWithKey(context, false, "categoryCreator.notParentMatch");
         } catch (EntityInstanceNotUniqueException exception) {
-            context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notUnique")));
+            MessagingUtility.writeNegativeMessageWithKey(context, false, "categoryCreator.notUnique");
         }
     }
 
@@ -95,8 +93,6 @@ public class CategoryCreator {
      * @author Sergei Pravdin
      */
     public void onload() throws IOException {
-        ResourceBundle messages =
-                context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
         try {
             if (userSession.getUser() != null) {
                 if (userSession.getUser().getUserRole().equals(UserRole.ADMIN)
@@ -108,13 +104,11 @@ public class CategoryCreator {
                     }
                 }
             } else {
-                context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.notLogin")));
-                context.getExternalContext().getFlash().setKeepMessages(true);
+                MessagingUtility.writeNegativeMessageWithKey(context, true, "categoryCreator.notLogin");
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/ffa/login.xhtml?faces-redirect=true");
             }
         } catch (CategoryDoesNotExistException e) {
-            context.addMessage(null, new FacesMessage(messages.getString("categoryCreator.invalidID")));
-            context.getExternalContext().getFlash().setKeepMessages(true);
+            MessagingUtility.writeNegativeMessageWithKey(context, true, "categoryCreator.invalidID");
             FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/staff/category-creator.xhtml?faces-redirect=true");
         }
     }
