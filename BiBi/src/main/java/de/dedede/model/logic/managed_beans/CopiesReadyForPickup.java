@@ -10,6 +10,7 @@ import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
@@ -67,21 +68,17 @@ public class CopiesReadyForPickup extends PaginatedList implements Serializable 
 	 * @throws BusinessException If the redirect is not possible.
 	 */
 	public void onload() throws BusinessException {
-		ResourceBundle messages =
-				context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);
 		try {
 			if (userSession.getUser() != null) {
 				if (userSession.getUser().getId() == userDto.getId()) {
 					copies = MediumDao.readMarkedCopiesByUser(getPaginatedList(), userDto);
 				} else {
-					context.addMessage(null, new FacesMessage(messages.getString("profile.notAccess")));
-					context.getExternalContext().getFlash().setKeepMessages(true);
+					MessagingUtility.writeNegativeMessageWithKey(context, true, "profile.notAccess");
 					FacesContext.getCurrentInstance().getExternalContext()
 							.redirect("/BiBi/view/opac/medium-search.xhtml");
 				}
 			} else {
-				context.addMessage(null, new FacesMessage(messages.getString("profile.notLogin")));
-				context.getExternalContext().getFlash().setKeepMessages(true);
+				MessagingUtility.writeNegativeMessageWithKey(context, true, "profile.notLogin");
 				FacesContext.getCurrentInstance().getExternalContext()
 						.redirect("/BiBi/view/ffa/login.xhtml");
 			}

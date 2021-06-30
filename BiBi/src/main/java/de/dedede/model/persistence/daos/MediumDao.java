@@ -142,8 +142,12 @@ public final class MediumDao {
 			stmt.setObject(2, 1);
 		} else {
 			Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-			int categoryId = CategoryDao.getCategoryIdByName(conn, mediumDto.getCategory());
-			stmt.setInt(2, categoryId);
+			if (mediumDto.getCategory().getName() !=null) {
+				int categoryId = CategoryDao.getCategoryIdByName(conn, mediumDto.getCategory());
+				stmt.setInt(2, categoryId);
+			} else {
+				stmt.setInt(2, mediumDto.getCategory().getId());
+			}
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 		stmt.setString(3, mediumDto.getTitle());
