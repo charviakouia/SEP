@@ -68,8 +68,19 @@
 %--Zusatztests-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Zusätzliche Tests}
 \sectionauthor{Jonas Picker}
-
-
+\subsection{HTML-Outputvalidierung}
+Aus dem Facelet-Code unserer Anwendung wird vom JSF-Framework beim Endnutzer anzeigbarer HTML-Code generiert. Dieser wurde im Zuge der Validierung mithilfe des \hyperlink{https://validator.w3.org/}{W3-Validators} auf Fehler und Stilbrüche geprüft. Da unterschiedliche Browser verschieden tolerant gegenüber fehlerhaftem HTML-Code sind, resultierten diese Fehler nicht zwingend in falschen Anzeigen und wurden so beim Implementieren übersehen. Einige Warnungen, die auf `bad-practices' Hinweisen sollen, sind JSF-internen Prozessen beim Generieren des Outputs geschuldet und außerhalb unserer Kontrolle. Darunter fallen unter anderem:
+\begin{itemize}
+\item Generieren des obsoleten Attributes \texttt{type=''text/javascript''} innerhalb des HTML-Elements \texttt{<script/>}.
+\item Setzen des Attributes \texttt{name} auf den gleichen Wert des im Facelet-Code angegebenen und ebenfalls im HTML-Code präsenten Attributes \textt{id} in verschiedensten HTML-Elementen.
+\end{itemize}
+Es folgt eine kurze, unvollständige Auflistung der wichtigsten gefundenen (und verbesserten) Fehler im Zuge der Validierung:
+\begin{itemize}
+\item `div inside span'-Error, aufgetreten durch ein fehlendes Attribut \texttt{layout=''block''} in Facelet-Elementen vom Typ \texttt{h:panelGroup}.
+\item Fehlende Deklaration des Attributes \texttt{lang} im führenden \texttt{html} Start-Tag.
+\end{itemize}
+\subsection{Belastungstest des Systems}
+Durch die Automatisierung der Browserinteraktion mittels Selenium, diente die von uns erstellte TestSuite ebenfalls als Grundlage für die Belastungstests. Da sie in der vorherigen Phase bereits erfolgreich durchgelaufen sind, benutzen wir sie nun als Simulation einer Benutzerinteraktion. Hierbei ist zu beachten, dass diese Inputs mit maschineller Präzision ablaufen und deshalb weitaus schneller als ein normaler Mensch mit dem System interagieren. Im Zuge des Belastungstests wurde das System auf der Referenzplattform aufgesetzt und aus dem gleichen Netzwerk von einem Client-Rechner mit annähernd gleicher Hardware gleichzeitig mit XXX Threads der TestSuite belastet. Als Metrik für die Leistung dient hier die durchschnittliche Zeit zwischen Anfrage und Antwort an den Serverrechner. Diese wurde als Mittel über alle Threads errechnet, in denen die künstlichen Wartezeiten von der gesamten Durchlaufzeit einer TestSuite abgezogen, und durch die Anzahl der Anfragen geteilt wurde. Da die kurze Zeitspanne, die der WebDriver zum Befüllen der Formulare und Anklicken der Knöpfe braucht, sowie die Aufbauzeiten der Seite im Browser nicht abgezogen werden, stellt unser Wert eine obere Schranke der durchschnittlichen Request-Response-Zeit dar.
 
 \newpage
 
