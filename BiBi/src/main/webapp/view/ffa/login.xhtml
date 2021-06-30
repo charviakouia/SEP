@@ -60,9 +60,9 @@
 		</h:panelGrid>
 		</h:form>
 		<!-- Ivans test button -->
-		<h:form rendered="#{initParam['jakarta.faces.PROJECT_STAGE'] == 'Development'}">
+		<h:form id="login_page_error_button_form" rendered="#{initParam['jakarta.faces.PROJECT_STAGE'] == 'Development'}">
 			
-			<h:commandButton action="#{login.throwsError()}" value="Throw error"/>
+			<h:commandButton id="login_page_error_button" action="#{login.throwsError()}" value="Throw error"/>
 			
 		</h:form>
 

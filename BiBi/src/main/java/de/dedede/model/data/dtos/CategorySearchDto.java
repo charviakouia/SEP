@@ -11,6 +11,5 @@ public class CategorySearchDto {
 	public void setSearchTerm(String searchTerm) {
 		this.searchTerm = searchTerm;
 	}
-	
-	
+
 }

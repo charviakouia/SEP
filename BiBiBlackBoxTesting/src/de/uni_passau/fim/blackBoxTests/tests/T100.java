@@ -42,7 +42,7 @@ public class T100 {
         driver.findElement(By.id("registrationForm:city")).sendKeys("Passau");
         driver.findElement(By.id("registrationForm:street")).sendKeys("Innstraße");
         driver.findElement(By.id("registrationForm:streetNumber")).sendKeys("40");
-        driver.findElement(By.id("registrationForm:saveButton")).click();
+        driver.findElement(By.id("registrationForm:registration_save_button")).click();
 
         // Navigate to email confirmation page
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile")));

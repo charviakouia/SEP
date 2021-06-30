@@ -88,9 +88,8 @@
                              readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
 
-                <h:outputLabel value="#{msg['medium.hasCategory']}" rendered="false"/>
-                <h:inputText id="category" value="#{medium.mediumDto.category}"
-                             rendered="false"
+                <h:outputLabel value="#{msg['medium.hasCategory']}"/>
+                <h:inputText id="category" value="#{medium.mediumDto.category.name}"
                              readonly="#{userSession.user.role != 'ADMIN'
 								and userSession.user.role != 'STAFF'}"/>
 
@@ -114,7 +113,7 @@
                                  action="#{medium.delete()}"
                                  rendered="#{userSession.user.role == 'ADMIN'
 							     or userSession.user.role == 'STAFF'}"
-                                 styleClass="btn-danger"/>
+                                 styleClass="btn btn-outline-danger"/>
 
             </h:panelGrid>
         </h:form>
@@ -137,17 +136,14 @@
                 <h:column>
                     <f:facet name="header">#{msg['copy.signature']}</f:facet>
                     <bibi:columnContent>
-                        <h:inputText value="#{item.signature}" readonly="#{userSession.user.role != 'ADMIN'
-						                                       and userSession.user.role != 'STAFF'}"
-                                     styleClass="copyListSignatures"/>
+                        <h:outputText value="#{item.signature}" styleClass="copyListSignatures"/>
                     </bibi:columnContent>
                 </h:column>
 
                 <h:column>
                     <f:facet name="header">#{msg['location']}</f:facet>
                     <bibi:columnContent>
-                        <h:inputText value="#{item.location}" readonly="#{userSession.user.role != 'ADMIN'
-						                                       and userSession.user.role != 'STAFF'}"/>
+                        <h:outputText value="#{item.location}"/>
                     </bibi:columnContent>
                 </h:column>
 
@@ -186,9 +182,9 @@
                          cellpadding="5" cellspacing="1"
                          styleClass="panelGridCenter">
                 <h:outputLabel value="#{msg['newCopy.location']}"/>
-                <h:inputText value="#{medium.newCopy.location}"/>
+                <h:inputText id="newCopyLocation" value="#{medium.newCopy.location}"/>
                 <h:outputLabel value="#{msg['newCopy.signatur']}"/>
-                <h:inputText value="#{medium.newCopy.signature}"/>
+                <h:inputText id="newCopySignature" value="#{medium.newCopy.signature}"/>
                 <h:panelGroup>
                     <h:commandButton id="createCopyButton"
                                      styleClass="btn btn-secondary"

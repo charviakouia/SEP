@@ -76,14 +76,14 @@
 
 		</h:form>
 
-		<bibi:paginatedList value="#{mediumSearch}" styleClass="mt-5"
+		<bibi:paginatedList id="result" value="#{mediumSearch}" styleClass="mt-5"
 			noEntriesLabel="#{msg['paginated_list.no_search_results']}">
 
-			<h:column>
+			<h:column id="col1">
 				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
 
-				<bibi:columnContent>
-					<h:link value="#{item.title}"
+				<bibi:columnContent id="content1">
+					<h:link id="mediumLink" value="#{item.title}"
 						outcome="/view/opac/medium.xhtml?id=#{item.id}" styleClass="searchResultTitleEntry"/>
 				</bibi:columnContent>
 			</h:column>

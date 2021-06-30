@@ -141,7 +141,14 @@ public final class MediumDao {
 		if (mediumDto.getCategory() == null) {
 			stmt.setObject(2, 1);
 		} else {
-			stmt.setInt(2, mediumDto.getCategory().getId());
+			Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+			if (mediumDto.getCategory().getName() !=null) {
+				int categoryId = CategoryDao.getCategoryIdByName(conn, mediumDto.getCategory());
+				stmt.setInt(2, categoryId);
+			} else {
+				stmt.setInt(2, mediumDto.getCategory().getId());
+			}
+			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 		stmt.setString(3, mediumDto.getTitle());
 		stmt.setString(4, mediumDto.getAuthor1());
@@ -1078,7 +1085,7 @@ public final class MediumDao {
 
 	private static void populateMediumDto(ResultSet resultSet, MediumDto mediumDto)
 			throws SQLException, LostConnectionException, MaxConnectionsException {
-//		setCategoryHelper(resultSet, mediumDto);
+		setCategoryHelper(resultSet, mediumDto);
 		mediumDto.setTitle(resultSet.getString(4));
 		mediumDto.setAuthor1(resultSet.getString(5));
 		mediumDto.setAuthor2(resultSet.getString(6));
@@ -1095,16 +1102,24 @@ public final class MediumDao {
 		readCopiesHelper(mediumDto);
 	}
 
-	/*
-	 * private static void setCategoryHelper(ResultSet resultSet, MediumDto
-	 * mediumDto) throws SQLException, CategoryDoesNotExistException { if
-	 * (resultSet.getInt(3) != 0) {
-	 * mediumDto.getCategory().setId(resultSet.getInt(3)); try {
-	 * mediumDto.setCategory(CategoryDao.readCategory(mediumDto.getCategory())); }
-	 * catch (CategoryDoesNotExistException e) { // ignore } } else {
-	 * mediumDto.getCategory().setId(1);
-	 * mediumDto.setCategory(CategoryDao.readCategory(mediumDto.getCategory())); } }
-	 */
+	 private static void setCategoryHelper(ResultSet resultSet, MediumDto mediumDto) throws SQLException {
+		if (resultSet.getInt(3) != 0) {
+			CategoryDto categoryDto = new CategoryDto();
+			categoryDto.setId(resultSet.getInt(3));
+			mediumDto.setCategory(categoryDto);
+			try {
+				mediumDto.setCategory(CategoryDao.readCategory(mediumDto.getCategory()));
+			} catch (CategoryDoesNotExistException e) {
+				// ignore
+			}
+		} else {
+			CategoryDto categoryDto = new CategoryDto();
+			categoryDto.setId(1);
+			mediumDto.setCategory(categoryDto);
+			mediumDto.setCategory(CategoryDao.readCategory(mediumDto.getCategory()));
+		}
+	}
+
 
 	private static void readCopiesHelper(MediumDto mediumDto)
 			throws SQLException, LostConnectionException, MaxConnectionsException {

@@ -16,14 +16,14 @@ public final class Driver {
     /**
      * Timeout for the WebDriverWait in seconds.
      */
-    private static final int TIMEOUT_WAIT = 10;
+    public static final int TIMEOUT_WAIT = 10;
 
     private static WebDriver driver = null;
     private static WebDriverWait driverWait = null;
 
     private Driver() {
         throw new UnsupportedOperationException(
-            "Prevent utillity vlass instantiation.");
+            "Prevent utillity class instantiation.");
     }
 
     /**
@@ -34,13 +34,23 @@ public final class Driver {
      */
     public static WebDriver getDriver() {
         if (Objects.isNull(driver)) {
-            System.setProperty("webdriver.gecko.driver","geckodriverMacOs");
-//          System.setProperty("webdriver.gecko.driver","geckodriver.exe");
-//          System.setProperty("webdriver.gecko.driver","geckodriver");
-//          driver = new FirefoxDriver();
+            switch (OsUtil.getMyOS()) {
+                case WINDOWS -> System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
+                case LINUX -> System.setProperty("webdriver.gecko.driver", "geckodriver");
+                case MAC -> System.setProperty("webdriver.gecko.driver", "geckodriverMacOs");
+            }
             driver = new FirefoxDriver(GeckoDriverService.createDefaultService());
         }
         return driver;
+    }
+    
+    public static FirefoxDriver getNewDriver() {
+        switch (OsUtil.getMyOS()) {
+            case WINDOWS -> System.setProperty("webdriver.gecko.driver","geckodriver.exe");
+            case LINUX -> System.setProperty("webdriver.gecko.driver","geckodriver");
+            case MAC -> System.setProperty("webdriver.gecko.driver","geckodriverMacOs");
+        }
+        return new FirefoxDriver(GeckoDriverService.createDefaultService());
     }
 
     /**
@@ -57,7 +67,7 @@ public final class Driver {
         }
         return driverWait;
     }
-
+    
     /**
      * Gets a {@link JavascriptExecutor} from the {@link WebDriver}.
      *
@@ -75,5 +85,7 @@ public final class Driver {
             driver.quit();
         }
     }
+
+
     
 }

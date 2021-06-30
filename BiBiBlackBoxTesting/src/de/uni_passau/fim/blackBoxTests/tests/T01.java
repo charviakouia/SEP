@@ -2,29 +2,38 @@ package de.uni_passau.fim.blackBoxTests.tests;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
-
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class T01 {
-    
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-
+	
+	private static WebDriver driver;
+	private static WebDriverWait waiter;
+	private static String threadName;
+	private static boolean isMultiThreaded = false;
+		    
     @BeforeClass
     public static void setUp() {
-        driver = Driver.getDriver();
-        waiter = Driver.getDriverWait();
+    	if (!isMultiThreaded) {
+    		driver = Driver.getDriver();
+    		waiter = Driver.getDriverWait();
+    	}
+        driver.get(BASE_URL);
     }
-
+    
     @Test
-    public void t10() {
+    public void doTest() {
         //Ist ein Title "BiBi"?
         waiter.until(ExpectedConditions.titleContains("BiBi"));
 
@@ -40,8 +49,40 @@ public class T01 {
             fail("Element not found.");
         }
     }
-    
+
     @AfterClass
     public static void tearDown() {}
+    
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public void setDriver(WebDriver driver) {
+		T01.driver = driver;
+	}
+
+	public WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(WebDriverWait waiter) {
+		T01.waiter = waiter;
+	}
+
+	public String getThreadName() {
+		return threadName;
+	}
+
+	public void setThreadName(String threadName) {
+		T01.threadName = threadName;
+	}
+	
+	public boolean isMultiThreaded() {
+		return isMultiThreaded;
+	}
+
+	public void setMultiThreaded(boolean isMultiThreaded) {
+		T01.isMultiThreaded = isMultiThreaded;
+	}
 
 }

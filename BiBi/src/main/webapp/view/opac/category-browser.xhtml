@@ -29,8 +29,9 @@
 						</h:panelGroup>
 					</h:form>
 
-					<h:panelGroup layout="block" id="category_tree_hook" binding="#{categoryBrowser.categoryTreeHook}" />
-					
+					<h:panelGroup layout="block" id="category_tree_hook"
+						binding="#{categoryBrowser.categoryTreeHook}" />
+
 				</h:panelGroup>
 
 				<h:panelGroup layout="block" styleClass="col">
@@ -38,21 +39,46 @@
 					<h:panelGroup layout="block" styleClass="container-fluid"
 						rendered="#{categoryBrowser.currentCategory != null}">
 
+						<h:panelGroup layout="block" styleClass="nav">
+							<h:form id="form_category_breadcrumb" styleClass="breadcrumb">
+								<ui:repeat value="#{categoryBrowser.currentCategoryPath}"
+									var="pathSegment" varStatus="status">
+									<h:panelGroup layout="block"
+										styleClass="breadcrumb-item #{status.last ? 'active' : ''}">
+										<h:commandLink value="#{pathSegment.name}"
+											action="#{categoryBrowser.selectCategory(pathSegment)}"
+											rendered="#{not status.last}" />
+										<h:outputText value="#{pathSegment.name}"
+											rendered="#{status.last}" />
+									</h:panelGroup>
+								</ui:repeat>
+							</h:form>
+						</h:panelGroup>
+
 						<h:form id="form_category_controls">
 
 							<h:inputText id="input_category_name"
 								value="#{categoryBrowser.currentCategory.name}"
-								readonly="#{!categoryBrowser.writableCategoryName()}"
-								styleClass="readonly-as-plain-text form-control mb-3"
+								styleClass="form-control mb-3"
+								rendered="#{categoryBrowser.writableCategoryControls()}"
 								p:placeholder="#{msg['category_browser.category.name']}">
 								<f:validateLength minimum="1" maximum="100" />
 							</h:inputText>
 
+							<h:outputText value="#{categoryBrowser.currentCategory.name}"
+								styleClass="d-block h2 mb-3"
+								rendered="#{not categoryBrowser.writableCategoryControls()}" />
+
 							<h:inputTextarea id="input_category_description"
 								value="#{categoryBrowser.currentCategory.description}"
-								readonly="#{!categoryBrowser.writableCategoryDescription()}"
-								styleClass="readonly-as-plain-text form-control mb-3"
+								styleClass="form-control mb-3"
+								rendered="#{categoryBrowser.writableCategoryControls()}"
 								p:placeholder="#{msg['category_browser.category.description']}" />
+
+							<h:outputText
+								value="#{categoryBrowser.currentCategory.description}"
+								styleClass="d-block mb-3"
+								rendered="#{not categoryBrowser.writableCategoryControls()}" />
 
 							<h:panelGroup layout="block" styleClass="btn-group"
 								rendered="#{categoryBrowser.showingCategoryActions}">
@@ -65,23 +91,27 @@
 									value="#{msg['category_browser.category.delete']}"
 									styleClass="btn btn-outline-danger" p:data-bs-toggle="modal"
 									p:data-bs-target="#confirm_deletion_modal" />
-								
+
 								<h:panelGroup layout="block" p:id="confirm_deletion_modal"
 									styleClass="modal fade" p:tabindex="-1">
-									<h:panelGroup layout="block" styleClass="modal-dialog modal-dialog-centered">
+									<h:panelGroup layout="block"
+										styleClass="modal-dialog modal-dialog-centered">
 										<h:panelGroup layout="block" styleClass="modal-content">
 											<h:panelGroup layout="block" styleClass="modal-header">
-												<h:outputText styleClass="h5 modal-title" value="#{msg['category_browser.confirm_deletion.title']}" />
+												<h:outputText styleClass="h5 modal-title"
+													value="#{msg['category_browser.confirm_deletion.title']}" />
 											</h:panelGroup>
 											<h:panelGroup layout="block" styleClass="modal-body">
 												#{msg['category_browser.confirm_deletion.message']}
 											</h:panelGroup>
 											<h:panelGroup layout="block" styleClass="modal-footer">
 												<h:commandButton id="button_disallow_category_deletion"
-													styleClass="btn btn-secondary" value="#{msg['category_browser.confirm_deletion.cancel']}"
+													styleClass="btn btn-secondary"
+													value="#{msg['category_browser.confirm_deletion.cancel']}"
 													p:data-bs-dismiss="modal" />
 												<h:commandButton id="button_confirm_category_deletion"
-													styleClass="btn btn-danger" value="#{msg['category_browser.confirm_deletion.confirm']}"
+													styleClass="btn btn-danger"
+													value="#{msg['category_browser.confirm_deletion.confirm']}"
 													action="#{categoryBrowser.deleteCategory()}" />
 											</h:panelGroup>
 										</h:panelGroup>

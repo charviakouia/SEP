@@ -27,7 +27,7 @@
 			<h:panelGroup layout="block" styleClass="collapse navbar-collapse"
 				id="navbar_content">
 
-				<h:panelGroup styleClass="navbar-nav me-auto mb-2 mb-lg-0">
+				<h:panelGroup layout="block" styleClass="navbar-nav me-auto mb-2 mb-lg-0">
 
 					<h:outputLink value="#help" styleClass="nav-item"
 						p:data-bs-toggle="offcanvas">
@@ -47,7 +47,8 @@
 							</h:form>
 						</h:panelGroup>
 
-						<h:panelGroup layout="block" styleClass="offcanvas-body p-3" style="text-align: justify; line-height: 1.8">
+						<h:panelGroup layout="block" styleClass="offcanvas-body p-3"
+							style="text-align: justify; line-height: 1.8">
 
 							<h:panelGroup layout="block" styleClass="public">
 								#{msg['help.'.concat(page).concat('.public')]}
@@ -72,6 +73,79 @@
 
 					</h:panelGroup>
 
+					<h:link id="advancedSearchLink" value="#{msg['advanced_search']}"
+						outcome="/view/opac/medium-search.xhtml"
+						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
+
+					<h:link id="category-browser"
+						value="#{msg['category_browser.short']}"
+						outcome="/view/opac/category-browser.xhtml"
+						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />					
+
+					<h:link id="signIn" value="#{msg['log_in']}"
+						outcome="/view/ffa/login.xhtml"
+						rendered="#{pageHeader.showingLogin}"
+						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
+
+					<h:link id="registrationLink" value="#{msg['register']}"
+						outcome="/view/ffa/registration.xhtml"
+						rendered="#{pageHeader.showingRegistration}"
+						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
+
+					<h:panelGroup layout="block" styleClass="nav-item dropdown"
+						rendered="#{pageHeader.showingAdministratorMenu}">
+
+						<h:link id="header_admin_dropdown"
+							value="#{msg['administration']}"
+							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
+
+						<h:panelGroup styleClass="dropdown-menu">
+							<h:link id="header_admin_user_search"
+								value="#{msg['user_search']}"
+								outcome="/view/admin/user-search.xhtml"
+								styleClass="dropdown-item #{page == 'user_search' ? 'active' : ''}" />
+
+							<h:link value="#{msg['registration']}"
+								outcome="/view/ffa/registration.xhtml"
+								styleClass="dropdown-item #{page == 'registration' ? 'active' : ''}" />
+
+							<h:link id="header_admin_configurations"
+								value="#{msg['settings']}"
+								outcome="/view/admin/administration.xhtml"
+								styleClass="dropdown-item #{page == 'administration' ? 'active' : ''}" />
+						</h:panelGroup>
+
+					</h:panelGroup>
+					
+					<h:panelGroup layout="block" styleClass="nav-item dropdown"
+						rendered="#{pageHeader.showingStaffMenu}">
+						<h:link id="header_staff_dropdown" value="#{msg['staff']}"
+							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
+
+						<h:panelGroup styleClass="dropdown-menu">
+							<h:link value="#{msg['lending']}"
+								outcome="/view/staff/lending.xhtml"
+								styleClass="dropdown-item #{page == 'lending' ? 'active' : ''}" />
+
+							<h:link value="#{msg['return_form']}"
+								outcome="/view/staff/return-form.xhtml"
+								styleClass="dropdown-item #{page == 'return_form' ? 'active' : ''}" />
+
+							<h:link value="#{msg['copies_ready_for_pickup_all_users']}"
+								outcome="/view/staff/copies-ready-for-pickup-all-users.xhtml"
+								styleClass="dropdown-item #{page == 'copies_ready_for_pickup_all_users' ? 'active' : ''}" />
+
+							<h:link value="#{msg['lending_period_violations.short']}"
+								outcome="/view/staff/lending-period-violations.xhtml"
+								styleClass="dropdown-item #{page == 'lending_period_violations' ? 'active' : ''}" />
+
+							<h:link id="medium-creator" value="#{msg['medium_creator']}"
+								outcome="/view/staff/medium-creator.xhtml"
+								styleClass="dropdown-item #{page == 'medium_creator' ? 'active' : ''}" />
+						</h:panelGroup>
+
+					</h:panelGroup>
+
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingAccountMenu}">
 
@@ -90,71 +164,6 @@
 						</h:panelGroup>
 
 					</h:panelGroup>
-
-					<h:panelGroup layout="block" styleClass="nav-item dropdown"
-						rendered="#{pageHeader.showingStaffMenu}">
-						<h:link value="#{msg['staff']}"
-							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
-
-						<h:panelGroup styleClass="dropdown-menu">
-							<h:link value="#{msg['lending']}"
-								outcome="/view/staff/lending.xhtml"
-								styleClass="dropdown-item #{page == 'lending' ? 'active' : ''}" />
-
-							<h:link value="#{msg['return_form']}"
-								outcome="/view/staff/return-form.xhtml"
-								styleClass="dropdown-item #{page == 'return_form' ? 'active' : ''}" />
-
-							<h:link value="#{msg['copies_ready_for_pickup_all_users']}"
-								outcome="/view/staff/copies-ready-for-pickup-all-users.xhtml"
-								styleClass="dropdown-item #{page == 'copies_ready_for_pickup_all_users' ? 'active' : ''}" />
-
-							<h:link value="#{msg['lending_period_violations.short']}"
-								outcome="/view/admin/lending-period-violations.xhtml"
-								styleClass="dropdown-item #{page == 'lending_period_violations' ? 'active' : ''}" />
-
-							<h:link value="#{msg['medium_creator']}"
-								outcome="/view/staff/medium-creator.xhtml"
-								styleClass="dropdown-item #{page == 'medium_creator' ? 'active' : ''}" />
-						</h:panelGroup>
-
-					</h:panelGroup>
-
-					<h:panelGroup layout="block" styleClass="nav-item dropdown"
-						rendered="#{pageHeader.showingAdministratorMenu}">
-
-						<h:link value="#{msg['administration']}"
-							styleClass="nav-link dropdown-toggle" p:data-bs-toggle="dropdown" />
-
-						<h:panelGroup styleClass="dropdown-menu">
-							<h:link value="#{msg['user_search']}"
-								outcome="/view/admin/user-search.xhtml"
-								styleClass="dropdown-item #{page == 'user_search' ? 'active' : ''}" />
-
-							<h:link value="#{msg['settings']}"
-								outcome="/view/admin/administration.xhtml"
-								styleClass="dropdown-item #{page == 'administration' ? 'active' : ''}" />
-						</h:panelGroup>
-
-					</h:panelGroup>
-
-					<h:link value="#{msg['category_browser.short']}"
-						outcome="/view/opac/category-browser.xhtml"
-						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />
-
-					<h:link value="#{msg['advanced_search']}"
-						outcome="/view/opac/medium-search.xhtml"
-						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" id="advancedSearchLink"/>
-
-					<h:link id="signIn" value="#{msg['log_in']}"
-						outcome="/view/ffa/login.xhtml"
-						rendered="#{pageHeader.showingLogin}"
-						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
-
-					<h:link value="#{msg['register']}"
-						outcome="/view/ffa/registration.xhtml"
-						rendered="#{pageHeader.showingRegistration}"
-						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" id="registrationLink"/>
 
 				</h:panelGroup>
 
