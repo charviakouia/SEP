@@ -99,18 +99,57 @@ Durch die Automatisierung der Browserinteraktion mittels Selenium, diente die vo
 \sectionauthor{Ivan Charviakou}
 
 Im Folgenden werden die Überdeckungswerte des Test-Suites tabellarisch angegeben und anschließend interpretiert. 
-Insbesondere werden diese Werte in zwei Kategorien eingeordnet: Zur Anweisungsüberdeckung gehörend und zur Zweigüberdeckung gehörend. 
+Insbesondere werden diese Werte in zwei Kategorien eingeordnet: Die zur Anweisungsüberdeckung und die zur Zweigüberdeckung. 
 Während die Anweisungsüberdeckung die Anzahl an evaluierten Anweisungen misst, beachtet die Zweigüberdeckung die verfolgten Ausführungspfade im Kontrollflussgraphen des Programms.
 Somit impliziert eine komplette Zweigüberdeckung eine höhere Anweisungsüberdeckung. 
 Allerdings sind beide Werte notwendig, um die Vollständigkeit eines Test-Suites zu evaluieren.
 
 \subsection{Whitebox-Tests}
 
+Die Whitebox-Tests testen die einzelnen internen Komponente des Systems. Es werden zu jedem Paket die Anweisungsüberdeckung und die zur Zweigüberdeckung angegeben.
+
+\begin{longtable}{@{}lllll@{}}
+\toprule
+\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\endfirsthead
+\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\endhead
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
+\end{longtable}
+
 \subsection{Blackbox-Tests}
+
+Im Gegensatz zu den obigen Tests werden Blackbox-Tests zum Testen des gesamten Systems eingesetzt. Die interne Struktur der Anwendung ist dabei unbekannt. 
+Auch hier werden zu jedem Paket die Anweisungsüberdeckung und die zur Zweigüberdeckung angegeben.
+
+\begin{longtable}{@{}lllll@{}}
+\toprule
+\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\endfirsthead
+\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\endhead
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
+\end{longtable}
 
 \subsection{Alle Tests}
 
+In diesen Abschnitt werden für jeden Paket die Whitebox als auch die Blackbox-Tests zusammen betrachtet.
+
+\begin{longtable}{@{}lllll@{}}
+\toprule
+\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\endfirsthead
+\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\endhead
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
+Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
+\end{longtable}
+
 \subsection{Interpretation}
+
+TODO
 
 \newpage
 

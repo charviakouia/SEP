@@ -127,8 +127,7 @@ public class TestSuiteThread extends Thread {
 			test10.setUp();
 			test10.doTest();
 			test11.setUp();
-			test11.t80a();
-			test11.t80b();
+			test11.t80();
 			test12.setUp();
 			test12.t90();
 			test13.setUp();

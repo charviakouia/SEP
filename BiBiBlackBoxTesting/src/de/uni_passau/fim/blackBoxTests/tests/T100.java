@@ -2,9 +2,7 @@ package de.uni_passau.fim.blackBoxTests.tests;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -34,7 +32,7 @@ public class T100 {
     private final String STREET = "Innstraße";
     private final String STREET_NUMBER = "40";
 
-    @BeforeClass
+    @Before
     public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
@@ -43,7 +41,7 @@ public class T100 {
         Selenium.navigateTo(driver, Pages.HOME);
     }
 
-    @AfterClass
+    @After
     public void tearDown() {}
 
     /**
