@@ -55,9 +55,10 @@ public class T40 {
 
 			//checks a result
 			Selenium.waitUntilLoaded();
-			assertTrue(driver.getPageSource().contains("Medium erfolgreich erstellt"));
+			assertEquals("Programmieren lernen", driver.findElement(By.id("form_mediumAttributes_forUsers:title"))
+					.getAttribute("value"));
         } catch (Exception e) {
-        	fail("A positive message not found.");
+        	fail("A title is not 'Programmieren lernen'.");
         }
     }
     
@@ -75,6 +76,7 @@ public class T40 {
 	public void setMultiThreaded(boolean isMultiThreaded) {
 		this.isMultiThreaded = isMultiThreaded;
 	}
+
 
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;

@@ -49,7 +49,7 @@ public class T160 {
 		driver.findElement(By.id("form_return_form:returnForm_mail_field")).click();
 		driver.findElement(By.id("form_return_form:returnForm_mail_field")).sendKeys("nutzer.sep2021test" + threadName + "@gmail.com");
 		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).click();
-		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).sendKeys("17RE (+1)" + threadName);
+		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).sendKeys("17RE (1)" + threadName);
 		driver.findElement(By.id("form_return_form:button_return_copies")).click();
 		try {
 			TimeUnit.SECONDS.sleep(4);
