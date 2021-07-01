@@ -22,11 +22,11 @@ public class T120 {
     private static WebDriver driver;
     private static WebDriverWait waiter;
     private static JavascriptExecutor jsexec;
-    private static String threadName;
+    private static String threadName = "";
     private static boolean isMultiThreaded = false;
 
-    private static final String MEDIUM_NAME = "JSF: Advance";
-    private static final String SIGNATURE = "67 TST (10)";
+    private static final String MEDIUM_NAME = "Programmieren lernen" + threadName;
+    private static final String SIGNATURE = "17RE (1)" + threadName;
     private static final String AVAILABILITY = "Bereit zur Abholung";
 
     @BeforeClass
@@ -98,4 +98,29 @@ public class T120 {
         T120.isMultiThreaded = isMultiThreaded;
     }
 
+	public static WebDriver getDriver() {
+		return driver;
+	}
+
+	public static void setDriver(WebDriver driver) {
+		T120.driver = driver;
+	}
+
+	public static WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public static void setWaiter(WebDriverWait waiter) {
+		T120.waiter = waiter;
+	}
+
+	public static JavascriptExecutor getJsexec() {
+		return jsexec;
+	}
+
+	public static void setJsexec(JavascriptExecutor jsexec) {
+		T120.jsexec = jsexec;
+	}
+
+    
 }

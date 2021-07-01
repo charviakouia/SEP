@@ -1,8 +1,8 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -11,23 +11,25 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertTrue;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
 
 public class T130 {
 
     private static WebDriver driver;
     private static WebDriverWait waiter;
+    private static String threadName = "";
+    private static boolean isMultiThreaded = false;
 
     @BeforeClass
     public static void setUp() {
-        driver = Driver.getDriver();
-        waiter = Driver.getDriverWait();
+    	if (!isMultiThreaded) {
+    		driver = Driver.getDriver();
+    		waiter = Driver.getDriverWait();
+    	}
     }
 
     @AfterClass
-    public static void tearDown() {}
+    public void tearDown() {}
 
     @Test
     public void t130() {
@@ -37,7 +39,7 @@ public class T130 {
 
         // Log in
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field"))).
-                sendKeys("mitarbeiter.sep2021test@gmail.com");
+                sendKeys("mitarbeiter.sep2021test" + threadName + "@gmail.com");
         driver.findElement(By.id("login_form:login_password_field")).sendKeys("sijAs13!!A" + Keys.ENTER);
 
         // Navigate to the list of copies that users have marked for pick up
@@ -47,7 +49,40 @@ public class T130 {
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("copiesReadyForPickUp"))).click();
 
         // Verify data in page
-        assertTrue(driver.getPageSource().contains("17RE (1)"));
+        assertTrue(driver.getPageSource().contains("17RE (1)" + threadName));
     }
 
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public void setDriver(WebDriver driver) {
+		T130.driver = driver;
+	}
+
+	public WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(WebDriverWait waiter) {
+		T130.waiter = waiter;
+	}
+
+	public String getThreadName() {
+		return threadName;
+	}
+
+	public void setThreadName(String threadName) {
+		T130.threadName = threadName;
+	}
+
+	public boolean isMultiThreaded() {
+		return isMultiThreaded;
+	}
+
+	public void setMultiThreaded(boolean isMultiThreaded) {
+		T130.isMultiThreaded = isMultiThreaded;
+	}
+    
+    
 }

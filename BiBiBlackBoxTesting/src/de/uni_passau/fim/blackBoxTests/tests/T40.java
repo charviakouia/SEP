@@ -15,7 +15,7 @@ public class T40 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 		    
     @Before
@@ -36,17 +36,17 @@ public class T40 {
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("medium-creator"))).click();
 
 			//sets a medium's attributes
-			driver.findElement(By.id("mediumForm:mediumTitle")).sendKeys("Programmieren lernen");
-			driver.findElement(By.id("mediumForm:author1")).sendKeys("Mustermann");
-			driver.findElement(By.id("mediumForm:mediumType")).sendKeys("Buch");
-			driver.findElement(By.id("mediumForm:mediumEdition")).sendKeys("1.0");
-			driver.findElement(By.id("mediumForm:mediumPublisher")).sendKeys("Springer");
+			driver.findElement(By.id("mediumForm:mediumTitle")).sendKeys("Programmieren lernen" + threadName);
+			driver.findElement(By.id("mediumForm:author1")).sendKeys("Mustermann" + threadName);
+			driver.findElement(By.id("mediumForm:mediumType")).sendKeys("Buch" + threadName);
+			driver.findElement(By.id("mediumForm:mediumEdition")).sendKeys("1.0" + threadName);
+			driver.findElement(By.id("mediumForm:mediumPublisher")).sendKeys("Springer" + threadName);
 			driver.findElement(By.id("mediumForm:releaseYear")).clear();
-			driver.findElement(By.id("mediumForm:releaseYear")).sendKeys("2020");
-			driver.findElement(By.id("mediumForm:releaseYear")).sendKeys("2020");
-			driver.findElement(By.id("mediumForm:isbn")).sendKeys("17RE");
-			driver.findElement(By.id("mediumForm:copyLocation")).sendKeys("FIM");
-			driver.findElement(By.id("mediumForm:copySignature")).sendKeys("17RE (1)");
+			driver.findElement(By.id("mediumForm:releaseYear")).sendKeys("2020" + threadName);
+			driver.findElement(By.id("mediumForm:releaseYear")).sendKeys("2020" + threadName);
+			driver.findElement(By.id("mediumForm:isbn")).sendKeys("17RE" + threadName);
+			driver.findElement(By.id("mediumForm:copyLocation")).sendKeys("FIM" + threadName);
+			driver.findElement(By.id("mediumForm:copySignature")).sendKeys("17RE (1)" + threadName);
 
 			//create
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("mediumForm:medium-create-btn")));

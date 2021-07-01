@@ -21,7 +21,7 @@ public class T80 {
 
     private static WebDriver driver;
     private static WebDriverWait waiter;
-    private static String threadName;
+    private static String threadName = "";
     private static boolean isMultiThreaded = false;
 
     private static final String SITE_NOTICE_TEXT = "Innstraße";

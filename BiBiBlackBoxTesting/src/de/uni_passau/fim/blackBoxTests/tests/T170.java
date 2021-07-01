@@ -1,7 +1,7 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,13 +15,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 
-import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
-
 public class T170 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 
 	@Before
@@ -61,13 +59,13 @@ public class T170 {
 	    driver.findElement(By.id("header_admin_dropdown")).click();
 	    driver.findElement(By.id("header_admin_user_search")).click();
 	    driver.findElement(By.id("form_user_search:input_user_search_term")).click();
-	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys("Bob Mustermann");
+	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys("Bob" + threadName + " Mustermann" + threadName);
 	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys(Keys.ENTER);
 	    try {
 			TimeUnit.SECONDS.sleep(3);
 		} catch (InterruptedException e) {
 		}
-	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test@gmail.com"));
+	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test" + threadName + "@gmail.com"));
 	}
 
 	@After

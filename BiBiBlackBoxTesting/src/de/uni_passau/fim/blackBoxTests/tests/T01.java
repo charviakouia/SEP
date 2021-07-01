@@ -1,25 +1,24 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import de.uni_passau.fim.blackBoxTests.util.Driver;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class T01 {
 	
 	private static WebDriver driver;
 	private static WebDriverWait waiter;
-	private static String threadName;
+	private static String threadName = "";
 	private static boolean isMultiThreaded = false;
 		    
     @BeforeClass

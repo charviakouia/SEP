@@ -1,16 +1,16 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.util.Driver;
-import de.uni_passau.fim.blackBoxTests.util.Pages;
-import de.uni_passau.fim.blackBoxTests.util.Selenium;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Pages;
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 
 /**
  * Blackbox-test class for the registration functionality. Requires that the given email does not yet appear
@@ -22,13 +22,13 @@ public class T100 {
 
     private static WebDriver driver;
     private static WebDriverWait waiter;
-    private static String threadName;
+    private static String threadName = "";
     private static boolean isMultiThreaded = false;
 
-    private static final String FIRST_NAME = "Bob";
-    private static final String LAST_NAME = "Mustermann";
+    private static final String FIRST_NAME = "Bob" + threadName;
+    private static final String LAST_NAME = "Mustermann" + threadName;
     private static final String PASSWORD = "sdfHs4!a";
-    private static final String EMAIL = "nutzer.sep2021test@gmail.com";
+    private static final String EMAIL = "nutzer.sep2021test" + threadName + "@gmail.com";
     private static final String ZIP = "94032";
     private static final String CITY = "Passau";
     private static final String STREET = "Innstraße";

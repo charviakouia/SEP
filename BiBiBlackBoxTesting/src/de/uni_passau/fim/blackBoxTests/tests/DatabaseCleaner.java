@@ -1,20 +1,24 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
-import de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.fail;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.UrlPrefix;
 
 public class DatabaseCleaner {
 

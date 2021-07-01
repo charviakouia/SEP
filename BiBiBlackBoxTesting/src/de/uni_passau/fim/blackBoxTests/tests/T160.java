@@ -1,7 +1,7 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,13 +14,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 
-import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
-
 public class T160 {
 
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 
 	@Before
@@ -49,16 +47,16 @@ public class T160 {
 		} catch (InterruptedException e) {
 		}
 		driver.findElement(By.id("form_return_form:returnForm_mail_field")).click();
-		driver.findElement(By.id("form_return_form:returnForm_mail_field")).sendKeys("nutzer.sep2021test@gmail.com");
+		driver.findElement(By.id("form_return_form:returnForm_mail_field")).sendKeys("nutzer.sep2021test" + threadName + "@gmail.com");
 		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).click();
-		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).sendKeys("17RE (+1)");
+		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).sendKeys("17RE (+1)" + threadName);
 		driver.findElement(By.id("form_return_form:button_return_copies")).click();
 		try {
 			TimeUnit.SECONDS.sleep(4);
 		} catch (InterruptedException e) {
 		}
 
-		assertTrue(driver.getPageSource().contains("1 Exemplare von nutzer.sep2021test@gmail.com zurückgegeben."));
+		assertTrue(driver.getPageSource().contains("1 Exemplare von nutzer.sep2021test" + threadName + "@gmail.com zurückgegeben."));
 	}
 
 	@After

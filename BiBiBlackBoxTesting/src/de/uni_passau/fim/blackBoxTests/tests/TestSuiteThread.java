@@ -1,8 +1,9 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import static de.uni_passau.fim.blackBoxTests.util.Driver.TIMEOUT_WAIT;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import static de.uni_passau.fim.blackBoxTests.util.Driver.TIMEOUT_WAIT;
 
 public class TestSuiteThread extends Thread {
 	

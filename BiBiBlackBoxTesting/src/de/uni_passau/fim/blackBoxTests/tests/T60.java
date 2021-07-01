@@ -18,7 +18,7 @@ public class T60 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 		    
     @Before
@@ -44,8 +44,8 @@ public class T60 {
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_category_controls:button_create_category"))).click();
 
 		//sets attributes
-		driver.findElement(By.id("form:categoryName")).sendKeys("Informatik");
-		driver.findElement(By.id("form:categoryDescription")).sendKeys("Alle Medien zu Informatik");
+		driver.findElement(By.id("form:categoryName")).sendKeys("Informatik" + threadName);
+		driver.findElement(By.id("form:categoryDescription")).sendKeys("Alle Medien zu Informatik" + threadName);
 
 		//create
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form:button_save")));

@@ -1,16 +1,17 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.util.Driver;
-import de.uni_passau.fim.blackBoxTests.util.Pages;
-import de.uni_passau.fim.blackBoxTests.util.Selenium;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Pages;
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 
 /**
  * Blackbox-test class for the medium-search functionality. Requires that the tested medium already exists
@@ -22,7 +23,7 @@ public class T90 {
 
     private static WebDriver driver;
     private static WebDriverWait waiter;
-    private static String threadName;
+    private static String threadName = "";
     private static boolean isMultiThreaded = false;
 
     private static final String SEARCH_STR = "JSF: Durch";
@@ -72,5 +73,23 @@ public class T90 {
     public static void setMultiThreaded(boolean isMultiThreaded) {
         T90.isMultiThreaded = isMultiThreaded;
     }
+
+	public static WebDriver getDriver() {
+		return driver;
+	}
+
+	public static void setDriver(WebDriver driver) {
+		T90.driver = driver;
+	}
+
+	public static WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public static void setWaiter(WebDriverWait waiter) {
+		T90.waiter = waiter;
+	}
+    
+    
 
 }

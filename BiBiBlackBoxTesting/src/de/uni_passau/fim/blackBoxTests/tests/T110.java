@@ -20,10 +20,10 @@ public class T110 {
 
     private static WebDriver driver;
     private static WebDriverWait waiter;
-    private static String threadName;
+    private static String threadName = "";
     private static boolean isMultiThreaded = false;
 
-    private static final String EMAIL = "nutzer.sep2021test@gmail.com";
+    private static final String EMAIL = "nutzer.sep2021test" + threadName + "@gmail.com";
     private static final String PASSWORD = "sdfHs4!a";
     private static final String FIRST_NAME = "Bob";
 
@@ -83,5 +83,23 @@ public class T110 {
     public static void setMultiThreaded(boolean isMultiThreaded) {
         T110.isMultiThreaded = isMultiThreaded;
     }
+
+	public static WebDriver getDriver() {
+		return driver;
+	}
+
+	public static void setDriver(WebDriver driver) {
+		T110.driver = driver;
+	}
+
+	public static WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public static void setWaiter(WebDriverWait waiter) {
+		T110.waiter = waiter;
+	}
+    
+    
 
 }

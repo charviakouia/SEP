@@ -21,7 +21,7 @@ public class T20 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 		    
     @Before
@@ -42,7 +42,7 @@ public class T20 {
         driver.findElement(By.id("registrationForm:lastName")).sendKeys("Mustermann");
         driver.findElement(By.id("registrationForm:password")).sendKeys("sijAs13!!A");
         driver.findElement(By.id("registrationForm:confirmedPassword")).sendKeys("sijAs13!!A");
-        driver.findElement(By.id("registrationForm:email")).sendKeys("mitarbeiter.sep2021test@gmail.com");
+        driver.findElement(By.id("registrationForm:email")).sendKeys("mitarbeiter.sep2021test" + threadName + "@gmail.com");
         driver.findElement(By.id("registrationForm:zip")).sendKeys("94032");
         driver.findElement(By.id("registrationForm:street")).sendKeys("Innstraße");
         driver.findElement(By.id("registrationForm:city")).sendKeys("Passau");
@@ -53,7 +53,7 @@ public class T20 {
         driver.findElement(By.id("registrationForm:registration_save_button")).click();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown"))).click();
         driver.findElement(By.id("form_log_out:button_log_out")).click();
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field"))).sendKeys("mitarbeiter.sep2021test@gmail.com");
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field"))).sendKeys("mitarbeiter.sep2021test" + threadName + "@gmail.com");
         driver.findElement(By.id("login_form:login_password_field")).sendKeys("sijAs13!!A" + Keys.ENTER);
         try {
         	waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_staff_dropdown")));
