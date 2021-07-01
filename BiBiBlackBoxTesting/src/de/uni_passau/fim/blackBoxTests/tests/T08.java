@@ -55,7 +55,6 @@ public class T08 {
 		this.isMultiThreaded = isMultiThreaded;
 	}
 
-
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;
 	}

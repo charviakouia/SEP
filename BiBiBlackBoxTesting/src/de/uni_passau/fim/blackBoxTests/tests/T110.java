@@ -23,9 +23,9 @@ public class T110 {
     private String threadName = "";
     private boolean isMultiThreaded = false;
 
-    private final String EMAIL = "nutzer.sep2021test" + threadName + "@gmail.com";
+    private final String EMAIL = "nutzer.sep2021test%s@gmail.com";
     private final String PASSWORD = "sdfHs4!a";
-    private final String FIRST_NAME = "Bob";
+    private final String FIRST_NAME = "Bob%s";
 
     @BeforeClass
     public void setUp() {
@@ -51,7 +51,7 @@ public class T110 {
         Selenium.clickOn(waiter, "form_log_out:button_log_out");
 
         // Initiate password reset
-        Selenium.typeInto(waiter, "login_form:login_email_field", EMAIL);
+        Selenium.typeInto(waiter, "login_form:login_email_field", gen(EMAIL));
         Selenium.clickOn(waiter, "login_form:login_reset_password_button");
 
         // Navigate to password reset page
@@ -64,8 +64,12 @@ public class T110 {
         Selenium.clickOn(waiter, "passwordResetForm:submitButton");
 
         // Verify data in profile page
-        assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:frstname", "value", FIRST_NAME));
+        assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:frstname", "value", gen(FIRST_NAME)));
 
+    }
+
+    private String gen(String str){
+        return String.format(str, threadName);
     }
 
     public String getThreadName() {
