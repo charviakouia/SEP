@@ -15,18 +15,17 @@ import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
-import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.component.UIInput;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.Flash;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -46,7 +45,13 @@ public class Lending implements Serializable {
 	 * Recieves the email address of the top input field on value change
 	 */
 	private UserDto user;
-
+	
+	/**
+	 * Prepares the same BB for a reaload with filled signature fields.
+	 */
+	@Inject
+	private Lending fillSignatures; 
+	
 	/**
 	 * Reflects the input fields for signatures as an ArrayList
 	 */
@@ -65,7 +70,7 @@ public class Lending implements Serializable {
 			for(int i = 0; i < 4; i++) {
 				copies.add(new CopyDto());
 			}
-		}	
+		}
 	}
 
 	/**
@@ -139,52 +144,29 @@ public class Lending implements Serializable {
 
 	/**
 	 * Action for a listener on the user email input field. Fills the signature 
-	 * fields with marked copies if email matches a user.
+	 * fields with marked copies on page reload if the email matches any user.
 	 * 
 	 * @param change holds the new user Email that was put in.
 	 */
 	public void setUserEmail(ValueChangeEvent change) {
-		user.setEmailAddress(change.getNewValue().toString());
+		String newValue = change.getNewValue().toString();
+		user.setEmailAddress(newValue);
+		FacesContext ctx = FacesContext.getCurrentInstance();
+		NavigationHandler hdl = ctx.getApplication().getNavigationHandler();
 		if (UserDao.userEntityWithEmailExists(user)) {
 			List<CopyDto> markedCopies = 
 					MediumDao.getMarkedCopiesByEmail(user);
+			UserDto userDto = new UserDto();
+			userDto.setEmailAddress(newValue);
 			boolean notEmpty = !markedCopies.isEmpty();
 			if (notEmpty) {
-				copies.clear();
-				for (CopyDto dto : markedCopies) {
-					copies.add(dto);
-				}
+				this.fillSignatures.setUser(userDto);
+				this.fillSignatures.setCopies(markedCopies);
+				hdl.handleNavigation(ctx, null, null, null);
 			}
 		} else {
-			FacesContext ctx = FacesContext.getCurrentInstance();
 			MessagingUtility.writeNegativeMessageWithKey(ctx, false, 
 					"lending.no_such_email");
-		}
-	}
-	
-	/**
-	 * Used to fill in the form fields with flash parameters.
-	 */
-	public void preloadUserAndCopies(){
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Flash flash = facesContext.getExternalContext().getFlash();
-		Integer userId = (Integer) flash.get("userId");
-		String copySignature = (String) flash.get("copySignature");
-		if (userId != null && copySignature != null){
-			user.setId(userId);
-			try {
-				UserDao.readUserForProfile(user);
-			} catch (UserDoesNotExistException e1) {
-				Logger.severe("Couldn't read user "
-						+ "from previous page");
-			}
-			copies.get(0).setSignature(copySignature);
-			try {
-				MediumDao.readCopyBySignature(copies.get(0));
-			} catch (EntityInstanceDoesNotExistException e) {
-				Logger.severe("Couldn't read medium copy "
-						+ "from previous page");
-			}
 		}
 	}
 
