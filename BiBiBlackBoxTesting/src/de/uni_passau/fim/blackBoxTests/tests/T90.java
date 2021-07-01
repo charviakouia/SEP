@@ -1,16 +1,17 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.util.Driver;
-import de.uni_passau.fim.blackBoxTests.util.Pages;
-import de.uni_passau.fim.blackBoxTests.util.Selenium;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Pages;
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 
 /**
  * Blackbox-test class for the medium-search functionality. Requires that the tested medium already exists
@@ -20,16 +21,16 @@ import static org.junit.Assert.fail;
  */
 public class T90 {
 
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-    private static String threadName;
-    private static boolean isMultiThreaded = false;
+    private WebDriver driver;
+    private WebDriverWait waiter;
+    private String threadName = "";
+    private boolean isMultiThreaded = false;
 
     private static final String SEARCH_STR = "JSF: Durch";
     private static final String MEDIUM_TITLE = "JSF: Durch Nacht zum Licht.";
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
             waiter = Driver.getDriverWait();
@@ -38,7 +39,7 @@ public class T90 {
     }
 
     @AfterClass
-    public static void tearDown() {}
+    public void tearDown() {}
 
     /**
      * Performs a medium-search using preset keywords and attempts to match the full medium title to
@@ -57,20 +58,38 @@ public class T90 {
 
     }
 
-    public static String getThreadName() {
+    public String getThreadName() {
         return threadName;
     }
 
-    public static void setThreadName(String threadName) {
-        T90.threadName = threadName;
+    public void setThreadName(String threadName) {
+        this.threadName = threadName;
     }
 
-    public static boolean isMultiThreaded() {
+    public boolean isMultiThreaded() {
         return isMultiThreaded;
     }
 
-    public static void setMultiThreaded(boolean isMultiThreaded) {
-        T90.isMultiThreaded = isMultiThreaded;
+    public void setMultiThreaded(boolean isMultiThreaded) {
+        this.isMultiThreaded = isMultiThreaded;
     }
+
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public void setDriver(WebDriver driver) {
+		this.driver = driver;
+	}
+
+	public WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(WebDriverWait waiter) {
+		this.waiter = waiter;
+	}
+    
+    
 
 }

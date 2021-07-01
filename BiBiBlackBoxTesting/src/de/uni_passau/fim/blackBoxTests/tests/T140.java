@@ -15,7 +15,7 @@ public class T140 {
 
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 
 	@Before

@@ -19,18 +19,18 @@ import static org.junit.Assert.*;
  */
 public class T120 {
 
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-    private static JavascriptExecutor jsexec;
-    private static String threadName;
-    private static boolean isMultiThreaded = false;
+    private WebDriver driver;
+    private WebDriverWait waiter;
+    private JavascriptExecutor jsexec;
+    private String threadName = "";
+    private boolean isMultiThreaded = false;
 
-    private static final String MEDIUM_NAME = "JSF: Advance";
-    private static final String SIGNATURE = "67 TST (10)";
-    private static final String AVAILABILITY = "Bereit zur Abholung";
+    private final String MEDIUM_NAME = "Programmieren lernen" + threadName;
+    private final String SIGNATURE = "17RE (1)" + threadName;
+    private final String AVAILABILITY = "Bereit zur Abholung";
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
             waiter = Driver.getDriverWait();
@@ -40,7 +40,7 @@ public class T120 {
     }
 
     @AfterClass
-    public static void tearDown() {}
+    public void tearDown() {}
 
     /**
      * Performs a medium search using the preset data values, books a copy, and verifies that the copy has been
@@ -82,20 +82,47 @@ public class T120 {
 
     }
 
-    public static String getThreadName() {
-        return threadName;
-    }
+	public WebDriver getDriver() {
+		return driver;
+	}
 
-    public static void setThreadName(String threadName) {
-        T120.threadName = threadName;
-    }
+	public void setDriver(WebDriver driver) {
+		this.driver = driver;
+	}
 
-    public static boolean isMultiThreaded() {
-        return isMultiThreaded;
-    }
+	public WebDriverWait getWaiter() {
+		return waiter;
+	}
 
-    public static void setMultiThreaded(boolean isMultiThreaded) {
-        T120.isMultiThreaded = isMultiThreaded;
-    }
+	public void setWaiter(WebDriverWait waiter) {
+		this.waiter = waiter;
+	}
 
+	public JavascriptExecutor getJsexec() {
+		return jsexec;
+	}
+
+	public void setJsexec(JavascriptExecutor jsexec) {
+		this.jsexec = jsexec;
+	}
+
+	public String getThreadName() {
+		return threadName;
+	}
+
+	public void setThreadName(String threadName) {
+		this.threadName = threadName;
+	}
+
+	public boolean isMultiThreaded() {
+		return isMultiThreaded;
+	}
+
+	public void setMultiThreaded(boolean isMultiThreaded) {
+		this.isMultiThreaded = isMultiThreaded;
+	}
+    
+   
+
+    
 }

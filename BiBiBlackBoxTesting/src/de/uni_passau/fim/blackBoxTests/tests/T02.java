@@ -18,7 +18,7 @@ public class T02 {
 	
 	private static WebDriver driver;
 	private static WebDriverWait waiter;
-	private static String threadName;
+	private static String threadName = "";
 	private static boolean isMultiThreaded = false;
 	
 	@BeforeClass

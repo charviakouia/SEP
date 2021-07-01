@@ -1,4 +1,4 @@
-package tests;
+package test.java.tests;
 
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.persistence.daos.CategoryDao;

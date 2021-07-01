@@ -19,7 +19,7 @@ public class T10 {
 
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 		    
     @Before
@@ -36,11 +36,11 @@ public class T10 {
     	waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field")));
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field"))).clear();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field")))
-                .sendKeys("jonaspicker@gmail.com");
+                .sendKeys("admin.sep2021.test@gmail.com");
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_password_field")));
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_password_field"))).clear();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_password_field")))
-                .sendKeys("bibadmin" + Keys.ENTER);
+                .sendKeys("xlA24!bGhm" + Keys.ENTER);
         try {
         	waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_admin_dropdown")));
         	assertTrue(true);
