@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
@@ -51,7 +52,7 @@ public class ReturnForm implements Serializable {
 	private List<CopyDto> copies = new ArrayList<CopyDto>();
 
 	/**
-	 * Initializes the bean with 5 signature input fields.
+	 * Initializes the bean with 4 signature input fields.
 	 */
 	@PostConstruct
 	public void init() {
@@ -59,36 +60,10 @@ public class ReturnForm implements Serializable {
 			user = new UserDto();
 		}
 		if (copies.isEmpty()) {
-			for(int i = 0; i < 5; i++) {
+			for(int i = 0; i < 4; i++) {
 				copies.add(new CopyDto());
 			}
 		}	
-	}
-
-	/**
-	 * Used to fill in the form fields with flash parameters.
-	 */
-	public void preloadUserAndCopies(){
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Flash flash = facesContext.getExternalContext().getFlash();
-		Integer userId = (Integer) flash.get("userId");
-		String copySignature = (String) flash.get("copySignature");
-		if (userId != null && copySignature != null){
-			user.setId(userId);
-			try {
-				UserDao.readUserForProfile(user);
-			} catch (UserDoesNotExistException e1) {
-				Logger.severe("Couldn't read user "
-						+ "from previous page");
-			}
-			copies.get(0).setSignature(copySignature);
-			try {
-				MediumDao.readCopyBySignature(copies.get(0));
-			} catch (EntityInstanceDoesNotExistException e) {
-				Logger.severe("Couldn't read medium copy "
-						+ "from previous page");
-			}
-		}
 	}
 	
 	/**
@@ -161,8 +136,48 @@ public class ReturnForm implements Serializable {
 	 */
 	public void setUserEmail(ValueChangeEvent change) {
 		this.user.setEmailAddress(change.getNewValue().toString());
+		if (UserDao.userEntityWithEmailExists(user)) {
+			List<CopyDto> lentCopies = 
+					MediumDao.getLentCopiesByEmail(user);
+			if (!lentCopies.isEmpty()) {
+				copies.clear();
+				for (CopyDto dto : lentCopies) {
+					copies.add(dto);
+				}
+			}
+		} else {
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			MessagingUtility.writeNegativeMessageWithKey(ctx, false, 
+					"lending.no_such_email");
+		}
 	}
-
+	
+	/**
+	 * Used to fill in the form fields with flash parameters.
+	 */
+	public void preloadUserAndCopies(){
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Flash flash = facesContext.getExternalContext().getFlash();
+		Integer userId = (Integer) flash.get("userId");
+		String copySignature = (String) flash.get("copySignature");
+		if (userId != null && copySignature != null){
+			user.setId(userId);
+			try {
+				UserDao.readUserForProfile(user);
+			} catch (UserDoesNotExistException e1) {
+				Logger.severe("Couldn't read user "
+						+ "from previous page");
+			}
+			copies.get(0).setSignature(copySignature);
+			try {
+				MediumDao.readCopyBySignature(copies.get(0));
+			} catch (EntityInstanceDoesNotExistException e) {
+				Logger.severe("Couldn't read medium copy "
+						+ "from previous page");
+			}
+		}
+	}
+	
 	/**
 	 * Add a signature input field.
 	 */

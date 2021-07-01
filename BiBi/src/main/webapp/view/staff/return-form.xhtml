@@ -30,20 +30,20 @@
 							value="#{returnForm.user.emailAddress}"
 							styleClass="form-control" required="true"
 							onchange="submit()"
-							valueChangelistener="#{returnForm.setUserEmail}">
+							valueChangeListener="#{returnForm.setUserEmail}">
 					<f:validator validatorId="userExistsValidator"/>
 				</h:inputText>
 				<h:message for="returnForm_mail_field" style="color:red"/>
 			</h:panelGroup>
 
-			<h:panelGroup layout="block" styleClass="container">
+			<h:panelGroup id="returnForm_repeat_container" layout="block" styleClass="container">
 				<ui:repeat var="copy" value="#{returnForm.copies}" varStatus="status">
 
 					 <h:panelGroup layout="block" styleClass="form-group">
 						<h:outputLabel for="returnForm_signature_field"
 										value="#{msg['returnForm.signature_field']}"/>
 						<h:inputText id="returnForm_signature_field"
-									value="#{returnForm.copies[status.index].signature}"
+									value="#{copy.signature}"
 									styleClass="form-control">
 							<f:validator validatorId="returnFormSignatureValidator"/>
 						</h:inputText>

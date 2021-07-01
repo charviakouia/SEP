@@ -10,16 +10,21 @@ import java.util.ResourceBundle;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.Flash;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
@@ -45,18 +50,19 @@ public class Lending implements Serializable {
 	/**
 	 * Reflects the input fields for signatures as an ArrayList
 	 */
-	private List<CopyDto> copies = new ArrayList<CopyDto>(); 
+	private List<CopyDto> copies;
 
 	/**
-	 * Initializes the Backing Bean with 5 copy signature input fields.
+	 * Initializes the Backing Bean with 4 copy signature input fields.
 	 */
 	@PostConstruct
 	public void init() {
 		if (user == null) {
 			user = new UserDto();
 		}
-		if (copies.isEmpty()) {
-			for(int i = 0; i < 5; i++) {
+		if (copies == null || copies.isEmpty()) {
+			copies = new ArrayList<CopyDto>();
+			for(int i = 0; i < 4; i++) {
 				copies.add(new CopyDto());
 			}
 		}	
@@ -132,12 +138,54 @@ public class Lending implements Serializable {
 	}
 
 	/**
-	 * Action for a listener on the user email input field.
+	 * Action for a listener on the user email input field. Fills the signature 
+	 * fields with marked copies if email matches a user.
 	 * 
 	 * @param change holds the new user Email that was put in.
 	 */
 	public void setUserEmail(ValueChangeEvent change) {
 		user.setEmailAddress(change.getNewValue().toString());
+		if (UserDao.userEntityWithEmailExists(user)) {
+			List<CopyDto> markedCopies = 
+					MediumDao.getMarkedCopiesByEmail(user);
+			boolean notEmpty = !markedCopies.isEmpty();
+			if (notEmpty) {
+				copies.clear();
+				for (CopyDto dto : markedCopies) {
+					copies.add(dto);
+				}
+			}
+		} else {
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			MessagingUtility.writeNegativeMessageWithKey(ctx, false, 
+					"lending.no_such_email");
+		}
+	}
+	
+	/**
+	 * Used to fill in the form fields with flash parameters.
+	 */
+	public void preloadUserAndCopies(){
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Flash flash = facesContext.getExternalContext().getFlash();
+		Integer userId = (Integer) flash.get("userId");
+		String copySignature = (String) flash.get("copySignature");
+		if (userId != null && copySignature != null){
+			user.setId(userId);
+			try {
+				UserDao.readUserForProfile(user);
+			} catch (UserDoesNotExistException e1) {
+				Logger.severe("Couldn't read user "
+						+ "from previous page");
+			}
+			copies.get(0).setSignature(copySignature);
+			try {
+				MediumDao.readCopyBySignature(copies.get(0));
+			} catch (EntityInstanceDoesNotExistException e) {
+				Logger.severe("Couldn't read medium copy "
+						+ "from previous page");
+			}
+		}
 	}
 
 	/**

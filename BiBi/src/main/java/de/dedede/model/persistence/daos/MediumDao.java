@@ -1286,6 +1286,85 @@ public final class MediumDao {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
 	}
+	
+	/**
+	 * Retrieves all marked copies for a given email address.
+	 * 
+	 * @return An empty list if the user doesnt exist or an error occured.
+	 * @author Jonas Picker
+	 */
+	public static List<CopyDto> getMarkedCopiesByEmail(UserDto userEmail) {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		List<CopyDto> result = new ArrayList<CopyDto>();
+		if (UserDao.userEntityWithEmailExists(userEmail)) {
+			getLentOrMarkedCopiesByUser(userEmail, conn, result, 
+					CopyStatus.READY_FOR_PICKUP);
+		} 
+		return result;
+	}
+	
+	/**
+	 * Retrieves all lent copies for a given email address.
+	 * 
+	 * @return An empty list if the user doesnt exist or an error occured.
+	 * @author Jonas Picker
+	 */
+	public static List<CopyDto> getLentCopiesByEmail(UserDto userEmail) {
+		ConnectionPool instance = ConnectionPool.getInstance();
+		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		List<CopyDto> result = new ArrayList<CopyDto>();
+		if (UserDao.userEntityWithEmailExists(userEmail)) {
+			getLentOrMarkedCopiesByUser(userEmail, conn, result, 
+					CopyStatus.BORROWED);
+		} 
+		return result;
+	}
+	
+	//takes an existing userEmail and copyStatus and populates a list  
+	private static void getLentOrMarkedCopiesByUser(UserDto userEmail, 
+			Connection conn, List<CopyDto> result, CopyStatus status) {
+		String input = "";
+		if (status.equals(CopyStatus.AVAILABLE)) {
+			return;
+		} else if (status.equals(CopyStatus.READY_FOR_PICKUP)) {
+			input = "READY_FOR_PICKUP"; //CopyStatus.toString() was overridden..
+		} else if (status.equals(CopyStatus.BORROWED)) {
+			input = "BORROWED";
+		}
+		try {
+			int id = UserDao.getUserIdByEmail(conn, userEmail);
+			PreparedStatement stmt = conn.prepareStatement (
+					"SELECT copyid, mediumid, signature, bibposition, status,"
+					+ " deadline, actor FROM mediumcopy "
+					+ "WHERE (status = CAST (? AS copystatus)) "
+					+ "AND (actor = ?);"
+					);
+			stmt.setString(1, input);
+			stmt.setInt(2, id);
+			ResultSet set = stmt.executeQuery();
+			conn.commit();
+			while(set.next()) {
+				CopyDto current = new CopyDto();
+				populateCopyDto(current, set);
+				result.add(current);
+			}
+		} catch (UserDoesNotExistException impossible) {
+		} catch (SQLException e) {
+			String errorMessage = "Error occured with db communication"
+					+ " while retireving a users marked copies.";
+			Logger.severe(errorMessage);
+			try {
+				result.clear();
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
+			throw new LostConnectionException(errorMessage, e);
+		}
+	}
 
 	/**
 	 * Checks if the copy was lent and inverts the result.
@@ -1315,9 +1394,16 @@ public final class MediumDao {
 			
 			return result;
 		} catch (SQLException e) {
-			String errorMessage = "Error occured while with db communication"
-					+ " checking for invalid actor on copy return.";
+			String errorMessage = "Error occured with db communication"
+					+ " while checking for invalid actor on copy return.";
 			Logger.severe(errorMessage);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(errorMessage, e);
 		}
 	}
@@ -1358,6 +1444,13 @@ public final class MediumDao {
 			String errorMessage = "Error occured with db communication while"
 					+ " checking for invalid actor on copy return.";
 			Logger.severe(errorMessage);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(errorMessage, e);
 		} catch (UserDoesNotExistException e) { 
 			String errorMessage = "User wasn't found in DB during check for" 
@@ -1379,7 +1472,6 @@ public final class MediumDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-
 	private static boolean invalidDeadlineReturnAttempt(Connection conn, 
 			CopyDto signatureContainer,
 			UserDto userEmail) {
@@ -1408,6 +1500,13 @@ public final class MediumDao {
 			String errorMessage = "Error occured with db communication while" 
 					+ " checking for valid copy return.";
 			Logger.severe(errorMessage);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(errorMessage, e);
 		} catch (UserDoesNotExistException e) { 
 			String errorMessage = "User wasn't foud in DB during check" 
@@ -1452,6 +1551,13 @@ public final class MediumDao {
 			String errorMessage = "Error occured with db communication"
 					+ " while checking for Copy Signature existence.";
 			Logger.severe(errorMessage);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(errorMessage, e);
 		}
 	}
@@ -1486,6 +1592,13 @@ public final class MediumDao {
 			String errorMessage = "Error occured with db communication"
 					+ " while checking for copy status on lending attempt.";
 			Logger.severe(errorMessage);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(errorMessage, e);
 		}
 	}
@@ -1525,6 +1638,13 @@ public final class MediumDao {
 			String errorMessage = "Error occured with db communication while "
 					+ "checking for invalid user for copy on lending attempt.";
 			Logger.severe(errorMessage);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(errorMessage, e);
 		} catch (UserDoesNotExistException e) { 
 			String errorMessage = "User wasn't found in DB during check for"
@@ -1582,7 +1702,7 @@ public final class MediumDao {
 							signature, userId));
 		} catch (SQLException e1) {
 			Logger.development("SQLException while comparing lend limits");
-			throw new CopyDoesNotExistException("SQLException while comparing" 
+			throw new LostConnectionException("SQLException while comparing" 
 												+ " lend limits");
 		}
 		try {
@@ -1597,8 +1717,16 @@ public final class MediumDao {
 			Logger.development(rowsUpdated + " copy was lent to a user.");
 			lendCopy.close();
 		} catch (SQLException e) {
-			String errorMessage = "Connection Error while trying to lend copy";
+			String errorMessage = "Connection Error while trying to lend copy, "
+					+ "attempting rollback...";
 			Logger.severe(errorMessage);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(errorMessage, e);
 		} finally {
 			instance.releaseConnection(conn);
@@ -1627,8 +1755,16 @@ public final class MediumDao {
 			refreshMarkedDeadlines.close();
 		} catch (SQLException e) {
 			String errorMessage = "Error occured with db communication while"
-					+ " refreshing marked copies with expired deadline.";
+					+ " refreshing marked copies with expired deadline, "
+					+ "attempting rollback...";
 			Logger.severe(errorMessage);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(errorMessage, e);
 		} finally {
 			instance.releaseConnection(conn);
@@ -1759,8 +1895,15 @@ public final class MediumDao {
 			returnCopy.close();
 		} catch (SQLException e) {
 			String msg = "An Error occured during communication with" 
-						+ " database on copy returning process.";
+						+ " database on copy returning process, attempting rollback...";
 			Logger.severe(msg);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg1 = "Failed to rollback database transaction";
+				Logger.severe(msg1);
+				throw new LostConnectionException(msg1);
+			}
 			throw new LostConnectionException(msg, e);
 		} finally {
 			instance.releaseConnection(conn);
@@ -1897,8 +2040,15 @@ public final class MediumDao {
 			readAlmostDue.close();
 		} catch (SQLException e) {
 			String message = "An Error occured while trying to read due date "
-					+ "reminders";
+					+ "reminders, attempting rollback...";
 			Logger.severe(message);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg = "Failed to rollback database transaction";
+				Logger.severe(msg);
+				throw new LostConnectionException(msg);
+			}
 			throw new LostConnectionException(message, e);
 		} finally {
 			instance.releaseConnection(conn);
