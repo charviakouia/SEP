@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -48,6 +50,7 @@ public class T60 {
 		//create
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form:button_save")));
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form:button_save"))).click();
+		try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
         try {
 			//checks a result
 			assertTrue(driver.getPageSource().contains("Die Kategorie ist erfolgreich erstellt."));

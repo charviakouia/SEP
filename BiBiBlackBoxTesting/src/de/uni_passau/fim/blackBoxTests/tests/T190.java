@@ -1,10 +1,14 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -13,7 +17,7 @@ import de.uni_passau.fim.blackBoxTests.util.Driver;
 import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 
 public class T190 {
-	
+
 	private WebDriver driver;
 	private WebDriverWait waiter;
 	private String threadName;
@@ -30,7 +34,21 @@ public class T190 {
 
 	@Test
 	public void doTest() {
-		fail(); // TODO
+		driver.findElement(By.id("site_notice_link")).click();
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+		}
+		driver.findElement(By.id("site_notice_form:site_notice_text_area")).click();
+		driver.findElement(By.id("site_notice_form:site_notice_text_area"))
+				.sendKeys("Team 1\\n\\nUni Passau\\nInnstraße 33\\n94032 Passau\\nGermany");
+		driver.findElement(By.id("site_notice_form:site_notice_save_changes")).click();
+		try {
+			TimeUnit.SECONDS.sleep(2);
+		} catch (InterruptedException e) {
+		}
+
+		assertTrue(driver.getPageSource().contains("Germany"));
 	}
 
 	@After

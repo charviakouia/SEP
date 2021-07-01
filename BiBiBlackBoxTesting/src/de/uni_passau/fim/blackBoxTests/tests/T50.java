@@ -5,10 +5,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -29,17 +30,26 @@ public class T50 {
     
     @Test
     public void doTest() {
+		//search
+		driver.findElement(By.id("form_medium_search_header:input_medium_search_term_header"))
+				.sendKeys("Programmieren lernen" + Keys.ENTER);
+		try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
+		//navigate
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=mediumLink]")));
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=mediumLink]"))).click();
+		try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
         try {
 			//sets a new copy's attributes
 			driver.findElement(By.id("createCopy:newCopyLocation")).sendKeys("FIM");
-			driver.findElement(By.id("createCopy:newCopySignature")).sendKeys("17RE (2)");
-
-			//create
-			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("createCopy:createCopyButton")));
-			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("createCopy:createCopyButton"))).click();
-
+			driver.findElement(By.id("createCopy:newCopySignature")).sendKeys("17RE (2)"
+					+ Keys.ENTER);
+		} catch (Exception e) {
+			fail("Attributen wurden erfolglos angegeben.");
+		}
+		try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
+        try {
 			//checks a result
-			assertTrue(driver.getPageSource().contains("17RE (2)"));
+			assertTrue(driver.getPageSource().contains("Das Exemplar wurde erfolgreich erstellt."));
         } catch (Exception e) {
         	fail("A new signature not found.");
         }
@@ -59,7 +69,6 @@ public class T50 {
 	public void setMultiThreaded(boolean isMultiThreaded) {
 		this.isMultiThreaded = isMultiThreaded;
 	}
-
 
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;

@@ -1,10 +1,15 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -30,7 +35,39 @@ public class T170 {
 
 	@Test
 	public void doTest() {
-		fail(); // TODO
+	    driver.findElement(By.id("accountDropDown")).click();
+	    try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+		}
+	    driver.findElement(By.id("form_log_out:button_log_out")).click();
+	    try {
+			TimeUnit.SECONDS.sleep(2);
+		} catch (InterruptedException e) {
+		}
+	    driver.findElement(By.id("signIn")).click();
+	    try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+		}
+	    driver.findElement(By.id("login_form:login_email_field")).click();
+	    driver.findElement(By.id("login_form:login_email_field")).sendKeys("liehr@fim.uni-passau.de");
+	    driver.findElement(By.id("login_form:login_password_field")).sendKeys("Hallo0");
+	    driver.findElement(By.id("login_form:login_login_button")).click();
+	    try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+		}
+	    driver.findElement(By.id("header_admin_dropdown")).click();
+	    driver.findElement(By.id("header_admin_user_search")).click();
+	    driver.findElement(By.id("form_user_search:input_user_search_term")).click();
+	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys("Bob Mustermann");
+	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys(Keys.ENTER);
+	    try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+		}
+	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test@gmail.com"));
 	}
 
 	@After

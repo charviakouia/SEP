@@ -7,14 +7,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="byte-buddy-1.8.15" level="project" />
-    <orderEntry type="library" name="client-combined-3.141.59" level="project" />
-    <orderEntry type="library" name="commons-exec-1.3" level="project" />
-    <orderEntry type="library" name="guava-25.0-jre" level="project" />
-    <orderEntry type="library" name="okhttp-3.11.0" level="project" />
-    <orderEntry type="library" name="okio-1.14.0" level="project" />
+    <orderEntry type="library" exported="" name="byte-buddy-1.8.15" level="project" />
+    <orderEntry type="library" exported="" name="client-combined-3.141.59" level="project" />
+    <orderEntry type="library" exported="" name="commons-exec-1.3" level="project" />
+    <orderEntry type="library" exported="" name="guava-25.0-jre" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.11.0" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.14.0" level="project" />
     <orderEntry type="module" module-name="BiBi" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/junit-4.13.1.jar!/" />
@@ -23,7 +23,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/hamcrest-core-1.3.jar!/" />
@@ -32,7 +32,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/jacocoagent.jar!/" />
@@ -41,5 +41,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="junit-4.13.1" level="project" />
+    <orderEntry type="library" name="jacocoagent" level="project" />
+    <orderEntry type="library" name="hamcrest-core-1.3" level="project" />
   </component>
 </module>
