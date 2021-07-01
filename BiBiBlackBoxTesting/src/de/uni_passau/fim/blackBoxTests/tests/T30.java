@@ -1,6 +1,7 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,15 +38,16 @@ public class T30 {
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("prfl"))).click();
 
 			//sets a new surname
+			Selenium.waitUntilLoaded();
 			driver.findElement(By.id("form_profile:lastname")).clear();
-			driver.findElement(By.id("form_profile:lastname")).sendKeys("Müller"
-					+ Keys.ENTER);
+			driver.findElement(By.id("form_profile:lastname")).sendKeys("Müller" + Keys.ENTER);
 
 			//checks a result
+			Selenium.waitUntilLoaded();
 			assertEquals("Müller", driver.findElement(By.id("form_profile:lastname"))
 					.getAttribute("value"));
         } catch (Exception e) {
-        	fail("A new surname not found.");
+        	fail("A new surname not found." + e);
         }
     }
     

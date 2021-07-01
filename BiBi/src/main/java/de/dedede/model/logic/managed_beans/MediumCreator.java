@@ -105,7 +105,7 @@ public class MediumCreator implements Serializable {
 		try {
 			MediumDao.createMedium(medium);
 			MediumDao.createCopy(copy, medium);
-			MessagingUtility.writePositiveMessageWithKey(context, false, "mediumCreator.success");
+			MessagingUtility.writePositiveMessageWithKey(context, true, "mediumCreator.success");
 			return "/view/opac/medium.xhtml?faces-redirect=true&id=" + medium.getId();
 		} catch (LostConnectionException | MaxConnectionsException e){
 			String msg = "Datastore error occurred - cannot create medium or medium-copy entities";

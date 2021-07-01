@@ -106,7 +106,6 @@ public class TestSuiteThread extends Thread {
 			Thread.sleep(1000);
 			long starttime = System.currentTimeMillis();
 			System.out.println("TestSuite Thread with name: " + threadName + "started executing at: " + starttime);
-
 			test1.setUp();
 			test1.doTest();
 			test2.setUp();
@@ -140,7 +139,6 @@ public class TestSuiteThread extends Thread {
 			test15.t120();
 			test16.setUp();
 			test16.t130();
-			
 			long stoptime = System.currentTimeMillis();
 			System.out.println("Finished executing test suite with thread name: " + threadName + " at time: " + stoptime);
 		} catch (InterruptedException e) {
