@@ -1,6 +1,6 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

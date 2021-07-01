@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
 
-import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
+import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 
 public class T150 {
 	

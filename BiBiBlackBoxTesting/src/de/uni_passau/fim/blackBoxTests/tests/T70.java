@@ -1,6 +1,6 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 

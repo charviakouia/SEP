@@ -1,13 +1,11 @@
-package de.uni_passau.fim.blackBoxTests.test_suite;
+package de.uni_passau.fim.blackBoxTests.util;
 
-import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
 import de.uni_passau.fim.blackBoxTests.tests.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.openqa.selenium.WebDriver;
 
 @RunWith(Suite.class)
 @SuiteClasses({T01.class, T02.class, T08.class, T09.class, T10.class, T11.class, T20.class, T30.class, T40.class,

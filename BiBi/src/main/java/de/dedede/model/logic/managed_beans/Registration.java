@@ -70,7 +70,7 @@ public class Registration implements Serializable {
 		createUser();
 		sendVerificationEmail();
 		switchUserAndSetMessages();
-		return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
+		return getNavigation();
 	}
 
 	private void setToken(){
@@ -120,6 +120,14 @@ public class Registration implements Serializable {
 		} else {
 			MessagingUtility.writePositiveMessageWithKey(context, true, "registration.success.own");
 			session.setUser(user);
+		}
+	}
+
+	private String getNavigation(){
+		if (session.isAdmin()){
+			return "/view/account/profile.xhtml?faces-redirect=true&id=" + user.getId();
+		} else {
+			return "/view/account/profile.xhtml?faces-redirect=true&id=" + session.getUser().getId();
 		}
 	}
 

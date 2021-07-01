@@ -1,4 +1,4 @@
-package de.uni_passau.fim.blackBoxTests.test_suite;
+package de.uni_passau.fim.blackBoxTests.util;
 
 import java.util.Objects;
 
