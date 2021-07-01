@@ -1,10 +1,14 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -13,7 +17,7 @@ import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
 import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
 
 public class T160 {
-	
+
 	private WebDriver driver;
 	private WebDriverWait waiter;
 	private String threadName;
@@ -30,7 +34,31 @@ public class T160 {
 
 	@Test
 	public void doTest() {
-		fail(); // TODO
+		try {
+			TimeUnit.MINUTES.sleep(1);
+		} catch (InterruptedException e) {
+		}
+		driver.findElement(By.id("header_staff_dropdown")).click();
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+		}
+		driver.findElement(By.linkText("Rückgabe")).click();
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+		}
+		driver.findElement(By.id("form_return_form:returnForm_mail_field")).click();
+		driver.findElement(By.id("form_return_form:returnForm_mail_field")).sendKeys("nutzer.sep2021test@gmail.com");
+		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).click();
+		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).sendKeys("17RE (+1)");
+		driver.findElement(By.id("form_return_form:button_return_copies")).click();
+		try {
+			TimeUnit.SECONDS.sleep(4);
+		} catch (InterruptedException e) {
+		}
+
+		assertTrue(driver.getPageSource().contains("1 Exemplare von nutzer.sep2021test@gmail.com zurückgegeben."));
 	}
 
 	@After
