@@ -21,16 +21,16 @@ import de.uni_passau.fim.blackBoxTests.util.Selenium;
  */
 public class T90 {
 
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-    private static String threadName = "";
-    private static boolean isMultiThreaded = false;
+    private WebDriver driver;
+    private WebDriverWait waiter;
+    private String threadName = "";
+    private boolean isMultiThreaded = false;
 
     private static final String SEARCH_STR = "JSF: Durch";
     private static final String MEDIUM_TITLE = "JSF: Durch Nacht zum Licht.";
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
             waiter = Driver.getDriverWait();
@@ -39,7 +39,7 @@ public class T90 {
     }
 
     @AfterClass
-    public static void tearDown() {}
+    public void tearDown() {}
 
     /**
      * Performs a medium-search using preset keywords and attempts to match the full medium title to
@@ -58,36 +58,36 @@ public class T90 {
 
     }
 
-    public static String getThreadName() {
+    public String getThreadName() {
         return threadName;
     }
 
-    public static void setThreadName(String threadName) {
-        T90.threadName = threadName;
+    public void setThreadName(String threadName) {
+        this.threadName = threadName;
     }
 
-    public static boolean isMultiThreaded() {
+    public boolean isMultiThreaded() {
         return isMultiThreaded;
     }
 
-    public static void setMultiThreaded(boolean isMultiThreaded) {
-        T90.isMultiThreaded = isMultiThreaded;
+    public void setMultiThreaded(boolean isMultiThreaded) {
+        this.isMultiThreaded = isMultiThreaded;
     }
 
-	public static WebDriver getDriver() {
+	public WebDriver getDriver() {
 		return driver;
 	}
 
-	public static void setDriver(WebDriver driver) {
-		T90.driver = driver;
+	public void setDriver(WebDriver driver) {
+		this.driver = driver;
 	}
 
-	public static WebDriverWait getWaiter() {
+	public WebDriverWait getWaiter() {
 		return waiter;
 	}
 
-	public static void setWaiter(WebDriverWait waiter) {
-		T90.waiter = waiter;
+	public void setWaiter(WebDriverWait waiter) {
+		this.waiter = waiter;
 	}
     
     

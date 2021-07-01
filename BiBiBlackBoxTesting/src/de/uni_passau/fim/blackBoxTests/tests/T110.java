@@ -18,17 +18,17 @@ import static org.junit.Assert.assertTrue;
  */
 public class T110 {
 
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-    private static String threadName = "";
-    private static boolean isMultiThreaded = false;
+    private WebDriver driver;
+    private WebDriverWait waiter;
+    private String threadName = "";
+    private boolean isMultiThreaded = false;
 
-    private static final String EMAIL = "nutzer.sep2021test" + threadName + "@gmail.com";
-    private static final String PASSWORD = "sdfHs4!a";
-    private static final String FIRST_NAME = "Bob";
+    private final String EMAIL = "nutzer.sep2021test" + threadName + "@gmail.com";
+    private final String PASSWORD = "sdfHs4!a";
+    private final String FIRST_NAME = "Bob";
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
             waiter = Driver.getDriverWait();
@@ -37,7 +37,7 @@ public class T110 {
     }
 
     @AfterClass
-    public static void tearDown() {}
+    public void tearDown() {}
 
     /**
      * Performs a password-reset using the preset data values in the password-reset page, and ensures that
@@ -68,36 +68,36 @@ public class T110 {
 
     }
 
-    public static String getThreadName() {
+    public String getThreadName() {
         return threadName;
     }
 
-    public static void setThreadName(String threadName) {
-        T110.threadName = threadName;
+    public void setThreadName(String threadName) {
+        this.threadName = threadName;
     }
 
-    public static boolean isMultiThreaded() {
+    public boolean isMultiThreaded() {
         return isMultiThreaded;
     }
 
-    public static void setMultiThreaded(boolean isMultiThreaded) {
-        T110.isMultiThreaded = isMultiThreaded;
+    public void setMultiThreaded(boolean isMultiThreaded) {
+        this.isMultiThreaded = isMultiThreaded;
     }
 
-	public static WebDriver getDriver() {
+	public WebDriver getDriver() {
 		return driver;
 	}
 
-	public static void setDriver(WebDriver driver) {
-		T110.driver = driver;
+	public void setDriver(WebDriver driver) {
+		this.driver = driver;
 	}
 
-	public static WebDriverWait getWaiter() {
+	public WebDriverWait getWaiter() {
 		return waiter;
 	}
 
-	public static void setWaiter(WebDriverWait waiter) {
-		T110.waiter = waiter;
+	public void setWaiter(WebDriverWait waiter) {
+		this.waiter = waiter;
 	}
     
     

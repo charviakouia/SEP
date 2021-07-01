@@ -20,22 +20,22 @@ import de.uni_passau.fim.blackBoxTests.util.Selenium;
  */
 public class T100 {
 
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-    private static String threadName = "";
-    private static boolean isMultiThreaded = false;
+    private WebDriver driver;
+    private WebDriverWait waiter;
+    private String threadName = "";
+    private boolean isMultiThreaded = false;
 
-    private static final String FIRST_NAME = "Bob" + threadName;
-    private static final String LAST_NAME = "Mustermann" + threadName;
-    private static final String PASSWORD = "sdfHs4!a";
-    private static final String EMAIL = "nutzer.sep2021test" + threadName + "@gmail.com";
-    private static final String ZIP = "94032";
-    private static final String CITY = "Passau";
-    private static final String STREET = "Innstraße";
-    private static final String STREET_NUMBER = "40";
+    private final String FIRST_NAME = "Bob" + threadName;
+    private final String LAST_NAME = "Mustermann" + threadName;
+    private final String PASSWORD = "sdfHs4!a";
+    private final String EMAIL = "nutzer.sep2021test" + threadName + "@gmail.com";
+    private final String ZIP = "94032";
+    private final String CITY = "Passau";
+    private final String STREET = "Innstraße";
+    private final String STREET_NUMBER = "40";
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
             waiter = Driver.getDriverWait();
@@ -44,7 +44,7 @@ public class T100 {
     }
 
     @AfterClass
-    public static void tearDown() {}
+    public void tearDown() {}
 
     /**
      * Performs a registration using the preset data values, navigates to the profile page, and compares the
@@ -76,20 +76,37 @@ public class T100 {
 
     }
 
-    public static String getThreadName() {
+    public String getThreadName() {
         return threadName;
     }
 
-    public static void setThreadName(String threadName) {
-        T100.threadName = threadName;
+    public void setThreadName(String threadName) {
+        this.threadName = threadName;
     }
 
-    public static boolean isMultiThreaded() {
+    public boolean isMultiThreaded() {
         return isMultiThreaded;
     }
 
-    public static void setMultiThreaded(boolean isMultiThreaded) {
-        T100.isMultiThreaded = isMultiThreaded;
+    public void setMultiThreaded(boolean isMultiThreaded) {
+        this.isMultiThreaded = isMultiThreaded;
     }
 
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public void setDriver(WebDriver driver) {
+		this.driver = driver;
+	}
+
+	public WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(WebDriverWait waiter) {
+		this.waiter = waiter;
+	}
+
+    
 }

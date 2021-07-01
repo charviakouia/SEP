@@ -15,13 +15,13 @@ import de.uni_passau.fim.blackBoxTests.util.Driver;
 
 public class T130 {
 
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-    private static String threadName = "";
-    private static boolean isMultiThreaded = false;
+    private WebDriver driver;
+    private WebDriverWait waiter;
+    private String threadName = "";
+    private boolean isMultiThreaded = false;
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
     	if (!isMultiThreaded) {
     		driver = Driver.getDriver();
     		waiter = Driver.getDriverWait();
@@ -57,7 +57,7 @@ public class T130 {
 	}
 
 	public void setDriver(WebDriver driver) {
-		T130.driver = driver;
+		this.driver = driver;
 	}
 
 	public WebDriverWait getWaiter() {
@@ -65,7 +65,7 @@ public class T130 {
 	}
 
 	public void setWaiter(WebDriverWait waiter) {
-		T130.waiter = waiter;
+		this.waiter = waiter;
 	}
 
 	public String getThreadName() {
@@ -73,7 +73,7 @@ public class T130 {
 	}
 
 	public void setThreadName(String threadName) {
-		T130.threadName = threadName;
+		this.threadName = threadName;
 	}
 
 	public boolean isMultiThreaded() {
@@ -81,8 +81,10 @@ public class T130 {
 	}
 
 	public void setMultiThreaded(boolean isMultiThreaded) {
-		T130.isMultiThreaded = isMultiThreaded;
+		this.isMultiThreaded = isMultiThreaded;
 	}
+
+	
     
     
 }
