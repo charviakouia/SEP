@@ -1,12 +1,17 @@
 package de.dedede.model.logic.managed_beans;
 
+import de.dedede.model.data.dtos.CopyStatus;
+import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.UserVerificationStatus;
+import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
+import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.annotation.PostConstruct;
@@ -20,6 +25,7 @@ import jakarta.inject.Named;
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -31,10 +37,12 @@ import java.util.ResourceBundle;
  */
 @Named
 @ViewScoped
-public class Profile implements Serializable {
+public class Profile extends PaginatedList implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
+
+	private List<MediumCopyUserDto> copies;
 
 	private UserDto user;
 
@@ -90,6 +98,11 @@ public class Profile implements Serializable {
 	 * a user as an admin.
 	 */
 	public String delete() throws UserDoesNotExistException, IOException {
+		if (!MediumDao.readLentCopiesByUser(getPaginatedList(), user).isEmpty()
+				|| !MediumDao.readMarkedCopiesByUser(getPaginatedList(), user).isEmpty()) {
+			MessagingUtility.writeNegativeMessageWithKey(context, false, "delUser.hasLentCopies");
+			return "";
+		}
 		UserDao.deleteUser(user);
 		if (userSession.getUser().getUserRole() == UserRole.ADMIN) {
 			MessagingUtility.writePositiveMessageWithKey(context, true, "delUser.success");
@@ -176,5 +189,14 @@ public class Profile implements Serializable {
 	public String throwsError() {
 		throw new IllegalStateException("Doing a bit of testing here...");
 	}
-	
+
+	@Override
+	public List<?> getItems() {
+		return copies;
+	}
+
+	@Override
+	public void refresh() {
+
+	}
 }
