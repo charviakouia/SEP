@@ -19,15 +19,15 @@ import static org.junit.Assert.assertTrue;
  */
 public class T80 {
 
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-    private static String threadName;
-    private static boolean isMultiThreaded = false;
+    private WebDriver driver;
+    private WebDriverWait waiter;
+    private String threadName = "";
+    private boolean isMultiThreaded = false;
 
     private static final String SITE_NOTICE_TEXT = "Innstraße";
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
             waiter = Driver.getDriverWait();
@@ -36,7 +36,7 @@ public class T80 {
     }
 
     @AfterClass
-    public static void tearDown() {}
+    public void tearDown() {}
 
     /**
      * Performs a log-out.
@@ -64,20 +64,38 @@ public class T80 {
 
     }
 
-    public static String getThreadName() {
-        return threadName;
+    public String getThreadName() {
+        return this.threadName;
     }
 
-    public static void setThreadName(String threadName) {
-        T80.threadName = threadName;
+    public void setThreadName(String threadName) {
+        this.threadName = threadName;
     }
 
-    public static boolean isMultiThreaded() {
-        return isMultiThreaded;
+    public boolean isMultiThreaded() {
+        return this.isMultiThreaded;
     }
 
-    public static void setMultiThreaded(boolean isMultiThreaded) {
-        T80.isMultiThreaded = isMultiThreaded;
+    public void setMultiThreaded(boolean isMultiThreaded) {
+        this.isMultiThreaded = isMultiThreaded;
     }
+
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public void setDriver(WebDriver driver) {
+		this.driver = driver;
+	}
+
+	public WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(WebDriverWait waiter) {
+		this.waiter = waiter;
+	}
+    
+    
 
 }

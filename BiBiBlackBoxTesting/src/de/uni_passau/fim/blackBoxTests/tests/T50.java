@@ -17,7 +17,7 @@ public class T50 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 		    
     @Before
@@ -32,7 +32,7 @@ public class T50 {
     public void doTest() {
 		//search
 		driver.findElement(By.id("form_medium_search_header:input_medium_search_term_header"))
-				.sendKeys("Programmieren lernen" + Keys.ENTER);
+				.sendKeys("Programmieren lernen" + threadName + Keys.ENTER);
 		try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
 		//navigate
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=mediumLink]")));
@@ -40,8 +40,8 @@ public class T50 {
 		try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
         try {
 			//sets a new copy's attributes
-			driver.findElement(By.id("createCopy:newCopyLocation")).sendKeys("FIM");
-			driver.findElement(By.id("createCopy:newCopySignature")).sendKeys("17RE (2)"
+			driver.findElement(By.id("createCopy:newCopyLocation")).sendKeys("FIM" + threadName);
+			driver.findElement(By.id("createCopy:newCopySignature")).sendKeys("17RE (2)" + threadName
 					+ Keys.ENTER);
 		} catch (Exception e) {
 			fail("Attributen wurden erfolglos angegeben.");

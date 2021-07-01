@@ -1,7 +1,7 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,13 +14,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 
-import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
-
 public class T150 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 
 	@Before
@@ -45,7 +43,7 @@ public class T150 {
 		} catch (InterruptedException e) {
 		}
 	    
-	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test@gmail.com"));
+	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test" + threadName + "@gmail.com"));
 	}
 
 	@After

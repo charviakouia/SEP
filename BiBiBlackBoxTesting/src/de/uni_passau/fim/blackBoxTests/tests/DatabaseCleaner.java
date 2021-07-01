@@ -1,25 +1,31 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
-import de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.fail;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.UrlPrefix;
 
 public class DatabaseCleaner {
 
     private static WebDriver driver;
     private static WebDriverWait waiter;
+    private static boolean isMultiThreaded = false;
+    private static String threadName = "";
 
     @BeforeClass
     public static void setUp() {
@@ -56,7 +62,7 @@ public class DatabaseCleaner {
 
         try { TimeUnit.SECONDS.sleep(3); } catch (InterruptedException e){}
         // Navigate to advanced search and perform search
-        driver.findElement(By.id("form_medium_search:input_general_search_term")).sendKeys("Programmieren lernen", Keys.ENTER);
+        driver.findElement(By.id("form_medium_search:input_general_search_term")).sendKeys("Programmieren lernen" + threadName, Keys.ENTER);
 
         // Check that the correct result exists
         try { TimeUnit.SECONDS.sleep(5); } catch (InterruptedException e){}
@@ -64,7 +70,7 @@ public class DatabaseCleaner {
         WebElement correctElement = null;
         for (WebElement element : elementList){
             ExpectedCondition<Boolean> condition =
-                    ExpectedConditions.textToBePresentInElement(element, "Programmieren lernen");
+                    ExpectedConditions.textToBePresentInElement(element, "Programmieren lernen" + threadName);
             try {
                 waiter.until(condition);
                 correctElement = element;
@@ -98,7 +104,7 @@ public class DatabaseCleaner {
 
         // Search the staff account
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_user_search:input_user_search_term")))
-                .sendKeys("mitarbeiter.sep2021test@gmail.com" + Keys.ENTER);
+                .sendKeys("mitarbeiter.sep2021test" + threadName + "@gmail.com" + Keys.ENTER);
 
         // Navigate to the staff account
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=emailLink]"))).click();
@@ -112,7 +118,7 @@ public class DatabaseCleaner {
 
         // Search the user account
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_user_search:input_user_search_term")))
-                .sendKeys("nutzer.sep2021test@gmail.com" + Keys.ENTER);
+                .sendKeys("nutzer.sep2021test" + threadName + "@gmail.com" + Keys.ENTER);
 
         // Navigate to the user account
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=emailLink]"))).click();
@@ -124,4 +130,37 @@ public class DatabaseCleaner {
 
     }
 
+	public static WebDriver getDriver() {
+		return driver;
+	}
+
+	public static void setDriver(WebDriver driver) {
+		DatabaseCleaner.driver = driver;
+	}
+
+	public static WebDriverWait getWaiter() {
+		return waiter;
+	}
+
+	public static void setWaiter(WebDriverWait waiter) {
+		DatabaseCleaner.waiter = waiter;
+	}
+
+	public static boolean isMultiThreaded() {
+		return isMultiThreaded;
+	}
+
+	public static void setMultiThreaded(boolean isMultiThreaded) {
+		DatabaseCleaner.isMultiThreaded = isMultiThreaded;
+	}
+
+	public static String getThreadName() {
+		return threadName;
+	}
+
+	public static void setThreadName(String threadName) {
+		DatabaseCleaner.threadName = threadName;
+	}
+
+    
 }

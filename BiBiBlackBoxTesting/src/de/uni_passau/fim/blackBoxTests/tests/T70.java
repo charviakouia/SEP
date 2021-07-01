@@ -17,7 +17,7 @@ public class T70 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
-	private String threadName;
+	private String threadName = "";
 	private boolean isMultiThreaded = false;
 		    
     @Before
@@ -32,7 +32,7 @@ public class T70 {
     public void doTest() {
 		//search
 		driver.findElement(By.id("form_medium_search_header:input_medium_search_term_header"))
-				.sendKeys("Programmieren lernen" + Keys.ENTER);
+				.sendKeys("Programmieren lernen" + threadName + Keys.ENTER);
 
 		//navigate
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=mediumLink]")));
@@ -41,7 +41,7 @@ public class T70 {
 		//edit a category of the medium
 		driver.findElement(By.id("form_mediumAttributes_forUsers:category")).clear();
 		driver.findElement(By.id("form_mediumAttributes_forUsers:category"))
-				.sendKeys("Informatik");
+				.sendKeys("Informatik" + threadName);
 
 		//save
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_mediumAttributes_forUsers:saveMedium")));
