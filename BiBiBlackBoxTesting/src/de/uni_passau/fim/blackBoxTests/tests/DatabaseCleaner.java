@@ -22,19 +22,19 @@ import de.uni_passau.fim.blackBoxTests.util.UrlPrefix;
 
 public class DatabaseCleaner {
 
-    private static WebDriver driver;
-    private static WebDriverWait waiter;
-    private static boolean isMultiThreaded = false;
-    private static String threadName = "";
+    private WebDriver driver;
+    private WebDriverWait waiter;
+    private boolean isMultiThreaded = false;
+    private String threadName = "";
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
         driver = Driver.getDriver();
         waiter = Driver.getDriverWait();
     }
 
     @AfterClass
-    public static void tearDown() {}
+    public void tearDown() {}
 
     @Test
     public void cleanDB() {
@@ -132,37 +132,38 @@ public class DatabaseCleaner {
 
     }
 
-	public static WebDriver getDriver() {
+	public WebDriver getDriver() {
 		return driver;
 	}
 
-	public static void setDriver(WebDriver driver) {
-		DatabaseCleaner.driver = driver;
+	public void setDriver(WebDriver driver) {
+		this.driver = driver;
 	}
 
-	public static WebDriverWait getWaiter() {
+	public WebDriverWait getWaiter() {
 		return waiter;
 	}
 
-	public static void setWaiter(WebDriverWait waiter) {
-		DatabaseCleaner.waiter = waiter;
+	public void setWaiter(WebDriverWait waiter) {
+		this.waiter = waiter;
 	}
 
-	public static boolean isMultiThreaded() {
+	public boolean isMultiThreaded() {
 		return isMultiThreaded;
 	}
 
-	public static void setMultiThreaded(boolean isMultiThreaded) {
-		DatabaseCleaner.isMultiThreaded = isMultiThreaded;
+	public void setMultiThreaded(boolean isMultiThreaded) {
+		this.isMultiThreaded = isMultiThreaded;
 	}
 
-	public static String getThreadName() {
+	public String getThreadName() {
 		return threadName;
 	}
 
-	public static void setThreadName(String threadName) {
-		DatabaseCleaner.threadName = threadName;
+	public void setThreadName(String threadName) {
+		this.threadName = threadName;
 	}
-
+    
+    
     
 }

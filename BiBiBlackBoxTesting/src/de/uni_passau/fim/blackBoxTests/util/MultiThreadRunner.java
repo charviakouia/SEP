@@ -30,16 +30,31 @@ public class MultiThreadRunner {
 		TestSuiteThread suiteThread10 = new TestSuiteThread(webDriver10);
 		TestSuiteThread suiteThread11 = new TestSuiteThread(webDriver11);
 		suiteThread1.start();
-		suiteThread2.start();
-		suiteThread3.start();
-		suiteThread4.start();
-		suiteThread5.start();
-		suiteThread6.start();
-		suiteThread7.start();
-		suiteThread8.start();
-		suiteThread9.start();
-		suiteThread10.start();
-		suiteThread11.start();
+		try {
+			Thread.sleep(5000);
+			suiteThread2.start();
+			Thread.sleep(5000);
+			suiteThread3.start();
+			Thread.sleep(5000);
+			suiteThread4.start();
+			Thread.sleep(5000);
+			suiteThread5.start();
+			Thread.sleep(5000);
+			suiteThread6.start();
+			Thread.sleep(5000);
+			suiteThread7.start();
+			Thread.sleep(5000);
+			suiteThread8.start();
+			Thread.sleep(5000);
+			suiteThread9.start();
+			Thread.sleep(5000);
+			suiteThread10.start();
+			Thread.sleep(5000);
+			suiteThread11.start();
+		} catch (InterruptedException e) {
+			System.out.println("InterruptedException!!");
+			e.printStackTrace();
+		}
 	}
 
 }

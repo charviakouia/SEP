@@ -17,8 +17,8 @@ public class SingleThreadRunner {
             e.printStackTrace();
         } finally {
             Driver.getDriver();
-            DatabaseCleaner.setThreadName(threadName);
-            DatabaseCleaner.setUp();
+            //DatabaseCleaner.setThreadName(threadName);
+            //DatabaseCleaner.setUp();
             DatabaseCleaner dbc = new DatabaseCleaner();
             dbc.cleanDB();
         }

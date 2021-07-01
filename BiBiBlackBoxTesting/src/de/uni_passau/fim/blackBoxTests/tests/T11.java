@@ -13,6 +13,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 
 public class T11 {
 	
@@ -34,6 +35,7 @@ public class T11 {
     public void doTest() {
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_admin_dropdown"))).click();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_admin_configurations"))).click();
+        Selenium.waitUntilLoaded();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("adminForm:administration_return_period"))).clear();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("adminForm:administration_return_period"))).sendKeys("6.944444444444445E-4" + Keys.ENTER);
         String value = waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("adminForm:administration_return_period"))).getAttribute("value");
