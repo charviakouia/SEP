@@ -73,7 +73,7 @@
 
 					</h:panelGroup>
 
-					<h:link value="#{msg['advanced_search']}"
+					<h:link id="advancedSearchLink" value="#{msg['advanced_search']}"
 						outcome="/view/opac/medium-search.xhtml"
 						styleClass="nav-link #{page == 'medium_search' ? 'active' : ''}" />
 
@@ -87,7 +87,7 @@
 						rendered="#{pageHeader.showingLogin}"
 						styleClass="nav-link #{page == 'login' ? 'active' : ''}" />
 
-					<h:link value="#{msg['register']}"
+					<h:link id="registrationLink" value="#{msg['register']}"
 						outcome="/view/ffa/registration.xhtml"
 						rendered="#{pageHeader.showingRegistration}"
 						styleClass="nav-link #{page == 'registration' ? 'active' : ''}" />
@@ -131,7 +131,7 @@
 								outcome="/view/staff/return-form.xhtml"
 								styleClass="dropdown-item #{page == 'return_form' ? 'active' : ''}" />
 
-							<h:link value="#{msg['copies_ready_for_pickup_all_users']}"
+							<h:link id="copiesReadyForPickUp" value="#{msg['copies_ready_for_pickup_all_users']}"
 								outcome="/view/staff/copies-ready-for-pickup-all-users.xhtml"
 								styleClass="dropdown-item #{page == 'copies_ready_for_pickup_all_users' ? 'active' : ''}" />
 

@@ -1,4 +1,4 @@
-package tests;
+package test.java.tests;
 
 
 import de.dedede.model.data.dtos.CopyDto;
@@ -19,14 +19,14 @@ import java.sql.SQLException;
 public class UpdateMediumTest {
 
     private static MediumDto mediumDto = new MediumDto();
-    private static String defaultEdition = "1st";
+    private static String defaultEdition = "8";
     private static String testEdition = "21st";
-    private static int testId = 3;
+    private static int testId = 203;
 
 
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, MediumDoesNotExistException {
-        tests.PreTest.setUp();
+        PreTest.setUp();
         setMediumDto();
     }
 
@@ -49,7 +49,7 @@ public class UpdateMediumTest {
 
     @Test
     public void readCopyTest() {
-        CopyDto copyDto = mediumDto.getCopy(616861318);
+        CopyDto copyDto = mediumDto.getCopy(629);
         Assertions.assertEquals("ZB", copyDto.getLocation());
     }
 

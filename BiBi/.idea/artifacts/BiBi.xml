@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="BiBi:Web exploded">
-    <output-path>$PROJECT_DIR$/classes/artifacts/BiBi_Web_exploded</output-path>
+  <artifact type="exploded-war" name="BiBi">
+    <output-path>$PROJECT_DIR$/artifacts/BiBi</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="BiBi/web/Web" />
       <element id="directory" name="WEB-INF">

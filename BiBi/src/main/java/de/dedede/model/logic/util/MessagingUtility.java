@@ -30,6 +30,17 @@ public class MessagingUtility {
         writeNegativeMessage(context, fScope, getMessage(context, key, params));
     }
 
+    public static void writeNeutralMessage(FacesContext context, boolean fScope, String message){
+        context.addMessage("messageForm:neutral", new FacesMessage(message));
+        if (fScope){
+            context.getExternalContext().getFlash().setKeepMessages(true);
+        }
+    }
+
+    public static void writeNeutralMessageWithKey(FacesContext context, boolean fScope, String key, Object... params){
+        writeNeutralMessage(context, fScope, getMessage(context, key, params));
+    }
+
     public static String getMessage(FacesContext context, String key, Object... params){
         ResourceBundle bundle;
         bundle = context.getApplication().evaluateExpressionGet(context, "#{msg}", ResourceBundle.class);

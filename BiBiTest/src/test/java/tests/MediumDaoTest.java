@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import test.java.tests.PreTest;
 
 import java.sql.SQLException;
 
@@ -24,7 +25,7 @@ public class MediumDaoTest {
 
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, InvalidConfigurationException {
-        ConnectionPool.setUpConnectionPool();
+        PreTest.setUp();
     }
 
     @AfterAll
@@ -38,8 +39,8 @@ public class MediumDaoTest {
     @Test
     public void readMediumTest() throws LostConnectionException, MaxConnectionsException, MediumDoesNotExistException {
         MediumDto mediumDto = new MediumDto();
-        mediumDto.setId(2);
-        Assertions.assertTrue(MediumDao.readMedium(mediumDto).getCopies().containsKey(333));
+        mediumDto.setId(203);
+        Assertions.assertTrue(MediumDao.readMedium(mediumDto).getCopies().containsKey(629));
     }
 
     @Test
@@ -55,20 +56,4 @@ public class MediumDaoTest {
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
-
-    @Test
-    public void testCreateCopy() throws LostConnectionException, MaxConnectionsException,
-            EntityInstanceNotUniqueException, MediumDoesNotExistException {
-        MediumDto mediumDto = new MediumDto();
-        CopyDto copyDto = new CopyDto();
-        mediumDto.setId(2);
-        copyDto.setId(555);
-        copyDto.setSignature("testSignature2");
-        copyDto.setCopyStatus(CopyStatus.BORROWED);
-        copyDto.setLocation("testLocation2");
-        copyDto.setActor(333);
-        MediumDao.createCopy(copyDto, mediumDto);
-        Assertions.assertEquals("testSignature2", MediumDao.readMedium(mediumDto).getCopy(555).getSignature());
-    }
-
 }

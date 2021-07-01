@@ -1,4 +1,4 @@
-package tests;
+package test.java.tests;
 
 
 import de.dedede.model.data.dtos.CopyDto;
@@ -20,13 +20,13 @@ public class UpdateCopyTest {
 
     private static MediumDto mediumDto = new MediumDto();
     private static String testLocation = "Kneipe";
-    private static int testMediumId = 3;
-    private static int testCopyId = 2075071941;
+    private static int testMediumId = 203;
+    private static int testCopyId = 626;
 
 
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException, MediumDoesNotExistException {
-        tests.PreTest.setUp();
+        PreTest.setUp();
         setMediumDto();
     }
 

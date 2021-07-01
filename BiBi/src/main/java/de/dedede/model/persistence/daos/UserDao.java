@@ -88,11 +88,10 @@ public final class UserDao {
 		PGInterval result = new PGInterval();
 		if (duration == null) {
 			result.setSeconds(0);
-			return result;
 		} else {
 			result.setSeconds(duration.getSeconds());
-			return result;
 		}
+		return result;
 	}
 
 	public static UserDto readUserByToken(UserDto userDto) throws UserDoesNotExistException {
@@ -141,7 +140,7 @@ public final class UserDao {
 
 	private static UserDto readUserByTokenHelper(Connection conn, UserDto userDto) throws SQLException {
 		PreparedStatement readStmt = conn.prepareStatement("SELECT userid, emailaddress, passwordhashsalt, "
-				+ "passwordhash, name, surname, postalcode, city, street, "
+				+ "passwordhash, surname, name, postalcode, city, street, "
 				+ "housenumber, token, tokencreation, userlendperiod, " + "lendstatus, verificationstatus, userrole "
 				+ "FROM Users " + "WHERE token = ?;");
 		readStmt.setString(1, userDto.getToken().getContent());
@@ -614,7 +613,7 @@ public final class UserDao {
 	public static UserDto readUserForProfileHelper(Connection conn, UserDto userDto)
 			throws SQLException, UserDoesNotExistException {
 		PreparedStatement readStmt = conn.prepareStatement("SELECT userid, emailaddress, passwordhashsalt,"
-				+ " passwordhash, name, surname, postalcode, city, street,"
+				+ " passwordhash, surname, name, postalcode, city, street,"
 				+ " housenumber, token, tokencreation, userlendperiod," + "lendstatus, verificationstatus, userrole "
 				+ "FROM Users " + "WHERE userid = ?");
 		readStmt.setInt(1, Math.toIntExact(userDto.getId()));

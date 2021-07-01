@@ -1,26 +1,29 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.junit.After;
-import org.junit.Before;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class T01 {
 	
-	private WebDriver driver;
-	private WebDriverWait waiter;
-	private String threadName;
-	private boolean isMultiThreaded = false;
+	private static WebDriver driver;
+	private static WebDriverWait waiter;
+	private static String threadName;
+	private static boolean isMultiThreaded = false;
 		    
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
     	if (!isMultiThreaded) {
     		driver = Driver.getDriver();
     		waiter = Driver.getDriverWait();
@@ -45,17 +48,16 @@ public class T01 {
             fail("Element not found.");
         }
     }
-    
-    @After
-    public void tearDown() {
-    }
+
+    @AfterClass
+    public static void tearDown() {}
     
 	public WebDriver getDriver() {
 		return driver;
 	}
 
 	public void setDriver(WebDriver driver) {
-		this.driver = driver;
+		T01.driver = driver;
 	}
 
 	public WebDriverWait getWaiter() {
@@ -63,7 +65,7 @@ public class T01 {
 	}
 
 	public void setWaiter(WebDriverWait waiter) {
-		this.waiter = waiter;
+		T01.waiter = waiter;
 	}
 
 	public String getThreadName() {
@@ -71,7 +73,7 @@ public class T01 {
 	}
 
 	public void setThreadName(String threadName) {
-		this.threadName = threadName;
+		T01.threadName = threadName;
 	}
 	
 	public boolean isMultiThreaded() {
@@ -79,7 +81,7 @@ public class T01 {
 	}
 
 	public void setMultiThreaded(boolean isMultiThreaded) {
-		this.isMultiThreaded = isMultiThreaded;
+		T01.isMultiThreaded = isMultiThreaded;
 	}
 
 }

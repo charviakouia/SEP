@@ -118,7 +118,7 @@
             </h:panelGrid>
         </h:form>
 
-        <h:form>
+        <h:form id="form_medium_copies_list">
             <f:facet name="header">
                 <h:outputText value="#{msg['medium.copies.title']}" styleClass="title"/>
             </f:facet>
@@ -136,7 +136,7 @@
                 <h:column>
                     <f:facet name="header">#{msg['copy.signature']}</f:facet>
                     <bibi:columnContent>
-                        <h:outputText value="#{item.signature}"/>
+                        <h:outputText value="#{item.signature}" styleClass="copyListSignatures"/>
                     </bibi:columnContent>
                 </h:column>
 
@@ -164,7 +164,7 @@
                          cellpadding="5" cellspacing="1"
                          styleClass="panelGridCenter">
                 <h:outputLabel value="#{msg['copy.signature']}"/>
-                <h:inputText value="#{medium.signatureForPickUp}"/>
+                <h:inputText value="#{medium.signatureForPickUp}" id="signatureInputField"/>
                 <h:panelGroup>
                     <h:commandButton id="copyPickup"
                                      styleClass="btn btn-secondary"

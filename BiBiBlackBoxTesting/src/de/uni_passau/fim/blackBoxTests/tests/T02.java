@@ -1,8 +1,8 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
-import org.junit.After;
-import org.junit.Before;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -10,19 +10,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
+import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class T02 {
 	
-	private WebDriver driver;
-	private WebDriverWait waiter;
-	private String threadName;  
-	private boolean isMultiThreaded = false;
+	private static WebDriver driver;
+	private static WebDriverWait waiter;
+	private static String threadName;
+	private static boolean isMultiThreaded = false;
 	
-	@Before
-    public void setUp() {
+	@BeforeClass
+    public static void setUp() {
     	if (!isMultiThreaded) {
     		driver = Driver.getDriver();
     		waiter = Driver.getDriverWait();
@@ -57,10 +57,9 @@ public class T02 {
             fail("Element not found.");
         }
     }
-    
-    @After
-    public void tearDown() {
-    }
+
+    @AfterClass
+    public static void tearDown() {}
     
     public WebDriver getDriver() {
 		return driver;
@@ -71,12 +70,12 @@ public class T02 {
 	}
 
 	public void setMultiThreaded(boolean isMultiThreaded) {
-		this.isMultiThreaded = isMultiThreaded;
+		T02.isMultiThreaded = isMultiThreaded;
 	}
 
 
 	public void setDriver(WebDriver driver) {
-		this.driver = driver;
+		T02.driver = driver;
 	}
 
 	public WebDriverWait getWaiter() {
@@ -84,7 +83,7 @@ public class T02 {
 	}
 
 	public void setWaiter(WebDriverWait waiter) {
-		this.waiter = waiter;
+		T02.waiter = waiter;
 	}
 
 	public String getThreadName() {
@@ -92,6 +91,7 @@ public class T02 {
 	}
 
 	public void setThreadName(String threadName) {
-		this.threadName = threadName;
+		T02.threadName = threadName;
 	}
+
 }

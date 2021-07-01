@@ -1,16 +1,20 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import de.uni_passau.fim.blackBoxTests.test_suite.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Driver;
 
-import static de.uni_passau.fim.blackBoxTests.test_suite.UrlPrefix.BASE_URL;
+import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 
 public class T150 {
 	
@@ -30,7 +34,18 @@ public class T150 {
 
 	@Test
 	public void doTest() {
-		fail(); // TODO
+		driver.findElement(By.id("header_staff_dropdown")).click();
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+		}
+	    driver.findElement(By.linkText("Verstöße")).click();
+	    try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+		}
+	    
+	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test@gmail.com"));
 	}
 
 	@After

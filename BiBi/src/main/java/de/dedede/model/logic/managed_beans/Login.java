@@ -8,6 +8,7 @@ import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.logic.util.EmailUtility;
+import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.persistence.daos.UserDao;
@@ -140,6 +141,11 @@ public class Login {
 					completeUserData, newTokenContainer);			
 			String link = EmailUtility.getLink(
 				   "/view/ffa/password-reset.xhtml", userToken.getContent());
+			// Ivan start
+			if (context.getExternalContext().getInitParameter("jakarta.faces.PROJECT_STAGE").equals("Development")){
+				MessagingUtility.writeNeutralMessage(context, true, link);
+			}
+			// Ivan end
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
 			String emailBody = insertParams(firstname, lastname, link, content);
@@ -200,7 +206,7 @@ public class Login {
 	/**
 	 * Grants the facelet access to the UserDto.
 	 * 
-	 * @param the new user input
+	 * @param user the new user input
 	 */
 	public void setUserData(UserDto user) {
 		this.userData = user;

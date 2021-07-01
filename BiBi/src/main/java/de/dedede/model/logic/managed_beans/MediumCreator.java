@@ -90,11 +90,23 @@ public class MediumCreator implements Serializable {
 	 * 		the entity-creation statements or the given connection has been damaged while processing these
 	 * 		statements.
 	 */
-	public void save() throws BusinessException {
+	/**
+	 * Creates the specified medium and its first copy.
+	 *
+	 * @return Navigation to the details page for the created medium.
+	 * @throws BusinessException Is thrown when the medium or medium-copy couldn't be created. This can have
+	 * 		several causes. On one hand, this can occur if the medium-copy's signature is already present in
+	 * 		the datastore. As this field is validated beforehand, this is the result of race-condition. On the
+	 * 		other hand, this can occur if the maximum number connections has been reached while processing
+	 * 		the entity-creation statements or the given connection has been damaged while processing these
+	 * 		statements.
+	 */
+	public String save() throws BusinessException {
 		try {
 			MediumDao.createMedium(medium);
 			MediumDao.createCopy(copy, medium);
 			MessagingUtility.writePositiveMessageWithKey(context, false, "mediumCreator.success");
+			return "/view/opac/medium.xhtml?faces-redirect=true&id=" + medium.getId();
 		} catch (LostConnectionException | MaxConnectionsException e){
 			String msg = "Datastore error occurred - cannot create medium or medium-copy entities";
 			Logger.severe(msg);
