@@ -49,7 +49,7 @@ public class T70 {
 
         try {
 			//checks a result
-			assertTrue(driver.getPageSource().contains("Das Medium ist erfolgreich geändert."));
+			assertTrue(driver.getPageSource().contains("Das Medium ist erfolgreich aktualisiert worden."));
 
         } catch (Exception e) {
         	fail("A positive message not found.");

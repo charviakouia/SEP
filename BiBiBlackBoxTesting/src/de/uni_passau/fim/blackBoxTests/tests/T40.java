@@ -53,9 +53,10 @@ public class T40 {
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("mediumForm:medium-create-btn"))).click();
 
 			//checks a result
-			assertTrue(driver.getPageSource().contains("Medium erfolgreich erstellt"));
+			assertEquals("Programmieren lernen", driver.findElement(By.id("form_mediumAttributes_forUsers:title"))
+					.getAttribute("value"));
         } catch (Exception e) {
-        	fail("A positive message not found.");
+        	fail("A title is not 'Programmieren lernen'.");
         }
     }
     
