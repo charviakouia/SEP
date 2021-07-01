@@ -832,6 +832,26 @@ public final class MediumDao {
 			}
 		}
 		try {
+			if (copyDto.getCopyStatus() == CopyStatus.READY_FOR_PICKUP) {
+				PreparedStatement getMarkingLimit = conn.prepareStatement(
+						"SELECT EXTRACT (EPOCH FROM (SELECT globalMarkingLimit "
+								+ "FROM application WHERE one = 1));");
+				ResultSet rs = getMarkingLimit.executeQuery();
+				conn.commit();
+				rs.next();
+				double markingLimitSeconds = rs.getDouble(1);
+				rs.close();
+				getMarkingLimit.close();
+				Timestamp limitTimestamp = new Timestamp(
+						(long) (System.currentTimeMillis() + markingLimitSeconds * 1000));
+				copyDto.setDeadline(limitTimestamp);
+			}
+		} catch (SQLException e) {
+			String msg = "Database error occurred while getting marking limit";
+			Logger.severe(msg);
+			throw new LostConnectionException(msg, e);
+		}
+		try {
 			PreparedStatement updateStmt = conn.prepareStatement(
 					"UPDATE Mediumcopy " + "SET mediumid = ?, signature = ?, bibposition = ?,"
 							+ " status = CAST(? AS copyStatus), deadline = ?, actor = ? WHERE copyid = ? ");
