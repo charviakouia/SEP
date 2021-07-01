@@ -25,8 +25,8 @@ public class T120 {
     private String threadName = "";
     private boolean isMultiThreaded = false;
 
-    private final String MEDIUM_NAME = "Programmieren lernen" + threadName;
-    private final String SIGNATURE = "17RE (1)" + threadName;
+    private final String MEDIUM_NAME = "Programmieren lernen%s";
+    private final String SIGNATURE = "17RE (1)%s";
     private final String AVAILABILITY = "Bereit zur Abholung";
 
     @BeforeClass
@@ -52,12 +52,12 @@ public class T120 {
         // Navigate to advanced search and perform search
         Selenium.clickOn(waiter, "advancedSearchLink");
         String searchBarId = "form_medium_search:input_general_search_term";
-        Selenium.typeInto(waiter, searchBarId, MEDIUM_NAME, Keys.ENTER);
+        Selenium.typeInto(waiter, searchBarId, gen(MEDIUM_NAME), Keys.ENTER);
 
         // Check that the correct result exists
         Selenium.waitUntilLoaded();
         String titleLinkClass = "searchResultTitleEntry";
-        WebElement linkElement = Selenium.getClassEntityContainingText(driver, titleLinkClass, MEDIUM_NAME);
+        WebElement linkElement = Selenium.getClassEntityContainingText(driver, titleLinkClass, gen(MEDIUM_NAME));
         assertNotNull(linkElement);
 
         // Navigate to medium details page
@@ -66,13 +66,13 @@ public class T120 {
 
         // Book a medium-copy
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("pickUpForm")));
-        Selenium.typeInto(waiter, "pickUpForm:signatureInputField", SIGNATURE);
+        Selenium.typeInto(waiter, "pickUpForm:signatureInputField", gen(SIGNATURE));
         Selenium.clickOn(waiter, "pickUpForm:copyPickup");
 
         // Check that the medium-copy exists
         Selenium.waitUntilLoaded();
         String copyClass = "copyListSignatures";
-        WebElement copyTableRow = Selenium.getClassEntityWithText(driver, copyClass, SIGNATURE);
+        WebElement copyTableRow = Selenium.getClassEntityWithText(driver, copyClass, gen(SIGNATURE));
         assertNotNull(copyTableRow);
 
         // Check that the medium-copy has been booked
@@ -80,6 +80,10 @@ public class T120 {
         WebElement availability = (WebElement) jsexec.executeScript(jsStmt, copyTableRow);
         Assert.assertEquals(AVAILABILITY, availability.getText());
 
+    }
+
+    private String gen(String str){
+        return String.format(str, threadName);
     }
 
 	public WebDriver getDriver() {
@@ -121,8 +125,5 @@ public class T120 {
 	public void setMultiThreaded(boolean isMultiThreaded) {
 		this.isMultiThreaded = isMultiThreaded;
 	}
-    
-   
 
-    
 }

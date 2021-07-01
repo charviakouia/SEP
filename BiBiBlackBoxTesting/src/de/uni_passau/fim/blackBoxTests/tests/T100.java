@@ -25,10 +25,10 @@ public class T100 {
     private String threadName = "";
     private boolean isMultiThreaded = false;
 
-    private final String FIRST_NAME = "Bob" + threadName;
-    private final String LAST_NAME = "Mustermann" + threadName;
+    private final String FIRST_NAME = "Bob%s";
+    private final String LAST_NAME = "Mustermann%s";
     private final String PASSWORD = "sdfHs4!a";
-    private final String EMAIL = "nutzer.sep2021test" + threadName + "@gmail.com";
+    private final String EMAIL = "nutzer.sep2021test%s@gmail.com";
     private final String ZIP = "94032";
     private final String CITY = "Passau";
     private final String STREET = "Innstraße";
@@ -55,11 +55,11 @@ public class T100 {
 
         // Navigate to registration page, input registration data, and save
         Selenium.clickOn(waiter, "registrationLink");
-        Selenium.typeInto(waiter, "registrationForm:firstName", FIRST_NAME);
-        Selenium.typeInto(waiter, "registrationForm:lastName", LAST_NAME);
+        Selenium.typeInto(waiter, "registrationForm:firstName", gen(FIRST_NAME));
+        Selenium.typeInto(waiter, "registrationForm:lastName", gen(LAST_NAME));
         Selenium.typeInto(waiter, "registrationForm:password", PASSWORD);
         Selenium.typeInto(waiter, "registrationForm:confirmedPassword", PASSWORD);
-        Selenium.typeInto(waiter, "registrationForm:email", EMAIL);
+        Selenium.typeInto(waiter, "registrationForm:email", gen(EMAIL));
         Selenium.typeInto(waiter, "registrationForm:zip", ZIP);
         Selenium.typeInto(waiter, "registrationForm:city", CITY);
         Selenium.typeInto(waiter, "registrationForm:street", STREET);
@@ -71,9 +71,13 @@ public class T100 {
         Selenium.navigateToLinkInId(driver, "messageForm:neutralMessage");
 
         // Verify data in profile page
-        assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:frstname", "value", FIRST_NAME));
-        assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:email", "value", EMAIL));
+        assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:frstname", "value", gen(FIRST_NAME)));
+        assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:email", "value", gen(EMAIL)));
 
+    }
+
+    private String gen(String str){
+        return String.format(str, threadName);
     }
 
     public String getThreadName() {

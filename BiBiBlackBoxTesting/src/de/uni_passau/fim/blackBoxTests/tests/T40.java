@@ -1,6 +1,7 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,14 +37,14 @@ public class T40 {
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("medium-creator"))).click();
 
 			//sets a medium's attributes
+			Selenium.waitUntilLoaded();
 			driver.findElement(By.id("mediumForm:mediumTitle")).sendKeys("Programmieren lernen" + threadName);
 			driver.findElement(By.id("mediumForm:author1")).sendKeys("Mustermann" + threadName);
 			driver.findElement(By.id("mediumForm:mediumType")).sendKeys("Buch" + threadName);
 			driver.findElement(By.id("mediumForm:mediumEdition")).sendKeys("1.0" + threadName);
 			driver.findElement(By.id("mediumForm:mediumPublisher")).sendKeys("Springer" + threadName);
 			driver.findElement(By.id("mediumForm:releaseYear")).clear();
-			driver.findElement(By.id("mediumForm:releaseYear")).sendKeys("2020" + threadName);
-			driver.findElement(By.id("mediumForm:releaseYear")).sendKeys("2020" + threadName);
+			driver.findElement(By.id("mediumForm:releaseYear")).sendKeys("2020");
 			driver.findElement(By.id("mediumForm:isbn")).sendKeys("17RE" + threadName);
 			driver.findElement(By.id("mediumForm:copyLocation")).sendKeys("FIM" + threadName);
 			driver.findElement(By.id("mediumForm:copySignature")).sendKeys("17RE (1)" + threadName);
@@ -53,6 +54,7 @@ public class T40 {
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("mediumForm:medium-create-btn"))).click();
 
 			//checks a result
+			Selenium.waitUntilLoaded();
 			assertTrue(driver.getPageSource().contains("Medium erfolgreich erstellt"));
         } catch (Exception e) {
         	fail("A positive message not found.");
@@ -73,7 +75,6 @@ public class T40 {
 	public void setMultiThreaded(boolean isMultiThreaded) {
 		this.isMultiThreaded = isMultiThreaded;
 	}
-
 
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;

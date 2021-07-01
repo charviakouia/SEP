@@ -4,6 +4,7 @@ import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +52,8 @@ public class T20 {
         clickThis.selectByValue("STAFF");
         driver.findElement(By.id("registrationForm:streetNumber")).sendKeys("33");
         driver.findElement(By.id("registrationForm:registration_save_button")).click();
+
+		Selenium.waitUntilLoaded();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown"))).click();
         driver.findElement(By.id("form_log_out:button_log_out")).click();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field"))).sendKeys("mitarbeiter.sep2021test" + threadName + "@gmail.com");
@@ -78,7 +81,6 @@ public class T20 {
 	public void setMultiThreaded(boolean isMultiThreaded) {
 		this.isMultiThreaded = isMultiThreaded;
 	}
-
 
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;

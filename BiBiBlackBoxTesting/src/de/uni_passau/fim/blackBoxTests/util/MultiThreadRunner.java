@@ -6,7 +6,7 @@ import de.uni_passau.fim.blackBoxTests.tests.TestSuiteThread;
 
 public class MultiThreadRunner {
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		WebDriver webDriver1 = Driver.getNewDriver();
 		WebDriver webDriver2 = Driver.getNewDriver();
 		WebDriver webDriver3 = Driver.getNewDriver();

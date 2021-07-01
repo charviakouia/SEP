@@ -26,8 +26,8 @@ public class T90 {
     private String threadName = "";
     private boolean isMultiThreaded = false;
 
-    private static final String SEARCH_STR = "JSF: Durch";
-    private static final String MEDIUM_TITLE = "JSF: Durch Nacht zum Licht.";
+    private static final String SEARCH_STR = "nen%s";
+    private static final String MEDIUM_TITLE = "Programmieren lernen";
 
     @BeforeClass
     public void setUp() {
@@ -50,12 +50,16 @@ public class T90 {
 
         // Input text and submit
         String searchBarId = "form_medium_search_header:input_medium_search_term_header";
-        Selenium.typeInto(waiter, searchBarId, SEARCH_STR, Keys.RETURN);
+        Selenium.typeInto(waiter, searchBarId, gen(SEARCH_STR), Keys.RETURN);
 
         // Check that the correct result entry exists
         Selenium.waitUntilLoaded();
-        assertTrue(Selenium.classEntityContainsText(driver, "searchResultTitleEntry", MEDIUM_TITLE));
+        assertTrue(Selenium.classEntityContainsText(driver, "searchResultTitleEntry", gen(MEDIUM_TITLE)));
 
+    }
+
+    private String gen(String str){
+        return String.format(str, threadName);
     }
 
     public String getThreadName() {

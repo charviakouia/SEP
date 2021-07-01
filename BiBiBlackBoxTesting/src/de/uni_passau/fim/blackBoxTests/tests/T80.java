@@ -95,7 +95,5 @@ public class T80 {
 	public void setWaiter(WebDriverWait waiter) {
 		this.waiter = waiter;
 	}
-    
-    
 
 }

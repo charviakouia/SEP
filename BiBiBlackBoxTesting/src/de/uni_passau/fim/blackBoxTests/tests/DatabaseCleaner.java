@@ -77,56 +77,58 @@ public class DatabaseCleaner {
                 break;
             } catch (TimeoutException ignored){}
         }
-        if (correctElement == null){ fail("No correct table entry found"); }
+        if (correctElement != null){
+            // Navigate to medium details page
+            String link = correctElement.getAttribute("href");
+            driver.navigate().to(link);
+            try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
 
-        // Navigate to medium details page
-        String link = correctElement.getAttribute("href");
-        driver.navigate().to(link);
-        try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
-
-        // Delete the medium
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_mediumAttributes_forUsers:delMedium")))
-                .click();
+            // Delete the medium
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_mediumAttributes_forUsers:delMedium")))
+                    .click();
+        }
 
         // Navigate to category-browser
-//        driver.get(UrlPrefix.BASE_URL + "/view/opac/category-browser.xhtml");
+        // driver.get(UrlPrefix.BASE_URL + "/view/opac/category-browser.xhtml");
 
         // Delete the category 'Informatik'
-//        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("j_id2")));
-//        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("j_id2"))).click();
-//        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("j_id4:link_category_name_737179246")));
-//        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("j_id4:link_category_name_737179246"))).click();
-//        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_category_controls:link_delete_category")));
-//        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_category_controls:link_delete_category"))).click();
+        // waiter.until(ExpectedConditions.visibilityOfElementLocated(
+        //        By.id("form_category_search:input_category_search_term")))
+        //        .sendKeys("Informatik" + threadName, Keys.ENTER);
+        // waiter.until(ExpectedConditions.visibilityOfElementLocated(
+        //        By.id("form_category_controls:link_delete_category"))).click();
 
-        // Navigate to user-search
-        driver.get(UrlPrefix.BASE_URL + "/view/admin/user-search.xhtml");
+        try {
+            // Navigate to user-search
+            driver.get(UrlPrefix.BASE_URL + "/view/admin/user-search.xhtml");
 
-        // Search the staff account
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_user_search:input_user_search_term")))
-                .sendKeys("mitarbeiter.sep2021test" + threadName + "@gmail.com" + Keys.ENTER);
+            // Search the staff account
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_user_search:input_user_search_term")))
+                    .sendKeys("mitarbeiter.sep2021test" + threadName + "@gmail.com" + Keys.ENTER);
 
-        // Navigate to the staff account
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=emailLink]"))).click();
+            // Navigate to the staff account
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=emailLink]"))).click();
 
-        // Delete the staff account
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:delAccount")));
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:delAccount"))).click();
+            // Delete the staff account
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:delAccount")));
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:delAccount"))).click();
+        } catch (Exception ignored){ }
 
-        // Navigate to user-search
-        driver.get(UrlPrefix.BASE_URL + "/view/admin/user-search.xhtml");
+        try {
+            // Navigate to user-search
+            driver.get(UrlPrefix.BASE_URL + "/view/admin/user-search.xhtml");
 
-        // Search the user account
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_user_search:input_user_search_term")))
-                .sendKeys("nutzer.sep2021test" + threadName + "@gmail.com" + Keys.ENTER);
+            // Search the user account
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_user_search:input_user_search_term")))
+                    .sendKeys("nutzer.sep2021test" + threadName + "@gmail.com" + Keys.ENTER);
 
-        // Navigate to the user account
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=emailLink]"))).click();
+            // Navigate to the user account
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=emailLink]"))).click();
 
-        // Delete the user account
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:delAccount")));
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:delAccount"))).click();
-
+            // Delete the user account
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:delAccount")));
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_profile:delAccount"))).click();
+        } catch (Exception ignored){ }
 
     }
 

@@ -203,6 +203,7 @@ public class Medium extends PaginatedList implements Serializable {
 			MessagingUtility.writeNegativeMessageWithKey(context, false, "copy.invalidId");
 			return;
 		}
+		mediumDto.getCopy(currentCopyId).setDeadline(null);
 		mediumDto.getCopy(currentCopyId).setActor(null);
 		mediumDto.getCopy(currentCopyId).setCopyStatus(CopyStatus.AVAILABLE);
 		try {

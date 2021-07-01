@@ -1,6 +1,7 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class T70 {
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[id$=mediumLink]"))).click();
 
 		//edit a category of the medium
+		Selenium.waitUntilLoaded();
 		driver.findElement(By.id("form_mediumAttributes_forUsers:category")).clear();
 		driver.findElement(By.id("form_mediumAttributes_forUsers:category"))
 				.sendKeys("Informatik" + threadName);
@@ -49,7 +51,7 @@ public class T70 {
 
         try {
 			//checks a result
-			assertTrue(driver.getPageSource().contains("Das Medium ist erfolgreich geändert."));
+			assertTrue(driver.getPageSource().contains("Das Medium ist erfolgreich aktualisiert worden."));
 
         } catch (Exception e) {
         	fail("A positive message not found.");
