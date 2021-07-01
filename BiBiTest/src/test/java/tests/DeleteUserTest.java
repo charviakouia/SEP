@@ -1,4 +1,4 @@
-package tests;
+package test.java.tests;
 
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
@@ -33,7 +33,7 @@ public class DeleteUserTest {
     @BeforeAll
     public static void setUp() throws ClassNotFoundException, SQLException,
             InvalidConfigurationException, LostConnectionException, MaxConnectionsException {
-        tests.PreTest.setUp();
+        PreTest.setUp();
         Connection conn = ConnectionPool.getInstance().fetchConnection(5000);
         try {
             PreparedStatement createStmt = conn.prepareStatement(

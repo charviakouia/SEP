@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import test.java.tests.PreTest;
 
 import java.sql.SQLException;
 
@@ -25,7 +26,7 @@ public class DeleteCopyTest {
     private static MediumDto mediumDto = new MediumDto();
     private static final String copyLocation = "testLocation";
     private static final String copySignature = "testSign";
-    private static final int mediumId = 3;
+    private static final int mediumId = 203;
     private static final int copyId = 999;
 
     @BeforeAll
