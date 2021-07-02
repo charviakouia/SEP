@@ -2,9 +2,7 @@ package de.uni_passau.fim.blackBoxTests.tests;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -20,7 +18,7 @@ public class T130 {
     private String threadName = "";
     private boolean isMultiThreaded = false;
 
-    @BeforeClass
+    @Before
     public void setUp() {
     	if (!isMultiThreaded) {
     		driver = Driver.getDriver();
@@ -28,7 +26,7 @@ public class T130 {
     	}
     }
 
-    @AfterClass
+    @After
     public void tearDown() {}
 
     @Test

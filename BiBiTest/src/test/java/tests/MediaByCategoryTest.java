@@ -1,5 +1,6 @@
 package tests;
 
+import test.java.tests.PreTest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

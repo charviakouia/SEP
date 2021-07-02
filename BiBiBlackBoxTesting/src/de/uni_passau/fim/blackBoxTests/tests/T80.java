@@ -3,9 +3,7 @@ package de.uni_passau.fim.blackBoxTests.tests;
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 import de.uni_passau.fim.blackBoxTests.util.Pages;
 import de.uni_passau.fim.blackBoxTests.util.Selenium;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -26,7 +24,7 @@ public class T80 {
 
     private static final String SITE_NOTICE_TEXT = "Innstraße";
 
-    @BeforeClass
+    @Before
     public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
@@ -35,26 +33,19 @@ public class T80 {
         Selenium.navigateTo(driver, Pages.HOME);
     }
 
-    @AfterClass
+    @After
     public void tearDown() {}
 
     /**
-     * Performs a log-out.
+     * Performs a log-out and navigates to the site notice page. There, the test
+     * compares the content text to a given string.
      */
     @Test
-    public void t80a() {
+    public void t80() {
 
         // Log out
         Selenium.clickOn(waiter, "accountDropDown");
         Selenium.clickOn(waiter, "form_log_out:button_log_out");
-
-    }
-
-    /**
-     * Navigates to the site notice page and compares the content text to a given string.
-     */
-    @Test
-    public void t80b() {
 
         // Navigate to site notice
         Selenium.clickOn(waiter, "site_notice_link");

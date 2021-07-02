@@ -3,10 +3,7 @@ package de.uni_passau.fim.blackBoxTests.tests;
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 import de.uni_passau.fim.blackBoxTests.util.Pages;
 import de.uni_passau.fim.blackBoxTests.util.Selenium;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -29,7 +26,7 @@ public class T120 {
     private final String SIGNATURE = "17RE (1)%s";
     private final String AVAILABILITY = "Bereit zur Abholung";
 
-    @BeforeClass
+    @Before
     public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
@@ -39,7 +36,7 @@ public class T120 {
         Selenium.navigateTo(driver, Pages.HOME);
     }
 
-    @AfterClass
+    @After
     public void tearDown() {}
 
     /**

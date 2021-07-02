@@ -36,7 +36,15 @@ public class T140 {
 		driver.findElement(By.linkText("Ausleihe")).click();
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_lending:lending_mail_field")));
 		driver.findElement(By.id("form_lending:lending_mail_field")).click();
+<<<<<<< HEAD
+		driver.findElement(By.id("form_lending:lending_mail_field"))
+				.sendKeys("nutzer.sep2021test" + threadName + "@gmail.com");
+		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field")).click();
+		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field"))
+				.sendKeys("17RE (1)" + threadName);
+=======
 		driver.findElement(By.id("form_lending:lending_mail_field")).sendKeys("nutzer.sep2021test" + threadName + "@gmail.com");
+<<<<<<< HEAD
 		try {
 			TimeUnit.MILLISECONDS.sleep(500);
 		} catch (InterruptedException e) {
@@ -51,14 +59,29 @@ public class T140 {
 			TimeUnit.MILLISECONDS.sleep(500);
 		} catch (InterruptedException e) {
 		}
+=======
+		
+		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field")).click();
+		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field")).sendKeys("17RE (1)" + threadName);
+>>>>>>> origin/master
+>>>>>>> origin/ivansBranch
 		driver.findElement(By.id("form_lending:button_direct_lend_copies")).click();
 		try {
 			TimeUnit.SECONDS.sleep(2);
 		} catch (InterruptedException e) {
 		}
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+		assertTrue(driver.getPageSource()
+				.contains("1 Exemplar(e) an nutzer.sep2021test" + threadName + "@gmail.com verliehen."));
+=======
+>>>>>>> origin/ivansBranch
 		assertTrue(driver.getPageSource().contains("1 Exemplar(e) an nutzer.sep2021test" + threadName + "@gmail.com verliehen."));
 		System.out.println("Test T140 succeeded (thread %s)".formatted(threadName));
+>>>>>>> origin/master
 	}
 
 	@After
