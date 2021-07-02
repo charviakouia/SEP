@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
@@ -33,6 +34,7 @@ public class T150 {
 
 	@Test
 	public void doTest() {
+<<<<<<< HEAD
 
 		// Wait for the medium to become overdue
 		try { TimeUnit.MINUTES.sleep(2); } catch (InterruptedException ignored){}
@@ -40,11 +42,17 @@ public class T150 {
 		// Navigate to violations page
 		driver.findElement(By.id("header_staff_dropdown")).click();
 		try { TimeUnit.SECONDS.sleep(1); } catch (InterruptedException e) { }
+=======
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_staff_dropdown")));
+		driver.findElement(By.id("header_staff_dropdown")).click();
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Verstöße")));
+>>>>>>> origin/master
 	    driver.findElement(By.linkText("Verstöße")).click();
 	    try { TimeUnit.SECONDS.sleep(3); } catch (InterruptedException e) { }
 
 	    // Check that correct user appears
 	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test" + threadName + "@gmail.com"));
+	    System.out.println("Test T150 succeeded (thread %s)".formatted(threadName));
 	}
 
 	@After

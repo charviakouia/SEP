@@ -63,6 +63,7 @@ public class T110 {
 
         // Verify data in profile page
         assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:frstname", "value", gen(FIRST_NAME)));
+        System.out.println("Test T110 succeeded (thread %s)".formatted(threadName));
 
     }
 

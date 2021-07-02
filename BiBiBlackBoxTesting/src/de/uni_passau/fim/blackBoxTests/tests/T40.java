@@ -55,8 +55,14 @@ public class T40 {
 
 			//checks a result
 			Selenium.waitUntilLoaded();
+<<<<<<< HEAD
 			assertTrue(driver.findElement(By.id("form_mediumAttributes_forUsers:title"))
 					.getAttribute("value").contains("Programmieren lernen"));
+=======
+			assertEquals("Programmieren lernen" + threadName, driver.findElement(By.id("form_mediumAttributes_forUsers:title"))
+					.getAttribute("value"));
+			System.out.println("Test T40 succeeded (thread %s)".formatted(threadName));
+>>>>>>> origin/master
         } catch (Exception e) {
         	fail("A title is not 'Programmieren lernen'.");
         }

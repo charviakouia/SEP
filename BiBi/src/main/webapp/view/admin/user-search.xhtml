@@ -12,8 +12,8 @@
 
 	<ui:define name="content">
 
-		<h:outputLabel for="form_user_search" value="#{msg['title.user_search']}"
-					   style="font-weight:bold; font-size:x-large;"/>
+		<h:outputLabel for="form_user_search"
+			value="#{msg['title.user_search']}" styleClass="h3" />
 
 		<h:form id="form_user_search">
 
@@ -28,7 +28,7 @@
 
 			</h:panelGroup>
 
-			<h:panelGroup layout="block">
+			<h:panelGroup layout="block" styleClass="form-check mt-3">
 				<h:selectBooleanCheckbox id="check_user_lend_status"
 					value="#{userSearch.blockedUserSearchRestriction}"
 					styleClass="form-check-input" />

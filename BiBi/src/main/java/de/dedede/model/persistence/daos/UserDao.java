@@ -331,6 +331,8 @@ public final class UserDao {
 	 */
 	public static List<UserDto> searchUsers(UserSearchDto userSearch, PaginationDto pagination) {
 
+		// @Task split search term by space
+		
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {

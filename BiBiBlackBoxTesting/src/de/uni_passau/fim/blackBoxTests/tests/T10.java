@@ -44,6 +44,7 @@ public class T10 {
         try {
         	waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_admin_dropdown")));
         	assertTrue(true);
+        	System.out.println("Test T10 succeeded (thread %s)".formatted(threadName));
         } catch (Exception e) {
         	fail("Adminmenue not found in header");
         }       

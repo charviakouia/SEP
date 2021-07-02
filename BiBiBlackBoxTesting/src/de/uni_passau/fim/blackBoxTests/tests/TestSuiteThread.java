@@ -38,12 +38,21 @@ public class TestSuiteThread extends Thread {
 		T110 test14 = new T110();
 		T120 test15 = new T120();
 		T130 test16 = new T130();
+<<<<<<< HEAD
 		T140 test17 = new T140();
 		T150 test18 = new T150();
 		T160 test19 = new T160();
 		T170 test20 = new T170();
 		T190 test21 = new T190();
 
+=======
+		final var test17 = new T140();
+		final var test18 = new T150();
+		final var test19 = new T160();
+		final var test20 = new T170();
+		final var test21 = new T190();
+		DatabaseCleaner cleaner = new DatabaseCleaner();
+>>>>>>> origin/master
 		test1.setMultiThreaded(true);
 		test2.setMultiThreaded(true);
 		test3.setMultiThreaded(true);
@@ -65,7 +74,11 @@ public class TestSuiteThread extends Thread {
 		test19.setMultiThreaded(true);
 		test20.setMultiThreaded(true);
 		test21.setMultiThreaded(true);
+<<<<<<< HEAD
 
+=======
+		cleaner.setMultiThreaded(true);
+>>>>>>> origin/master
 		test1.setThreadName(threadName);
 		test2.setThreadName(threadName);
 		test3.setThreadName(threadName);
@@ -87,7 +100,11 @@ public class TestSuiteThread extends Thread {
 		test19.setThreadName(threadName);
 		test20.setThreadName(threadName);
 		test21.setThreadName(threadName);
+<<<<<<< HEAD
 
+=======
+		cleaner.setThreadName(threadName);
+>>>>>>> origin/master
 		test1.setDriver(suiteDriver);
 		test2.setDriver(suiteDriver);
 		test3.setDriver(suiteDriver);
@@ -109,7 +126,11 @@ public class TestSuiteThread extends Thread {
 		test19.setDriver(suiteDriver);
 		test20.setDriver(suiteDriver);
 		test21.setDriver(suiteDriver);
+<<<<<<< HEAD
 
+=======
+		cleaner.setDriver(suiteDriver);
+>>>>>>> origin/master
 		test1.setWaiter(suiteWaiter);
 		test2.setWaiter(suiteWaiter);
 		test3.setWaiter(suiteWaiter);
@@ -131,12 +152,18 @@ public class TestSuiteThread extends Thread {
 		test19.setWaiter(suiteWaiter);
 		test20.setWaiter(suiteWaiter);
 		test21.setWaiter(suiteWaiter);
+<<<<<<< HEAD
 
 		test15.setJsexec(exec);
 
 		try {
 
 			Thread.sleep(1000);
+=======
+		cleaner.setWaiter(suiteWaiter);
+		try {
+			Thread.sleep(500);
+>>>>>>> origin/master
 			long starttime = System.currentTimeMillis();
 			System.out.println("TestSuite Thread with name: " + threadName + "started executing at: " + starttime);
 
@@ -182,7 +209,11 @@ public class TestSuiteThread extends Thread {
 			test20.doTest();
 			test21.setUp();
 			test21.doTest();
+<<<<<<< HEAD
 
+=======
+			cleaner.cleanDB();
+>>>>>>> origin/master
 			long stoptime = System.currentTimeMillis();
 			System.out.println("Finished executing test suite with thread name: " + threadName + " at time: " + stoptime);
 
@@ -190,7 +221,6 @@ public class TestSuiteThread extends Thread {
 			e.printStackTrace();
 			System.out.println("Thread with name: " + threadName + " was interrupted from its sleep.");
 		} finally {
-			System.out.println("Closing web driver for suite with thread name: " + threadName);
 			suiteDriver.close();
 		}
 		

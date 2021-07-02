@@ -71,6 +71,7 @@ public class T100 {
         // Verify data in profile page
         assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:frstname", "value", gen(FIRST_NAME)));
         assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:email", "value", gen(EMAIL)));
+        System.out.println("Test T100 succeeded (thread %s)".formatted(threadName));
 
     }
 

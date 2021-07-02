@@ -35,6 +35,7 @@ public class T08 {
         	assertTrue(waiter.until(ExpectedConditions.titleContains("Anmeldung")));
 			assertTrue(driver.getPageSource().contains("Loggen Sie sich zuerst ein " +
 					"oder registrieren Sie einen neuen Account!"));
+			System.out.println("Test T08 succeeded (thread %s)".formatted(threadName));
         } catch (Exception e) {
         	fail("Login not found in header");
         }       

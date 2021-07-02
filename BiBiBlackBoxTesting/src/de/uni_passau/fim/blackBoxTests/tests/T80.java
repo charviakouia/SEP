@@ -52,6 +52,7 @@ public class T80 {
 
         // Check if site notice page contains text
         assertTrue(Selenium.contentOfIdContains(waiter, "site_notice_output_text", SITE_NOTICE_TEXT));
+        System.out.println("Test T80 succeeded (thread %s)".formatted(threadName));
 
     }
 

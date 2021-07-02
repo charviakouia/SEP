@@ -29,7 +29,7 @@
 			<h:message for="lending_mail_field" style="color:red"/> 
 		</h:panelGroup>
 			
-		<h:panelGroup layout="block" styleClass="container">
+		<h:panelGroup id="lending_repeat_container" layout="block" styleClass="container">
 		
 			<ui:repeat var="copy" value="#{lending.copies}" varStatus="status">
 				 <h:panelGroup layout="block" styleClass="form-group">
@@ -37,7 +37,7 @@
 				 				value="#{msg['lending.signature_field']}"/>
 				 
 				<h:inputText id="lending_signature_field" 
-							value="#{lending.copies[status.index].signature}" 
+							value="#{copy.signature}" 
 							styleClass="form-control">
 					<f:validator 
 						validatorId="lendingProcessSignatureValidator"/>                                   
