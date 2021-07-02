@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import de.uni_passau.fim.blackBoxTests.util.Selenium;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
@@ -28,13 +26,13 @@ public class DatabaseCleaner {
     private boolean isMultiThreaded = false;
     private String threadName = "";
 
-    @BeforeClass
+    @Before
     public void setUp() {
         driver = Driver.getDriver();
         waiter = Driver.getDriverWait();
     }
 
-    @AfterClass
+    @After
     public void tearDown() {}
 
     @Test

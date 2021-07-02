@@ -1,10 +1,13 @@
 package de.uni_passau.fim.blackBoxTests.tests;
 
+import de.uni_passau.fim.blackBoxTests.util.UrlPrefix;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 import static de.uni_passau.fim.blackBoxTests.util.UrlPrefix.BASE_URL;
@@ -29,27 +32,33 @@ public class T140 {
 
 	@Test
 	public void doTest() {
-		driver.findElement(By.id("header_staff_dropdown")).click();
+
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+		}
+
+		driver.get(UrlPrefix.BASE_URL + "/view/staff/lending.xhtml");
 		try {
 			TimeUnit.SECONDS.sleep(1);
 		} catch (InterruptedException e) {
 		}
-		driver.findElement(By.linkText("Ausleihe")).click();
 		try {
 			TimeUnit.SECONDS.sleep(3);
 		} catch (InterruptedException e) {
 		}
 		driver.findElement(By.id("form_lending:lending_mail_field")).click();
-		driver.findElement(By.id("form_lending:lending_mail_field")).sendKeys("nutzer.sep2021test@gmail.com");
-		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field")).click();
-		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field")).sendKeys("17RE (1)");
+		driver.findElement(By.id("form_lending:lending_mail_field")).sendKeys("nutzer.sep2021test@gmail.com" + Keys.ENTER);
+		try {
+			TimeUnit.SECONDS.sleep(4);
+		} catch (InterruptedException e) {
+		}
 		driver.findElement(By.id("form_lending:button_direct_lend_copies")).click();
 		try {
 			TimeUnit.SECONDS.sleep(4);
 		} catch (InterruptedException e) {
 		}
-
-		assertTrue(driver.getPageSource().contains("1 Exemplar(e) an nutzer.sep2021test@gmail.com verliehen."));
+		assertTrue(driver.getPageSource().contains("verliehen"));
 	}
 
 	@After
