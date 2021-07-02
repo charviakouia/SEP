@@ -33,6 +33,10 @@ public class T160 {
 
 	@Test
 	public void doTest() {
+		try {
+			TimeUnit.MINUTES.sleep(1);
+		} catch (InterruptedException e) {
+		}
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_staff_dropdown")));
 		driver.findElement(By.id("header_staff_dropdown")).click();
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Rückgabe")));
