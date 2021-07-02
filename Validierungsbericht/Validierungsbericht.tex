@@ -62,21 +62,21 @@ In diesem Dokument ist der Validierungsbericht der Webanwendung \textbf{BiBi} do
 
 Seit der Erstellung des Pflichtenheftes wurde das System modifizert. Aufgrund kleinerer Änderungen, wie z.B. einer komfortableren Navigation im System, sowie anders benannten Seiten oder Abschnitten, wurden auch die Testfälle aktualisiert. Einige Tests sind irrelevant, da die Aufgabe reduziert wurde. Es wurden jedoch neue Tests für Sicherheitstests sowie ein Datenbank-Cleaner hinzugefügt, der alle von den Tests erzeugten Objekte entfernt.
 
-\newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
-\begin{figure}[h]
-    \centering
-    \includegraphics{tab1-1}
-\end{figure}
-\restoregeometry
-
-\newpage
-
-\newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
-\begin{figure}[h]
-    \centering
-    \includegraphics{tab1-2}
-\end{figure}
-\restoregeometry
+%\texttt{\newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics{tab1-1}
+%\end{figure}
+%\restoregeometry
+%
+%\newpage
+%
+%\newgeometry{left=0cm,right=0cm,top=0cm,bottom=2cm}
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics{tab1-2}
+%\end{figure}
+%\restoregeometry}
 
 \newpage
 
@@ -106,7 +106,55 @@ In den verwendeten Tests T08, T09, T10, T11, T20, T30, T40 und T50 ergaben die e
 \section{Testergebnisse}
 \sectionauthor{León Liehr}
 
-
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{3em} p{32em} p{5em} }
+        \toprule
+        \textbf{Name} & \textbf{Beschreibung} & \textbf{Ergebnis}\\
+        \midrule
+        T8 & Die Webseite des Systems wird aufgerufen. Danach ruft ein Nutzer eine Seite http://localhost:8080/BiBi/view/admin/administration.xhtml auf. Als Ergebnis wird eine Login-Seite geladen und eine entsprechende Fehlermeldung ("Loggen Sie sich zuerst ein oder registrieren Sie einen neuen Account!") ist sichtbar. & erfolgreich\\
+        T9 & Die Login-Seite des Systems wird aufgerufen. Der Administrator gibt die E-Mail-Adresse ’admin.sep2021.test@gmail.com’ und das falsche Kennwort ’wrongPassword1’ in die Anmeldungsfelder ’E-Mail-Adresse’ und ’Passwort’ ein und klickt auf ’Anmelden’. Eine entsprechende Fehlermeldung wird gezeigt. & erfolgreich\\
+        T10 & Als Ergebnis ist keine Profilseite erwartet, sondern muss ein Button "Verwaltung" sichtbar sein. & erfolgreich\\
+        T11 & Der Administrator klickt auf ’Verwaltung’ und dann auf "Einstellungen". Er gibt ’00:00:01’ (1 Minute) im Feld "Rückgabefrist" ein und klickt auf ’Speichern’. Die Seite ’Einstellungen’ wird erneut geladen und der Rückgabefrist ’00:00:01’ ist sichtbar. & erfolgreich\\
+        T20 & Der Administrator klickt auf ’Verwaltung’ und im Anschluss auf ’Neuen Nutzer registrieren’. Die Registrierungsseite wird geladen und der Administrator gibt im Registrierungsformular als E-Mail-Adresse, Kennwort, Vorname, Name, Straße, Hausnummer, PLZ, Stadt, Land folgende Daten an: ’mitarbeiter.sep2021test@gmail.com’, ’sijAs13!!A’, ’Tom’, ’Mustermann’, ’Innstraße' ’33’, ’94032’, ’Passau’, ’Deutschland’. Anschließend klickt er auf ’Bearbeiten’, definiert die Rolle des Profiles als ’Mitarbeiter’ und klickt auf ’Speichern’. Danach klickt er auf ’Registrieren’, ’Abmelden’ und gibt die E-Mail-Adresse ’mitarbei- ter.sep2021test@gmail.com’ sowie das Kennwort ’sijAs13!!A’ in die Anmeldungsfelder ’E- Mail-Adresse’ und ’Passwort’ ein. Er klickt auf ’Anmelden’. Die Anmeldung ist erfolgreich und ein Knopf  "Mitarbeiter" ist sichtbar. & erfolgreich \\
+        T30 & Der Mitarbeiter navigiert sich zur Profilseite, setzt ’Müller’ als Nachname und klickt auf ’Speichern’. Die Profilseite wird wiedergeladen und der Nachname ’Müller’ ist sichtbar. & erfolgreich\\
+        T40 & Der Mitarbeiter klickt auf ’Erweiterte Suche’, im nächsten Schritt auf ’Medium erstellen’, gibt im Formular ’17RE’, ’Buch’, ’Programmieren lernen’, ’1.0’, ’Mustermann’, ’2020’, ’Springer’ als ’Index’, ’Typ’, ’Titel’, ’Version’, ’Autoren’, ’Erscheinungsdatum’ und ’Herausgeber’ ein und klickt auf ’Erstellen’. Die Seite des Mediums wird geladen und der Index ’17RE’ ist sichtbar. & erfolgreich\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{3em} p{32em} p{5em} }
+        \toprule
+        \textbf{Name} & \textbf{Beschreibung} & \textbf{Ergebnis}\\
+        \midrule
+        T50 & Der Mitarbeiter befindet sich auf der Seite des Mediums ’Programmieren lernen’. Er gibt in der Tabelle aller Exemplare die Signatur ’17RE (2)’ und das Standort 'FIM' ein und klickt im Anschluss auf ’Speichern’. Die Seite wird erneut geladen und die Signatur 17RE (2)’ ist sichtbar. & erfolgreich\\
+        T60 & Der Mitarbeiter klickt auf ’Kategorien’, dann auf ’SampleParentCategory’ und schlißlich auf "Unterkategorie erstellen". Danach gibt er im Formular ’Informatik’ und ’Alle Medien zu Informatik’ als ’Name’, und ’Beschreibung’ ein. Anschließend klickt er auf ’Speichern’. Eine entsprechende Erfolgsnachricht ist sichtbar. & erfolgreich\\
+        T70 & Der Mitarbeiter gibt im Suchfeld ’Programmieren lernen’ ein und sendet den Suchauftrag ab. Die Seite ’Erweiterte Suche’ wird geladen und das Medium mit Titel ’Programmieren lernen’ ist sichtbar. Im nächsten Schritt klickt der Mitarbeiter auf dieses Medium, die Seite des Mediums wird geladen. Danach setzt der Mitarbeiter eine Kategorie "Informatik" und klickt dann auf ’Speichern’. Eine entsprechende Nachricht ("Das Medium ist erfolgreich geändert.") wird gezeigt. & erfolgreich\\
+        T80 & Der Mitarbeiter klickt auf ’Abmelden’ und im nächsten Schritt auf ’Impressum’. Die Seite mit dem Impressum wird geladen und ’Innstraße’ wird in der Anschrift auf der Seite sichtbar. & erfolgreich\\
+        T90 & Der Nutzer gibt im Suchfeld ’gramm’ ein und sendet die Suchanfrage ab. Die Seite zur Mediensuche wird geladen und das Medium mit dem Titel ’Programmieren
+        lernen’ ist sichtbar. & erfolgreich\\
+        T100 & Der Nutzer klickt auf ’Registrierung’. Die Registrierungsseite wird geladen und der Nutzer gibt im Registrierungsformular als E-Mail-Adresse, Kennwort, Vorname, Name, Straße, Hausnummer, PLZ, Stadt, Land folgende Daten ein: ’nutzer.sep2021test@gmail.com’, ’sdfHs4!a’, ’Bob’, ’Mustermann’, ’Innstraße’, ’40’, ’94032’, ’Passau’, ’Deutschland’. Danach klickt er auf ’Registrieren’. Anschließend bestätigt er seine E-Mail-Adresse durch den Verifizierungslink. Die Anmeldung ist erfolgreich und als Ergebnis wird die Profilseite mit dem Vornamen ’Bob’ und der E-Mail-Adresse ’nutzer.sep2021test@gmail.com’ angezeigt. & erfolgreich\\
+        T110 & Der Nutzer klickt auf ’Abmeldung’, gibt als E-Mail-Adresse ’nutzer.sep2021test@gmail.com’ ein und klickt auf ’Passwort vergessen’. Anschließend bestätigt er seine E-Mail-Verifizierung durch den Verifizierungslink. Die Wiederherstellungs- seite wird geladen und der Nutzer gibt im Wiederherstellungsformular zwei Mal das neue Kennwort ’djnASdd1d!’ ein. Anschließend klickt er auf ’Speichern’; es wird eine Profilseite als Ergebnis geladen. Auf der Seite ist der Vorname ’Bob’ sichtbar. & erfolgreich\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ p{3em} p{32em} p{5em} }
+        \toprule
+        \textbf{Name} & \textbf{Beschreibung} & \textbf{Ergebnis}\\
+        \midrule
+        T120 & Der Nutzer klickt auf ’Erweiterte Suche’ und sendet eine Such-Anfrage "Programmieren lernen". Schließlich klickt er auf das Medium ’Programmieren lernen’. Am Ende gibt er eine Signatur im Formular ein klickt an ’Buchen’. Die Mediumseite wird wiedergeladen und der Status des Exemplars ’Gebucht’ ist sichtbar. & erfolgreich\\
+        T130 & Der Nutzer klickt auf ’Abmelden’ und wird auf die Anmeldungsseite weitergeleitet. Er gibt dort die E-Mail-Adresse ’mitarbeiter.sep2021test@gmail.com’ und das Kennwort ’sijAs13!!A’ in die Formularfelder ’E-Mail-Adresse’ und ’Passwort’ ein und klickt auf ’Anmelden’. Nach erfolgreicher Anmeldung navigiert er durch einen Klick auf ’Abzuholendes’ zur Listenansicht der abzuholenden Exemplare. Die Signatur ’17RE (1)’ ist sichtbar. & erfolgreich\\
+        T140 & Der Mitarbeiter klickt auf ’Ausleihe’ und gibt auf der Seite ’Direktausleihe’ im Formular die Signatur ’17RE (1)’ und die E-Mail-Adresse ’nutzer.sep2021test@gmail.com’ ein und bestätigt seine Eingabe. Somit ist die direkte Ausleihe erfolgreich abgeschlossen und eine entsprechende Meldung auf der Seite sichtbar ist. & fehlgeschlagen\\
+        T150 & Der Mitarbeiter klickt auf ’Verstöße’. Nach dem Laden der Seite ist der Nutzeraccount mit der E-Mail ’nutzer.sep2021test@gmail.com’ sichtbar. & unbekannt\\
+        T160 & Nach einer Minute navigiert der Mitarbeiter zum Rückgabeseite und die Seite mit dem Rückgabeformular wird geladen. Der Mitarbeiter gibt die Signatur ’17RE (1)’ und die E-Mail-Adresse ’nutzer.sep2021test@gmail.com’ in die entsprechenden Formularfelder ein und klickt anschließend auf ’Bestätigen’. Eine entsprechende Meldung über die erfolgreiche Zurücknahme wird sichtbar. & unbekannt\\
+        T170 & Erst meldet sich der Mitarbeiter ab und dann meldet sich ein Admitistartor an. Danach sucht er nach einem User. Der Administrator klickt auf ’Verwaltung’, navigiert von dort aus zur Nutzersuche und gibt nach laden der Seite ’Bob’ im Suchfeld ein. Anschließend sendet er die Suchanfrage an und die Seite ’Nutzersuche’ wird geladen, auf der der Nutzer ’Mustermann’ sichtbar ist. & unbekannt\\
+        T180 & Der Administrator klickt auf ’Impressum’. Im Formular gibt er ’Germany’ im Feld ’Land’ ein. Schließlich klickt er auf ’Speichern’. Die Seite ’Impressum’ wird erneuet geladen und das Land ’Germany’ auf der Seite sichtbar. & unbekannt\\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \newpage
 
@@ -114,10 +162,10 @@ In den verwendeten Tests T08, T09, T10, T11, T20, T30, T40 und T50 ergaben die e
 \section{Überdeckungswerte}
 \sectionauthor{Ivan Charviakou}
 
-Im Folgenden werden die Überdeckungswerte des Test-Suites tabellarisch angegeben und anschließend interpretiert. 
-Insbesondere werden diese Werte in zwei Kategorien eingeordnet: Zur Anweisungsüberdeckung gehörend und zur Zweigüberdeckung gehörend. 
+Im Folgenden werden die Überdeckungswerte des Test-Suites tabellarisch angegeben und anschließend interpretiert.
+Insbesondere werden diese Werte in zwei Kategorien eingeordnet: Zur Anweisungsüberdeckung gehörend und zur Zweigüberdeckung gehörend.
 Während die Anweisungsüberdeckung die Anzahl an evaluierten Anweisungen misst, beachtet die Zweigüberdeckung die verfolgten Ausführungspfade im Kontrollflussgraphen des Programms.
-Somit impliziert eine komplette Zweigüberdeckung eine höhere Anweisungsüberdeckung. 
+Somit impliziert eine komplette Zweigüberdeckung eine höhere Anweisungsüberdeckung.
 Allerdings sind beide Werte notwendig, um die Vollständigkeit eines Test-Suites zu evaluieren.
 
 \subsection{Whitebox-Tests}

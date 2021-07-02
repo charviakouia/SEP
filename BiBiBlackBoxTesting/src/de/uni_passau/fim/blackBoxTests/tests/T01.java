@@ -15,42 +15,44 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 
 public class T01 {
-	
+
 	private static WebDriver driver;
 	private static WebDriverWait waiter;
 	private static String threadName = "";
 	private static boolean isMultiThreaded = false;
-		    
-    @BeforeClass
-    public static void setUp() {
-    	if (!isMultiThreaded) {
-    		driver = Driver.getDriver();
-    		waiter = Driver.getDriverWait();
-    	}
-        driver.get(BASE_URL);
-    }
-    
-    @Test
-    public void doTest() {
-        //Ist ein Title "BiBi"?
-        waiter.until(ExpectedConditions.titleContains("BiBi"));
 
-        //Navigation zur Anmeldung
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("signIn")));
-        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("signIn"))).click();
+	@BeforeClass
+	public static void setUp() {
+		if (!isMultiThreaded) {
+			driver = Driver.getDriver();
+			waiter = Driver.getDriverWait();
+		}
+		driver.get(BASE_URL);
+	}
 
-        //Sehe ich einen Anmeldung-Button?
-        try {
-            driver.findElement(By.id("login_form:login_login_button"));
-            assertTrue(true);
-        } catch (Exception e) {
-            fail("Element not found.");
-        }
-    }
+	@Test
+	public void doTest() {
+		// Ist ein Title "BiBi"?
+		waiter.until(ExpectedConditions.titleContains("BiBi"));
 
-    @AfterClass
-    public static void tearDown() {}
-    
+		// Navigation zur Anmeldung
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("signIn")));
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("signIn"))).click();
+
+		// Sehe ich einen Anmeldung-Button?
+		try {
+			driver.findElement(By.id("login_form:login_login_button"));
+			assertTrue(true);
+			System.out.println("Test T01 succeeded (thread %s)".formatted(threadName));
+		} catch (Exception e) {
+			fail("Element not found.");
+		}
+	}
+
+	@AfterClass
+	public static void tearDown() {
+	}
+
 	public WebDriver getDriver() {
 		return driver;
 	}
@@ -74,7 +76,7 @@ public class T01 {
 	public void setThreadName(String threadName) {
 		T01.threadName = threadName;
 	}
-	
+
 	public boolean isMultiThreaded() {
 		return isMultiThreaded;
 	}

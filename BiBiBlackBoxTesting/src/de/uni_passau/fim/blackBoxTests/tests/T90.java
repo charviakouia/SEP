@@ -55,7 +55,7 @@ public class T90 {
         // Check that the correct result entry exists
         Selenium.waitUntilLoaded();
         assertTrue(Selenium.classEntityContainsText(driver, "searchResultTitleEntry", gen(MEDIUM_TITLE)));
-
+        System.out.println("Test T90 succeeded (thread %s)".formatted(threadName));
     }
 
     private String gen(String str){

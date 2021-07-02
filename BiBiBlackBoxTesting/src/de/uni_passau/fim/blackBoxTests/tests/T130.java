@@ -50,6 +50,7 @@ public class T130 {
 
         // Verify data in page
         assertTrue(driver.getPageSource().contains("17RE (1)" + threadName));
+        System.out.println("Test T130 succeeded (thread %s)".formatted(threadName));
     }
 
 	public WebDriver getDriver() {

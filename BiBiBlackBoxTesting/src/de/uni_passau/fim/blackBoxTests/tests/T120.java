@@ -79,6 +79,7 @@ public class T120 {
         String jsStmt = "return arguments[0].parentNode.parentNode.children[2];";
         WebElement availability = (WebElement) jsexec.executeScript(jsStmt, copyTableRow);
         Assert.assertEquals(AVAILABILITY, availability.getText());
+        System.out.println("Test T120 succeeded (thread %s)".formatted(threadName));
 
     }
 

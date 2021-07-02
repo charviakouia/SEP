@@ -37,6 +37,11 @@ public class TestSuiteThread extends Thread {
 		T110 test14 = new T110();
 		T120 test15 = new T120();
 		T130 test16 = new T130();
+		final var test17 = new T140();
+		final var test18 = new T150();
+		final var test19 = new T160();
+		final var test20 = new T170();
+		final var test21 = new T190();
 		DatabaseCleaner cleaner = new DatabaseCleaner();
 		test1.setMultiThreaded(true);
 		test2.setMultiThreaded(true);
@@ -54,6 +59,11 @@ public class TestSuiteThread extends Thread {
 		test14.setMultiThreaded(true);
 		test15.setMultiThreaded(true);
 		test16.setMultiThreaded(true);
+		test17.setMultiThreaded(true);
+		test18.setMultiThreaded(true);
+		test19.setMultiThreaded(true);
+		test20.setMultiThreaded(true);
+		test21.setMultiThreaded(true);
 		cleaner.setMultiThreaded(true);
 		test1.setThreadName(threadName);
 		test2.setThreadName(threadName);
@@ -71,6 +81,11 @@ public class TestSuiteThread extends Thread {
 		test14.setThreadName(threadName);
 		test15.setThreadName(threadName);
 		test16.setThreadName(threadName);
+		test17.setThreadName(threadName);
+		test18.setThreadName(threadName);
+		test19.setThreadName(threadName);
+		test20.setThreadName(threadName);
+		test21.setThreadName(threadName);
 		cleaner.setThreadName(threadName);
 		test1.setDriver(suiteDriver);
 		test2.setDriver(suiteDriver);
@@ -88,6 +103,11 @@ public class TestSuiteThread extends Thread {
 		test14.setDriver(suiteDriver);
 		test15.setDriver(suiteDriver);
 		test16.setDriver(suiteDriver);
+		test17.setDriver(suiteDriver);
+		test18.setDriver(suiteDriver);
+		test19.setDriver(suiteDriver);
+		test20.setDriver(suiteDriver);
+		test21.setDriver(suiteDriver);
 		cleaner.setDriver(suiteDriver);
 		test1.setWaiter(suiteWaiter);
 		test2.setWaiter(suiteWaiter);
@@ -106,6 +126,11 @@ public class TestSuiteThread extends Thread {
 		test15.setWaiter(suiteWaiter);
 		test15.setJsexec(exec);
 		test16.setWaiter(suiteWaiter);
+		test17.setWaiter(suiteWaiter);
+		test18.setWaiter(suiteWaiter);
+		test19.setWaiter(suiteWaiter);
+		test20.setWaiter(suiteWaiter);
+		test21.setWaiter(suiteWaiter);
 		cleaner.setWaiter(suiteWaiter);
 		try {
 			Thread.sleep(500);
@@ -144,6 +169,16 @@ public class TestSuiteThread extends Thread {
 			test15.t120();
 			test16.setUp();
 			test16.t130();
+			test17.setUp();
+			test17.doTest();
+			test18.setUp();
+			test18.doTest();
+			test19.setUp();
+			test19.doTest();
+			test20.setUp();
+			test20.doTest();
+			test21.setUp();
+			test21.doTest();
 			cleaner.cleanDB();
 			long stoptime = System.currentTimeMillis();
 			System.out.println("Finished executing test suite with thread name: " + threadName + " at time: " + stoptime);

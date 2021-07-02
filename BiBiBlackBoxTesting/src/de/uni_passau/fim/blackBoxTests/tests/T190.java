@@ -47,6 +47,7 @@ public class T190 {
 		}
 
 		assertTrue(driver.getPageSource().contains("Germany"));
+		System.out.println("Test T190 succeeded (thread %s)".formatted(threadName));
 	}
 
 	@After

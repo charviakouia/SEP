@@ -61,6 +61,7 @@ public class T20 {
         try {
         	waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_staff_dropdown")));
         	assertTrue(true);
+        	System.out.println("Test T20 succeeded (thread %s)".formatted(threadName));
         } catch (Exception e) {
         	fail("Staff dropdown menue not found after login.");
         }

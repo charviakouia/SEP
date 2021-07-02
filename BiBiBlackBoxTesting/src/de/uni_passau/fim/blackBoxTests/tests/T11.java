@@ -40,6 +40,7 @@ public class T11 {
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("adminForm:administration_return_period"))).sendKeys("6.944444444444445E-4" + Keys.ENTER);
         String value = waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("adminForm:administration_return_period"))).getAttribute("value");
         assertTrue(value.equals("6.944444444444445E-4"));
+        System.out.println("Test T11 succeeded (thread %s)".formatted(threadName));
     }
     
     @After
