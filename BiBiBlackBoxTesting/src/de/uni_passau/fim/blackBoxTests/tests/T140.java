@@ -40,16 +40,19 @@ public class T140 {
 		} catch (InterruptedException e) {
 		}
 		driver.findElement(By.id("form_lending:lending_mail_field")).click();
-		driver.findElement(By.id("form_lending:lending_mail_field")).sendKeys("nutzer.sep2021test@gmail.com");
+		driver.findElement(By.id("form_lending:lending_mail_field"))
+				.sendKeys("nutzer.sep2021test" + threadName + "@gmail.com");
 		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field")).click();
-		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field")).sendKeys("17RE (1)");
+		driver.findElement(By.id("form_lending:j_idt52:0:lending_signature_field"))
+				.sendKeys("17RE (1)" + threadName);
 		driver.findElement(By.id("form_lending:button_direct_lend_copies")).click();
 		try {
 			TimeUnit.SECONDS.sleep(4);
 		} catch (InterruptedException e) {
 		}
-		
-		assertTrue(driver.getPageSource().contains("1 Exemplar(e) an nutzer.sep2021test@gmail.com verliehen."));
+
+		assertTrue(driver.getPageSource()
+				.contains("1 Exemplar(e) an nutzer.sep2021test" + threadName + "@gmail.com verliehen."));
 	}
 
 	@After

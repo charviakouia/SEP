@@ -20,6 +20,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.Flash;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -30,7 +31,7 @@ import jakarta.inject.Named;
  * @author Ivan Charviakou
  */
 @Named
-@SessionScoped
+@ViewScoped
 public class LendingPeriodViolation extends PaginatedList implements Serializable {
 
 	@Serial private static final long serialVersionUID = 1L;

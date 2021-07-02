@@ -59,13 +59,12 @@ public class T170 {
 	    driver.findElement(By.id("header_admin_dropdown")).click();
 	    driver.findElement(By.id("header_admin_user_search")).click();
 	    driver.findElement(By.id("form_user_search:input_user_search_term")).click();
-	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys("Bob" + threadName + " Mustermann" + threadName);
+	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys("Bob" + threadName);
 	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys(Keys.ENTER);
-	    try {
-			TimeUnit.SECONDS.sleep(3);
-		} catch (InterruptedException e) {
-		}
+
+	    try { TimeUnit.SECONDS.sleep(3); } catch (InterruptedException e) {}
 	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test" + threadName + "@gmail.com"));
+
 	}
 
 	@After

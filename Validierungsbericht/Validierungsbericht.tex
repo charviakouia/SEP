@@ -113,57 +113,81 @@ Durch die Automatisierung der Browserinteraktion mittels Selenium, diente die vo
 \sectionauthor{Ivan Charviakou}
 
 Im Folgenden werden die Überdeckungswerte des Test-Suites tabellarisch angegeben und anschließend interpretiert. 
-Insbesondere werden diese Werte in zwei Kategorien eingeordnet: Die zur Anweisungsüberdeckung und die zur Zweigüberdeckung. 
+Insbesondere werden diese Werte zwei Kategorien zugeordnet: Die zur Anweisungsüberdeckung und die zur Zweigüberdeckung. 
 Während die Anweisungsüberdeckung die Anzahl an evaluierten Anweisungen misst, beachtet die Zweigüberdeckung die verfolgten Ausführungspfade im Kontrollflussgraphen des Programms.
 Somit impliziert eine komplette Zweigüberdeckung eine höhere Anweisungsüberdeckung. 
-Allerdings sind beide Werte notwendig, um die Vollständigkeit eines Test-Suites zu evaluieren.
+Allerdings sind im Allgemeinen beide Werte notwendig, um die Vollständigkeit eines Test-Suites zu evaluieren.
 
 \subsection{Whitebox-Tests}
 
-Die Whitebox-Tests testen die einzelnen internen Komponente des Systems. Es werden zu jedem Paket die Anweisungsüberdeckung und die zur Zweigüberdeckung angegeben.
+Die Whitebox-Tests testen die einzelnen internen Komponente des Systems, ohne dass das System in ihrer Gesamtheit gestartet sein muss. 
+Es werden zu jedem getesteten Paket die Anweisungsüberdeckung und die zur Zweigüberdeckung angegeben. 
+Hier werden die Exceptions, DTOs, und Framework-Komponenten wegen ihrer Trivialität bzw. Irrelevanz ausgelassen.
 
-\begin{longtable}{@{}lllll@{}}
+\begin{longtable}{@{}lclclclclclcl@{}}
 \toprule
-\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\textbf{Paketname} & \textbf{Anweisungsüberdeckung} & \textbf{Anz. Anweisungen} & \textbf{Prozentsatz} & \textbf{Zweigüberdeckung} & \textbf{Anz. Zweige} & \textbf{Prozentsatz} \\* \midrule
 \endfirsthead
-\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\textbf{Paketname} & \textbf{Anweisungsüberdeckung} & \textbf{Anz. Anweisungen} & \textbf{Prozentsatz} & \textbf{Zweigüberdeckung} & \textbf{Anz. Zweige} & \textbf{Prozentsatz} \\* \midrule
 \endhead
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
+...model.logic.util 			& 166 		& 838 		& 19\% 		& 2 			& 61 			& 3\% \\
+...model.persistence.daos 		& 2580 		& 5951 		& 43\% 		& 71 			& 245 		& 28\% \\
+...model.persistence.util 		& 297 		& 1455 		& 20\% 		& 18 			& 62 			& 29\% \\
+Insgesamt 						& 3043 		& 8244 		& 37\% 		& 91 			& 368 		& 25\% \\* \bottomrule
 \end{longtable}
 
 \subsection{Blackbox-Tests}
 
-Im Gegensatz zu den obigen Tests werden Blackbox-Tests zum Testen des gesamten Systems eingesetzt. Die interne Struktur der Anwendung ist dabei unbekannt. 
-Auch hier werden zu jedem Paket die Anweisungsüberdeckung und die zur Zweigüberdeckung angegeben.
+Im Gegensatz zu den obigen Whitebox-Tests werden Blackbox-Tests zum Testen des gesamten Systems eingesetzt. Die interne Struktur der Anwendung ist dabei unbekannt. 
+Auch hier werden zu jedem getesteten Paket die Anweisungsüberdeckung und die zur Zweigüberdeckung angegeben. 
+Für Exceptions und DTOs werden keine Werte berechnet.
 
-\begin{longtable}{@{}lllll@{}}
+\begin{longtable}{@{}lclclclclclcl@{}}
 \toprule
-\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\textbf{Paketname} & \textbf{Anweisungsüberdeckung} & \textbf{Anz. Anweisungen} & \textbf{Prozentsatz} & \textbf{Zweigüberdeckung} & \textbf{Anz. Zweige} & \textbf{Prozentsatz} \\* \midrule
 \endfirsthead
-\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\textbf{Paketname} & \textbf{Anweisungsüberdeckung} & \textbf{Anz. Anweisungen} & \textbf{Prozentsatz} & \textbf{Zweigüberdeckung} & \textbf{Anz. Zweige} & \textbf{Prozentsatz} \\* \midrule
 \endhead
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
+...model.logic.managed\_beans 	& 2487 		& 4373 		& 56\% 		& 124 		& 258 		& 48\% \\
+...model.logic.validators 		& 348 		& 755 		& 46\% 		& 26 			& 52 			& 50\% \\
+...model.logic.util 			& 696 		& 838 		& 83\% 		& 48 			& 61 			& 78\% \\
+...model.logic.converters 		& 110 		& 244 		& 45\% 		& 6 			& 10 			& 60\% \\
+...model.persistence.daos 		& 3908 		& 5951 		& 66\% 		& 129 		& 245 		& 53\% \\
+...model.persistence.util 		& 677 		& 1455 		& 46\% 		& 25 			& 62 			& 40\% \\
+Insgesamt 						& 8226            	& 13616            & 60\%            	& 358            	& 688            	& 52\% \\* \bottomrule
 \end{longtable}
 
 \subsection{Alle Tests}
 
-In diesen Abschnitt werden für jeden Paket die Whitebox als auch die Blackbox-Tests zusammen betrachtet.
+In diesen Abschnitt werden für jeden Paket die Whitebox- und Blackbox-Tests zusammen betrachtet. Exceptions und DTOs werden dabei ignoriert.
 
-\begin{longtable}{@{}lllll@{}}
+\begin{longtable}{@{}lclclclclclcl@{}}
 \toprule
-\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\textbf{Paketname} & \textbf{Anweisungsüberdeckung} & \textbf{Anz. Anweisungen} & \textbf{Prozentsatz} & \textbf{Zweigüberdeckung} & \textbf{Anz. Zweige} & \textbf{Prozentsatz} \\* \midrule
 \endfirsthead
-\textbf{Header 1} & \textbf{Header 2} & \textbf{Header 3} & \textbf{Header 4} & \textbf{Header 5} \\* \midrule
+\textbf{Paketname} & \textbf{Anweisungsüberdeckung} & \textbf{Anz. Anweisungen} & \textbf{Prozentsatz} & \textbf{Zweigüberdeckung} & \textbf{Anz. Zweige} & \textbf{Prozentsatz} \\* \midrule
 \endhead
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\
-Text 1            & Text 2            & Text 3            & Text 4            & Text 5            \\* \bottomrule
+...model.logic.managed\_beans 	& 2487 		& 4373 		& 56\% 		& 124 		& 258 		& 48\% \\
+...model.logic.validators 		& 348 		& 755 		& 46\% 		& 26 			& 52 			& 50\% \\
+...model.logic.util 			& 696 		& 838 		& 83\% 		& 48 			& 61 			& 78\% \\
+...model.logic.converters 		& 110 		& 244 		& 45\% 		& 6 			& 10 			& 60\% \\
+...model.persistence.daos 		& 3908 		& 5951 		& 66\% 		& 129 		& 245 		& 53\% \\
+...model.persistence.util 		& 677 		& 1455 		& 46\% 		& 25 			& 62 			& 40\% \\
+Insgesamt 						& 8226            	& 13616            & 60\%            	& 358            	& 688            	& 52\% \\* \bottomrule
 \end{longtable}
 
 \subsection{Interpretation}
 
-TODO
+Als erstes ist es sofort ersichtlich, dass sich die kombinierten Testergebnisse und Blackbox-Testergebnisse nicht unterscheiden. 
+Dies bedeutet insbesondere, dass der Umfang der Blackbox-Tests den Umfang der Whitebox-Tests komplett subsumiert. 
+Ein wichtiger Grund, der zu dieser Beobachtung beiträgt, ist die vergleichsweise einfache Logik der gegebenen Anwendung. 
+Die Anwendung lässt sich nämlich mit weniger komplexen Komponenten realisieren, die sich entsprechen stark an der Anwendungsnavigation orientieren. 
+Dadurch müssen sich die verwendeten Funktionalitäten aus den Testfällen von beiden Testarten stark überschneiden.
+
+Als zweites fallen bei 60\% Anweisungsüberdeckung und 52\% Zweigüberdeckung im Gesamtergebnis vergleichsweise niedrige Überdeckungswerte auf. 
+Diese Werte lassen sich zum Teil durch eine stark ausgeprägte Einhaltung der defensiven Programmierung erklären. 
+Es werden nämlich in den getesteten Teilen der Anwendungslogik auf Bedingungen geprüft, die in einer normalen Betriebsumgebung selten auftreten. 
+Da sich unter Anderem diese Fehlersituationen auch nicht einfach reproduzieren lassen, kann man diese Fälle nicht effektiv testen. 
 
 \newpage
 

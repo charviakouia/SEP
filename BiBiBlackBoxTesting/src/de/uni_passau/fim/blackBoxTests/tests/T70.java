@@ -28,6 +28,9 @@ public class T70 {
     		waiter = Driver.getDriverWait();
     	}
     }
+
+	@After
+	public void tearDown() {}
     
     @Test
     public void doTest() {
@@ -58,13 +61,6 @@ public class T70 {
         }
     }
     
-    @After
-    public void tearDown() {}
-    
-    public WebDriver getDriver() {
-		return driver;
-	}
-    
 	public boolean isMultiThreaded() {
 		return isMultiThreaded;
 	}
@@ -73,9 +69,12 @@ public class T70 {
 		this.isMultiThreaded = isMultiThreaded;
 	}
 
-
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;
+	}
+
+	public WebDriver getDriver() {
+		return driver;
 	}
 
 	public WebDriverWait getWaiter() {

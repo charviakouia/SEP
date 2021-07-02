@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,17 +33,17 @@ public class T150 {
 
 	@Test
 	public void doTest() {
+
+		// Wait for the medium to become overdue
+		try { TimeUnit.MINUTES.sleep(2); } catch (InterruptedException ignored){}
+
+		// Navigate to violations page
 		driver.findElement(By.id("header_staff_dropdown")).click();
-		try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (InterruptedException e) {
-		}
+		try { TimeUnit.SECONDS.sleep(1); } catch (InterruptedException e) { }
 	    driver.findElement(By.linkText("Verstöße")).click();
-	    try {
-			TimeUnit.SECONDS.sleep(3);
-		} catch (InterruptedException e) {
-		}
-	    
+	    try { TimeUnit.SECONDS.sleep(3); } catch (InterruptedException e) { }
+
+	    // Check that correct user appears
 	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test" + threadName + "@gmail.com"));
 	}
 
