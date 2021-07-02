@@ -34,40 +34,7 @@ public class T170 {
 
 	@Test
 	public void doTest() {
-<<<<<<< HEAD
-	    driver.findElement(By.id("accountDropDown")).click();
-	    try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (InterruptedException e) {
-		}
-	    driver.findElement(By.id("form_log_out:button_log_out")).click();
-	    try {
-			TimeUnit.SECONDS.sleep(2);
-		} catch (InterruptedException e) {
-		}
-	    driver.findElement(By.id("signIn")).click();
-	    try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (InterruptedException e) {
-		}
-	    driver.findElement(By.id("login_form:login_email_field")).click();
-	    driver.findElement(By.id("login_form:login_email_field")).sendKeys("liehr@fim.uni-passau.de");
-	    driver.findElement(By.id("login_form:login_password_field")).sendKeys("Hallo0");
-	    driver.findElement(By.id("login_form:login_login_button")).click();
-	    try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (InterruptedException e) {
-		}
-	    driver.findElement(By.id("header_admin_dropdown")).click();
-	    driver.findElement(By.id("header_admin_user_search")).click();
-	    driver.findElement(By.id("form_user_search:input_user_search_term")).click();
-	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys("Bob" + threadName);
-	    driver.findElement(By.id("form_user_search:input_user_search_term")).sendKeys(Keys.ENTER);
 
-	    try { TimeUnit.SECONDS.sleep(3); } catch (InterruptedException e) {}
-	    assertTrue(driver.getPageSource().contains("nutzer.sep2021test" + threadName + "@gmail.com"));
-
-=======
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown")));
 		driver.findElement(By.id("accountDropDown")).click();
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_log_out:button_log_out")));
@@ -93,7 +60,6 @@ public class T170 {
 		}
 		assertTrue(driver.getPageSource().contains("nutzer.sep2021test" + threadName + "@gmail.com"));
 		System.out.println("Test T170 succeeded (thread %s)".formatted(threadName));
->>>>>>> origin/master
 	}
 
 	@After

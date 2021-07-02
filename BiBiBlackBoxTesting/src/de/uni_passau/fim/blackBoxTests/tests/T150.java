@@ -34,19 +34,9 @@ public class T150 {
 
 	@Test
 	public void doTest() {
-<<<<<<< HEAD
-
-		// Wait for the medium to become overdue
-		try { TimeUnit.MINUTES.sleep(2); } catch (InterruptedException ignored){}
-
-		// Navigate to violations page
-		driver.findElement(By.id("header_staff_dropdown")).click();
-		try { TimeUnit.SECONDS.sleep(1); } catch (InterruptedException e) { }
-=======
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_staff_dropdown")));
 		driver.findElement(By.id("header_staff_dropdown")).click();
 		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Verstöße")));
->>>>>>> origin/master
 	    driver.findElement(By.linkText("Verstöße")).click();
 	    try { TimeUnit.SECONDS.sleep(3); } catch (InterruptedException e) { }
 
