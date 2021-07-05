@@ -281,9 +281,6 @@ public final class MediumDao {
 				itemsStatement.setObject(index + 1, parameters.get(index));
 			}
 
-			// @Temporary
-			Logger.development("itemsStatement: " + itemsStatement);
-
 			final var resultSet = itemsStatement.executeQuery();
 			final var results = new ArrayList<MediumDto>();
 
