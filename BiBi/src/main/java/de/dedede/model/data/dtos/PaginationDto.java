@@ -23,6 +23,7 @@ public class PaginationDto<Column extends Enum<Column>> implements Serializable 
 
 	private int totalAmountOfRows = 0;
 
+	// only initially `null` then never again once `PaginatedList#sort` gets called.
 	private Column columnToSortBy = null;
 
 	private SortingDirection sortingDirection = null;
