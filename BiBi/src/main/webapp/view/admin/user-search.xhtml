@@ -54,26 +54,20 @@
 			<h:column>
 				<f:facet name="header">#{msg['userEmailAddress']}</f:facet>
 
-				<bibi:columnContent>
-					<h:link id="emailLink" value="#{item.emailAddress}"
-						outcome="/view/account/profile.xhtml?id=#{item.id}" />
-				</bibi:columnContent>
+				<h:link id="emailLink" value="#{item.emailAddress}"
+					outcome="/view/account/profile.xhtml?id=#{item.id}" />
 			</h:column>
 
 			<h:column>
 				<f:facet name="header">#{msg['userFirstName']}</f:facet>
 
-				<bibi:columnContent>
-					#{item.firstName}
-				</bibi:columnContent>
+				#{item.firstName}
 			</h:column>
 
 			<h:column>
 				<f:facet name="header">#{msg['userLastName']}</f:facet>
 
-				<bibi:columnContent>
-					#{item.lastName}
-				</bibi:columnContent>
+				#{item.lastName}
 			</h:column>
 
 			<!-- @Task user lend status -->

@@ -381,7 +381,7 @@ public final class UserDao {
 			itemsStatement.setString(parameterIndex += 1, userSearch.getLendStatus().name());
 
 			// @Task sorting
-			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.calculatePageOffset(pagination));
 			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();

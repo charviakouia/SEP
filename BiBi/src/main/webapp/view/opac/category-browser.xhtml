@@ -130,35 +130,27 @@
 							<h:column>
 								<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
 
-								<bibi:columnContent>
-									<h:link value="#{item.title}"
-										outcome="/view/opac/medium.xhtml?id=#{item.id}" />
-								</bibi:columnContent>
+								<h:link value="#{item.title}"
+									outcome="/view/opac/medium.xhtml?id=#{item.id}" />
 							</h:column>
 
 							<h:column>
 								<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
 
-								<bibi:columnContent>
-									<!-- put that method somewhere else! -->
-									#{mediumSearch.formatAuthors(item)}
-								</bibi:columnContent>
+								<!-- put that method somewhere else! -->
+								#{mediumSearch.formatAuthors(item)}
 							</h:column>
 
 							<h:column>
 								<f:facet name="header">#{msg['medium_attribute.edition']}</f:facet>
 
-								<bibi:columnContent>
-									#{item.edition}
-								</bibi:columnContent>
+								#{item.edition}
 							</h:column>
 
 							<h:column>
 								<f:facet name="header">#{msg['medium_attribute.publisher']}</f:facet>
 
-								<bibi:columnContent>
-									#{item.publisher}
-								</bibi:columnContent>
+								#{item.publisher}
 							</h:column>
 
 						</bibi:paginatedList>

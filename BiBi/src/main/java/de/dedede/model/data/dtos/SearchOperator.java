@@ -2,6 +2,8 @@ package de.dedede.model.data.dtos;
 
 /**
  * Represents a search operator.
+ * 
+ * @author León Liehr
  */
 public enum SearchOperator {
 

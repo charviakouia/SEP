@@ -1,5 +1,9 @@
 package de.dedede.model.data.dtos;
 
+/**
+ * 
+ * @author León Liehr
+ */
 public enum MediumSearchCriterion {
 
 	TITLE, AUTHORS, TYPE, EDITION, PUBLISHER, YEAR_OF_RELEASE, ISBN, URL, SUMMARY, CATEGORY, SIGNATURE;
@@ -7,10 +11,10 @@ public enum MediumSearchCriterion {
 	public boolean isGeneralSearchCriterion() {
 		return switch (this) {
 		case TYPE, EDITION, URL, SUMMARY, SIGNATURE -> false;
-			default -> true;
+		default -> true;
 		};
 	}
-	
+
 	@Override
 	public String toString() {
 		return switch (this) {

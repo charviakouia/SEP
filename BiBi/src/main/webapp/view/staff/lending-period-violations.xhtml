@@ -7,53 +7,51 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
-	
+
 	<ui:param name="page" value="lending_period_violations" />
 
 	<ui:define name="content">
 
-		<h:outputLabel for="lendingPeriodViolationsList" value="#{msg['lendingPeriodViolations.title']}"
-					   style="font-weight:bold; font-size:x-large;"/>
+		<h:outputLabel for="lendingPeriodViolationsList"
+			value="#{msg['lendingPeriodViolations.title']}"
+			style="font-weight:bold; font-size:x-large;" />
 
-		<bibi:paginatedList id="lendingPeriodViolationsList" value="#{lendingPeriodViolation}">
+		<bibi:paginatedList id="lendingPeriodViolationsList"
+			value="#{lendingPeriodViolation}">
 
 			<h:column>
 				<f:facet name="header">#{msg['lendingPeriodViolations.mediumTitle']}</f:facet>
-				<bibi:columnContent>
-					<h:link value="#{lendingPeriodViolation.getMediumLabel(item)}"
-							outcome="#{lendingPeriodViolation.getMediumLink(item)}"/>
-				</bibi:columnContent>
+
+				<h:link value="#{lendingPeriodViolation.getMediumLabel(item)}"
+					outcome="#{lendingPeriodViolation.getMediumLink(item)}" />
 			</h:column>
 
 			<h:column>
 				<f:facet name="header">#{msg['lendingPeriodViolations.userTitle']}</f:facet>
-				<bibi:columnContent>
-					<h:link value="#{lendingPeriodViolation.getUserLabel(item)}"
-							outcome="#{lendingPeriodViolation.getUserLink(item)}"/>
-				</bibi:columnContent>
+
+				<h:link value="#{lendingPeriodViolation.getUserLabel(item)}"
+					outcome="#{lendingPeriodViolation.getUserLink(item)}" />
 			</h:column>
 
 			<h:column>
 				<f:facet name="header">#{msg['lendingPeriodViolations.copyTitle']}</f:facet>
-				<bibi:columnContent>
-					<h:form>
-						<h:commandLink value="#{lendingPeriodViolation.getCopyLabel(item)}"
-									   action="#{lendingPeriodViolation.executeCopyLink(item)}"/>
-					</h:form>
-					<!-- <h:link value="#{lendingPeriodViolation.getCopyLabel(item)}"
+
+				<h:form>
+					<h:commandLink value="#{lendingPeriodViolation.getCopyLabel(item)}"
+						action="#{lendingPeriodViolation.executeCopyLink(item)}" />
+				</h:form>
+				<!-- <h:link value="#{lendingPeriodViolation.getCopyLabel(item)}"
 							outcome="#{lendingPeriodViolation.getCopyLink(item)}"/> -->
-				</bibi:columnContent>
 			</h:column>
 
 			<h:column>
 				<f:facet name="header">#{msg['lendingPeriodViolations.overdraftTitle']}</f:facet>
-				<bibi:columnContent>
-					<h:outputText value="#{lendingPeriodViolation.getOverdraftText(item)}"/>
-				</bibi:columnContent>
+				<h:outputText
+					value="#{lendingPeriodViolation.getOverdraftText(item)}" />
 			</h:column>
 
 		</bibi:paginatedList>
 
 	</ui:define>
-	
+
 </ui:composition>

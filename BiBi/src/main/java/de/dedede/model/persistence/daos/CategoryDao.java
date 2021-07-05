@@ -202,7 +202,7 @@ public final class CategoryDao {
 					""".formatted(statementBody));
 			var parameterIndex = 0;
 			itemsStatement.setString(parameterIndex += 1, categorySearch.getSearchTerm());
-			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.calculatePageOffset(pagination));
 			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();

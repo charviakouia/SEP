@@ -12,6 +12,14 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:importConstants type="de.dedede.model.data.dtos.SearchOperator" />
+			<f:importConstants
+				type="de.dedede.model.data.dtos.MediumSearchCriterion" />
+			<f:importConstants
+				type="de.dedede.model.data.dtos.MediumSearchColumn" />
+		</f:metadata>
+
 		<h:form id="form_medium_search">
 
 			<h:panelGroup layout="block" styleClass="general-search input-group">
@@ -41,9 +49,8 @@
 								value="#{nuancedSearchQuery.operator}" styleClass="form-select"
 								title="#{msg['search_operator']}">
 
-								<f:selectItems value="#{mediumSearch.allSearchOperators}"
-									var="operator" itemValue="#{operator}"
-									itemLabel="#{msg[operator.toString()]}" />
+								<f:selectItems value="#{SearchOperator.values()}" var="operator"
+									itemValue="#{operator}" itemLabel="#{msg[operator.toString()]}" />
 
 							</h:selectOneMenu>
 
@@ -51,7 +58,7 @@
 								value="#{nuancedSearchQuery.criterion}" styleClass="form-select"
 								title="#{msg['search_criterion']}">
 
-								<f:selectItems value="#{mediumSearch.allSearchCriteria}"
+								<f:selectItems value="#{MediumSearchCriterion.values()}"
 									var="criterion" itemValue="#{criterion}"
 									itemLabel="#{msg[criterion.toString()]}" />
 
@@ -76,48 +83,56 @@
 
 		</h:form>
 
-		<bibi:paginatedList id="result" value="#{mediumSearch}" styleClass="mt-5"
+		<bibi:paginatedList id="result" value="#{mediumSearch}"
+			styleClass="mt-5"
 			noEntriesLabel="#{msg['paginated_list.no_search_results']}">
 
 			<h:column id="col1">
-				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls value="#{MediumSearchColumn.TITLE}"
+						label="#{msg['medium_attribute.title']}" owner="#{mediumSearch}" />
+				</f:facet>
 
-				<bibi:columnContent id="content1">
-					<h:link id="mediumLink" value="#{item.title}"
-						outcome="/view/opac/medium.xhtml?id=#{item.id}" styleClass="searchResultTitleEntry"/>
-				</bibi:columnContent>
+				<h:link id="mediumLink" value="#{item.title}"
+					outcome="/view/opac/medium.xhtml?id=#{item.id}"
+					styleClass="searchResultTitleEntry" />
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls value="#{MediumSearchColumn.AUTHORS}"
+						label="#{msg['medium_attribute.authors']}" owner="#{mediumSearch}" />
+				</f:facet>
 
-				<bibi:columnContent>
-					#{mediumSearch.formatAuthors(item)}
-				</bibi:columnContent>
+				#{mediumSearch.formatAuthors(item)}
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['medium_attribute.edition']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls value="#{MediumSearchColumn.EDITION}"
+						label="#{msg['medium_attribute.edition']}" owner="#{mediumSearch}" />
+				</f:facet>
 
-				<bibi:columnContent>
-					#{item.edition}
-				</bibi:columnContent>
+				#{item.edition}
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['medium_attribute.publisher']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls value="#{MediumSearchColumn.PUBLISHER}"
+						label="#{msg['medium_attribute.publisher']}"
+						owner="#{mediumSearch}" />
+				</f:facet>
 
-				<bibi:columnContent>
-					#{item.publisher}
-				</bibi:columnContent>
+				#{item.publisher}
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['category']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls value="#{MediumSearchColumn.CATEGORY}"
+						label="#{msg['category']}" owner="#{mediumSearch}" />
+				</f:facet>
 
-				<bibi:columnContent>
-					#{item.category.name}
-				</bibi:columnContent>
+				#{item.category.name}
 			</h:column>
 
 		</bibi:paginatedList>
