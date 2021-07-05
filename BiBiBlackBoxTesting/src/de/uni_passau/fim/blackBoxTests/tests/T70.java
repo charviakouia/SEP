@@ -28,6 +28,9 @@ public class T70 {
     		waiter = Driver.getDriverWait();
     	}
     }
+
+	@After
+	public void tearDown() {}
     
     @Test
     public void doTest() {
@@ -52,18 +55,11 @@ public class T70 {
         try {
 			//checks a result
 			assertTrue(driver.getPageSource().contains("Das Medium ist erfolgreich aktualisiert worden."));
-
+			System.out.println("Test T70 succeeded (thread %s)".formatted(threadName));
         } catch (Exception e) {
         	fail("A positive message not found.");
         }
     }
-    
-    @After
-    public void tearDown() {}
-    
-    public WebDriver getDriver() {
-		return driver;
-	}
     
 	public boolean isMultiThreaded() {
 		return isMultiThreaded;
@@ -73,9 +69,12 @@ public class T70 {
 		this.isMultiThreaded = isMultiThreaded;
 	}
 
-
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;
+	}
+
+	public WebDriver getDriver() {
+		return driver;
 	}
 
 	public WebDriverWait getWaiter() {

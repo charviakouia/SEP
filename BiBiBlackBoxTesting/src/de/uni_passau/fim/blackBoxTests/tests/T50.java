@@ -50,6 +50,7 @@ public class T50 {
         try {
 			//checks a result
 			assertTrue(driver.getPageSource().contains("Das Exemplar wurde erfolgreich erstellt."));
+			System.out.println("Test T50 succeeded (thread %s)".formatted(threadName));
         } catch (Exception e) {
         	fail("A new signature not found.");
         }

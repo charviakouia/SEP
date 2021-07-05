@@ -21,6 +21,7 @@ public class TestSuiteThread extends Thread {
 	@Override
 	public void run() {
 		String threadName = Thread.currentThread().getName();
+
 		T08 test1 = new T08();
 		T09 test2 = new T09();
 		T10 test3 = new T10();
@@ -37,7 +38,14 @@ public class TestSuiteThread extends Thread {
 		T110 test14 = new T110();
 		T120 test15 = new T120();
 		T130 test16 = new T130();
+		T140 test17 = new T140();
+		T150 test18 = new T150();
+		T160 test19 = new T160();
+		T170 test20 = new T170();
+		T190 test21 = new T190();
+
 		DatabaseCleaner cleaner = new DatabaseCleaner();
+
 		test1.setMultiThreaded(true);
 		test2.setMultiThreaded(true);
 		test3.setMultiThreaded(true);
@@ -54,7 +62,14 @@ public class TestSuiteThread extends Thread {
 		test14.setMultiThreaded(true);
 		test15.setMultiThreaded(true);
 		test16.setMultiThreaded(true);
+		test17.setMultiThreaded(true);
+		test18.setMultiThreaded(true);
+		test19.setMultiThreaded(true);
+		test20.setMultiThreaded(true);
+		test21.setMultiThreaded(true);
+
 		cleaner.setMultiThreaded(true);
+
 		test1.setThreadName(threadName);
 		test2.setThreadName(threadName);
 		test3.setThreadName(threadName);
@@ -71,7 +86,14 @@ public class TestSuiteThread extends Thread {
 		test14.setThreadName(threadName);
 		test15.setThreadName(threadName);
 		test16.setThreadName(threadName);
+		test17.setThreadName(threadName);
+		test18.setThreadName(threadName);
+		test19.setThreadName(threadName);
+		test20.setThreadName(threadName);
+		test21.setThreadName(threadName);
+
 		cleaner.setThreadName(threadName);
+
 		test1.setDriver(suiteDriver);
 		test2.setDriver(suiteDriver);
 		test3.setDriver(suiteDriver);
@@ -88,7 +110,14 @@ public class TestSuiteThread extends Thread {
 		test14.setDriver(suiteDriver);
 		test15.setDriver(suiteDriver);
 		test16.setDriver(suiteDriver);
+		test17.setDriver(suiteDriver);
+		test18.setDriver(suiteDriver);
+		test19.setDriver(suiteDriver);
+		test20.setDriver(suiteDriver);
+		test21.setDriver(suiteDriver);
+
 		cleaner.setDriver(suiteDriver);
+
 		test1.setWaiter(suiteWaiter);
 		test2.setWaiter(suiteWaiter);
 		test3.setWaiter(suiteWaiter);
@@ -104,13 +133,21 @@ public class TestSuiteThread extends Thread {
 		test13.setWaiter(suiteWaiter);
 		test14.setWaiter(suiteWaiter);
 		test15.setWaiter(suiteWaiter);
-		test15.setJsexec(exec);
 		test16.setWaiter(suiteWaiter);
-		cleaner.setWaiter(suiteWaiter);
+		test17.setWaiter(suiteWaiter);
+		test18.setWaiter(suiteWaiter);
+		test19.setWaiter(suiteWaiter);
+		test20.setWaiter(suiteWaiter);
+		test21.setWaiter(suiteWaiter);
+
+		test15.setJsexec(exec);
+
 		try {
 			Thread.sleep(500);
+			cleaner.setWaiter(suiteWaiter);
 			long starttime = System.currentTimeMillis();
 			System.out.println("TestSuite Thread with name: " + threadName + "started executing at: " + starttime);
+
 			test1.setUp();
 			test1.doTest();
 			test2.setUp();
@@ -132,8 +169,7 @@ public class TestSuiteThread extends Thread {
 			test10.setUp();
 			test10.doTest();
 			test11.setUp();
-			test11.t80a();
-			test11.t80b();
+			test11.t80();
 			test12.setUp();
 			test12.t90();
 			test13.setUp();
@@ -144,9 +180,22 @@ public class TestSuiteThread extends Thread {
 			test15.t120();
 			test16.setUp();
 			test16.t130();
+			test17.setUp();
+			test17.doTest();
+			test18.setUp();
+			test18.doTest();
+			test19.setUp();
+			test19.doTest();
+			test20.setUp();
+			test20.doTest();
+			test21.setUp();
+			test21.doTest();
+
 			cleaner.cleanDB();
+
 			long stoptime = System.currentTimeMillis();
 			System.out.println("Finished executing test suite with thread name: " + threadName + " at time: " + stoptime);
+
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			System.out.println("Thread with name: " + threadName + " was interrupted from its sleep.");

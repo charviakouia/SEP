@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
@@ -36,16 +37,11 @@ public class T160 {
 			TimeUnit.MINUTES.sleep(1);
 		} catch (InterruptedException e) {
 		}
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_staff_dropdown")));
 		driver.findElement(By.id("header_staff_dropdown")).click();
-		try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (InterruptedException e) {
-		}
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Rückgabe")));
 		driver.findElement(By.linkText("Rückgabe")).click();
-		try {
-			TimeUnit.SECONDS.sleep(3);
-		} catch (InterruptedException e) {
-		}
+		waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_return_form:returnForm_mail_field")));
 		driver.findElement(By.id("form_return_form:returnForm_mail_field")).click();
 		driver.findElement(By.id("form_return_form:returnForm_mail_field")).sendKeys("nutzer.sep2021test" + threadName + "@gmail.com");
 		driver.findElement(By.id("form_return_form:j_idt53:0:returnForm_signature_field")).click();
@@ -57,6 +53,7 @@ public class T160 {
 		}
 
 		assertTrue(driver.getPageSource().contains("1 Exemplare von nutzer.sep2021test" + threadName + "@gmail.com zurückgegeben."));
+		System.out.println("Test T160 succeeded (thread %s)".formatted(threadName));
 	}
 
 	@After

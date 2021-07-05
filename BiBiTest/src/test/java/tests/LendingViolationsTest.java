@@ -2,6 +2,7 @@ package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import test.java.tests.PreTest;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;

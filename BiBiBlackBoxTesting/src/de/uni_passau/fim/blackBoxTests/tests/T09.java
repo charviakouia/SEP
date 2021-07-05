@@ -42,6 +42,7 @@ public class T09 {
 			assertTrue(waiter.until(ExpectedConditions.titleContains("Anmeldung")));
 			waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_password_message")));
 			assertTrue(true);
+			System.out.println("Test T09 succeeded (thread %s)".formatted(threadName));
 		} catch (Exception e) {
 			fail("Error message not found");
 		}

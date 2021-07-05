@@ -2,9 +2,7 @@ package de.uni_passau.fim.blackBoxTests.tests;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -29,7 +27,7 @@ public class T90 {
     private static final String SEARCH_STR = "nen%s";
     private static final String MEDIUM_TITLE = "Programmieren lernen";
 
-    @BeforeClass
+    @Before
     public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
@@ -38,7 +36,7 @@ public class T90 {
         Selenium.navigateTo(driver, Pages.HOME);
     }
 
-    @AfterClass
+    @After
     public void tearDown() {}
 
     /**
@@ -55,7 +53,7 @@ public class T90 {
         // Check that the correct result entry exists
         Selenium.waitUntilLoaded();
         assertTrue(Selenium.classEntityContainsText(driver, "searchResultTitleEntry", gen(MEDIUM_TITLE)));
-
+        System.out.println("Test T90 succeeded (thread %s)".formatted(threadName));
     }
 
     private String gen(String str){

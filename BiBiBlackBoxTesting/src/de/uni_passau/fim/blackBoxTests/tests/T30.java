@@ -46,6 +46,7 @@ public class T30 {
 			Selenium.waitUntilLoaded();
 			assertEquals("Müller", driver.findElement(By.id("form_profile:lastname"))
 					.getAttribute("value"));
+			System.out.println("Test T30 succeeded (thread %s)".formatted(threadName));
         } catch (Exception e) {
         	fail("A new surname not found." + e);
         }

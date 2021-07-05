@@ -53,6 +53,7 @@ public class T02 {
         try {
             driver.findElement(By.id("form_profile:frstname"));
             assertTrue(true);
+            System.out.println("Test T02 succeeded (thread %s)".formatted(threadName));
         } catch (Exception e) {
             fail("Element not found.");
         }

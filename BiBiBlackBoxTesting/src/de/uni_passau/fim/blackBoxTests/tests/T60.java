@@ -54,6 +54,7 @@ public class T60 {
         try {
 			//checks a result
 			assertTrue(driver.getPageSource().contains("Die Kategorie ist erfolgreich erstellt."));
+			System.out.println("Test T60 succeeded (thread %s)".formatted(threadName));
         } catch (Exception e) {
         	fail("A positive message not found.");
         }

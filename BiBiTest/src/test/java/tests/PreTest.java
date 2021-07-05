@@ -1,4 +1,4 @@
-package test.java.tests;
+package tests;
 
 import de.dedede.model.persistence.util.ConfigReader;
 import de.dedede.model.persistence.util.ConnectionPool;

@@ -3,9 +3,7 @@ package de.uni_passau.fim.blackBoxTests.tests;
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 import de.uni_passau.fim.blackBoxTests.util.Pages;
 import de.uni_passau.fim.blackBoxTests.util.Selenium;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -27,7 +25,7 @@ public class T110 {
     private final String PASSWORD = "sdfHs4!a";
     private final String FIRST_NAME = "Bob%s";
 
-    @BeforeClass
+    @Before
     public void setUp() {
         if (!isMultiThreaded) {
             driver = Driver.getDriver();
@@ -36,7 +34,7 @@ public class T110 {
         Selenium.navigateTo(driver, Pages.HOME);
     }
 
-    @AfterClass
+    @After
     public void tearDown() {}
 
     /**
@@ -65,6 +63,7 @@ public class T110 {
 
         // Verify data in profile page
         assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:frstname", "value", gen(FIRST_NAME)));
+        System.out.println("Test T110 succeeded (thread %s)".formatted(threadName));
 
     }
 

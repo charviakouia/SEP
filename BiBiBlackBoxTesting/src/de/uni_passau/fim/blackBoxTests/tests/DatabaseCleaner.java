@@ -5,9 +5,8 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import de.uni_passau.fim.blackBoxTests.util.Selenium;
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
@@ -27,13 +26,13 @@ public class DatabaseCleaner {
     private boolean isMultiThreaded = false;
     private String threadName = "";
 
-    @BeforeClass
+    @Before
     public void setUp() {
         driver = Driver.getDriver();
         waiter = Driver.getDriverWait();
     }
 
-    @AfterClass
+    @After
     public void tearDown() {}
 
     @Test
@@ -43,14 +42,12 @@ public class DatabaseCleaner {
             // Log out
             waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("accountDropDown"))).click();
             waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_log_out:button_log_out"))).click();
-        } catch (Exception e) {
-            // ignored
-        }
+        } catch (Exception ignored) {}
 
         // Navigate to login
         driver.get(UrlPrefix.BASE_URL + "/view/ffa/login.xhtml");
 
-        // Sign in
+        // Sign in as admin
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field")));
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field"))).clear();
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field")))
@@ -61,10 +58,12 @@ public class DatabaseCleaner {
                 .sendKeys("xlA24!bGhm" + Keys.ENTER);
 
         try { TimeUnit.SECONDS.sleep(3); } catch (InterruptedException e){}
-        // Navigate to advanced search and perform search
-        driver.findElement(By.id("form_medium_search:input_general_search_term")).sendKeys("Programmieren lernen" + threadName, Keys.ENTER);
 
-        // Check that the correct result exists
+        // Navigate to advanced search and perform search
+        driver.findElement(By.id("form_medium_search:input_general_search_term"))
+                .sendKeys("Programmieren lernen" + threadName, Keys.ENTER);
+
+        // Get medium, 'Programmieren Lernen' to delete
         try { TimeUnit.SECONDS.sleep(5); } catch (InterruptedException e){}
         List<WebElement> elementList = driver.findElements(By.className("searchResultTitleEntry"));
         WebElement correctElement = null;
@@ -78,32 +77,53 @@ public class DatabaseCleaner {
             } catch (TimeoutException ignored){}
         }
         if (correctElement != null){
+
             // Navigate to medium details page
             String link = correctElement.getAttribute("href");
             driver.navigate().to(link);
             try { TimeUnit.SECONDS.sleep(4); } catch (InterruptedException e){}
 
             // Delete the medium
-            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_mediumAttributes_forUsers:delMedium")))
-                    .click();
+            waiter.until(ExpectedConditions
+                    .visibilityOfElementLocated(By.id("form_mediumAttributes_forUsers:delMedium"))).click();
+
         }
 
         // Navigate to category-browser
-        // driver.get(UrlPrefix.BASE_URL + "/view/opac/category-browser.xhtml");
+        driver.get(UrlPrefix.BASE_URL + "/view/opac/category-browser.xhtml");
 
-        // Delete the category 'Informatik'
-        // waiter.until(ExpectedConditions.visibilityOfElementLocated(
-        //        By.id("form_category_search:input_category_search_term")))
-        //        .sendKeys("Informatik" + threadName, Keys.ENTER);
-        // waiter.until(ExpectedConditions.visibilityOfElementLocated(
-        //        By.id("form_category_controls:link_delete_category"))).click();
+        // TODO: Fix
+        // Find parent category
+        Selenium.waitUntilLoaded();
+        List<WebElement> categories = driver.findElements(By.cssSelector(".accordion-button"));
+        for (WebElement category : categories){
+            if (category.getText().contains("SampleParentCategory")){
+                category.click();
+                break;
+            }
+        }
+
+        // Get and delete the category 'Informatik'
+        Selenium.waitUntilLoaded();
+        List<WebElement> categoryLinks = driver.findElements(By.cssSelector("a"));
+        for (WebElement link : categoryLinks){
+            if (link.getText().contains("Informatik")){
+                link.click();
+                waiter.until(ExpectedConditions.visibilityOfElementLocated(By
+                        .id("form_category_controls:link_delete_category"))).click();
+                waiter.until(ExpectedConditions.visibilityOfElementLocated(By
+                        .id("form_category_controls:button_confirm_category_deletion"))).click();
+                Selenium.waitUntilLoaded();
+            }
+        }
 
         try {
             // Navigate to user-search
             driver.get(UrlPrefix.BASE_URL + "/view/admin/user-search.xhtml");
 
             // Search the staff account
-            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_user_search:input_user_search_term")))
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.id("form_user_search:input_user_search_term")))
                     .sendKeys("mitarbeiter.sep2021test" + threadName + "@gmail.com" + Keys.ENTER);
 
             // Navigate to the staff account
@@ -119,7 +139,8 @@ public class DatabaseCleaner {
             driver.get(UrlPrefix.BASE_URL + "/view/admin/user-search.xhtml");
 
             // Search the user account
-            waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("form_user_search:input_user_search_term")))
+            waiter.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.id("form_user_search:input_user_search_term")))
                     .sendKeys("nutzer.sep2021test" + threadName + "@gmail.com" + Keys.ENTER);
 
             // Navigate to the user account
