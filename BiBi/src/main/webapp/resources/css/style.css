@@ -32,3 +32,7 @@ html, body {
 .accordion-button.disabled::after {
 	background-image: none !important;
 }
+
+.paginated-list-column-control::after {
+	content: attr(data-sorting-direction);
+}
