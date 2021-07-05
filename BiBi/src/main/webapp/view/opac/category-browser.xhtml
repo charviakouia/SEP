@@ -13,6 +13,11 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:importConstants
+				type="de.dedede.model.data.dtos.CategoryBrowserColumn" />
+		</f:metadata>
+
 		<h:panelGroup layout="block" styleClass="container">
 			<h:panelGroup layout="block" styleClass="row">
 
@@ -128,27 +133,44 @@
 						<bibi:paginatedList value="#{categoryBrowser}" styleClass="mt-5">
 
 							<h:column>
-								<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
+								<f:facet name="header">
+									<bibi:columnControls value="#{CategoryBrowserColumn.TITLE}"
+										label="#{msg['medium_attribute.title']}"
+										owner="#{categoryBrowser}" />
+								</f:facet>
 
 								<h:link value="#{item.title}"
 									outcome="/view/opac/medium.xhtml?id=#{item.id}" />
 							</h:column>
 
 							<h:column>
-								<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
+								<f:facet name="header">
+									<bibi:columnControls value="#{CategoryBrowserColumn.AUTHORS}"
+										label="#{msg['medium_attribute.authors']}"
+										owner="#{categoryBrowser}" />
+								</f:facet>
 
 								<!-- put that method somewhere else! -->
 								#{mediumSearch.formatAuthors(item)}
 							</h:column>
 
 							<h:column>
-								<f:facet name="header">#{msg['medium_attribute.edition']}</f:facet>
+								<f:facet name="header">
+									<bibi:columnControls value="#{CategoryBrowserColumn.EDITION}"
+										label="#{msg['medium_attribute.edition']}"
+										owner="#{categoryBrowser}" />
+
+								</f:facet>
 
 								#{item.edition}
 							</h:column>
 
 							<h:column>
-								<f:facet name="header">#{msg['medium_attribute.publisher']}</f:facet>
+								<f:facet name="header">
+									<bibi:columnControls value="#{CategoryBrowserColumn.PUBLISHER}"
+										label="#{msg['medium_attribute.publisher']}"
+										owner="#{categoryBrowser}" />
+								</f:facet>
 
 								#{item.publisher}
 							</h:column>

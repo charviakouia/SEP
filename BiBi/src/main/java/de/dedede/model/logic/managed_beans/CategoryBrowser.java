@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.dedede.model.data.dtos.CategoryBrowserColumn;
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CategorySearchDto;
 import de.dedede.model.data.dtos.MediumDto;
@@ -33,7 +34,7 @@ import jakarta.inject.Named;
  */
 @Named
 @ViewScoped
-public class CategoryBrowser extends PaginatedList implements Serializable {
+public class CategoryBrowser extends PaginatedList<CategoryBrowserColumn> implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;

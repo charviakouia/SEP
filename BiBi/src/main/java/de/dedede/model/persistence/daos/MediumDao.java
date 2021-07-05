@@ -17,6 +17,7 @@ import java.util.Optional;
 import de.dedede.model.persistence.exceptions.*;
 import org.postgresql.util.PGInterval;
 
+import de.dedede.model.data.dtos.CategoryBrowserColumn;
 import de.dedede.model.data.dtos.CategoryDto;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
@@ -245,13 +246,14 @@ public final class MediumDao {
 				%s
 				offset ?
 				limit ?
-				""".formatted(queryBody, Pagination.translateSortingInfoToSQLMultiValued(pagination, column -> switch (column) {
-		case TITLE -> List.of("m.title");
-		case AUTHORS -> List.of("m.author1", "m.author2");
-		case EDITION -> List.of("m.edition");
-		case PUBLISHER -> List.of("m.publisher");
-		case CATEGORY -> List.of("ct.title");
-		}));
+				""".formatted(queryBody,
+				Pagination.translateSortingInfoToSQLMultiValued(pagination, column -> switch (column) {
+				case TITLE -> List.of("m.title");
+				case AUTHORS -> List.of("m.author1", "m.author2");
+				case EDITION -> List.of("m.edition");
+				case PUBLISHER -> List.of("m.publisher");
+				case CATEGORY -> List.of("ct.title");
+				}));
 
 		final var countQuery = "select count(distinct m.mediumid) " + queryBody;
 
@@ -444,7 +446,8 @@ public final class MediumDao {
 	 * @param pagination The pagination details.
 	 * @return The list of media of the given category.
 	 */
-	public static List<MediumDto> readMediaGivenCategory(CategoryDto category, PaginationDto pagination) {
+	public static List<MediumDto> readMediaGivenCategory(CategoryDto category,
+			PaginationDto<CategoryBrowserColumn> pagination) {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
@@ -470,12 +473,18 @@ public final class MediumDao {
 					select
 						m.mediumid, m.title, m.author1, m.author2, m.edition, m.publisher
 					%s
+					%s
 					offset ?
 					limit ?
-					""".formatted(statementBody));
+					""".formatted(statementBody,
+					Pagination.translateSortingInfoToSQLMultiValued(pagination, column -> switch (column) {
+					case TITLE -> List.of("m.title");
+					case AUTHORS -> List.of("m.author1", "m.author2");
+					case EDITION -> List.of("m.edition");
+					case PUBLISHER -> List.of("m.publisher");
+					})));
 			var parameterIndex = 0;
 			itemsStatement.setInt(parameterIndex += 1, category.getId());
-			// @Task sorting
 			itemsStatement.setInt(parameterIndex += 1, Pagination.calculatePageOffset(pagination));
 			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
