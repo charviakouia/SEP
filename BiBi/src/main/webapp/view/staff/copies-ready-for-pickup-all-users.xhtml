@@ -12,10 +12,19 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:importConstants
+				type="de.dedede.model.data.dtos.CopiesReadyForPickupAllUsersColumn" />
+		</f:metadata>
+
 		<bibi:paginatedList value="#{copiesReadyForPickupAllUsers}">
 
 			<h:column>
-				<f:facet name="header">#{msg['copy']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls
+						value="#{CopiesReadyForPickupAllUsersColumn.SIGNATURE}"
+						label="#{msg['copy']}" owner="#{copiesReadyForPickupAllUsers}" />
+				</f:facet>
 
 				<h:form id="form_go_to_lending">
 					<h:commandLink id="link_go_to_lending"
@@ -25,20 +34,33 @@
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['location']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls
+						value="#{CopiesReadyForPickupAllUsersColumn.LOCATION}"
+						label="#{msg['location']}" owner="#{copiesReadyForPickupAllUsers}" />
+				</f:facet>
 
 				#{item.copy.location}
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls
+						value="#{CopiesReadyForPickupAllUsersColumn.TITLE}"
+						label="#{msg['medium_attribute.title']}"
+						owner="#{copiesReadyForPickupAllUsers}" />
+				</f:facet>
 
 				<h:link value="#{item.medium.title}"
 					outcome="/view/opac/medium.xhtml?id=#{item.medium.id}" />
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['user']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls
+						value="#{CopiesReadyForPickupAllUsersColumn.USER}"
+						label="#{msg['user']}" owner="#{copiesReadyForPickupAllUsers}" />
+				</f:facet>
 
 				<!-- @Task link only for admins -->
 				<!-- @Task display fullname in some cases -->
@@ -47,7 +69,12 @@
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['end_of_pickup_period']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls
+						value="#{CopiesReadyForPickupAllUsersColumn.DEADLINE}"
+						label="#{msg['end_of_pickup_period']}"
+						owner="#{copiesReadyForPickupAllUsers}" />
+				</f:facet>
 
 				#{item.copy.deadline}
 			</h:column>

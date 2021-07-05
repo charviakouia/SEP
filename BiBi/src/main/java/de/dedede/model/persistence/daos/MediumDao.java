@@ -19,6 +19,7 @@ import org.postgresql.util.PGInterval;
 
 import de.dedede.model.data.dtos.CategoryBrowserColumn;
 import de.dedede.model.data.dtos.CategoryDto;
+import de.dedede.model.data.dtos.CopiesReadyForPickupAllUsersColumn;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.CopyStatus;
 import de.dedede.model.data.dtos.MediumCopyUserDto;
@@ -929,7 +930,8 @@ public final class MediumDao {
 	 * @param pagination A container defining the page size and the amount of pages.
 	 * @return The list of copies ready for pickup and some related data.
 	 */
-	public static List<MediumCopyUserDto> readCopiesReadyForPickup(PaginationDto pagination) {
+	public static List<MediumCopyUserDto> readCopiesReadyForPickup(
+			PaginationDto<CopiesReadyForPickupAllUsersColumn> pagination) {
 
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
@@ -963,10 +965,17 @@ public final class MediumDao {
 						c.signature, c.bibposition, c.deadline,
 						u.userid, u.emailaddress, u.name, u.surname
 					%s
+					%s
 					offset ?
 					limit ?
-					""".formatted(statementBody));
-			// @Task sorting
+					""".formatted(statementBody,
+					Pagination.translateSortingInfoToSQL(pagination, column -> switch (column) {
+					case SIGNATURE -> "c.signature";
+					case LOCATION -> "c.bibposition";
+					case TITLE -> "m.title";
+					case USER -> "u.emailaddress";
+					case DEADLINE -> "c.deadline";
+					})));
 			itemsStatement.setInt(1, Pagination.calculatePageOffset(pagination));
 			itemsStatement.setInt(2, Pagination.getEntriesPerPage());
 
