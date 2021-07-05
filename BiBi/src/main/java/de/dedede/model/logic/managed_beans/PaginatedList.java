@@ -136,12 +136,17 @@ public abstract class PaginatedList<Column extends Enum<Column>> {
 	}
 
 	public final void sort(Column column) {
+		if (paginatedList.getSortingDirection() == null) {
+			paginatedList.setSortingDirection(SortingDirection.ASCENDING);
+		} else {
+			paginatedList.setSortingDirection(paginatedList.getSortingDirection().inverted());
+		}
+		
 		if (column != paginatedList.getColumnToSortBy()) {
 			paginatedList.setSortingDirection(SortingDirection.ASCENDING);
 		}
 		paginatedList.setColumnToSortBy(column);
 		refresh();
-		paginatedList.setSortingDirection(paginatedList.getSortingDirection().inverted());
 	}
 
 }

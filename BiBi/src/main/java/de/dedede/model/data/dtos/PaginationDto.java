@@ -25,7 +25,7 @@ public class PaginationDto<Column extends Enum<Column>> implements Serializable 
 
 	private Column columnToSortBy = null;
 
-	private SortingDirection sortingDirection = SortingDirection.ASCENDING;
+	private SortingDirection sortingDirection = null;
 
 	/**
 	 * Get the current zero-indexed page number.
