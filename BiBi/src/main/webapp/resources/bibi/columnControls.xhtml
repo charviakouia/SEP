@@ -13,15 +13,11 @@
 
 		<!--
 		A tag corresponding to the column. It has to be an enum variant where the enum
-		models all possible columns of the paginated list.
+		models all possible columns of the paginated list. The enum has to override `toString`
+		to return a key into the i18n resource bundle.
 		-->
 		<cc:attribute name="value" type="java.lang.Object" required="true" />
-
-		<!-- 
-		The name (textual representation) of the column.
-		-->
-		<cc:attribute name="label" required="true" />
-
+		
 		<!-- 
 		The paginated list containing these controls.
 		-->
@@ -34,7 +30,7 @@
 	<cc:implementation>
 
 		<h:form>
-			<h:commandLink value="#{cc.attrs.label}"
+			<h:commandLink value="#{msg[cc.attrs.value.toString()]}"
 				p:data-sorting-direction=" #{cc.attrs.value == cc.attrs.owner.paginatedList.columnToSortBy ? cc.attrs.owner.paginatedList.sortingDirection.symbol() : ' ' }"
 				action="#{cc.attrs.owner.sort(cc.attrs.value)}"
 				styleClass="paginated-list-column-control text-decoration-none #{cc.attrs.value == cc.attrs.owner.paginatedList.columnToSortBy ? 'text-primary' : 'text-body'}" />

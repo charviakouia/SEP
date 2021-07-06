@@ -58,7 +58,7 @@
 			<h:column>
 				<f:facet name="header">
 					<bibi:columnControls value="#{UserSearchColumn.EMAIL_ADDRESS}"
-						label="#{msg['userEmailAddress']}" owner="#{userSearch}" />
+						owner="#{userSearch}" />
 				</f:facet>
 
 				<h:link id="emailLink" value="#{item.emailAddress}"
@@ -68,7 +68,7 @@
 			<h:column>
 				<f:facet name="header">
 					<bibi:columnControls value="#{UserSearchColumn.FIRST_NAME}"
-						label="#{msg['userFirstName']}" owner="#{userSearch}" />
+						owner="#{userSearch}" />
 				</f:facet>
 
 				#{item.firstName}
@@ -77,7 +77,7 @@
 			<h:column>
 				<f:facet name="header">
 					<bibi:columnControls value="#{UserSearchColumn.LAST_NAME}"
-						label="#{msg['userLastName']}" owner="#{userSearch}" />
+						owner="#{userSearch}" />
 				</f:facet>
 
 				#{item.lastName}

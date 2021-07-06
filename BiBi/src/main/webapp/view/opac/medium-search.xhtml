@@ -90,7 +90,7 @@
 			<h:column id="col1">
 				<f:facet name="header">
 					<bibi:columnControls value="#{MediumSearchColumn.TITLE}"
-						label="#{msg['medium_attribute.title']}" owner="#{mediumSearch}" />
+						owner="#{mediumSearch}" />
 				</f:facet>
 
 				<h:link id="mediumLink" value="#{item.title}"
@@ -101,7 +101,7 @@
 			<h:column>
 				<f:facet name="header">
 					<bibi:columnControls value="#{MediumSearchColumn.AUTHORS}"
-						label="#{msg['medium_attribute.authors']}" owner="#{mediumSearch}" />
+						owner="#{mediumSearch}" />
 				</f:facet>
 
 				#{mediumSearch.formatAuthors(item)}
@@ -110,7 +110,7 @@
 			<h:column>
 				<f:facet name="header">
 					<bibi:columnControls value="#{MediumSearchColumn.EDITION}"
-						label="#{msg['medium_attribute.edition']}" owner="#{mediumSearch}" />
+						owner="#{mediumSearch}" />
 				</f:facet>
 
 				#{item.edition}
@@ -119,7 +119,6 @@
 			<h:column>
 				<f:facet name="header">
 					<bibi:columnControls value="#{MediumSearchColumn.PUBLISHER}"
-						label="#{msg['medium_attribute.publisher']}"
 						owner="#{mediumSearch}" />
 				</f:facet>
 
@@ -129,7 +128,7 @@
 			<h:column>
 				<f:facet name="header">
 					<bibi:columnControls value="#{MediumSearchColumn.CATEGORY}"
-						label="#{msg['category']}" owner="#{mediumSearch}" />
+						owner="#{mediumSearch}" />
 				</f:facet>
 
 				#{item.category.name}
