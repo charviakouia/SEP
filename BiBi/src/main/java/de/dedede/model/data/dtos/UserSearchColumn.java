@@ -5,7 +5,7 @@ package de.dedede.model.data.dtos;
  * @author León Liehr
  */
 public enum UserSearchColumn {
-	EMAIL_ADDRESS, FIRST_NAME, LAST_NAME;
+	EMAIL_ADDRESS, FIRST_NAME, LAST_NAME, ROLE;
 
 	@Override
 	public String toString() {
@@ -13,6 +13,7 @@ public enum UserSearchColumn {
 		case EMAIL_ADDRESS -> "userEmailAddress";
 		case FIRST_NAME -> "userFirstName";
 		case LAST_NAME -> "userLastName";
+		case ROLE -> "user_role";
 		};
 	}
 }

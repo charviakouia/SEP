@@ -367,7 +367,7 @@ public final class UserDao {
 
 			final var itemsStatement = connection.prepareStatement("""
 					select distinct
-						u.userid, u.emailaddress, u.name, u.surname
+						u.userid, u.emailaddress, u.name, u.surname, u.userrole
 					%s
 					%s
 					offset ?
@@ -377,6 +377,7 @@ public final class UserDao {
 					case EMAIL_ADDRESS -> "u.emailaddress";
 					case FIRST_NAME -> "u.name";
 					case LAST_NAME -> "u.surname";
+					case ROLE -> "u.userrole";
 					})));
 			var parameterIndex = 0;
 
@@ -400,6 +401,7 @@ public final class UserDao {
 				user.setEmailAddress(resultSet.getString(2));
 				user.setFirstName(resultSet.getString(3));
 				user.setLastName(resultSet.getString(4));
+				user.setRole(UserRole.valueOf(resultSet.getString(5)));
 
 				results.add(user);
 			}
