@@ -38,7 +38,7 @@ public class CategoryBrowser extends PaginatedList<CategoryBrowserColumn> implem
 
 	@Serial
 	private static final long serialVersionUID = 1L;
-	
+
 	@Inject
 	private FacesContext ctx;
 
@@ -116,7 +116,7 @@ public class CategoryBrowser extends PaginatedList<CategoryBrowserColumn> implem
 				accordionButton.getPassThroughAttributes().put("data-bs-target", "#" + qualifiedAccordionCollapseId);
 				accordionButton.setStyleClass(styleClass.toString());
 			}
-			
+
 			final var accordionHeader = createContainer("accordion-header");
 			accordionHeader.getChildren().add(accordionButton);
 
@@ -174,7 +174,7 @@ public class CategoryBrowser extends PaginatedList<CategoryBrowserColumn> implem
 	public Collection<CategoryDto> getCurrentCategoryPath() {
 		final var TYPICAL_LONGEST_PATH_LENGTH = 3;
 		final var path = new ArrayDeque<CategoryDto>(TYPICAL_LONGEST_PATH_LENGTH);
-		
+
 		for (var category = currentCategory; category != null; category = category.getParent()) {
 			path.addFirst(category);
 		}
@@ -223,12 +223,14 @@ public class CategoryBrowser extends PaginatedList<CategoryBrowserColumn> implem
 	}
 
 	public String searchCategories() {
-		
+
 		return "category-browser";
 	}
 
 	public void createCategory() throws IOException {
-		ectx.getFlash().put("parent-category", currentCategory.getId());
+		if (currentCategory != null) {
+			ectx.getFlash().put("parent-category", currentCategory.getId());
+		}
 		ectx.redirect(ectx.getRequestContextPath() + "/view/staff/category-creator.xhtml");
 	}
 
