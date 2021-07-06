@@ -33,6 +33,13 @@
 								styleClass="btn btn-primary" />
 						</h:panelGroup>
 					</h:form> -->
+					<h:form id="form_top_level_category_creation" styleClass="mb-2 d-flex w-100 justify-content-center"
+						rendered="#{categoryBrowser.showingCategoryActions}">
+						<h:commandButton id="button_create_top_level_category"
+							value="#{msg['category_browser.category.create_category']}"
+							action="#{categoryBrowser.createCategory()}"
+							styleClass="btn btn-outline-secondary" />
+					</h:form>
 
 					<h:panelGroup layout="block" id="category_tree_hook"
 						binding="#{categoryBrowser.categoryTreeHook}" />
