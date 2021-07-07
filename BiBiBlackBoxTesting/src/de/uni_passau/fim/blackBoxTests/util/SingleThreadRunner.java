@@ -12,22 +12,22 @@ public class SingleThreadRunner {
 
         try {
             WebDriver webDriver = Driver.getNewDriver();
-            new Extention(webDriver).run();
+            new Extension(webDriver).run();
         } catch (Exception e){
             e.printStackTrace();
         } finally {
             Driver.getDriver();
-            //DatabaseCleaner.setThreadName(threadName);
-            //DatabaseCleaner.setUp();
             DatabaseCleaner dbc = new DatabaseCleaner();
+            dbc.setThreadName(threadName);
+            dbc.setUp();
             dbc.cleanDB();
         }
 
     }
 
-    private static class Extention extends TestSuiteThread {
+    private static class Extension extends TestSuiteThread {
 
-        public Extention(WebDriver driver) {
+        public Extension(WebDriver driver) {
             super(driver);
         }
 

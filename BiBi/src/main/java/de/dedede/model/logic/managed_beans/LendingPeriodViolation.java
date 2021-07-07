@@ -9,10 +9,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.data.dtos.MediumCopyUserDto;
-import de.dedede.model.data.dtos.MediumDto;
-import de.dedede.model.data.dtos.PaginationDto;
+import de.dedede.model.data.dtos.*;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.util.Logger;
@@ -32,7 +29,7 @@ import jakarta.inject.Named;
  */
 @Named
 @ViewScoped
-public class LendingPeriodViolation extends PaginatedList implements Serializable {
+public class LendingPeriodViolation extends PaginatedList<LendingPeriodViolationColumns> implements Serializable {
 
 	@Serial private static final long serialVersionUID = 1L;
 	private static final int NUM_ROWS = 10;
@@ -41,7 +38,7 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 
 	@PostConstruct
 	public void init() {
-		PaginationDto paginationDetails = new PaginationDto();
+		PaginationDto<LendingPeriodViolationColumns> paginationDetails = new PaginationDto<>();
 		paginationDetails.setPageNumber(0);
 		paginationDetails.setTotalAmountOfRows(NUM_ROWS);
 		setPaginatedList(paginationDetails);
@@ -60,7 +57,7 @@ public class LendingPeriodViolation extends PaginatedList implements Serializabl
 	}
 
 	private void updateNumberOfPages(){
-		PaginationDto paginationDetails = getPaginatedList();
+		PaginationDto<LendingPeriodViolationColumns> paginationDetails = getPaginatedList();
 		int numRowsPerPage = paginationDetails.getTotalAmountOfRows();
 		int numRows = MediumDao.readNumberOfAllOverdueCopies();
 		long numPages = Math.round(Math.floor(numRows / (double) numRowsPerPage)) + 1;

@@ -6,12 +6,6 @@ html, body {
 	min-height: 100vh;
 }
 
-/* body {
-	background-image: linear-gradient(to right, white 80%, transparent 100%),
-				url("#{resource['images:backgroundImage.svg']}");
-	background-size: 100%, cover;
-} */
-
 .footer {
 	height: var(--footer-height);
 }
