@@ -3,6 +3,7 @@ package de.dedede.model.logic.managed_beans;
 import de.dedede.model.data.dtos.*;
 import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.persistence.daos.MediumDao;
+import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -87,7 +88,13 @@ public class Medium extends PaginatedList implements Serializable {
 		try {
 			mediumDto = MediumDao.readMedium(mediumDto);
 		} catch (MediumDoesNotExistException e) {
-			MessagingUtility.writeNegativeMessageWithKey(context, false, "medium.wrongID");
+			MessagingUtility.writeNegativeMessageWithKey(context, true, "medium.wrongID");
+			try {
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/medium-search.xhtml");
+			} catch (IOException exception) {
+				MessagingUtility.writeNegativeMessageWithKey(context, false, "medium.wrongID");
+				MessagingUtility.writeNegativeMessage(context, false, "Redirect is not possible.");
+			}
 		}
 	}
 
@@ -221,7 +228,7 @@ public class Medium extends PaginatedList implements Serializable {
 	/**
 	 * Go to the direct lending page taking a copy of this medium.
 	 */
-	public void lendCopy() throws IOException {
+	public void lendCopy() throws IOException, UserDoesNotExistException {
 		if (mediumDto.getCopy(currentCopyId) == null) {
 			MessagingUtility.writeNegativeMessageWithKey(context, false, "copy.invalidId");
 			return;
@@ -234,9 +241,13 @@ public class Medium extends PaginatedList implements Serializable {
 		CopyDto copyToLend = mediumDto.getCopy(currentCopyId);
 		copies.add(copyToLend);
 		lending.setCopies(copies);
+		UserDto userDto = new UserDto();
+		userDto.setId(mediumDto.getCopy(currentCopyId).getActor());
+		UserDao.readUserForProfile(userDto);
+		lending.setUser(userDto);
 		cleanEditedAttributes();
 		FacesContext.getCurrentInstance().getExternalContext()
-				.redirect("/BiBi/view/staff/lending.xhtml?faces-redirect=true");
+				.redirect("/BiBi/view/staff/lending.xhtml");
 	}
 
 	/**
@@ -253,9 +264,7 @@ public class Medium extends PaginatedList implements Serializable {
 		}
 		cleanEditedAttributes();
 		FacesContext.getCurrentInstance().getExternalContext()
-				.redirect("/BiBi/view/staff/return-form.xhtml?userId="
-						+ userSession.getUser().getId() + "&copySignature="
-						+ mediumDto.getCopy(currentCopyId).getSignature());
+				.redirect("/BiBi/view/staff/return-form.xhtml?faces-redirect=true");
 	}
 
 	/**
