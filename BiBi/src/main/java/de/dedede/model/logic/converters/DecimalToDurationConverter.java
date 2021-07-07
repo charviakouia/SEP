@@ -19,7 +19,16 @@ import jakarta.faces.convert.FacesConverter;
  */
 @FacesConverter("decimalToDurationConverter")
 public class DecimalToDurationConverter implements Converter<Duration> {
-
+	
+	/**
+	 * Transforms a decimal number of days into a Duration object. 
+	 * Throws an error message if the number was of invalid format or negative.
+	 * 
+	 * @param context the FacesContext.
+	 * @param component the UI component this converter is registered on.
+	 * @param input the number to be converted as a String.
+	 * @return a Duration object representing the number of days in the String.
+	 */
 	@Override
 	public Duration getAsObject(FacesContext context, UIComponent component, 
 			String input) {
@@ -39,6 +48,7 @@ public class DecimalToDurationConverter implements Converter<Duration> {
             } else {
             	double numberOfNanos = 
             			numberOfDays * Duration.ofDays(1).toNanos();
+            	
             	return Duration.ofNanos(Math.round(numberOfNanos));
             }
         } catch (NumberFormatException e){
@@ -51,13 +61,21 @@ public class DecimalToDurationConverter implements Converter<Duration> {
             throw new ConverterException(msg);
         }
 	}
-
+	
+	/**
+	 * Converts the time interval held in the Duration object into a decimal 
+	 * number representing days.
+	 * 
+	 * @param context the FacesContext.
+	 * @param component the UI component this converter is registered on.
+	 * @param duration the Duration object to be converted into a decimal.
+	 */
 	@Override
 	public String getAsString(FacesContext context, UIComponent component,
 			Duration duration) {
 		double divResult = ((double) duration.getSeconds()) / (60 * 60 * 24);
-        String resultValue = 
-        	  String.valueOf(divResult);
+        String resultValue = String.valueOf(divResult);
+        
 		return resultValue;
 	}
 

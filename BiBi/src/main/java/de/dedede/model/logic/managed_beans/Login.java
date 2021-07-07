@@ -6,13 +6,11 @@ import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.persistence.daos.UserDao;
-import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
@@ -46,7 +44,7 @@ public class Login {
 	private UserDto userData = new UserDto();
 	
 	/**
-	 * The @SessionScoped Bean that hold userdata.
+	 * The @SessionScoped Bean that holds the users data.
 	 */
 	@Inject
 	private UserSession userSession;
@@ -73,7 +71,7 @@ public class Login {
 	 * @throws MaxConnectionsException If there are no more available database
 	 *                                 connections.
 	 * @throws LostConnectionException if an error during db communication 
-	 * 									occured
+	 * 								   occured
 	 */
 	public void logIn() throws MaxConnectionsException,
 			LostConnectionException {
@@ -121,7 +119,7 @@ public class Login {
 
 	/**
 	 * Send an email to the user with a reset link inside, shows confirmation
-	 * or failure messages depending on the outcome.						
+	 * or failure messages depending on the outcome. 						
 	 */
 	public void resetPassword() {									
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -141,11 +139,12 @@ public class Login {
 					completeUserData, newTokenContainer);			
 			String link = EmailUtility.getLink(
 				   "/view/ffa/password-reset.xhtml", userToken.getContent());
-			// Ivan start
-			if (context.getExternalContext().getInitParameter("jakarta.faces.PROJECT_STAGE").equals("Development")){
+			ExternalContext extCtx = context.getExternalContext();
+			String SystemMode = 
+					extCtx.getInitParameter("jakarta.faces.PROJECT_STAGE");
+			if (SystemMode.equals("Development")){ //workaround for Ivans BBtest
 				MessagingUtility.writeNeutralMessage(context, true, link);
 			}
-			// Ivan end
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
 			String emailBody = insertParams(firstname, lastname, link, content);
@@ -212,9 +211,4 @@ public class Login {
 		this.userData = user;
 	}
 	
-	// Authored by Ivan to test global exception handler functionality
-	public String throwsError() {
-		throw new BusinessException("Testing...", new CopyDoesNotExistException("More testing..."));
-	}
-
 }

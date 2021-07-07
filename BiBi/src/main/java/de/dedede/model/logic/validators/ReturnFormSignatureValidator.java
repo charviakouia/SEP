@@ -3,12 +3,10 @@ package de.dedede.model.logic.validators;
 import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.CopyDto;
+import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.managed_beans.ReturnForm;
+import de.dedede.model.logic.util.CopyReturnStatus;
 import de.dedede.model.persistence.daos.MediumDao;
-import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
-import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
-import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
-import de.dedede.model.persistence.exceptions.UserExceededDeadlineException;
 import jakarta.enterprise.context.Dependent;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -54,10 +52,10 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 		ResourceBundle messages = application.evaluateExpressionGet(context, 
 				"#{msg}", ResourceBundle.class);
 	    CopyDto signatureContainer = new CopyDto();
-	    signatureContainer.setSignature(signature);
-				
-		if (returnForm.getUser().getEmailAddress() == null 
-				|| returnForm.getUser().getEmailAddress().trim() == "" ) {
+	    signatureContainer.setSignature(signature);			
+		UserDto user = returnForm.getUser();
+		if (user.getEmailAddress() == null 
+				|| user.getEmailAddress().trim() == "" ) {
 			String shortMessage = messages.getString("returnForm.enter_user"
 					+ "_first_short");
 	    	String longMessage = messages.getString("returnForm.enter_user"
@@ -66,10 +64,9 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
 	    }
-		try {
-	    	MediumDao.validateReturnProcess(signatureContainer,
-	    			returnForm.getUser());
-	    } catch (CopyDoesNotExistException e1) {
+		CopyReturnStatus status = 
+				MediumDao.validateReturnProcess(signatureContainer, user);
+	    if (status == CopyReturnStatus.SIGNATURE_NOT_FOUND) {
 	    	String shortMessage = messages.getString("returnForm.unknown"
 	    			+ "_copy_short");
 	    	String longMessage = messages.getString("returnForm.unknown"
@@ -77,7 +74,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
-	    } catch (CopyIsNotAvailableException e2) {
+	    } else if (status == CopyReturnStatus.COPY_NOT_LENT) {
 	    	String shortMessage = messages.getString("returnForm.invalid"
 	    			+ "_copy_status_short");
 	    	String longMessage = messages.getString("returnForm.invalid"
@@ -85,7 +82,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
-	    } catch (InvalidUserForCopyException e3) {
+	    } else if (status == CopyReturnStatus.WRONG_USER) {
 	    	String shortMessage = messages.getString("returnForm.invalid"
 	    			+ "_actor_return_short");
 	    	String longMessage = messages.getString("returnForm.invalid"
@@ -93,7 +90,7 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
-	    } catch (UserExceededDeadlineException e4) {							
+	    } else if (status == CopyReturnStatus.RETURN_DEADLINE_EXCEEDED) {							
 	    	String shortMessage = messages.getString("returnForm.invalid"		
 	    			+ "_deadline_return_short");							
 	    	String longMessage = messages.getString("returnForm.invalid"

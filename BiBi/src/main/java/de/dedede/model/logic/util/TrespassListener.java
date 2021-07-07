@@ -77,26 +77,30 @@ public class TrespassListener implements PhaseListener, Serializable{
     			+ "_or_register_long");
         SystemAnonAccess accessMode 
         				= customs.getApplicationCustomization().getAnonRights();
-        if (!isLoggedIn && !url.startsWith("/view/ffa/")
-        		&& (accessMode == SystemAnonAccess.REGISTRATION)) {
+        if (!isLoggedIn && !url.startsWith("/view/ffa/") 
+        	&& !url.startsWith("/view/error/")
+        	&& (accessMode == SystemAnonAccess.REGISTRATION)) {
         	redirectToLogin(facesCtx, externalCtx, navigationHandler,
         			shortMessageLogin, longMessageLogin);
         } else if (!isLoggedIn && !url.startsWith("/view/ffa/") 
-        		&& !url.startsWith("/view/opac/") 
-        		&& (accessMode == SystemAnonAccess.OPAC)) {
+        			&& !url.startsWith("/view/opac/") 
+        			&& !url.startsWith("/view/error/")
+        			&& (accessMode == SystemAnonAccess.OPAC)) {
         	redirectToLogin(facesCtx, externalCtx, navigationHandler,
         				shortMessageLogin, longMessageLogin);
         } else if (isLoggedIn && !url.startsWith("/view/ffa/")
-        		&& (userRole == UserRole.REGISTERED)) {
+        			&& (userRole == UserRole.REGISTERED)) {
         	if (!url.startsWith("/view/opac/") 
-        			&& !url.startsWith("/view/account/")) {
+        		&& !url.startsWith("/view/error/")
+        		&& !url.startsWith("/view/account/")) {
         		redirectToError404(facesCtx, externalCtx, navigationHandler);
         	}
         } else if (isLoggedIn && !url.startsWith("/view/ffa/") 
-        		&& (userRole == UserRole.STAFF)) {
+        			&& (userRole == UserRole.STAFF)) {
         	if(!url.startsWith("/view/opac/") 
-        			&& !url.startsWith("/view/account/") 
-        			&& !url.startsWith("/view/staff/")) {
+        		&& !url.startsWith("/view/account/") 
+        		&& !url.startsWith("/view/staff/")
+        		&& !url.startsWith("/view/error/")) {
         		redirectToError404(facesCtx, externalCtx, navigationHandler);
         	}
         }      

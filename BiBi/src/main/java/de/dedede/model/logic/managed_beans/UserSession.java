@@ -21,8 +21,8 @@ public class UserSession implements Serializable {
 	private static  final long serialVersionUID = 1L;
 
 	/**
-	 * holds the users data, this evaluates to null if the bean was instanziated
-	 * prior to the user being logged in.
+	 * Holds the users data, this field is null if the bean was instanziated
+	 * prior to the user being logged in and is filled with user data on login.
 	 */
 	private UserDto user;
 

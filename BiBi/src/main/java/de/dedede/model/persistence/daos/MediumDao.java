@@ -7,14 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import de.dedede.model.persistence.exceptions.*;
 import org.postgresql.util.PGInterval;
 
 import de.dedede.model.data.dtos.CategoryDto;
@@ -30,7 +27,20 @@ import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.logic.util.CopyLendingStatus;
+import de.dedede.model.logic.util.CopyReturnStatus;
 import de.dedede.model.logic.util.UserVerificationStatus;
+import de.dedede.model.persistence.exceptions.CategoryDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
+import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
+import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
+import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
+import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
+import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
+import de.dedede.model.persistence.exceptions.LostConnectionException;
+import de.dedede.model.persistence.exceptions.MaxConnectionsException;
+import de.dedede.model.persistence.exceptions.MediumDoesNotExistException;
+import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
 import de.dedede.model.persistence.util.Pagination; 
@@ -1848,7 +1858,7 @@ public final class MediumDao {
 			applyingLimit = userSeconds;
 		} else {
 			Logger.development("This is the dark basement of the ifElse-Tower, "
-		+ "noone should ever visit it.");
+								+ "noone should ever visit it.");
 		}
 		long longTime = (long) (applyingLimit * 1000);
 		Timestamp ts = new Timestamp(System.currentTimeMillis() + longTime);
@@ -1887,14 +1897,14 @@ public final class MediumDao {
 			throw new CopyDoesNotExistException(msg);
 		} else if (invalidCopyStatusReturnAttempt(conn, signatureContainer)) {
 			String msg = "Error during copy return! Copy wasn't lent in the " 
-		+ "first place.";
+							+ "first place.";
 			Logger.severe(msg);
 			instance.releaseConnection(conn);
 			throw new CopyIsNotAvailableException(msg);
 		} else if (invalidActorReturnAttempt(conn, 
 				signatureContainer, userEmail)) {
 			String msg = "Copy couldn't be returned. The copy wasn't lent " 
-		+ "(by this user).";
+							+ "(by this user).";
 			Logger.severe(msg);
 			instance.releaseConnection(conn);
 			throw new UserDoesNotExistException(msg);
@@ -1915,7 +1925,8 @@ public final class MediumDao {
 			returnCopy.close();
 		} catch (SQLException e) {
 			String msg = "An Error occured during communication with" 
-						+ " database on copy returning process, attempting rollback...";
+						+ " database on copy returning process, "
+						+ "attempting rollback...";
 			Logger.severe(msg);
 			try {
 				conn.rollback();
@@ -1931,72 +1942,63 @@ public final class MediumDao {
 	}
 
 	/**
-	 * Validates a return attempt by a given user with a given copysignature.
+	 * Validates a return attempt by a existing user with a given copysignature.
 	 * 
-	 * @param signatureContainer CopyDto with signature input
+	 * @param sigContainer CopyDto with signature input
 	 * @param user               UserDto with userEmail
-	 * @throws CopyDoesNotExistException     if signature wasn't found
-	 * @throws CopyIsNotAvailableException   if copystatus invalid for returning
-	 * @throws InvalidUserForCopyException   if wrong user tries to return
-	 * @throws UserExceededDeadlineException if return deadline was exceeded
+	 * @return the status of the validation process as enum.
 	 * @author Jonas Picker
 	 */
-	public static void validateReturnProcess(CopyDto signatureContainer, 
-			UserDto user) throws CopyDoesNotExistException, 
-					CopyIsNotAvailableException, InvalidUserForCopyException,
-					UserExceededDeadlineException {
+	public static CopyReturnStatus validateReturnProcess(CopyDto sigContainer, 
+			UserDto user) {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		CopyReturnStatus status = null;
 		try {
-			if (!copySignatureExists(conn, signatureContainer)) {
-				throw new CopyDoesNotExistException("Signature doesn't exist");
+			if (!copySignatureExists(conn, sigContainer)) {
+				status = CopyReturnStatus.SIGNATURE_NOT_FOUND;
 			} else if (invalidCopyStatusReturnAttempt(conn, 
-					signatureContainer)) {
-				throw new CopyIsNotAvailableException("Invalid copy status"
-						+ " for this return");
+					sigContainer)) {
+				status = CopyReturnStatus.COPY_NOT_LENT;
 			} else if (invalidActorReturnAttempt(conn, 
-					signatureContainer, user)) {
-				throw new InvalidUserForCopyException("Invalid user for "
-						+ "this return");
+					sigContainer, user)) {
+				status = CopyReturnStatus.WRONG_USER;
 			} else if (invalidDeadlineReturnAttempt(conn, 
-					signatureContainer, user)) {
-				throw new UserExceededDeadlineException("The return deadline"
-						+ " was exceeded by this user");
+					sigContainer, user)) {
+				status = CopyReturnStatus.RETURN_DEADLINE_EXCEEDED;
 			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
+		return status;
 	}
 
 	/**
 	 * Validates a lending attempt by a given user with a given copysignature.
 	 * 
-	 * @param signatureContainer CopyDto with signature input
+	 * @param sigContainer CopyDto with signature input
 	 * @param user               UserDto with userEmail
-	 * @throws CopyDoesNotExistException   if signature wasn't found
-	 * @throws CopyIsNotAvailableException if copystatus invalid for lending
-	 * @throws InvalidUserForCopyException if wrong user tries to lend
+	 * @return the status of the validation process as enum.
 	 * @author Jonas Picker
 	 */
-	public static void validateLendingProcess(CopyDto signatureContainer, 
-			UserDto user) throws CopyDoesNotExistException, 
-					CopyIsNotAvailableException, InvalidUserForCopyException {
+	public static CopyLendingStatus validateLendingProcess(CopyDto sigContainer, 
+			UserDto user) {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		CopyLendingStatus status = null;
 		try {
-			if (!copySignatureExists(conn, signatureContainer)) {
-				throw new CopyDoesNotExistException("Signature doesn't exist");
-			} else if (copyIsLentBySignature(conn, signatureContainer)) {
-				throw new CopyIsNotAvailableException("Invalid copy status," 
-												+ " cannot lend copy");
+			if (!copySignatureExists(conn, sigContainer)) {
+				status = CopyLendingStatus.SIGNATURE_NOT_FOUND;
+			} else if (copyIsLentBySignature(conn, sigContainer)) {
+				status = CopyLendingStatus.COPY_ALREADY_LENT;
 			} else if (invalidUserLendingAttempt(conn, 
-					signatureContainer, user)) {
-				throw new InvalidUserForCopyException("Invalid user for " 
-												+ "lending process");
+					sigContainer, user)) {
+				status = CopyLendingStatus.WRONG_USER;
 			}
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
 		}
+		return status;
 	}
 
 	/**

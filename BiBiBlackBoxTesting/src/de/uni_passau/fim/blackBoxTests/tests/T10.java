@@ -15,13 +15,21 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 
+/**
+ * Tests the login.
+ * 
+ * @author Jonas Picker
+ */
 public class T10 {
 
 	private WebDriver driver;
 	private WebDriverWait waiter;
 	private String threadName = "";
 	private boolean isMultiThreaded = false;
-		    
+	
+	/**
+	 * Goes on the login-page.
+	 */
     @Before
     public void setUp() {
     	if (!isMultiThreaded) {
@@ -31,6 +39,9 @@ public class T10 {
         driver.get(BASE_URL + "/view/ffa/login.xhtml");
     }
     
+    /**
+     * Enters credentials, submits and checks for admin bar in header.
+     */
     @Test
     public void doTest() {
     	waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("login_form:login_email_field")));
@@ -50,9 +61,13 @@ public class T10 {
         }       
     }
     
+    /**
+     * No cleanup needed.
+     */
     @After
     public void tearDown() {}
     
+    //getters and setters below, needed for multithreaded execution
     public WebDriver getDriver() {
 		return driver;
 	}
@@ -84,4 +99,5 @@ public class T10 {
 	public void setThreadName(String threadName) {
 		this.threadName = threadName;
 	}
+	
 }

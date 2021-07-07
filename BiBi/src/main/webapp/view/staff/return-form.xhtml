@@ -23,7 +23,7 @@
 								value="#{msg['returnForm.mail_field']}"/>
 				<h:inputText id="returnForm_mail_field"
 							value="#{returnForm.user.emailAddress}"
-							styleClass="form-control" required="true"
+							styleClass="form-control"
 							onchange="submit()"
 							valueChangeListener="#{returnForm.setUserEmail}">
 					<f:validator validatorId="userExistsValidator"/>
@@ -39,7 +39,8 @@
 										value="#{msg['returnForm.signature_field']}"/>
 						<h:inputText id="returnForm_signature_field"
 									value="#{copy.signature}"
-									styleClass="form-control">
+									styleClass="form-control"
+									onchange="submit()">
 							<f:validator validatorId="returnFormSignatureValidator"/>
 						</h:inputText>
 						<h:message for="returnForm_signature_field" style="color:red"/>
@@ -51,7 +52,8 @@
 			<h:commandButton id="button_add_signature_return_field"
 							action="#{returnForm.addSignatureInputField()}"
 							value="#{msg['returnForm.add_input']}"
-							styleClass="btn btn-secondary"/>
+							styleClass="btn btn-secondary"
+							immediate="true"/>
 			<h:commandButton id="button_return_copies"
 							action="#{returnForm.returnCopies()}"
 							value="#{msg['returnForm.return_copies']}"
