@@ -12,6 +12,10 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:importConstants type="de.dedede.model.data.dtos.LendingPeriodViolationColumns" />
+		</f:metadata>
+
 		<h:outputLabel for="lendingPeriodViolationsList"
 			value="#{msg['lendingPeriodViolations.title']}"
 			style="font-weight:bold; font-size:x-large;" />
@@ -20,32 +24,43 @@
 			value="#{lendingPeriodViolation}">
 
 			<h:column>
-				<f:facet name="header">#{msg['lendingPeriodViolations.mediumTitle']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls owner="#{lendingPeriodViolation}"
+										 value="#{LendingPeriodViolationColumns.MEDIUM}"/>
+				</f:facet>
 
 				<h:link value="#{lendingPeriodViolation.getMediumLabel(item)}"
 					outcome="#{lendingPeriodViolation.getMediumLink(item)}" />
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['lendingPeriodViolations.userTitle']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls owner="#{lendingPeriodViolation}"
+										 value="#{LendingPeriodViolationColumns.USER}"/>
+				</f:facet>
 
 				<h:link value="#{lendingPeriodViolation.getUserLabel(item)}"
 					outcome="#{lendingPeriodViolation.getUserLink(item)}" />
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['lendingPeriodViolations.copyTitle']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls owner="#{lendingPeriodViolation}"
+										 value="#{LendingPeriodViolationColumns.COPY}"/>
+				</f:facet>
 
 				<h:form>
 					<h:commandLink value="#{lendingPeriodViolation.getCopyLabel(item)}"
 						action="#{lendingPeriodViolation.executeCopyLink(item)}" />
 				</h:form>
-				<!-- <h:link value="#{lendingPeriodViolation.getCopyLabel(item)}"
-							outcome="#{lendingPeriodViolation.getCopyLink(item)}"/> -->
+
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['lendingPeriodViolations.overdraftTitle']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls owner="#{lendingPeriodViolation}"
+										 value="#{LendingPeriodViolationColumns.OVERDRAFT}"/>
+				</f:facet>
 				<h:outputText
 					value="#{lendingPeriodViolation.getOverdraftText(item)}" />
 			</h:column>

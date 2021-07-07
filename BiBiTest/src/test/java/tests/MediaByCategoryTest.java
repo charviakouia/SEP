@@ -1,6 +1,5 @@
 package tests;
 
-import test.java.tests.PreTest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -121,7 +120,7 @@ public class MediaByCategoryTest {
 		final var media = MediumDao.readMediaGivenCategory(category, new PaginationDto());
 
 		Assertions.assertAll(() -> Assertions.assertEquals(media.size(), 2),
-				() -> Assertions.assertEquals(media.get(0).getId(), MEDIUM_ID_1),
-				() -> Assertions.assertEquals(media.get(1).getId(), MEDIUM_ID_2));
+				() -> Assertions.assertEquals(((CategoryDto) media.get(0)).getId(), MEDIUM_ID_1),
+				() -> Assertions.assertEquals(((CategoryDto) media.get(1)).getId(), MEDIUM_ID_2));
 	}
 }

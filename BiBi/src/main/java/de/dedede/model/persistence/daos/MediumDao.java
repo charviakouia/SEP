@@ -14,25 +14,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import de.dedede.model.data.dtos.*;
 import de.dedede.model.persistence.exceptions.*;
 import org.postgresql.util.PGInterval;
 
-import de.dedede.model.data.dtos.CategoryBrowserColumn;
-import de.dedede.model.data.dtos.CategoryDto;
-import de.dedede.model.data.dtos.CopiesReadyForPickupAllUsersColumn;
-import de.dedede.model.data.dtos.CopyDto;
-import de.dedede.model.data.dtos.CopyStatus;
-import de.dedede.model.data.dtos.MediumCopyUserDto;
-import de.dedede.model.data.dtos.MediumDto;
-import de.dedede.model.data.dtos.MediumSearchColumn;
-import de.dedede.model.data.dtos.MediumSearchCriterion;
-import de.dedede.model.data.dtos.MediumSearchDto;
-import de.dedede.model.data.dtos.PaginationDto;
-import de.dedede.model.data.dtos.SearchOperator;
-import de.dedede.model.data.dtos.TokenDto;
-import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.data.dtos.UserLendStatus;
-import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.util.ConnectionPool;
 import de.dedede.model.persistence.util.Logger;
@@ -679,13 +664,20 @@ public final class MediumDao {
 							+ "m.mediumid, m.mediumlendperiod, m.hascategory, m.title, m.author1, m.author2, m.author3, m.author4, m.author5, "
 							+ "m.mediumtype, m.edition, m.publisher, m.releaseyear, m.isbn, m.mediumlink, m.demotext, "
 							+ "c.copyid, c.mediumid, c.signature, c.bibposition, c.status, c.deadline, c.actor "
-							+ "FROM users AS u " + "JOIN mediumcopy AS c ON u.userid = c.actor "
+							+ "FROM users AS u "
+							+ "JOIN mediumcopy AS c ON u.userid = c.actor "
 							+ "JOIN medium AS m ON c.mediumid = m.mediumid "
 							+ "CROSS JOIN (SELECT * FROM application ORDER BY one ASC LIMIT 1) AS a "
-							+ "WHERE c.deadline < CURRENT_TIMESTAMP " + "AND c.status = 'BORROWED' "
-							+ "ORDER BY u.userid, m.mediumid, c.copyid DESC " + "LIMIT ? " + "OFFSET ?;");
+							+ "WHERE c.deadline < CURRENT_TIMESTAMP "
+							+ "AND c.status = 'BORROWED' "
+							+ "ORDER BY "
+							+ getLPVColumnName((LendingPeriodViolationColumns) paginationDetails.getColumnToSortBy()) + " "
+							+ (SortingDirection.ASCENDING.equals(paginationDetails.getSortingDirection()) ? "ASC" : "DESC") + " "
+							+ "LIMIT ? "
+							+ "OFFSET ?;");
 			stmt.setInt(1, paginationDetails.getTotalAmountOfRows());
-			stmt.setInt(2, paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfRows());
+			stmt.setInt(2,
+					paginationDetails.getPageNumber() * paginationDetails.getTotalAmountOfRows());
 			ResultSet resultSet = stmt.executeQuery();
 			List<MediumCopyUserDto> result = new LinkedList<>();
 			while (resultSet.next()) {
@@ -709,6 +701,19 @@ public final class MediumDao {
 			throw new LostConnectionException(msg, e);
 		} finally {
 			ConnectionPool.getInstance().releaseConnection(conn);
+		}
+	}
+
+	private static String getLPVColumnName(LendingPeriodViolationColumns lpvc){
+		if (lpvc == null){
+			return "u.userid";
+		} else {
+			return switch (lpvc) {
+				case USER -> "u.userid";
+				case MEDIUM -> "m.mediumid";
+				case COPY -> "c.copyid";
+				case OVERDRAFT -> "lendPeriod";
+			};
 		}
 	}
 

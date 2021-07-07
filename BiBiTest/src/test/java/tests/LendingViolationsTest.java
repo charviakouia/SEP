@@ -1,8 +1,6 @@
 package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import test.java.tests.PreTest;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -96,10 +94,13 @@ class LendingViolationsTest {
 	@Test
 	public void testResultSetSize() throws LostConnectionException, MaxConnectionsException,
 			EntityInstanceNotUniqueException {
-		for (int i = 0; i < PAGE_SIZE + 2; i++) {
+		int baselineSize = MediumDao.readNumberOfAllOverdueCopies();
+		int numToFillPage = PAGE_SIZE - (baselineSize % PAGE_SIZE);
+		int baselinePage = (baselineSize + numToFillPage) / PAGE_SIZE;
+		for (int i = 0; i < numToFillPage + PAGE_SIZE + 2; i++) {
 			saveCopy(true, medium);
 		}
-		List<MediumCopyUserDto> readList = readOverdueCopiesForPage(1);
+		List<MediumCopyUserDto> readList = readOverdueCopiesForPage(baselinePage + 1);
 		assertEquals(2, readList.size());
 	}
 
@@ -116,13 +117,16 @@ class LendingViolationsTest {
 	@Test
 	public void testInsertingAndReading() throws LostConnectionException, MaxConnectionsException,
 			EntityInstanceNotUniqueException {
-		for (int i = 0; i < PAGE_SIZE / 3; i++) {
+		int baselineSize = MediumDao.readNumberOfAllOverdueCopies();
+		int numToFillPage = PAGE_SIZE - (baselineSize % PAGE_SIZE);
+		int baselinePage = (baselineSize + numToFillPage) / PAGE_SIZE;
+		for (int i = 0; i < numToFillPage + PAGE_SIZE / 3; i++) {
 			saveCopy(true, medium);
 		}
 		for (int i = 0; i < 2 * PAGE_SIZE / 3; i++) {
 			saveCopy(false, medium);
 		}
-		List<MediumCopyUserDto> readList = readOverdueCopiesForPage(0);
+		List<MediumCopyUserDto> readList = readOverdueCopiesForPage(baselinePage);
 		assertEquals(PAGE_SIZE / 3, readList.size());
 	}
 

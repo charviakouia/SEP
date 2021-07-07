@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import test.java.tests.PreTest;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,7 +29,7 @@ import de.dedede.model.persistence.util.ConnectionPool;
  * 
  * @author Jonas Picker
  */
-public class LendAndReturnCopyTest extends TestEntities{
+public class LendAndReturnCopyTest extends TestEntities {
 	
 	private static int testMediumId;
 	private static int testCategoryId;
