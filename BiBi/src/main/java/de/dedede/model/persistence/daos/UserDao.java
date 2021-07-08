@@ -18,6 +18,7 @@ import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.data.dtos.UserSearchColumn;
 import de.dedede.model.data.dtos.UserSearchDto;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
@@ -60,8 +61,7 @@ public final class UserDao {
 							+ "lendStatus, verificationStatus, userRole) VALUES "
 							+ "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS INTERVAL), "
 							+ "CAST(? AS userlendstatus), CAST(? AS userverificationstatus), "
-							+ "CAST(? AS userrole));",
-							Statement.RETURN_GENERATED_KEYS);
+							+ "CAST(? AS userrole));", Statement.RETURN_GENERATED_KEYS);
 			populateStatement(createStmt, userDto);
 			int numAffectedRows = createStmt.executeUpdate();
 			if (numAffectedRows > 0) {
@@ -329,10 +329,10 @@ public final class UserDao {
 	 * @param pagination The container of current and total page number.
 	 * @return The list of users found by the search.
 	 */
-	public static List<UserDto> searchUsers(UserSearchDto userSearch, PaginationDto pagination) {
+	public static List<UserDto> searchUsers(UserSearchDto userSearch, PaginationDto<UserSearchColumn> pagination) {
 
 		// @Task split search term by space
-		
+
 		final var connection = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 
 		try {
@@ -367,11 +367,18 @@ public final class UserDao {
 
 			final var itemsStatement = connection.prepareStatement("""
 					select distinct
-						u.userid, u.emailaddress, u.name, u.surname
+						u.userid, u.emailaddress, u.name, u.surname, u.userrole
+					%s
 					%s
 					offset ?
 					limit ?
-					""".formatted(statementBody));
+					""".formatted(statementBody,
+					Pagination.translateSortingInfoToSQL(pagination, column -> switch (column) {
+					case EMAIL_ADDRESS -> "u.emailaddress";
+					case FIRST_NAME -> "u.name";
+					case LAST_NAME -> "u.surname";
+					case ROLE -> "u.userrole";
+					})));
 			var parameterIndex = 0;
 
 			while (parameterIndex < 3) {
@@ -380,8 +387,7 @@ public final class UserDao {
 
 			itemsStatement.setString(parameterIndex += 1, userSearch.getLendStatus().name());
 
-			// @Task sorting
-			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.calculatePageOffset(pagination));
 			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();
@@ -395,6 +401,7 @@ public final class UserDao {
 				user.setEmailAddress(resultSet.getString(2));
 				user.setFirstName(resultSet.getString(3));
 				user.setLastName(resultSet.getString(4));
+				user.setRole(UserRole.valueOf(resultSet.getString(5)));
 
 				results.add(user);
 			}
@@ -403,7 +410,7 @@ public final class UserDao {
 
 			return results;
 		} catch (SQLException exeption) {
-			
+
 			try {
 				connection.rollback();
 			} catch (SQLException rollbackException) {

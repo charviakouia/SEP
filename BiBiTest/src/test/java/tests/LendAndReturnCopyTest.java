@@ -29,7 +29,7 @@ import de.dedede.model.persistence.util.ConnectionPool;
  * 
  * @author Jonas Picker
  */
-public class LendAndReturnCopyTest extends TestEntities{
+public class LendAndReturnCopyTest extends TestEntities {
 	
 	private static int testMediumId;
 	private static int testCategoryId;

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.dedede.model.data.dtos.CopiesReadyForPickupAllUsersColumn;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.MediumCopyUserDto;
 import de.dedede.model.persistence.daos.MediumDao;
@@ -23,7 +24,7 @@ import jakarta.inject.Named;
  */
 @Named
 @ViewScoped
-public class CopiesReadyForPickupAllUsers extends PaginatedList implements Serializable {
+public class CopiesReadyForPickupAllUsers extends PaginatedList<CopiesReadyForPickupAllUsersColumn> implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;

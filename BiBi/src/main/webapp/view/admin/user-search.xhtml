@@ -12,6 +12,10 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:importConstants type="de.dedede.model.data.dtos.UserSearchColumn" />
+		</f:metadata>
+
 		<h:outputLabel for="form_user_search"
 			value="#{msg['title.user_search']}" styleClass="h3" />
 
@@ -52,33 +56,43 @@
 			noEntriesLabel="#{msg['paginated_list.no_search_results']}">
 
 			<h:column>
-				<f:facet name="header">#{msg['userEmailAddress']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls value="#{UserSearchColumn.EMAIL_ADDRESS}"
+						owner="#{userSearch}" />
+				</f:facet>
 
-				<bibi:columnContent>
-					<h:link id="emailLink" value="#{item.emailAddress}"
-						outcome="/view/account/profile.xhtml?id=#{item.id}" />
-				</bibi:columnContent>
+				<h:link id="emailLink" value="#{item.emailAddress}"
+					outcome="/view/account/profile.xhtml?id=#{item.id}" />
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['userFirstName']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls value="#{UserSearchColumn.FIRST_NAME}"
+						owner="#{userSearch}" />
+				</f:facet>
 
-				<bibi:columnContent>
-					#{item.firstName}
-				</bibi:columnContent>
+				#{item.firstName}
 			</h:column>
 
 			<h:column>
-				<f:facet name="header">#{msg['userLastName']}</f:facet>
+				<f:facet name="header">
+					<bibi:columnControls value="#{UserSearchColumn.LAST_NAME}"
+						owner="#{userSearch}" />
+				</f:facet>
 
-				<bibi:columnContent>
-					#{item.lastName}
-				</bibi:columnContent>
+				#{item.lastName}
 			</h:column>
 
 			<!-- @Task user lend status -->
 
-			<!-- @Task user role -->
+			<h:column>
+				<f:facet name="header">
+					<bibi:columnControls value="#{UserSearchColumn.ROLE}"
+						owner="#{userSearch}" />
+				</f:facet>
+				
+				#{msg[item.role.toString()]}
+			</h:column>
 
 		</bibi:paginatedList>
 

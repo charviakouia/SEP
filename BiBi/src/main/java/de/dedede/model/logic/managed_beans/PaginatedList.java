@@ -1,20 +1,29 @@
 package de.dedede.model.logic.managed_beans;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import de.dedede.model.data.dtos.PaginationDto;
+import de.dedede.model.data.dtos.SortingDirection;
 
 /**
  * An abstraction over paginated lists for multiple backing beans.
  * 
- * The backing bean has to be at least {@link jakarta.enterprise.context.ViewScoped}
- * for the pagination system to be able to keep track of the current page.
+ * The backing bean has to be at least
+ * {@link jakarta.enterprise.context.ViewScoped} for the pagination system to be
+ * able to keep track of the current page.
+ * 
+ * @param <Column> TODO
  * 
  * @author León Liehr
  */
-public abstract class PaginatedList {
+public abstract class PaginatedList<Column extends Enum<Column>> {
 
-	private PaginationDto paginatedList = new PaginationDto();
+	private PaginationDto<Column> paginatedList = new PaginationDto<>();
 
 	/**
 	 * Get the list of items or entries of the paginated list.
@@ -24,7 +33,8 @@ public abstract class PaginatedList {
 	public abstract List<?> getItems();
 
 	/**
-	 * Re-send the query to the lower layer with the updated {@link PaginationDto pagination details}.
+	 * Re-send the query to the lower layer with the updated {@link PaginationDto
+	 * pagination details}.
 	 */
 	public abstract void refresh();
 
@@ -33,7 +43,7 @@ public abstract class PaginatedList {
 	 * 
 	 * @return The paginated list.
 	 */
-	public PaginationDto getPaginatedList() {
+	public final PaginationDto<Column> getPaginatedList() {
 		return paginatedList;
 	}
 
@@ -42,7 +52,7 @@ public abstract class PaginatedList {
 	 * 
 	 * @param paginatedList The paginated list.
 	 */
-	public void setPaginatedList(PaginationDto paginatedList) {
+	public final void setPaginatedList(PaginationDto<Column> paginatedList) {
 		this.paginatedList = paginatedList;
 	}
 
@@ -51,20 +61,20 @@ public abstract class PaginatedList {
 	 * 
 	 * @return The current one-indexed page number.
 	 */
-	public int getPageNumber() {
+	public final int getPageNumber() {
 		// translating the zero-indexed page number
 		return paginatedList.getPageNumber() + 1;
 	}
 
 	/**
-	 * Set the to be current one-indexed page number of the paginated list.
-	 * The page number is going to be clamped between the lowest
-	 * possible page number (being {@code 1}) and the highest possible page
-	 * number (which depends on the {@link PaginationDto#getTotalAmountOfPages()}).
+	 * Set the to be current one-indexed page number of the paginated list. The page
+	 * number is going to be clamped between the lowest possible page number (being
+	 * {@code 1}) and the highest possible page number (which depends on the
+	 * {@link PaginationDto#getTotalAmountOfPages()}).
 	 * 
 	 * @param pageNumber The to be current one-indexed page number.
 	 */
-	public void setPageNumber(int pageNumber) {
+	public final void setPageNumber(int pageNumber) {
 		if (pageNumber < 1) {
 			pageNumber = 1;
 		} else if (pageNumber > paginatedList.getTotalAmountOfPages()) {
@@ -80,30 +90,31 @@ public abstract class PaginatedList {
 	 * 
 	 * @return Flag if the current page is the first one.
 	 */
-	public boolean isFirstPage() {
+	public final boolean isFirstPage() {
 		return paginatedList.getPageNumber() == 0;
 	}
-	
+
 	/**
 	 * Indicates whether the current page is the last page.
 	 * 
 	 * @return Flag if the current page is the last one.
 	 */
-	public boolean isLastPage() {
+	public final boolean isLastPage() {
 		return paginatedList.getPageNumber() + 1 == paginatedList.getTotalAmountOfPages();
 	}
 
 	/**
-	 * Go to a specific page given by the line number inside of the {@link PaginationDto}.
+	 * Go to a specific page given by the line number inside of the
+	 * {@link PaginationDto}.
 	 */
-	public void goToPage() {
+	public final void goToPage() {
 		refresh();
 	}
 
 	/**
 	 * Go to the next page if possible.
 	 */
-	public void goForward() {
+	public final void goForward() {
 		if (isLastPage()) {
 			return;
 		}
@@ -115,7 +126,7 @@ public abstract class PaginatedList {
 	/**
 	 * Go to the previous page if possible.
 	 */
-	public void goBack() {
+	public final void goBack() {
 		if (isFirstPage()) {
 			return;
 		}
@@ -123,4 +134,16 @@ public abstract class PaginatedList {
 		paginatedList.setPageNumber(paginatedList.getPageNumber() - 1);
 		refresh();
 	}
+
+	public final void sort(Column column) {
+		if (paginatedList.getSortingDirection() == null || column != paginatedList.getColumnToSortBy()) {
+			paginatedList.setSortingDirection(SortingDirection.ASCENDING);
+		} else {
+			paginatedList.setSortingDirection(paginatedList.getSortingDirection().inverted());
+		}
+
+		paginatedList.setColumnToSortBy(column);
+		refresh();
+	}
+
 }

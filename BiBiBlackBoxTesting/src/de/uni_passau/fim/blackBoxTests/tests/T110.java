@@ -10,7 +10,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Blackbox-test class for the password-reset functionality. Requires that the given user is registered and logged in.
+ * Blackbox-test class for the password-reset functionality. Requires that the given user is registered and logged
+ * in. Also requires that the system is in development mode to read the confirmation link from the displayed page.
  *
  * @author Ivan Charviakou
  */

@@ -13,11 +13,11 @@
 
 		<h:panelGroup layout="block" styleClass="container-fluid">
 
-			<!-- <h:graphicImage
-					value="data:image/png;base64,#{pageHeader.applicationBase64Logo}"/> -->
-
-			<h:outputText value="#{pageHeader.application.name}"
-				styleClass="navbar-brand" />
+			<h:panelGroup layout="block" styleClass="navbar-brand d-flex align-items-center">
+				<h:graphicImage library="images" name="bibi_logo.svg"
+					style="width: 30px; height: 30px;" styleClass="align-baseline me-3" />
+				<h:outputText value="#{pageHeader.application.name}" styleClass="d-block" />
+			</h:panelGroup>
 
 			<h:panelGroup layout="block" styleClass="navbar-toggler"
 				p:data-bs-toggle="collapse" p:data-bs-target="#navbar_content">
@@ -27,7 +27,8 @@
 			<h:panelGroup layout="block" styleClass="collapse navbar-collapse"
 				id="navbar_content">
 
-				<h:panelGroup layout="block" styleClass="navbar-nav me-auto mb-2 mb-lg-0">
+				<h:panelGroup layout="block"
+					styleClass="navbar-nav me-auto mb-2 mb-lg-0">
 
 					<h:outputLink value="#help" styleClass="nav-item"
 						p:data-bs-toggle="offcanvas">
@@ -80,7 +81,7 @@
 					<h:link id="category-browser"
 						value="#{msg['category_browser.short']}"
 						outcome="/view/opac/category-browser.xhtml"
-						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />					
+						styleClass="nav-link #{page == 'category_browser' ? 'active' : ''}" />
 
 					<h:link id="signIn" value="#{msg['log_in']}"
 						outcome="/view/ffa/login.xhtml"
@@ -116,7 +117,7 @@
 						</h:panelGroup>
 
 					</h:panelGroup>
-					
+
 					<h:panelGroup layout="block" styleClass="nav-item dropdown"
 						rendered="#{pageHeader.showingStaffMenu}">
 						<h:link id="header_staff_dropdown" value="#{msg['staff']}"
@@ -131,7 +132,8 @@
 								outcome="/view/staff/return-form.xhtml"
 								styleClass="dropdown-item #{page == 'return_form' ? 'active' : ''}" />
 
-							<h:link id="copiesReadyForPickUp" value="#{msg['copies_ready_for_pickup_all_users']}"
+							<h:link id="copiesReadyForPickUp"
+								value="#{msg['copies_ready_for_pickup_all_users']}"
 								outcome="/view/staff/copies-ready-for-pickup-all-users.xhtml"
 								styleClass="dropdown-item #{page == 'copies_ready_for_pickup_all_users' ? 'active' : ''}" />
 

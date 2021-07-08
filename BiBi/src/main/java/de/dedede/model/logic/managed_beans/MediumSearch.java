@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import de.dedede.model.data.dtos.MediumDto;
+import de.dedede.model.data.dtos.MediumSearchColumn;
 import de.dedede.model.data.dtos.MediumSearchCriterion;
 import de.dedede.model.data.dtos.MediumSearchDto;
 import de.dedede.model.data.dtos.MediumSearchDto.NuancedSearchQuery;
@@ -26,7 +27,7 @@ import jakarta.inject.Named;
  */
 @Named
 @ViewScoped
-public class MediumSearch extends PaginatedList implements Serializable {
+public class MediumSearch extends PaginatedList<MediumSearchColumn> implements Serializable {
 
 	// @Task doc
 	public static final String GENERAL_SEARCH_TERM_PARAMETER_NAME = "medium-search-term";
@@ -70,16 +71,8 @@ public class MediumSearch extends PaginatedList implements Serializable {
 		this.mediumSearch = mediumSearch;
 	}
 
-	public SearchOperator[] getAllSearchOperators() {
-		return SearchOperator.values();
-	}
-
-	public MediumSearchCriterion[] getAllSearchCriteria() {
-		return MediumSearchCriterion.values();
-	}
-
 	/**
-	 * Search for the corresp. mediums.
+	 * Search for the corresponding mediums.
 	 */
 	public void searchMedia() {
 		mediums = MediumDao.searchMedia(mediumSearch, getPaginatedList());
@@ -127,5 +120,4 @@ public class MediumSearch extends PaginatedList implements Serializable {
 	public void refresh() {
 		searchMedia();
 	}
-
 }

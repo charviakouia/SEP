@@ -12,7 +12,8 @@ import de.uni_passau.fim.blackBoxTests.util.Selenium;
 
 /**
  * Blackbox-test class for the registration functionality. Requires that the given email does not yet appear
- * in the data store.
+ * in the data store. Also requires that the system is in development mode to read the confirmation link from the
+ * displayed page.
  *
  * @author Ivan Charviakou
  */
@@ -71,7 +72,7 @@ public class T100 {
         // Verify data in profile page
         assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:frstname", "value", gen(FIRST_NAME)));
         assertTrue(Selenium.contentOfIdEqualTo(waiter, "form_profile:email", "value", gen(EMAIL)));
-        System.out.println("Test T100 succeeded (thread %s)".formatted(threadName));
+        System.out.printf("Test T100 succeeded (thread %s)%n", threadName);
 
     }
 

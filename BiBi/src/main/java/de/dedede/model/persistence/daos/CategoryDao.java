@@ -42,29 +42,8 @@ public final class CategoryDao {
 	public static void createCategory(CategoryDto categoryDto)
 			throws ParentCategoryDoesNotExistException, EntityInstanceNotUniqueException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
-		if (categoryDto.getParent().getId() == 0) {
-			try {
-				if (categoryDto.getParent().getName().isEmpty()) {
-					throw new ParentCategoryDoesNotExistException("Parent category name cannot be empty.");
-				}
-				if (signatureExists(conn, categoryDto)) {
-					throw new EntityInstanceNotUniqueException("Category with that title already exists.");
-				}
-				int parentCategoryId = getCategoryIdByName(conn, categoryDto.getParent());
-				categoryDto.getParent().setId(parentCategoryId);
-			} catch (CategoryDoesNotExistException e) {
-				try {
-					conn.rollback();
-					String msg = "Database error occurred while checking for category titles";
-					Logger.severe(msg);
-					throw new ParentCategoryDoesNotExistException("Specified name " + categoryDto.getParent().getName()
-							+ " doesn't seem to match any parent category entry", e);
-				} catch (SQLException exception) {
-					final var message = "Failed to rollback database transaction";
-					Logger.severe(message);
-					throw new LostConnectionException(message);
-				}
-			}
+		if (signatureExists(conn, categoryDto)) {
+			throw new EntityInstanceNotUniqueException("Category with that title already exists.");
 		}
 		try {
 			PreparedStatement createStmt = conn.prepareStatement(
@@ -202,7 +181,7 @@ public final class CategoryDao {
 					""".formatted(statementBody));
 			var parameterIndex = 0;
 			itemsStatement.setString(parameterIndex += 1, categorySearch.getSearchTerm());
-			itemsStatement.setInt(parameterIndex += 1, Pagination.pageOffset(pagination));
+			itemsStatement.setInt(parameterIndex += 1, Pagination.calculatePageOffset(pagination));
 			itemsStatement.setInt(parameterIndex += 1, Pagination.getEntriesPerPage());
 
 			final var resultSet = itemsStatement.executeQuery();

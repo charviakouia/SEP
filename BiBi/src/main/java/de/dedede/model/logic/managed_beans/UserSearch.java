@@ -7,6 +7,7 @@ import java.util.List;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
+import de.dedede.model.data.dtos.UserSearchColumn;
 import de.dedede.model.data.dtos.UserSearchDto;
 import de.dedede.model.persistence.daos.UserDao;
 import jakarta.annotation.PostConstruct;
@@ -18,7 +19,7 @@ import jakarta.inject.Named;
  */
 @Named
 @ViewScoped
-public class UserSearch extends PaginatedList implements Serializable {
+public class UserSearch extends PaginatedList<UserSearchColumn> implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;

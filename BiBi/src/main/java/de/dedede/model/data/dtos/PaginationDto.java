@@ -7,9 +7,11 @@ import java.io.Serializable;
  * This DTO (data transfer object) is responsible for aggregating and
  * encapsulating data about the pagination of the page for transfer.
  *
- * @author Sergei Pravdin
+ * @param <Column> TODO
+ *
+ * @author León Liehr
  */
-public class PaginationDto implements Serializable {
+public class PaginationDto<Column extends Enum<Column>> implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -18,10 +20,13 @@ public class PaginationDto implements Serializable {
 	private int pageNumber = 0;
 
 	private int totalAmountOfPages = 1;
-	
+
 	private int totalAmountOfRows = 0;
 
-	private String sortBy;
+	// only initially `null` then never again once `PaginatedList#sort` gets called.
+	private Column columnToSortBy = null;
+
+	private SortingDirection sortingDirection = null;
 
 	/**
 	 * Get the current zero-indexed page number.
@@ -53,8 +58,8 @@ public class PaginationDto implements Serializable {
 	}
 
 	/**
-	 * Set the total amount of pages of the paginated list.
-	 * The amount has to be at least 1.
+	 * Set the total amount of pages of the paginated list. The amount has to be at
+	 * least 1.
 	 * 
 	 * @param totalAmountOfPages The total amount of pages.
 	 */
@@ -62,7 +67,7 @@ public class PaginationDto implements Serializable {
 		if (totalAmountOfPages < 1) {
 			throw new IllegalArgumentException("totalAmountOfPages is lower than 1: " + totalAmountOfPages);
 		}
-		
+
 		this.totalAmountOfPages = totalAmountOfPages;
 	}
 
@@ -74,11 +79,20 @@ public class PaginationDto implements Serializable {
 		this.totalAmountOfRows = totalAmountOfRows;
 	}
 
-	public String getSortBy() {
-		return sortBy;
+	public Column getColumnToSortBy() {
+		return columnToSortBy;
 	}
 
-	public void setSortBy(String sortBy) {
-		this.sortBy = sortBy;
+	public void setColumnToSortBy(Column columnToSortBy) {
+		this.columnToSortBy = columnToSortBy;
 	}
+
+	public SortingDirection getSortingDirection() {
+		return sortingDirection;
+	}
+
+	public void setSortingDirection(SortingDirection sortingDirection) {		
+		this.sortingDirection = sortingDirection;
+	}
+
 }

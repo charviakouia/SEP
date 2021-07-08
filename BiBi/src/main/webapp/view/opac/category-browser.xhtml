@@ -13,11 +13,16 @@
 
 	<ui:define name="content">
 
+		<f:metadata>
+			<f:importConstants
+				type="de.dedede.model.data.dtos.CategoryBrowserColumn" />
+		</f:metadata>
+
 		<h:panelGroup layout="block" styleClass="container">
 			<h:panelGroup layout="block" styleClass="row">
 
 				<h:panelGroup layout="block" styleClass="col-4">
-					<h:form id="form_category_search" styleClass="mb-2">
+					<!-- <h:form id="form_category_search" styleClass="mb-2">
 						<h:panelGroup layout="block" styleClass="input-group">
 							<h:inputText id="input_category_search_term"
 								value="#{categoryBrowser.categorySearch.searchTerm}"
@@ -27,6 +32,13 @@
 								action="#{categoryBrowser.searchCategories()}"
 								styleClass="btn btn-primary" />
 						</h:panelGroup>
+					</h:form> -->
+					<h:form id="form_top_level_category_creation" styleClass="mb-2 d-flex w-100 justify-content-center"
+						rendered="#{categoryBrowser.showingCategoryActions}">
+						<h:commandButton id="button_create_top_level_category"
+							value="#{msg['category_browser.category.create_category']}"
+							action="#{categoryBrowser.createCategory()}"
+							styleClass="btn btn-outline-secondary" />
 					</h:form>
 
 					<h:panelGroup layout="block" id="category_tree_hook"
@@ -128,37 +140,42 @@
 						<bibi:paginatedList value="#{categoryBrowser}" styleClass="mt-5">
 
 							<h:column>
-								<f:facet name="header">#{msg['medium_attribute.title']}</f:facet>
+								<f:facet name="header">
+									<bibi:columnControls value="#{CategoryBrowserColumn.TITLE}"
+										owner="#{categoryBrowser}" />
+								</f:facet>
 
-								<bibi:columnContent>
-									<h:link value="#{item.title}"
-										outcome="/view/opac/medium.xhtml?id=#{item.id}" />
-								</bibi:columnContent>
+								<h:link value="#{item.title}"
+									outcome="/view/opac/medium.xhtml?id=#{item.id}" />
 							</h:column>
 
 							<h:column>
-								<f:facet name="header">#{msg['medium_attribute.authors']}</f:facet>
+								<f:facet name="header">
+									<bibi:columnControls value="#{CategoryBrowserColumn.AUTHORS}"
+										owner="#{categoryBrowser}" />
+								</f:facet>
 
-								<bibi:columnContent>
-									<!-- put that method somewhere else! -->
-									#{mediumSearch.formatAuthors(item)}
-								</bibi:columnContent>
+								<!-- put that method somewhere else! -->
+								#{mediumSearch.formatAuthors(item)}
 							</h:column>
 
 							<h:column>
-								<f:facet name="header">#{msg['medium_attribute.edition']}</f:facet>
+								<f:facet name="header">
+									<bibi:columnControls value="#{CategoryBrowserColumn.EDITION}"
+										owner="#{categoryBrowser}" />
 
-								<bibi:columnContent>
-									#{item.edition}
-								</bibi:columnContent>
+								</f:facet>
+
+								#{item.edition}
 							</h:column>
 
 							<h:column>
-								<f:facet name="header">#{msg['medium_attribute.publisher']}</f:facet>
+								<f:facet name="header">
+									<bibi:columnControls value="#{CategoryBrowserColumn.PUBLISHER}"
+										owner="#{categoryBrowser}" />
+								</f:facet>
 
-								<bibi:columnContent>
-									#{item.publisher}
-								</bibi:columnContent>
+								#{item.publisher}
 							</h:column>
 
 						</bibi:paginatedList>
