@@ -3,6 +3,10 @@ package de.dedede.model.data.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author León Liehr
+ */
 public class MediumSearchDto {
 
 	private String generalSearchTerm = "";

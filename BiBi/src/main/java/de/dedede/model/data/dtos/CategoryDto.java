@@ -89,7 +89,7 @@ public class CategoryDto {
 	}
 
 	/**
-	 * Fetches the parent category of this category.
+	 * Sets the parent category of this category.
 	 * Categories can be enclosed in each other without limitation.
 	 * A category can have only one direct parent category and more than one direct child category.
 	 *
@@ -99,10 +99,20 @@ public class CategoryDto {
 		this.parent = parent;
 	}
 	
+	/**
+	 * Fetches the list of direct children of this category.
+	 * 
+	 * @return The list of direct children.
+	 */
 	public List<CategoryDto> getChildren() {
 		return children;
 	}
 
+	/**
+	 * Sets the direct children of this category.
+	 * 
+	 * @param children The list of direct children.
+	 */
 	public void setChildren(List<CategoryDto> children) {
 		this.children = children;
 	}

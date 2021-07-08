@@ -1,6 +1,7 @@
 package de.dedede.model.data.dtos;
 
 /**
+ * The columns of the paginated list of mediums found in the category browser.
  * 
  * @author León Liehr
  */

@@ -3,6 +3,11 @@ package de.dedede.model.data.dtos;
 import java.sql.Timestamp;
 import java.time.Duration;
 
+/**
+ * This DTO (data transfer object) aggregates the DTOs {@link CopyDto}, {@link MediumDto} and {@link UserDto}.
+ * 
+ * @author León Liehr
+ */
 public class MediumCopyUserDto {
 
 	private CopyDto copy;
@@ -37,6 +42,8 @@ public class MediumCopyUserDto {
 		this.user = user;
 	}
 
+	// <author: Ivan Charviakou>
+	
 	public Duration getOverdraft() {
 		if (getCopy() == null || getCopy().getDeadline() == null) {
 			return null;
@@ -55,4 +62,5 @@ public class MediumCopyUserDto {
 		this.lendingDuration = lendingDuration;
 	}
 	
+	// </author: Ivan Charviakou>
 }

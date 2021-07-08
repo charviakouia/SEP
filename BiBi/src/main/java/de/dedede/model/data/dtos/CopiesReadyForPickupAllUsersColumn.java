@@ -1,6 +1,7 @@
 package de.dedede.model.data.dtos;
 
 /**
+ * The columns of the paginated list found on the page listing all the copies ready for pickup of any user.
  * 
  * @author León Liehr
  */
