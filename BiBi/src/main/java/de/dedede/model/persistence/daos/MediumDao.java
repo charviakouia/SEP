@@ -79,6 +79,7 @@ public final class MediumDao {
 	 *                                 couldn't be completed due to a faulty
 	 *                                 connection
 	 * @see MediumDto
+	 * @author Ivan Charviakou
 	 */
 	public static void createMedium(MediumDto mediumDto) throws LostConnectionException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
@@ -104,6 +105,15 @@ public final class MediumDao {
 		}
 	}
 
+	/**
+	 * Checks whether a given signature is in use in the application's data store.
+	 *
+	 * @param copy The {@link CopyDto} containing the signature
+	 * @throws LostConnectionException Is thrown when the insertion operation
+	 * 		couldn't be completed due to a faulty connection
+	 * @return Whether or not the given signature is present in the datastore
+	 * @author Ivan Charviakou
+	 */
 	public static boolean signatureExists(CopyDto copy) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
@@ -115,7 +125,7 @@ public final class MediumDao {
 			resultSet.next();
 			return resultSet.getBoolean(1);
 		} catch (SQLException e) {
-			String msg = "Database error occured while checking for copy signatures";
+			String msg = "Database error occurred while checking for copy signatures";
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);
 		} finally {
@@ -589,8 +599,7 @@ public final class MediumDao {
 	 *
 	 * @param copyDto A DTO container with the overwriting data
 	 * @throws EntityInstanceNotUniqueException Is thrown if the passed ID is
-	 *                                          already associated with a data
-	 *                                          entry.
+	 * 		already associated with a data entry.
 	 * @see CopyDto
 	 */
 
@@ -653,6 +662,7 @@ public final class MediumDao {
 	 * @param paginationDetails A container for the page size and number.
 	 * @return A list of DTO containers with the medium-copy data.
 	 * @see CopyDto
+	 * @author Ivan Charviakou
 	 */
 	public static List<MediumCopyUserDto> readAllOverdueCopies(PaginationDto paginationDetails) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
@@ -717,6 +727,13 @@ public final class MediumDao {
 		}
 	}
 
+	/**
+	 * Fetches the total number of all overdue medium-copies from the persistent
+	 * data store. The list contains overdue material from all users, globally.
+	 *
+	 * @return The total number of all overdue medium-copies.
+	 * @author Ivan Charviakou
+	 */
 	public static int readNumberOfAllOverdueCopies() {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
@@ -731,19 +748,13 @@ public final class MediumDao {
 				conn.commit();
 				return result;
 			} else {
-				try {
-					conn.rollback();
-				} catch (SQLException ignore) {
-				}
+				try { conn.rollback(); } catch (SQLException ignore) {}
 				String msg = "SQL query returned unexpected result, single int required";
 				Logger.severe(msg);
 				throw new InvalidConfigurationException(msg);
 			}
 		} catch (SQLException e) {
-			try {
-				conn.rollback();
-			} catch (SQLException ignore) {
-			}
+			try { conn.rollback(); } catch (SQLException ignore) { }
 			String msg = "Database error occurred while reading mediumCopyUser entities";
 			Logger.severe(msg);
 			throw new LostConnectionException(msg, e);

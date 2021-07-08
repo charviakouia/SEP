@@ -51,6 +51,7 @@ public final class UserDao {
 	 * Otherwise, an exception is thrown.
 	 *
 	 * @param userDto A DTO container with the new user data.
+	 * @author Ivan Charviakou
 	 */
 	public static void createUser(UserDto userDto) {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);
@@ -484,8 +485,8 @@ public final class UserDao {
 	 *
 	 * @param userDto A DTO container with the overwriting user data.
 	 * @throws EntityInstanceDoesNotExistException Is thrown when the enclosed email
-	 *                                             address isn't associated with an
-	 *                                             existing data entry.
+	 * 		address isn't associated with an existing data entry.
+	 * @author Ivan Charviakou
 	 */
 	public static void updateUser(UserDto userDto) throws EntityInstanceDoesNotExistException {
 		Connection conn = ConnectionPool.getInstance().fetchConnection(ACQUIRING_CONNECTION_PERIOD);

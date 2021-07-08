@@ -3,6 +3,14 @@ package de.dedede.model.data.dtos;
 import java.sql.Timestamp;
 import java.time.Duration;
 
+/**
+ * The DTO used to supply the {@link de.dedede.model.logic.managed_beans.LendingPeriodViolation} facelet with data.
+ * An instance of this DTO represents a data entry composed of a medium-copy, copy, user, and overdraft. Here, the
+ * given user has exceeded the allowed lending-duration of a medium-copy belonging to a medium by a given overdraft
+ * period.
+ *
+ * @author Ivan Charviakou
+ */
 public class MediumCopyUserDto {
 
 	private CopyDto copy;

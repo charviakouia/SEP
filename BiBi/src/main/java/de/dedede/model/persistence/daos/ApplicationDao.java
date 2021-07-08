@@ -19,8 +19,8 @@ import java.time.Duration;
  * data from a persistent data store as well as saving to it.
  * It implements the CRUD methods (create, read, update, delete).
  *
- * See the {@link ApplicationDto} class for the used DTO.
- *
+ * @see ApplicationDto
+ * @author Ivan Charviakou
  */
 public final class ApplicationDao {
 
