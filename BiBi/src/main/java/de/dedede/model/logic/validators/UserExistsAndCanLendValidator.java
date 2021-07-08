@@ -3,9 +3,8 @@ package de.dedede.model.logic.validators;
 import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.UserDto;
+import de.dedede.model.logic.util.LendingProcessUserStatus;
 import de.dedede.model.persistence.daos.UserDao;
-import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
-import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
@@ -15,7 +14,8 @@ import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
 /**
- * Checks for a users E-Mail in the database to make sure it exists.
+ * Checks for a users E-Mail in the database to make sure it exists and is 
+ * allowed to lend copies.
  * 
  * @author Jonas Picker
  */
@@ -27,11 +27,11 @@ public class UserExistsAndCanLendValidator implements Validator<String> {
 	 * belong to any account in the database or the account is excluded
 	 * from the lending process
 	 *
-	 * @param context 		the FacesContext the listener is registered in
-	 * @param uiComponent  	the UIComponent for this listener
-	 * @param email         the fields value as String
+	 * @param context 		the FacesContext the validator is registered in.
+	 * @param uiComponent  	the UIComponent for this validator.
+	 * @param email         the fields value as String.
 	 * @throws ValidatorException if the user doesn't exist or is blocked from 
-	 * 								lending
+	 * 							  lending
 	 */
 	@Override
 	public void validate(FacesContext context, UIComponent uiComponent,
@@ -41,9 +41,8 @@ public class UserExistsAndCanLendValidator implements Validator<String> {
 				"#{msg}", ResourceBundle.class);
 		UserDto userDto = new UserDto();
 		userDto.setEmailAddress(email);
-		try {
-			UserDao.validateUserLending(userDto);
-		} catch (UserDoesNotExistException e1) {
+		LendingProcessUserStatus status = UserDao.validateUserLending(userDto);
+		if (status == LendingProcessUserStatus.EMAIL_NOT_FOUND) {
 			String shortMessage = messages.getString("lending.unknown"
 	    			+ "_user_short");
 	    	String longMessage = messages.getString("lending.unknown"
@@ -51,7 +50,7 @@ public class UserExistsAndCanLendValidator implements Validator<String> {
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
 			throw new ValidatorException(msg);
-		} catch (InvalidUserForCopyException e2) {
+		} else if (status == LendingProcessUserStatus.USER_CANNOT_LEND) {
 			String shortMessage = messages.getString("lending.blocked_user"
 					+ "_short");
 	    	String longMessage = messages.getString("lending.blocked_user"
@@ -61,5 +60,6 @@ public class UserExistsAndCanLendValidator implements Validator<String> {
 			throw new ValidatorException(msg);
 		}			
 	}
+	
 }
 

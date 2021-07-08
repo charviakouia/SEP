@@ -13,8 +13,7 @@
 	<ui:define name="content">
 
 		<f:metadata>
-			<f:viewParam name="parent-id" value="#{categoryCreator.category.parent.id}"/>
-			<f:viewAction action="#{categoryCreator.onload}" />
+			<f:viewAction action="#{categoryCreator.onload()}" />
 		</f:metadata>
 
 		<h:form id="form">
@@ -29,8 +28,6 @@
 				<h:inputText id="categoryName" value="#{categoryCreator.category.name}"/>
 				<h:outputLabel value="#{msg['categoryCreator.description']}" />
 				<h:inputTextarea id="categoryDescription" value="#{categoryCreator.category.description}"/>
-				<h:outputLabel value="#{msg['categoryCreator.parentCategory']}" />
-				<h:inputText value="#{categoryCreator.category.parent.name}" />
 
 				<f:facet id="footer" name = "footer">
 					<h:panelGroup id="panelGroup" style = "display:block; text-align:center">

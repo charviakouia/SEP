@@ -18,13 +18,21 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 
+/**
+ * Tests the registrations of new users by an admin.
+ * 
+ * @author Jonas Picker
+ */
 public class T20 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
 	private String threadName = "";
 	private boolean isMultiThreaded = false;
-		    
+	
+	/**
+	 * Goes to the start page.
+	 */
     @Before
     public void setUp() {
     	if (!isMultiThreaded) {
@@ -34,6 +42,10 @@ public class T20 {
         driver.get(BASE_URL);
     }
     
+    /**
+     * Navigates to registration, registeres a new staff member and checks for 
+     * success by logging out and in again with the new account.
+     */
     @Test
     public void doTest() {
     	waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_admin_dropdown"))).click();
@@ -68,9 +80,13 @@ public class T20 {
         
     }
     
+    /**
+     * No cleanup needed.
+     */
     @After
     public void tearDown() {}
     
+    //getters and setters below are needed for multithreaded execution.
     public WebDriver getDriver() {
 		return driver;
 	}

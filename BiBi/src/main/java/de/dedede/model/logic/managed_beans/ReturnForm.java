@@ -10,7 +10,6 @@ import java.util.ResourceBundle;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
-import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
@@ -24,7 +23,6 @@ import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -46,12 +44,6 @@ public class ReturnForm implements Serializable {
 	 */
 	private UserDto user;
 	
-	/**
-	 * Prepares the same BB for a page reload with filled signature fields.
-	 */
-	@Inject
-	private ReturnForm fillSignatures;
-
 	/**
 	 * Holds one copy signature for each input field.
 	 */
@@ -81,9 +73,11 @@ public class ReturnForm implements Serializable {
 	 */
 	public void returnCopies() {
 		int returned = 0;
+		int tried = 0;
 		for(CopyDto copy : copies) {
 			if (copy.getSignature() != null 
 					&& copy.getSignature().trim() != "") {
+				tried++;
 				try {
 					MediumDao.returnCopy(copy, user);
 					returned++;
@@ -111,14 +105,14 @@ public class ReturnForm implements Serializable {
 		Application application = context.getApplication();
 		ResourceBundle messages = application.evaluateExpressionGet(context,
 				"#{msg}", ResourceBundle.class);
-		if (returned == 0) {
+		if (tried == 0) {
 			String shortMessage = messages.getString("returnForm.enter"
 					+ "_signature_short");
 			String longMessage = messages.getString("returnForm.enter_signature"
 					+ "_long");
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
-		} else {
+		} else if (returned > 0) {
 			String shortContent = messages.getString("returnForm.copies_returne"
 					+ "d_short");
 			String longContent = messages.getString("returnForm.copies_returned"
@@ -133,6 +127,8 @@ public class ReturnForm implements Serializable {
 					FacesMessage.SEVERITY_INFO, shortMessage, longMessage));
 			this.user.setEmailAddress("");
 			this.copies.clear();
+			NavigationHandler navHdl = application.getNavigationHandler();
+			navHdl.handleNavigation(context, null, null);
 		}
 	}
 	
@@ -145,23 +141,20 @@ public class ReturnForm implements Serializable {
 	 */
 	public void setUserEmail(ValueChangeEvent change) {
 		String newValue = change.getNewValue().toString();
-		user.setEmailAddress(newValue);
+		user.setEmailAddress(newValue);			
 		FacesContext ctx = FacesContext.getCurrentInstance();
 		NavigationHandler hdl = ctx.getApplication().getNavigationHandler();
-		if (UserDao.userEntityWithEmailExists(user)) {
+		UserDto userDto = new UserDto();
+		userDto.setEmailAddress(newValue);
+		if (UserDao.userEntityWithEmailExists(userDto)) {
 			List<CopyDto> lentCopies = 
-					MediumDao.getLentCopiesByEmail(user);
-			UserDto userDto = new UserDto();
-			userDto.setEmailAddress(newValue);
+					MediumDao.getLentCopiesByEmail(userDto);
 			boolean notEmpty = !lentCopies.isEmpty();
 			if (notEmpty) {
-				this.fillSignatures.setUser(userDto);
-				this.fillSignatures.setCopies(lentCopies);
-				hdl.handleNavigation(ctx, null, null, null);
+				this.user = userDto;
+				this.copies = lentCopies;;
+				hdl.handleNavigation(ctx, null, null);
 			}
-		} else {
-			MessagingUtility.writeNegativeMessageWithKey(ctx, false, 
-					"lending.no_such_email");
 		}
 	}
 		
@@ -170,6 +163,9 @@ public class ReturnForm implements Serializable {
 	 */
 	public void addSignatureInputField() {
 		copies.add(new CopyDto());
+		FacesContext ctx = FacesContext.getCurrentInstance();
+		NavigationHandler hdl = ctx.getApplication().getNavigationHandler();
+		hdl.handleNavigation(ctx, null, null);
 	}
 	
 	/**

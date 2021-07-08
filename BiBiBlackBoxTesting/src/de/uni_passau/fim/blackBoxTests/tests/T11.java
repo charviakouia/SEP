@@ -15,13 +15,21 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import de.uni_passau.fim.blackBoxTests.util.Driver;
 import de.uni_passau.fim.blackBoxTests.util.Selenium;
 
+/**
+ * Tests admin configuration page.
+ * 
+ * @author Jonas Picker
+ */
 public class T11 {
 	
 	private WebDriver driver;
 	private WebDriverWait waiter;
 	private String threadName = "";
 	private boolean isMultiThreaded = false;
-		    
+	
+	/**
+	 * Goes to the start page.
+	 */
     @Before
     public void setUp() {
     	if (!isMultiThreaded) {
@@ -31,6 +39,10 @@ public class T11 {
         driver.get(BASE_URL);
     }
     
+    /**
+     * Navigates to settings, sets return period to 1 minute and checks if it
+     * was set correctly after reload.
+     */
     @Test
     public void doTest() {
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.id("header_admin_dropdown"))).click();
@@ -43,9 +55,13 @@ public class T11 {
         System.out.println("Test T11 succeeded (thread %s)".formatted(threadName));
     }
     
+    /**
+     * No cleanup needed.
+     */
     @After
     public void tearDown() {}
     
+    //getters and settes below are needed for multithreaded execution.
     public WebDriver getDriver() {
 		return driver;
 	}

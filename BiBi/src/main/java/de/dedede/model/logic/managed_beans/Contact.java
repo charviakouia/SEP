@@ -19,13 +19,14 @@ import jakarta.inject.Named;
  * Backing bean for the contact information facelet. The contact page allows any
  * user to get to know how to contact the site owners.
  *
+ * @author Jonas Picker
  */
 @Named
 @RequestScoped
 public class Contact {
     
 	/**
-	 * The Applicationscoped object that holds the text to be displayed here.
+	 * The applicationscoped object that holds the text to be displayed here.
 	 */
 	@Inject
 	private ApplicationCustomization appData;

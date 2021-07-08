@@ -6,13 +6,11 @@ import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.TokenDto;
 import de.dedede.model.data.dtos.UserDto;
-import de.dedede.model.logic.exceptions.BusinessException;
 import de.dedede.model.logic.util.EmailUtility;
 import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.logic.util.PasswordHashingModule;
 import de.dedede.model.logic.util.TokenGenerator;
 import de.dedede.model.persistence.daos.UserDao;
-import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
 import de.dedede.model.persistence.exceptions.LostConnectionException;
 import de.dedede.model.persistence.exceptions.MaxConnectionsException;
 import de.dedede.model.persistence.exceptions.UserDoesNotExistException;
@@ -29,10 +27,9 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * Backing bean for the login page. This page is the one users first face when
- * they are not already logged in. It allows them to log into the system to gain
- * the privilege to borrow copies. If a logged-in user accesses this page by
- * manually entering its URL, a message is shown instead of the login form					
+ * Backing bean for the login page. It allows them to log into the system with 
+ * a registered account. If a logged-in user accesses this page by, 
+ * a message is shown instead of the login form					
  * 
  * @author Jonas Picker
  */
@@ -46,25 +43,11 @@ public class Login {
 	private UserDto userData = new UserDto();
 	
 	/**
-	 * The @SessionScoped Bean that hold userdata.
+	 * The @SessionScoped Bean that holds the users data.
 	 */
 	@Inject
 	private UserSession userSession;
-		
-	/**
-	 * Checks for existing user session and decides if facelet renders login 
-	 * form.
-	 * 
-	 * @return true if the login form should be rendered
-	 */
-	public boolean renderLogin() {
-		if (userSession.getUser() != null) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+			
 	/**
 	 * Log into the system and redirect to profile page if successful while
 	 * switching out the HttpSession Id and initializing the users data in the
@@ -73,7 +56,7 @@ public class Login {
 	 * @throws MaxConnectionsException If there are no more available database
 	 *                                 connections.
 	 * @throws LostConnectionException if an error during db communication 
-	 * 									occured
+	 * 								   occured
 	 */
 	public void logIn() throws MaxConnectionsException,
 			LostConnectionException {
@@ -121,7 +104,7 @@ public class Login {
 
 	/**
 	 * Send an email to the user with a reset link inside, shows confirmation
-	 * or failure messages depending on the outcome.						
+	 * or failure messages depending on the outcome. 						
 	 */
 	public void resetPassword() {									
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -141,11 +124,12 @@ public class Login {
 					completeUserData, newTokenContainer);			
 			String link = EmailUtility.getLink(
 				   "/view/ffa/password-reset.xhtml", userToken.getContent());
-			// Ivan start
-			if (context.getExternalContext().getInitParameter("jakarta.faces.PROJECT_STAGE").equals("Development")){
+			ExternalContext extCtx = context.getExternalContext();
+			String SystemMode = 
+					extCtx.getInitParameter("jakarta.faces.PROJECT_STAGE");
+			if (SystemMode.equals("Development")){ //workaround for Ivans BBtest
 				MessagingUtility.writeNeutralMessage(context, true, link);
 			}
-			// Ivan end
 			String firstname = completeUserData.getFirstName();
 			String lastname = completeUserData.getLastName();
 			String emailBody = insertParams(firstname, lastname, link, content);
@@ -185,6 +169,38 @@ public class Login {
 					longMessageFail));
 		}		
 	}
+		
+	/**
+	 * Checks for existing user session and decides if facelet renders login 
+	 * form.
+	 * 
+	 * @return true if the login form should be rendered
+	 */
+	public boolean renderLogin() {
+		if (userSession.getUser() != null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * Grants the facelet reading access to the UserDto.
+	 * 
+	 * @return the inputContainer
+	 */
+	public UserDto getUserData() {
+		return userData;
+	}
+	
+	/**
+	 * Grants the facelet modifying access to the UserDto.
+	 * 
+	 * @param user the new user input
+	 */
+	public void setUserData(UserDto user) {
+		this.userData = user;
+	}
 	
 	private String insertParams(String param1, String param2, String param3, 
 			String content) {
@@ -194,27 +210,4 @@ public class Login {
 		return contentWithParam;
 	}
 	
-	/**
-	 * Grants the facelet access to the UserDto.
-	 * 
-	 * @return the inputContainer
-	 */
-	public UserDto getUserData() {
-		return userData;
-	}
-	
-	/**
-	 * Grants the facelet access to the UserDto.
-	 * 
-	 * @param user the new user input
-	 */
-	public void setUserData(UserDto user) {
-		this.userData = user;
-	}
-	
-	// Authored by Ivan to test global exception handler functionality
-	public String throwsError() {
-		throw new BusinessException("Testing...", new CopyDoesNotExistException("More testing..."));
-	}
-
 }

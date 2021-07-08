@@ -23,24 +23,25 @@
 							value="#{msg['lending.mail_field']}"/>
 			<h:inputText id="lending_mail_field"  
 						value="#{lending.user.emailAddress}" 
-						styleClass="form-control" required="true" 
-						onchange="submit()" 
+						styleClass="form-control" 
+						onchange="submit()"
 						valueChangeListener="#{lending.setUserEmail}">
 				<f:validator validatorId="userExistsAndCanLendValidator"/>
 			</h:inputText>
 			<h:message for="lending_mail_field" style="color:red"/> 
 		</h:panelGroup>
 			
-		<h:panelGroup id="lending_repeat_container" layout="block" styleClass="container">
+		<h:panelGroup id="lending_repeat_container" layout="block" 
+		styleClass="container">
 		
 			<ui:repeat var="copy" value="#{lending.copies}" varStatus="status">
 				 <h:panelGroup layout="block" styleClass="form-group">
 				 <h:outputLabel for="lending_signature_field" 
-				 				value="#{msg['lending.signature_field']}"/>
-				 
+				 				value="#{msg['lending.signature_field']}"/> 
 				<h:inputText id="lending_signature_field" 
 							value="#{copy.signature}" 
-							styleClass="form-control">
+							styleClass="form-control"
+							onchange="submit()">
 					<f:validator 
 						validatorId="lendingProcessSignatureValidator"/>                                   
 				</h:inputText>
@@ -51,7 +52,8 @@
 		<h:commandButton id="button_add_signature_lending_field"
 							action="#{lending.addSignatureInputField()}" 
 							value="#{msg['lending.add_input']}"
-							styleClass="btn btn-secondary"/>	
+							styleClass="btn btn-secondary"
+							immediate="true"/>	
 		<h:commandButton id="button_direct_lend_copies"
 							action="#{lending.lendCopies()}" 
 							value="#{msg['lending.lend_copies']}"

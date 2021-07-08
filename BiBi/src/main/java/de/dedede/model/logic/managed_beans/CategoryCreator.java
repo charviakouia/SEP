@@ -12,11 +12,15 @@ import de.dedede.model.persistence.exceptions.ParentCategoryDoesNotExistExceptio
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -24,12 +28,13 @@ import java.util.UUID;
  * Backing bean for creating an category.
  */
 @Named
-@RequestScoped
-public class CategoryCreator {
+@ViewScoped
+public class CategoryCreator implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private CategoryDto category;
-
-    private static final String defaultParentCategory = "SampleParentCategory";
 
     @Inject
     FacesContext context;
@@ -69,15 +74,17 @@ public class CategoryCreator {
      * @author Sergei Pravdin
      */
     public void createCategory() throws IOException {
+        category.setId(generateId());
         try {
-            category.setId(generateId());
             CategoryDao.createCategory(category);
             MessagingUtility.writePositiveMessageWithKey(context, true, "categoryCreator.success");
             FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/category-browser.xhtml?faces-redirect=true");
         } catch (ParentCategoryDoesNotExistException e) {
-            MessagingUtility.writeNegativeMessageWithKey(context, false, "categoryCreator.notParentMatch");
+            MessagingUtility.writeNegativeMessageWithKey(context, true, "categoryCreator.notParentMatch");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/category-browser.xhtml?faces-redirect=true");
         } catch (EntityInstanceNotUniqueException exception) {
-            MessagingUtility.writeNegativeMessageWithKey(context, false, "categoryCreator.notUnique");
+            MessagingUtility.writeNegativeMessageWithKey(context, true, "categoryCreator.notUnique");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/category-browser.xhtml?faces-redirect=true");
         }
     }
 
@@ -93,23 +100,19 @@ public class CategoryCreator {
      * @author Sergei Pravdin
      */
     public void onload() throws IOException {
-        try {
-            if (userSession.getUser() != null) {
-                if (userSession.getUser().getUserRole().equals(UserRole.ADMIN)
-                        || userSession.getUser().getUserRole().equals(UserRole.STAFF)) {
-                    if (category.getParent().getId() != 0) {
-                        category.setParent(CategoryDao.readCategory(category));
-                    } else {
-                        category.getParent().setName(defaultParentCategory);
-                    }
-                }
-            } else {
-                MessagingUtility.writeNegativeMessageWithKey(context, true, "categoryCreator.notLogin");
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/ffa/login.xhtml?faces-redirect=true");
+
+        if (userSession.getUser() == null || (!userSession.getUser().getUserRole().equals(UserRole.ADMIN)
+                && !userSession.getUser().getUserRole().equals(UserRole.STAFF))) {
+            MessagingUtility.writeNegativeMessageWithKey(context, true, "categoryCreator.notLogin");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/category-browser.xhtml?faces-redirect=true");
+        } else {
+            final int parentCategoryId = (int)FacesContext.getCurrentInstance()
+                    .getExternalContext().getFlash().get("parent-category");
+            category.getParent().setId(parentCategoryId);
+            if (category.getParent().getId() == 0) {
+                MessagingUtility.writeNegativeMessage(context, true, "Flash parameter is null");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/category-browser.xhtml?faces-redirect=true");
             }
-        } catch (CategoryDoesNotExistException e) {
-            MessagingUtility.writeNegativeMessageWithKey(context, true, "categoryCreator.invalidID");
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/staff/category-creator.xhtml?faces-redirect=true");
         }
     }
 

@@ -4,11 +4,10 @@ package de.dedede.model.logic.validators;
 import java.util.ResourceBundle;
 
 import de.dedede.model.data.dtos.CopyDto;
+import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.managed_beans.Lending;
+import de.dedede.model.logic.util.CopyLendingStatus;
 import de.dedede.model.persistence.daos.MediumDao;
-import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
-import de.dedede.model.persistence.exceptions.CopyIsNotAvailableException;
-import de.dedede.model.persistence.exceptions.InvalidUserForCopyException;
 import jakarta.enterprise.context.Dependent;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.FacesMessage;
@@ -23,7 +22,7 @@ import jakarta.inject.Named;
 /**
  * Validator for the signature input fields on the lending page. 
  * Also checks the user field in the same form because its value is needed here
- *  anyway.
+ * anyway.
  * 
  * @author Jonas Picker
  */
@@ -54,10 +53,11 @@ public class LendingProcessSignatureValidator implements Validator<String> {
 		ResourceBundle messages = application.evaluateExpressionGet(context, 
 				"#{msg}", ResourceBundle.class);
 		CopyDto signatureContainer = new CopyDto();
-	    signatureContainer.setSignature(signature);
-	    	    
-	    if (lending.getUser().getEmailAddress() == null 
-	    		|| lending.getUser().getEmailAddress().trim() == "" ) {
+	    signatureContainer.setSignature(signature);	
+	    UserDto user = lending.getUser();
+		String backingBeanEmail = user.getEmailAddress();
+		if (backingBeanEmail == null 
+	    		|| backingBeanEmail.trim() == "" ) {
 	    	String shortMessage = messages.getString("lending.enter_user"
 	    			+ "_first_short");
 	    	String longMessage = messages.getString("lending.enter_user"
@@ -66,10 +66,9 @@ public class LendingProcessSignatureValidator implements Validator<String> {
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
 	    }
-	    try {
-	    	MediumDao.validateLendingProcess(signatureContainer, 
-	    			lending.getUser());
-	    } catch (CopyDoesNotExistException e1) {
+	    CopyLendingStatus status = 
+	    		MediumDao.validateLendingProcess(signatureContainer, user);
+	    if (status == CopyLendingStatus.SIGNATURE_NOT_FOUND) {
 	    	String shortMessage = messages.getString("lending.unknown"
 	    			+ "_copy_short");
 	    	String longMessage = messages.getString("lending.unknown"
@@ -77,7 +76,7 @@ public class LendingProcessSignatureValidator implements Validator<String> {
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
-	    } catch (CopyIsNotAvailableException e2) {
+	    } else if (status == CopyLendingStatus.COPY_ALREADY_LENT) {
 	    	String shortMessage = messages.getString("lending.already"
 	    			+ "_lent_short");
 	    	String longMessage = messages.getString("lending.already"
@@ -85,7 +84,7 @@ public class LendingProcessSignatureValidator implements Validator<String> {
 	    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                shortMessage, longMessage);
 	    	throw new ValidatorException(msg);
-	    } catch (InvalidUserForCopyException e3) {
+		} else if (status == CopyLendingStatus.WRONG_USER) {
 	    	String shortMessage = messages.getString("lending.wrong"
 	    			+ "_user_short");
 	    	String longMessage = messages.getString("lending.wrong"

@@ -10,7 +10,6 @@ import java.util.ResourceBundle;
 import de.dedede.model.data.dtos.CopyDto;
 import de.dedede.model.data.dtos.UserDto;
 import de.dedede.model.logic.exceptions.BusinessException;
-import de.dedede.model.logic.util.MessagingUtility;
 import de.dedede.model.persistence.daos.MediumDao;
 import de.dedede.model.persistence.daos.UserDao;
 import de.dedede.model.persistence.exceptions.CopyDoesNotExistException;
@@ -25,7 +24,6 @@ import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ValueChangeEvent;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 /**
@@ -45,13 +43,7 @@ public class Lending implements Serializable {
 	 * Recieves the email address of the top input field on value change
 	 */
 	private UserDto user;
-	
-	/**
-	 * Prepares the same BB for a reaload with filled signature fields.
-	 */
-	@Inject
-	private Lending fillSignatures; 
-	
+		
 	/**
 	 * Reflects the input fields for signatures as an ArrayList
 	 */
@@ -80,9 +72,11 @@ public class Lending implements Serializable {
 	 */
 	public void lendCopies() {
 		int lent = 0;
+		int tried = 0;
 		for (CopyDto copy : copies) {
 			if (copy.getSignature() != null 
 					&& copy.getSignature().trim() != "") {
+				tried++;
 				try {
 					MediumDao.lendCopy(copy, user);
 					lent++;
@@ -116,14 +110,14 @@ public class Lending implements Serializable {
 		Application application = context.getApplication();
 		ResourceBundle messages = application.evaluateExpressionGet(context,
 				"#{msg}", ResourceBundle.class);
-		if (lent == 0) {
+		if (tried == 0) {
 			String shortMessage = messages.getString("lending.enter_" 
 					+ "signature_short");
 			String longMessage = messages.getString("lending.enter_" 
 					+ "signature_long");
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, shortMessage, longMessage));
-		} else {
+		} else if (lent > 0) {
 			String shortContent = messages.getString("lending.copies" 
 					+ "_lent_short");
 			String longContent = messages.getString("lending.copies_" 
@@ -137,8 +131,10 @@ public class Lending implements Serializable {
 			context.addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_INFO, shortMessage,
 							longMessage));
-			this.user.setEmailAddress("");
-			this.copies.clear();
+			user.setEmailAddress("");
+			copies.clear();
+			NavigationHandler navHdl = application.getNavigationHandler();
+			navHdl.handleNavigation(context, null, null);
 		}
 	}
 
@@ -153,20 +149,17 @@ public class Lending implements Serializable {
 		user.setEmailAddress(newValue);
 		FacesContext ctx = FacesContext.getCurrentInstance();
 		NavigationHandler hdl = ctx.getApplication().getNavigationHandler();
-		if (UserDao.userEntityWithEmailExists(user)) {
+		UserDto container = new UserDto();
+		container.setEmailAddress(newValue);
+		if (UserDao.userEntityWithEmailExists(container)) {
 			List<CopyDto> markedCopies = 
-					MediumDao.getMarkedCopiesByEmail(user);
-			UserDto userDto = new UserDto();
-			userDto.setEmailAddress(newValue);
+					MediumDao.getMarkedCopiesByEmail(container);
 			boolean notEmpty = !markedCopies.isEmpty();
 			if (notEmpty) {
-				this.fillSignatures.setUser(userDto);
-				this.fillSignatures.setCopies(markedCopies);
-				hdl.handleNavigation(ctx, null, null, null);
+				this.user = container;
+				this.copies = markedCopies;
+				hdl.handleNavigation(ctx, null, null);
 			}
-		} else {
-			MessagingUtility.writeNegativeMessageWithKey(ctx, false, 
-					"lending.no_such_email");
 		}
 	}
 
@@ -175,6 +168,9 @@ public class Lending implements Serializable {
 	 */
 	public void addSignatureInputField() {
 		copies.add(new CopyDto());
+		FacesContext ctx = FacesContext.getCurrentInstance();
+		NavigationHandler hdl = ctx.getApplication().getNavigationHandler();
+		hdl.handleNavigation(ctx, null, null);
 	}
 
 	/**
@@ -183,7 +179,6 @@ public class Lending implements Serializable {
 	 * @return the input container.
 	 */
 	public UserDto getUser() {
-
 		return user;
 	}
 
@@ -203,10 +198,14 @@ public class Lending implements Serializable {
 	 * @return the list of CopyDtos.
 	 */
 	public List<CopyDto> getCopies() {
-
 		return copies;
 	}
-
+	
+	/**
+	 * Allows modifications to the CopyDtos holding the signatures.
+	 * 
+	 * @param copies the list of copies to be updated.
+	 */
 	public void setCopies(List<CopyDto> copies) {
 		this.copies = copies;
 	}

@@ -38,9 +38,10 @@ public class ApplicationCustomization implements Serializable {
 	 */
 	@PostConstruct
 	public void init() {
-		ApplicationDto idDummy = new ApplicationDto();
-		idDummy.setId(appDataId);
-		applicationCustomization = ApplicationDao.readCustomization(idDummy);
+		ApplicationDto idContainer = new ApplicationDto();
+		idContainer.setId(appDataId);
+		applicationCustomization = 
+				ApplicationDao.readCustomization(idContainer);
 	}
 
 	/**

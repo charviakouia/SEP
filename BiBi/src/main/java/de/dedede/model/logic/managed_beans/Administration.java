@@ -57,28 +57,12 @@ public class Administration implements Serializable {
 		this.application = ApplicationDao.readCustomization(idContainer);
 	}
 
-	/**
-	 * Allows reading access to the input capsule.
-	 * 
-	 * @return The Dto holding the settings.
-	 */
-	public ApplicationDto getApplication() {
-		return application;
-	}
 
-	/**
-	 * Allows modifications of the input capsule.
-	 * 
-	 * @param application the new settings held in a Dto.
-	 */
-	public void setApplication(ApplicationDto application) {
-		this.application = application;
-	}
 
 	/**
 	 * Save the changes made to the system settings in the DB and the 
-	 * applicationscoped Bean, then reload the page. Also diplays the number of
-	 * affected users in a message.
+	 * applicationscoped Bean, then reloads the page. Also displays the number of
+	 * affected users from the changes in a message.
 	 */
 	public String save() { 
 		FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -165,4 +149,23 @@ public class Administration implements Serializable {
 	public RegisteredUserLendStatus[] registeredUserLendStatusValues() {
 		return RegisteredUserLendStatus.values();
 	}
+	
+	/**
+	 * Allows reading access to the input capsule.
+	 * 
+	 * @return The Dto holding the settings.
+	 */
+	public ApplicationDto getApplication() {
+		return application;
+	}
+
+	/**
+	 * Allows modifications of the input capsule.
+	 * 
+	 * @param application the new settings held in a Dto.
+	 */
+	public void setApplication(ApplicationDto application) {
+		this.application = application;
+	}
+	
 }

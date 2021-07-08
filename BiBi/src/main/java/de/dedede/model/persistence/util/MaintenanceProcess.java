@@ -22,10 +22,11 @@ import jakarta.mail.internet.AddressException;
 
 /**
  * Implements a runnable maintenance process as a singleton.
- * When run by a thread, the maintenance process will check
- * for approaching deadlines of lent copies in application's data
- * store with a given frequency and send reminder emails with a given delay.
+ * When run by a thread, the maintenance process will check for approaching 
+ * deadlines of lent copies in application's data store with a given frequency 
+ * and send reminder emails with a given delay.
  *
+ * @author Jonas Picker
  */
 public final class MaintenanceProcess { 
 	
@@ -87,11 +88,11 @@ public final class MaintenanceProcess {
 		/**
 	 	* Checks the data store for any approaching deadlines and sends a
 	 	* reminder email if the deadline is within the chosen reminder offset.
-	 	* Remembers sent reminders by copy and user as long as the server runs
+	 	* Remembers sent reminders by copy and user as long as the server runs.
 	 	* If a user is reminded and he returns the copy, which is then lent by
-	 	* another user who then needs to be reminded, the old value is 
-	 	* overwritten with the same key and a reminder e-mail is sent 
-	 	* regardless.
+	 	* another user who then needs to be reminded all between runtimes, 
+	 	* the old value is overwritten with the same key and a reminder e-mail 
+	 	* is sent regardless.
 	 	*/
 		@Override
 		public void run() {		
@@ -101,7 +102,9 @@ public final class MaintenanceProcess {
 				int sent = 0;
 				for (MediumCopyUserDto entry : doRemind) {
 					Timestamp deadline = entry.getCopy().getDeadline();
-					Timestamp nowPlusScanInterval = new Timestamp(System.currentTimeMillis() + intervalInMillis);
+					Timestamp nowPlusScanInterval = 
+							new Timestamp(System.currentTimeMillis() 
+									+ intervalInMillis);
 					int userId = entry.getUser().getId();
 					int copyId = entry.getCopy().getId();
 					if (sentReminders.get(copyId) == null 
@@ -161,21 +164,21 @@ public final class MaintenanceProcess {
 		}
 	
 	}
+	
 	/**
-	 * Instructs the thread to execute any urgent tasks and shut 
-	 * down in a graceful manner. After calling this method once,
-	 * it has no effect.
+	 * Instructs the thread to execute any urgent tasks and shut down in a 
+	 * graceful manner. After calling this method once, it has no effect.
 	 */
 	public static void shutdown() {
 		timer.cancel();
-		Logger.detailed("Graceful shutdown of automatic processes initiated.");
+		Logger.detailed("Graceful shutdown of automatic processes performed.");
 	}
 
 	/**
-	 * Instructs the thread to execute the urgent tasks immidiately
-	 * and schedules subsequent executions at a fixed rate.
-	 * Delay of one execution will not affect the schedule.
-	 * This should only be called after the setup-method!
+	 * Instructs the thread to execute the urgent tasks immidiately and 
+	 * schedules subsequent executions at a fixed rate. Delay of one execution
+	 * will not affect the schedule. This should only be called after the 
+	 * setup-method was called!
 	 */
 	public void startup() {
 		timer.scheduleAtFixedRate(new MaintenanceThread(), 0, intervalInMillis);               

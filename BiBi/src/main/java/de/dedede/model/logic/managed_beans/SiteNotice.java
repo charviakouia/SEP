@@ -17,6 +17,8 @@ import jakarta.inject.Named;
 
 /**
  * Backing bean for the site notice. 
+ * 
+ * @author Jonas Picker
  */
 @Named
 @RequestScoped
