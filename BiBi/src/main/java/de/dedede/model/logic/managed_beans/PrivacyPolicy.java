@@ -18,6 +18,8 @@ import jakarta.inject.Named;
 /**
  * Backing bean for the privacy policy page. This page declares the privacy
  * policy of this system.
+ * 
+ * @author Jonas Picker
  */
 @Named
 @RequestScoped

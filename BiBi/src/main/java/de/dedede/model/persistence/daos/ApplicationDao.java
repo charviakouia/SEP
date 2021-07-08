@@ -284,7 +284,8 @@ public final class ApplicationDao {
 	}
 	
 	/*@author Jonas Picker */
-	private static double getPickupPeriodSeconds(Connection conn) throws SQLException {
+	private static double getPickupPeriodSeconds(Connection conn) 
+			throws SQLException {
 		PreparedStatement getMarkingLimit = conn.prepareStatement(
 				"SELECT EXTRACT (EPOCH FROM (SELECT globalMarkingLimit " 			
 						+ "FROM application WHERE one = 1));");
@@ -299,7 +300,8 @@ public final class ApplicationDao {
 	}
 	
 	/*@author Jonas Picker */
-	private static double getWarningPeriodSeconds(Connection conn) throws SQLException {
+	private static double getWarningPeriodSeconds(Connection conn) 
+			throws SQLException {
 		PreparedStatement getReminder = conn.prepareStatement(
 				"SELECT EXTRACT (EPOCH FROM (SELECT reminderOffset " 			
 						+ "FROM application WHERE one = 1));");
@@ -314,7 +316,8 @@ public final class ApplicationDao {
 	}
 	
 	/*@author Jonas Picker */
-	public static double getLendingPeriodSeconds(Connection conn) throws SQLException {
+	public static double getLendingPeriodSeconds(Connection conn) 
+			throws SQLException {
 		PreparedStatement getGlobalLimit = conn.prepareStatement(
 				"SELECT EXTRACT (EPOCH FROM (SELECT globalLendLimit " 			
 						+ "FROM application WHERE one = 1));");

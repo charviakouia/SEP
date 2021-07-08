@@ -99,7 +99,6 @@ public class ReturnFormSignatureValidator implements Validator<String> {
 	                shortMessage, longMessage);
 	    	context.addMessage(null, msg);
 	    }
-		
 	}
 
 }

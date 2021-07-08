@@ -15,12 +15,11 @@ import de.dedede.model.persistence.exceptions.InvalidLogFileException;
  * location is specified in the global application configurations.
  * 
  * @author Jonas Picker
- *
  */
 public final class Logger { 
 
 	/**
-	 * Static class shouldn't be instanciated.
+	 * Static class shouldn't be instanziated.
 	 */
 	private Logger() {}
 	
@@ -46,7 +45,6 @@ public final class Logger {
 			throw new InvalidLogFileException("Insufficient access "
 					+ "permissions to specified log-file path.", se);
 		}
-		
 		return newFileCreated;
 	}
 
@@ -70,7 +68,6 @@ public final class Logger {
 	public static synchronized void detailed(String message) {
 		ConfigReader config = ConfigReader.getInstance();
 		String level = config.getKey("LOG_LEVEL", "SEVERE");
-		
 		if (level.equalsIgnoreCase("DEVELOPMENT") 
 				|| level.equalsIgnoreCase("DETAILED")) {
 			log(LogLevel.DETAILED, message);
@@ -84,8 +81,7 @@ public final class Logger {
 	 * @param message The message which accompanies the log entry.
 	 */
 	public static synchronized void development(String message) {
-		ConfigReader config = ConfigReader.getInstance();
-				
+		ConfigReader config = ConfigReader.getInstance();		
 		String logLevel = config.getKey("LOG_LEVEL", "SEVERE");
 		if (logLevel.equalsIgnoreCase("DEVELOPMENT")) {
 			log(LogLevel.DEVELOPMENT, message);
@@ -95,7 +91,6 @@ public final class Logger {
 	private static void log(LogLevel level, String message) {
 		ConfigReader config = ConfigReader.getInstance();
 		String consoleOutput = config.getKey("LOG_CONSOLE", "FALSE");
-		
 		if (consoleOutput.equalsIgnoreCase("TRUE")) {
 			System.out.println(level.toString() + ": " + message);
 		}

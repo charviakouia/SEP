@@ -28,6 +28,10 @@ public final class PasswordHashingModule {
 	 * divided by 2. 
 	 */
 	private static final int LENGTH = 20;
+	
+	/**
+	 * The standart character encoding used.
+	 */
 	private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
 	/**
@@ -53,7 +57,7 @@ public final class PasswordHashingModule {
 	}
 	
 	/**
-	 * Generates a new random hexadecimal
+	 * Generates a new random hexadecimal number.
 	 * 
 	 * @return a String with the number twice the size of @see LENGTH
 	 */

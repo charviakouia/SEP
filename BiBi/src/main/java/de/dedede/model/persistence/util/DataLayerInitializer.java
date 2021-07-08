@@ -23,6 +23,9 @@ import de.dedede.model.persistence.exceptions.LostConnectionException;
  */
 public class DataLayerInitializer {
 	
+	/**
+	 * Holds the names of the required tables in the database.
+	 */
 	private static final String[] tableNames = {"Users", "Application", "Medium"
 			, "MediumCopy", "Category"}; 
 	
@@ -69,6 +72,7 @@ public class DataLayerInitializer {
 					+ "communicating with the database during "
 					+ "system startup.", sqle);
 		} catch (DriverNotFoundException dnfe) {
+			Logger.severe("DB Driver not found on DB initialization.");
 			throw dnfe;
 		}
 		setUpMaintenanceProcess(emailSubject, emailBody);		
@@ -110,7 +114,7 @@ public class DataLayerInitializer {
 		try {
 			connection.close();
 		} catch (SQLException ignored) {
-			System.out.println("Shutdownhook fail");
+			System.out.println("Shutdownhook failed");
 			}
 		}
 		
@@ -156,7 +160,7 @@ public class DataLayerInitializer {
 				} else {
 					Logger.detailed("All required tables seem to be present.");
 					System.out.println("All required tables are present. "
-							+ "Starting system with existing tables..........");
+							+ "Starting system with existing tables...");
 				}
 			} catch (SQLException e) {
 				Logger.severe("An Error occured while verifying the "
@@ -500,7 +504,7 @@ public class DataLayerInitializer {
 				+ "values (default, 'testBibName', '.*', 'Exemplary contact "
 				+ "info', 'Example imprint', 'Example privacy Policy',"
 				+ " null, '99:59:59', '24:00:00', '1:00:00', default, "
-				+ "'SelectedLookAndFeel', default, default);";
+				+ "'unused', default, default);";
 		PreparedStatement sampleAppData = conn.prepareStatement(insSaAppData);
 		sampleAppData.execute();
 		conn.commit();
@@ -514,7 +518,6 @@ public class DataLayerInitializer {
 	}
 	
 	private static void sampleEntries(Connection conn) throws SQLException {
-		
 		String insertSampleCategory1 = "insert into category(categoryID, "
 				+ "title, description, parentCategoryID) "
 				+ "values (default, 'SampleParentCategory', "

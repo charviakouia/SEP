@@ -27,10 +27,9 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * Backing bean for the login page. This page is the one users first face when
- * they are not already logged in. It allows them to log into the system to gain
- * the privilege to borrow copies. If a logged-in user accesses this page by
- * manually entering its URL, a message is shown instead of the login form					
+ * Backing bean for the login page. It allows them to log into the system with 
+ * a registered account. If a logged-in user accesses this page by, 
+ * a message is shown instead of the login form					
  * 
  * @author Jonas Picker
  */
@@ -48,21 +47,7 @@ public class Login {
 	 */
 	@Inject
 	private UserSession userSession;
-		
-	/**
-	 * Checks for existing user session and decides if facelet renders login 
-	 * form.
-	 * 
-	 * @return true if the login form should be rendered
-	 */
-	public boolean renderLogin() {
-		if (userSession.getUser() != null) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+			
 	/**
 	 * Log into the system and redirect to profile page if successful while
 	 * switching out the HttpSession Id and initializing the users data in the
@@ -184,17 +169,23 @@ public class Login {
 					longMessageFail));
 		}		
 	}
-	
-	private String insertParams(String param1, String param2, String param3, 
-			String content) {
-		MessageFormat messageFormat = new MessageFormat(content);
-		Object[] args = {param1, param2, param3};
-		String contentWithParam = messageFormat.format(args);
-		return contentWithParam;
+		
+	/**
+	 * Checks for existing user session and decides if facelet renders login 
+	 * form.
+	 * 
+	 * @return true if the login form should be rendered
+	 */
+	public boolean renderLogin() {
+		if (userSession.getUser() != null) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	/**
-	 * Grants the facelet access to the UserDto.
+	 * Grants the facelet reading access to the UserDto.
 	 * 
 	 * @return the inputContainer
 	 */
@@ -203,12 +194,20 @@ public class Login {
 	}
 	
 	/**
-	 * Grants the facelet access to the UserDto.
+	 * Grants the facelet modifying access to the UserDto.
 	 * 
 	 * @param user the new user input
 	 */
 	public void setUserData(UserDto user) {
 		this.userData = user;
+	}
+	
+	private String insertParams(String param1, String param2, String param3, 
+			String content) {
+		MessageFormat messageFormat = new MessageFormat(content);
+		Object[] args = {param1, param2, param3};
+		String contentWithParam = messageFormat.format(args);
+		return contentWithParam;
 	}
 	
 }

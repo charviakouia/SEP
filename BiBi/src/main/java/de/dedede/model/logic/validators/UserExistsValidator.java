@@ -22,10 +22,10 @@ public class UserExistsValidator implements Validator<String> {
 
 	/**
 	 * Takes a user email as input and throws an Exception, if the email doesn't
-	 * belong to any account in the database
+	 * belong to any account in the database.
 	 *
-	 * @param context 		the FacesContext the listener is registered in
-	 * @param uiComponent  	the UIComponent for this listener
+	 * @param context 		the FacesContext the validator is registered in.
+	 * @param uiComponent  	the UIComponent for this validator.
 	 * @param email         the fields value as String
 	 * @throws ValidatorException if the user doesn't exist
 	 */

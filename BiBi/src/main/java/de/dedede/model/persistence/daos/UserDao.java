@@ -20,6 +20,7 @@ import de.dedede.model.data.dtos.UserLendStatus;
 import de.dedede.model.data.dtos.UserRole;
 import de.dedede.model.data.dtos.UserSearchColumn;
 import de.dedede.model.data.dtos.UserSearchDto;
+import de.dedede.model.logic.util.LendingProcessUserStatus;
 import de.dedede.model.logic.util.UserVerificationStatus;
 import de.dedede.model.persistence.exceptions.EntityInstanceDoesNotExistException;
 import de.dedede.model.persistence.exceptions.EntityInstanceNotUniqueException;
@@ -166,18 +167,30 @@ public final class UserDao {
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		int affected = 0;
 		try {
-			PreparedStatement stmt = conn
-					.prepareStatement("UPDATE users " + "SET lendstatus = CAST(? AS userlendstatus) "
-							+ "WHERE userrole = CAST('REGISTERED' AS userrole);");
+			PreparedStatement stmt = conn.prepareStatement("UPDATE users " 
+							+ "SET lendstatus = CAST(? AS userlendstatus) "
+							+ "WHERE userrole = CAST('REGISTERED' AS userrole);"
+							);
 			String statusString = status.toString();
 			stmt.setString(1, statusString);
 			affected = stmt.executeUpdate();
 			conn.commit();
 			stmt.close();
 		} catch (SQLException e) {
-			String message = "A db communication error occured while " + "trying to disable user lend status";
+			String message = "A db communication error occured while " 
+								+ "trying to disable user lend status, "
+								+ "attempting rollback..";
 			Logger.severe(message);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg1 = "Failed to rollback database transaction";
+				Logger.severe(msg1);
+				throw new LostConnectionException(msg1);
+			}
 			throw new LostConnectionException(message, e);
+		} finally {
+			instance.releaseConnection(conn);
 		}
 		return affected;
 	}
@@ -186,28 +199,44 @@ public final class UserDao {
 	 * Checks if the user email exists and then if the user is allowed to lend
 	 * copies.
 	 * 
-	 * @param userEmail the users email in a dto.
-	 * @throws UserDoesNotExistException   if the useremail wasn't found in db.
-	 * @throws InvalidUserForCopyException if the user isn't allowed to lend.
+	 * @param email the users email in a dto.
+	 * @return the status in an enum capsule.
 	 * @author Jonas Picker
 	 */
-	public static void validateUserLending(UserDto userEmail)
-			throws UserDoesNotExistException, InvalidUserForCopyException {
+	public static LendingProcessUserStatus validateUserLending(UserDto email) {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
+		LendingProcessUserStatus status = null;
 		try {
-			userEntityWithEmailExists(conn, userEmail);
-			UserDto userId = new UserDto();
-			userId.setId(getUserIdByEmail(conn, userEmail));
-			UserDto userData = readUserForProfileHelper(conn, userId);
-			if (userData.getUserLendStatus() == UserLendStatus.DISABLED) {
-				throw new InvalidUserForCopyException();
+			if (userEntityWithEmailExists(conn, email)) {
+				UserDto userId = new UserDto();
+				userId.setId(getUserIdByEmail(conn, email));
+				UserDto userData = readUserForProfileHelper(conn, userId);
+				if (userData.getUserLendStatus() == UserLendStatus.DISABLED) {
+					status = LendingProcessUserStatus.USER_CANNOT_LEND;
+				}
+			} else {
+				status = LendingProcessUserStatus.EMAIL_NOT_FOUND;
 			}
 		} catch (SQLException e) {
-			String message = "Error while validating userEmail for lending";
+			String message = "Error while validating userEmail for lending, "
+					+ "attempting rollback..";
 			Logger.development(message);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg1 = "Failed to rollback database transaction";
+				Logger.severe(msg1);
+				throw new LostConnectionException(msg1);
+			}
 			throw new LostConnectionException(message, e);
+		} catch (UserDoesNotExistException impossible) {
+			Logger.development("An unexpected error occured during user lending"
+					+ " validation, the user was deleted during transaction");
+		} finally {
+			instance.releaseConnection(conn);
 		}
+		return status;
 	}
 
 	/**
@@ -221,13 +250,15 @@ public final class UserDao {
 	 * 
 	 * @author Jonas Picker
 	 */
-	public static TokenDto setOrRetrieveUserToken(UserDto user, TokenDto token) throws UserDoesNotExistException {
+	public static TokenDto setOrRetrieveUserToken(UserDto user, TokenDto token) 
+			throws UserDoesNotExistException {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		try {
 			if (userTokenIsNull(conn, user) || userTokenExpired(conn, user)) {
 				PreparedStatement updateToken = conn.prepareStatement(
-						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP," + " token = ? WHERE userid = ?;");
+						"UPDATE users SET tokenCreation = CURRENT_TIMESTAMP," 
+								+ " token = ? WHERE userid = ?;");
 				updateToken.setString(1, token.getContent());
 				updateToken.setInt(2, user.getId());
 				int changed = updateToken.executeUpdate();
@@ -235,10 +266,12 @@ public final class UserDao {
 				conn.commit(); // Ivan
 				updateToken.close();
 				token.setCreationTime(LocalDateTime.now());
+				
 				return token;
 			} else {
-				PreparedStatement getToken = conn
-						.prepareStatement("SELECT token, tokenCreation " + "FROM users WHERE userid = ?;");
+				PreparedStatement getToken = conn.prepareStatement(
+							"SELECT token, tokenCreation " 
+								+ "FROM users WHERE userid = ?;");
 				getToken.setInt(1, user.getId());
 				ResultSet rs = getToken.executeQuery();
 				rs.next();
@@ -249,62 +282,80 @@ public final class UserDao {
 				TokenDto result = new TokenDto();
 				result.setContent(content);
 				result.setCreationTime(creation);
+				
 				return result;
 			}
 		} catch (SQLException e) {
-			String message = "SQLException while checking or " + "setting valid user token";
+			String message = "SQLException while checking or " 
+						+ "setting valid user token, attempting rollback..";
 			Logger.development(message);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg1 = "Failed to rollback database transaction";
+				Logger.severe(msg1);
+				throw new LostConnectionException(msg1);
+			}
 			throw new LostConnectionException(message, e);
+		} finally {
+			instance.releaseConnection(conn);
 		}
-
 	}
 
 	// reads an existing user by id and checks if his token expired but will
 	// falsely return false if token is null
 	/* @author Jonas Picker */
-	private static boolean userTokenExpired(Connection conn, UserDto userId) throws SQLException {
-		PreparedStatement checkingStmt = conn
-				.prepareStatement("SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
-						+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
-						+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END " + "AS tokenExpired;");
+	private static boolean userTokenExpired(Connection conn, UserDto userId) 
+			throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE WHEN (CAST((SELECT tokenCreation FROM users WHERE"
+					+ " userid = ?) AS TIMESTAMP) + INTERVAL '30 minutes')"
+					+ " < (CURRENT_TIMESTAMP) THEN true ELSE false END " 
+					+ "AS tokenExpired;");
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
 		conn.commit();
 		rs.next();
 		boolean result = rs.getBoolean(1);
 		checkingStmt.close();
+		
 		return result;
 	}
 
 	// reads an existing user by id and checks if his token is null
 	/* @author Jonas Picker */
-	private static boolean userTokenIsNull(Connection conn, UserDto userId) throws SQLException {
-		PreparedStatement checkingStmt = conn
-				.prepareStatement("SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
-						+ "userid = ?) IS NULL THEN true ELSE false END AS tokenIsNull;");
+	private static boolean userTokenIsNull(Connection conn, UserDto userId) 
+			throws SQLException {
+		PreparedStatement checkingStmt = conn.prepareStatement(
+				"SELECT CASE WHEN (SELECT tokenCreation FROM users WHERE "
+						+ "userid = ?) IS NULL THEN true "
+						+ "ELSE false END AS tokenIsNull;");
 		checkingStmt.setInt(1, userId.getId());
 		ResultSet rs = checkingStmt.executeQuery();
 		conn.commit();
 		rs.next();
 		boolean result = rs.getBoolean(1);
 		checkingStmt.close();
+		
 		return result;
 	}
 
 	/**
-	 * Fetches user data associated with a given email. The email address must be
-	 * associated with a user in the data store. Otherwise, an exception is thrown.
+	 * Fetches user data associated with a given email. The email address must 
+	 * be associated with a user in the data store. Otherwise, an exception is 
+	 * thrown.
 	 *
 	 * @param userDto A DTO container with the email address that identifies the
 	 *                user to be fetched.
 	 * @return A DTO container with the fetched user.
-	 * @throws UserDoesNotExistException Is thrown when the enclosed email address
-	 *                                   isn't associated with an existing data
-	 *                                   entry.
+	 * @throws UserDoesNotExistException Is thrown when the enclosed email 
+	 * 									 address isn't associated with an 
+	 * 									 existing data entry.
 	 * 
 	 * @author Jonas Picker, but re-uses @author Sergei Pravdins's Code
 	 */
-	public static UserDto readUserByEmail(UserDto userDto) throws UserDoesNotExistException {
+	public static UserDto readUserByEmail(UserDto userDto) 
+			throws UserDoesNotExistException {
 		ConnectionPool instance = ConnectionPool.getInstance();
 		Connection conn = instance.fetchConnection(ACQUIRING_CONNECTION_PERIOD);
 		int id = getUserIdByEmail(conn, userDto);
@@ -312,13 +363,51 @@ public final class UserDao {
 		try {
 			userDto.setId(id);
 			UserDto completeUser = readUserForProfileHelper(conn, userDto);
+			
 			return completeUser;
 		} catch (SQLException e) {
-			String message = "Database error occurred while reading user entity" + " with id: " + userDto.getId();
+			String message = "Database error occurred while reading user entity" 
+								+ " with id: " + userDto.getId();
 			Logger.severe(message);
+			try {
+				conn.rollback();
+			} catch (SQLException e2) {
+				String msg1 = "Failed to rollback database transaction";
+				Logger.severe(msg1);
+				throw new LostConnectionException(msg1);
+			}
 			throw new LostConnectionException(message, e);
 		} finally {
 			instance.releaseConnection(conn);
+		}
+	}
+	
+	/**
+	 * Checks if a user exists in the database and returns his id, public helper
+	 * method, since outside access is required.
+	 * 
+	 * @param conn      the connection the operations are performed on
+	 * @param userEmail the container for the users email in a dto.
+	 * @return the user id for the corresponding email
+	 * @throws UserDoesNotExistException if the user email wasn't found
+	 * @author Jonas Picker
+	 */
+	public static int getUserIdByEmail(Connection conn, UserDto userEmail) 
+			throws UserDoesNotExistException {
+		try {
+			PreparedStatement readUserId = conn.prepareStatement(
+					"SELECT userId FROM users WHERE emailAddress = ?;"
+					);
+			readUserId.setString(1, userEmail.getEmailAddress());
+			ResultSet rs = readUserId.executeQuery();
+			rs.next();
+			
+			return rs.getInt(1);
+		} catch (SQLException e) {
+			Logger.development("UserId couldn't be retrieved for this email.");
+			throw new UserDoesNotExistException(
+					"Specified email " + userEmail.getEmailAddress() 
+					+ " doesn't seem to match any user entry", e);
 		}
 	}
 
@@ -428,31 +517,6 @@ public final class UserDao {
 			ConnectionPool.getInstance().releaseConnection(connection);
 		}
 
-	}
-
-	/**
-	 * Checks if a user exists in the database and returns his id, public helper
-	 * method, since outside access is required.
-	 * 
-	 * @param conn      the connection the operations are performed on
-	 * @param userEmail the container for the users email in a dto.
-	 * @return the user id for the corresponding email
-	 * @throws UserDoesNotExistException if the user email wasn't found
-	 * @author Jonas Picker
-	 */
-	public static int getUserIdByEmail(Connection conn, UserDto userEmail) throws UserDoesNotExistException {
-		try {
-			PreparedStatement readUserId = conn
-					.prepareStatement("SELECT userId" + " FROM users WHERE emailAddress = ?;");
-			readUserId.setString(1, userEmail.getEmailAddress());
-			ResultSet rs = readUserId.executeQuery();
-			rs.next();
-			return rs.getInt(1);
-		} catch (SQLException e) {
-			Logger.development("UserId couldn't be retrieved for this email.");
-			throw new UserDoesNotExistException(
-					"Specified email " + userEmail.getEmailAddress() + " doesn't seem to match any user entry", e);
-		}
 	}
 
 	/**

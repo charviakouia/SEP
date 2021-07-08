@@ -9,7 +9,6 @@ import de.dedede.model.persistence.exceptions.InvalidConfigurationException;
 
 /**
  * A singleton utility class for returning system-wide property values.
- * 
  * See the {@link Properties} class for the implementation of properties in Java
  * 
  * @author Jonas Picker
@@ -63,7 +62,6 @@ public class ConfigReader {
 	 * @return The singleton ConfigReader instance
 	 */
 	public static ConfigReader getInstance() {
-		
 		return InnerInstance.InnerInstance;
 	}
 	
@@ -75,7 +73,6 @@ public class ConfigReader {
 	 * @return The value for the key
 	 */
 	public String getKey(String key) {
-		
 		return systemConfigurations.getProperty(key);
 	}
 	
@@ -88,7 +85,6 @@ public class ConfigReader {
 	 * @return The value for the key parsed and returned as an int
 	 */
 	public int getKeyAsInt(String key) {
-		
 		return Integer.parseInt(systemConfigurations.getProperty(key));
 	}
 	
@@ -102,7 +98,6 @@ public class ConfigReader {
 	 * 			value is empty
 	 */
 	public String getKey(String key, String defaultValue)  {
-		
 		return systemConfigurations.getProperty(key, defaultValue);
 	}
 	
@@ -115,7 +110,6 @@ public class ConfigReader {
 	 * @return The value for the key parsed and returned as an int
 	 */
 	public int getKeyAsInt(String key, int defaultValue) {
-		
 		return Integer.parseInt(systemConfigurations.getProperty(key, 
 				String.valueOf(defaultValue)));
 	}

@@ -7,13 +7,16 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:bibi="http://xmlns.jcp.org/jsf/composite/bibi"
 	template="/view/templates/template.xhtml">
-	
+	<!-- Author Jonas Picker-->
+		
 	<ui:param name="page" value="site_notice" />
 
 	<ui:define name="content">
 
-		<h:outputLabel for="site_notice_form" value="#{msg['site_notice.headline']}"
-					   style="font-weight:bold; font-size:x-large;" id="site_notice_title"/>
+		<h:outputLabel for="site_notice_form" 
+						value="#{msg['site_notice.headline']}"
+					   style="font-weight:bold; 
+					   font-size:x-large;" id="site_notice_title"/>
 	
 		<h:form id="site_notice_form">
 			<h:panelGrid id="site_notice_panel" columns="1" border="10"

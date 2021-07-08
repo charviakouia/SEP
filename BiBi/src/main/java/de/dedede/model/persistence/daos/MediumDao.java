@@ -1565,19 +1565,19 @@ public final class MediumDao {
 			return result;
 		} catch (SQLException e) {
 			String errorMessage = "Error occured with db communication while" 
-		+ " checking for valid copy return.";
+									+ " checking for valid copy return.";
 			Logger.severe(errorMessage);
 			try {
 				conn.rollback();
 			} catch (SQLException e2) {
-				String msg = "Failed to rollback database transaction";
-				Logger.severe(msg);
-				throw new LostConnectionException(msg);
+				String msg1 = "Failed to rollback database transaction";
+				Logger.severe(msg1);
+				throw new LostConnectionException(msg1);
 			}
 			throw new LostConnectionException(errorMessage, e);
 		} catch (UserDoesNotExistException e) {
 			String errorMessage = "User wasn't foud in DB during check" 
-		+ " for invalid copy return attempt.";
+								+ " for invalid copy return attempt.";
 			Logger.severe(errorMessage);
 
 			return true;

@@ -22,7 +22,7 @@ import jakarta.inject.Named;
 /**
  * Validator for the signature input fields on the lending page. 
  * Also checks the user field in the same form because its value is needed here
- *  anyway.
+ * anyway.
  * 
  * @author Jonas Picker
  */

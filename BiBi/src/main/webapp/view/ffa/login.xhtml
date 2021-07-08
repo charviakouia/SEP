@@ -9,17 +9,12 @@
 				template="/view/templates/template.xhtml">
 	<!-- Author Jonas Picker-->
 	
-	<!--  <f:metadata>
-    	<f:viewAction action="#{login.redirectWhenLoggedIn}" />
-	</f:metadata>-->
-	
-
 	<ui:param name="page" value="login"/>
 
 	<ui:define name="content">
-		<h1>#{msg['login.headline']}</h1>
-		<br></br>
-		<br></br>
+		
+		<h:outputLabel for="login_form" value="#{msg['login.headline']}"
+					   style="font-weight:bold; font-size:x-large;"/>
 
 		<h:outputText id="login_already_logged_in" 
 					rendered="#{not login.renderLogin()}"
