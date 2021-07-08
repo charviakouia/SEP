@@ -18,8 +18,6 @@ public class MediumDto {
 
     private Integer id;
 
-    private final Map<Integer, AttributeDto> attributes = new HashMap<Integer, AttributeDto>();
-
     private final Map<Integer, CopyDto> copies = new HashMap<Integer, CopyDto>();
 
     private CategoryDto category;
@@ -112,28 +110,6 @@ public class MediumDto {
     }
 
     /**
-     * Fetches an attributeDto with the data of the attribute that belongs to this medium.
-     *
-     * @param key Unique attribute ID, which corresponds to the ID in the database.
-     * @return An attributeDto with the data of the attribute.
-     * @see AttributeDto
-     */
-    public AttributeDto getAttribute(Integer key) {
-        return attributes.get(key);
-    }
-
-    /**
-     * Sets an attributeDto with the data of the attribute that belongs to this medium.
-     *
-     * @param key Unique attribute ID, which corresponds to the ID in the database.
-     * @param value An attributeDto with the data of the attribute which should be assigned to this medium.
-     * @see AttributeDto
-     */
-    public void addAttribute(Integer key, AttributeDto value) {
-        attributes.put(key, value);
-    }
-
-    /**
      * Fetches a CopyDto with the data of the copy that belongs to this medium.
      *
      * @param key Unique copy ID, which corresponds to the ID in the database.
@@ -153,10 +129,6 @@ public class MediumDto {
      */
     public void addCopy(Integer key, CopyDto value) {
         copies.put(key, value);
-    }
-
-    public Map<Integer, AttributeDto> getAttributes() {
-        return attributes;
     }
 
     public Map<Integer, CopyDto> getCopies() {
