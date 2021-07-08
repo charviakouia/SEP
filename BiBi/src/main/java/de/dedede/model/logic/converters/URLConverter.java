@@ -12,6 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringJoiner;
 
+/**
+ * Converts a valid URL into text and vice-versa. A malformed URL may be detected when converting from a textual
+ * representation into a URL entity.
+ *
+ * @see URL
+ * @author Ivan Charviakou
+ */
 @FacesConverter(value = "URLs")
 public class URLConverter implements Converter<URL> {
 

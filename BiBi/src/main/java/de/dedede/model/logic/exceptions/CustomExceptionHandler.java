@@ -22,10 +22,11 @@ import jakarta.faces.view.ViewMetadata;
 
 /**
  * CustomExceptionHandler is the central point for handling unchecked and
- * checked Exceptions that are thrown during the Faces lifecycle. Unchecked
- * exceptions are handled by redirecting to the error page. Checked exceptions
- * are handled by creating a FacesMessage that is displayed to the
- * {@link UserDto}.
+ * checked exceptions that are thrown during the Faces lifecycle. Unchecked
+ * exceptions are handled by redirecting to the error page. For checked
+ * exceptions, a FacesMessage is generated and displayed on the given page.
+ *
+ * @author Ivan Charviakou
  */
 public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 
@@ -39,12 +40,19 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 	public ExceptionHandler getWrapped() {
 		return wrapped;
 	}
-	
+
+	/**
+	 * Adds any generated {@link ErrorDto}s, the URL of the previous page, and the GET-parameter map to the
+	 * request map. Then, the user is navigated to the dynamic error page, where these parameters are used.
+	 * Before this, the wrapped handler is invoked.
+	 *
+	 * @throws FacesException Is thrown when
+	 */
 	@Override
 	public void handle() throws FacesException {
 		
-		Iterator<ExceptionQueuedEvent> queue = getUnhandledExceptionQueuedEvents().iterator();
-		List<ErrorDto> dtos = iterateEvents(queue);
+		Iterator<ExceptionQueuedEvent> iterator = getUnhandledExceptionQueuedEvents().iterator();
+		List<ErrorDto> dtos = iterateEvents(iterator);
 		FacesContext context = FacesContext.getCurrentInstance();
 		UIViewRoot viewRoot = context.getViewRoot();
 		

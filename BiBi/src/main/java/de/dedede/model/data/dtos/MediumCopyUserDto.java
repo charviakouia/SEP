@@ -4,9 +4,12 @@ import java.sql.Timestamp;
 import java.time.Duration;
 
 /**
- * This DTO (data transfer object) aggregates the DTOs {@link CopyDto}, {@link MediumDto} and {@link UserDto}.
- * 
- * @author León Liehr
+ * The DTO used to supply the {@link de.dedede.model.logic.managed_beans.LendingPeriodViolation} facelet with data.
+ * An instance of this DTO represents a data entry composed of a medium-copy, copy, user, and overdraft. Here, the
+ * given user has exceeded the allowed lending-duration of a medium-copy belonging to a medium by a given overdraft
+ * period.
+ *
+ * @author Ivan Charviakou
  */
 public class MediumCopyUserDto {
 
@@ -41,8 +44,6 @@ public class MediumCopyUserDto {
 	public void setUser(UserDto user) {
 		this.user = user;
 	}
-
-	// <author: Ivan Charviakou>
 	
 	public Duration getOverdraft() {
 		if (getCopy() == null || getCopy().getDeadline() == null) {
@@ -61,6 +62,4 @@ public class MediumCopyUserDto {
 	public void setLendingDuration(Duration lendingDuration) {
 		this.lendingDuration = lendingDuration;
 	}
-	
-	// </author: Ivan Charviakou>
 }

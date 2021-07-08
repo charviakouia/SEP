@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
  * returned to the pool to be reused. The maximum number of connections is specified 
  * by the application's global configurations.
  *
+ * @author Ivan Charviakou
  */
 public class ConnectionPool {
 
