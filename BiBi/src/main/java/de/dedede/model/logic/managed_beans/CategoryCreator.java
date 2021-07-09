@@ -106,7 +106,7 @@ public class CategoryCreator implements Serializable {
             MessagingUtility.writeNegativeMessageWithKey(context, true, "categoryCreator.notLogin");
             FacesContext.getCurrentInstance().getExternalContext().redirect("/BiBi/view/opac/category-browser.xhtml?faces-redirect=true");
         } else {
-            final int parentCategoryId = (int)FacesContext.getCurrentInstance()
+            final int parentCategoryId = (int) FacesContext.getCurrentInstance()
                     .getExternalContext().getFlash().get("parent-category");
             category.getParent().setId(parentCategoryId);
             if (category.getParent().getId() == 0) {

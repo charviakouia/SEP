@@ -46,7 +46,7 @@
 
 	<context-param>
 		<param-name>jakarta.faces.PROJECT_STAGE</param-name>
-		<param-value>Development</param-value>
+		<param-value>Production</param-value>
 	</context-param>
 
 	<!-- don't output comments in the rendered HTML since they are a lot, used 

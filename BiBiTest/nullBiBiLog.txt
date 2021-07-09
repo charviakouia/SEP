@@ -67,3 +67,5 @@ SEVERE: 2021-07-01 03:55:09 ---> No entity with the id: 3 exists
 SEVERE: 2021-07-01 03:59:22 ---> No entity with the id: 3 exists
 SEVERE: 2021-07-01 04:10:37 ---> No entity with the id: 3 exists
 SEVERE: 2021-07-01 04:12:27 ---> No entity with the id: 3 exists
+SEVERE: 2021-07-09 08:51:20 ---> Database error occurred while creating category entity with id: 12345
+SEVERE: 2021-07-09 08:54:09 ---> Database error occurred while creating category entity with id: 12345
