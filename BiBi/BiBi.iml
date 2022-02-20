@@ -17,7 +17,6 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
-        <sourceRoots />
       </configuration>
     </facet>
     <facet type="web" name="Web2">
@@ -41,8 +40,16 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="library" name="jakarta.faces-3.0.0" level="project" />
     <orderEntry type="library" name="jakarta.mail-2.0.0" level="project" />
-    <orderEntry type="library" name="postgresql-42.2.20" level="project" />
     <orderEntry type="library" name="weld-servlet-shaded-4.0.0.Final" level="project" />
     <orderEntry type="library" name="jaf-2.0.1" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/artifacts/BiBi/WEB-INF/lib/postgresql-42.2.20.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

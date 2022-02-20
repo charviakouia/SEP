@@ -13,6 +13,7 @@
           <element id="library" level="project" name="jakarta.faces-3.0.0" />
           <element id="library" level="project" name="weld-servlet-shaded-4.0.0.Final" />
           <element id="library" level="project" name="jaf-2.0.1" />
+          <element id="file-copy" path="$PROJECT_DIR$/artifacts/BiBi/WEB-INF/lib/postgresql-42.2.20.jar" />
         </element>
       </element>
     </root>

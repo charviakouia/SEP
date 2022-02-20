@@ -489,9 +489,9 @@ public class DataLayerInitializer {
 				+ "passwordHashSalt, passwordHash, name, surname, postalCode, "
 				+ "city, street, houseNumber, token, tokenCreation, "
 				+ "userLendPeriod, lendStatus, verificationStatus, userRole) "
-				+ "values (default, 'jonaspicker@gmail.com', 'abcdefghijk', "
-				+ "'0c3c77e1b8e04157995c5a81fddcd1a30c09955ecb708043af13af"
-				+ "742720eccc', 'defaultAdmin', 'defaultAdmin', '12345', 'tes"
+				+ "values (default, 'ivancharviakou@gmail.com', 'abcdefghijk', "
+				+ "'8a335925c5dfcefa19f1897a5970cf3970e4536caef4d52bb56b74415f4ce0f0', "
+				+ "'defaultAdmin', 'defaultAdmin', '12345', 'tes"
 				+ "tcityADM', 'teststreetADM', 'testhouseADM', 'adminto"
 				+ "ken1123456789', CURRENT_TIMESTAMP, '11:11:11', 'ENABLED',"
 				+ " 'VERIFIED', 'ADMIN');";
